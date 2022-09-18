@@ -1,0 +1,134 @@
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>用户账户</cite></a>
+        <a><cite>查看账户</cite></a>
+    </div>
+</div>
+<style>
+    .layui-form-label {
+        width:15% !important;
+        margin-left:1%;
+    }
+    .layui-input-inline {
+        width: 33% !important;
+    }
+</style>
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-tab layui-tab-brief">
+      <ul class="layui-tab-title">
+        <li class="layui-this">账户详情</li>
+      </ul>
+      <div class="layui-tab-content">
+          <form class="layui-form layui-form-pane" action="">
+              <div class="layui-form-item">
+                  <label class="layui-form-label">用户ID</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="userId" disabled="disabled" class="layui-input">
+                  </div>
+                  <label class="layui-form-label">累计转入金额</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="totalRollIn" disabled="disabled" class="layui-input">
+                  </div>
+              </div>
+              <div class="layui-form-item">
+                  <label class="layui-form-label">账户余额</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="balance" disabled="disabled" class="layui-input">
+                  </div>
+                  <label class="layui-form-label">累计转出金额</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="totalRollOut" disabled="disabled" class="layui-input">
+                  </div>
+              </div>
+              <div class="layui-form-item">
+                  <label class="layui-form-label">可用余额</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="useableBalance" disabled="disabled" class="layui-input">
+                  </div>
+                  <label class="layui-form-label">累计转入可用余额</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="useableRollIn" disabled="disabled" class="layui-input">
+                  </div>
+              </div>
+              <div class="layui-form-item">
+                  <label class="layui-form-label">账户状态</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="state" disabled="disabled" class="layui-input">
+                  </div>
+                  <label class="layui-form-label">累计转出可用余额</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="useableRollOut" disabled="disabled" class="layui-input">
+                  </div>
+              </div>
+              <div class="layui-form-item">
+                  <label class="layui-form-label">创建时间</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="createTime" disabled="disabled" class="layui-input">
+                  </div>
+                  <label class="layui-form-label">修改时间</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="updateTime" disabled="disabled" class="layui-input">
+                  </div>
+              </div>
+              <div class="layui-form-item">
+                  <div class="layui-input-block">
+                      <a class="layui-btn" lay-href="account/uaccount/">返回</a>
+                  </div>
+              </div>
+          </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    layui.use(['admin','form'],function(){
+        var form = layui.form
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,element = layui.element
+        ,layer = layui.layer ;
+        // 导航
+        element.render('breadcrumb', 'breadcrumb');
+        var router = layui.router();
+        var userId = router.search.userId;
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/uaccount/get',
+            data: {
+                userId : userId
+            },
+            error: function(err){
+                layer.alert(JSON.stringify(err.field), {
+                    title: '错误提示'
+                })
+            },
+
+            success: function(res){
+                if(res.code == 0){
+                    $('#userId').val(res.data.userId);
+                    $('#balance').val(res.data.balance/100);
+                    $('#useableBalance').val(res.data.useableBalance/100);
+                    if(res.data.state == 0) {
+                        $('#state').val("冻结");
+                    }else if(res.data.status == 1) {
+                        $('#state').val("正常");
+                    }
+                    $('#totalRollIn').val(res.data.totalRollIn/100);
+                    $('#totalRollOut').val(res.data.totalRollOut/100);
+                    $('#useableRollIn').val(res.data.useableRollIn/100);
+                    $('#useableRollOut').val(res.data.useableRollOut/100);
+                    if(res.data.createTime != "" && res.data.createTime != null) {
+                        $('#createTime').val(layui.util.toDateString(res.data.createTime));
+                    }
+                    if(res.data.updateTime != "" && res.data.updateTime != null) {
+                        $('#updateTime').val(layui.util.toDateString(res.data.updateTime));
+                    }
+                    form.render();
+                }
+            }
+        })
+    })
+</script>

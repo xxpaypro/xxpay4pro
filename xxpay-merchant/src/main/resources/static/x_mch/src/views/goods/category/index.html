@@ -1,0 +1,172 @@
+<style>
+    .margin-top{margin-top:10px;}
+</style>
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>商品管理</cite></a>
+        <a><cite>分类管理</cite></a>
+    </span>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">商品分类列表</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-row">
+                   <form action="" id="exportForm" method="post">
+                    <div class="layui-form" style="float:right; margin-bottom: 10px;">
+                        <div id="timeDiv" class="layui-form-item" style="margin:0;">
+                            <div class="layui-input-inline margin-top">
+                                <input type="text" name="searchCategoryId" id="searchCategoryId" lay-verify="number" placeholder="商品分类ID" autocomplete="off" class="layui-input">
+                            </div>
+                            <div class="layui-input-inline margin-top">
+                                <input type="text" name="searchCategoryName" id="searchCategoryName" placeholder="分类名称" autocomplete="off" class="layui-input">
+                            </div>
+                            <div class="layui-input-inline margin-top">
+                                <input type="text" name="searchParentCategoryId" id="searchParentCategoryId" placeholder="父分类ID" autocomplete="off" class="layui-input">
+                            </div>
+                            <div class="layui-input-inline margin-top">
+                                <button id="search" class="layui-btn" data-type="reload">搜索</button>
+                            </div>
+                        </div>
+                    </div>
+                   </form>
+                </div>
+                <div class="layui-row">
+                    <div class="layuiAdmin-btns" style="margin-bottom: 10px;">
+                        <a class="layui-btn" data-type="all" data-events="create">新增分类</a>
+                    </div>
+                </div>
+                <table id="categoryList" lay-filter="categoryList"></table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+     //标题内容模板
+     var tplTitle = function(d){
+         return '<a class="layui-btn layui-btn-xs" lay-event="edit" >修改</a> ' +
+                '<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>'
+     };
+
+     var tplParentCategoryId = function(d){
+         if(d.parentCategoryId == 0) {
+             return '<span></span>';
+         }else {
+             return '<span>'+d.parentCategoryId+'</span>';
+         }
+     };
+     var tplAuthFrom = function(d){
+         if(d.authFrom == 1) {
+             return '餐饮';
+         }else if (d.authFrom == 2) {
+             return '电商';
+         }
+     };
+
+	 layui.config({
+	    base: '/x_mch/src/lib/extend/',
+	 });
+     layui.use(['table', 'view', 'admin', 'form'], function(){
+        var table = layui.table
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,element = layui.element
+        ,view = layui.view
+        ,form = layui.form;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        table.render({
+            elem: '#categoryList'
+            ,id: "tableReload"
+            ,url: layui.setter.baseUrl + '/mchGoods/category/list'
+            ,cols: [[
+                {field: 'categoryId', title: '分类ID'}
+                ,{field: 'categoryName',title: '分类名称'}
+                ,{field: 'authFrom',title: '所属小程序',templet: tplAuthFrom}
+                ,{field: 'parentCategoryId',title: '父分类ID',templet: tplParentCategoryId}
+                ,{field: 'createTime',  title: '时间', minWidth: 180, templet: '<div>{{ layui.util.toDateString(d.createTime) }}</div>' }
+                ,{field: 'edit', title: '操作', width: 400, templet: tplTitle }
+            ]]
+            ,page: true
+            ,skin: 'line'
+        });
+
+         // 搜索
+         var $ = layui.$, active = {
+             reload: function(){
+                 var categoryId = $('#searchCategoryId').val();
+                 var categoryName = $('#searchCategoryName').val().trim();
+                 var parentCategoryId = $('#searchParentCategoryId').val();
+                 //执行重载
+                 table.reload('tableReload', {
+                     page: {
+                         curr: 1 //重新从第 1 页开始
+                     }
+                     ,where: {
+                         categoryId: categoryId,
+                         categoryName: categoryName,
+                         parentCategoryId : parentCategoryId
+                     }
+                 });
+             }
+         };
+         $('#search').on('click', function() {
+             var type = $(this).data('type');
+             active[type] ? active[type].call(this) : '';
+             return false;
+         });
+
+         //监听工具条
+         table.on('tool(categoryList)', function(obj){
+             var data = obj.data;
+             var layEvent = obj.event;
+
+             if(layEvent === 'edit'){ //编辑
+                 view.xxpayPopup("编辑分类", "goods/category/update", {categoryId: data.categoryId}, {area:["60%", "80%"]});
+             } else if(obj.event === 'del'){
+                 layer.confirm('确认删除么', function(index){
+                     admin.req({
+                         type: 'get',
+                         url: layui.setter.baseUrl + '/mchGoods/category/delete',
+                         data: {
+                             categoryId: data.categoryId,
+                         },
+                         success: function(res){
+                             if(res.code == 0) {
+                                 layer.msg('删除成功', {
+                                     icon: 1
+                                 });
+                                 table.reload("tableReload");
+                             }
+                         }
+                     });
+                 });
+             }
+         });
+
+         // 事件处理
+         var events = {
+             create: function(othis, type){
+                 location.hash = "/goods/category/create";
+                 //view.xxpayPopup("新增分类", "goods/category/create", null, {area:["60%", "80%"]});
+             }
+         };
+
+         $('.layuiAdmin-btns .layui-btn').on('click', function(){
+             var othis = $(this)
+                 ,thisEvent = othis.data('events')
+                 ,type = othis.data('type');
+             events[thisEvent] && events[thisEvent].call(this, othis, type);
+         });
+
+
+         // 渲染表单
+         form.render();
+        
+     })
+</script>

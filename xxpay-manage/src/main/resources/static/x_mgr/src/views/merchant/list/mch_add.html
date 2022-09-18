@@ -1,0 +1,155 @@
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>商户管理</cite></a>
+        <a><cite>新建商户</cite></a>
+    </div>
+</div>
+<style>
+    .layui-form-label {
+        width:15% !important;
+        margin-left:1%;
+    }
+    .layui-input-inline {
+        width: 33% !important;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <form class="layui-form layui-form-pane">
+            <div class="layui-tab layui-tab-brief">
+                <ul class="layui-tab-title">
+                    <li class="layui-this">基本信息</li>
+                </ul>
+                <div class="layui-tab-content">
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">账户类型</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="type" value="1" lay-filter="typeFilter" title="平台账户" checked="checked">
+                            <input type="radio" name="type" value="2" lay-filter="typeFilter" title="私有账户">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">商户名称</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="name" name="name" lay-verify="required" placeholder="输入商户名" autocomplete="off" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">所属代理商ID</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="agentId" name="agentId" placeholder="输入代理商ID" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">用户名</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="userName" name="userName" lay-verify="required" placeholder="输入用户登录名" autocomplete="off" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">真实姓名</label>
+                        <div class="layui-input-inline">
+                            <input type="tel" id="realName" name="realName" placeholder="输入真实姓名" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">身份证号</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="idCard" name="idCard" placeholder="输入身份证号" autocomplete="off" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">手机号</label>
+                        <div class="layui-input-inline">
+                            <input type="tel" id="mobile" name="mobile" lay-verify="phone" placeholder="输入手机号" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">QQ号</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="qq" name="qq" placeholder="输入QQ号" autocomplete="off" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">邮箱</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="email" name="email" lay-verify="email" placeholder="输入邮箱" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">网站名称</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="siteName" name="siteName" placeholder="输入网站名称" autocomplete="off" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">网站地址</label>
+                        <div class="layui-input-inline">
+                            <input type="tel" id="siteUrl" name="siteUrl" placeholder="输入网站地址" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">通讯地址</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="address" name="address" placeholder="输入通讯地址" autocomplete="off" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">唯一标识</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="tag" name="tag" placeholder="输入唯一标识" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">线下充值费率(%)</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="offRechargeRate" name="ps[offRechargeFee]" lay-verify="number" placeholder="输入线下充值费率" autocomplete="off" class="layui-input" value="0">
+                        </div>
+                        <label class="layui-form-label">商户状态</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="status" value="1" title="启用" checked="checked">
+                            <input type="radio" name="status" value="0" title="停止">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="layui-form-item">
+                    <div class="layui-input-block" style="padding-bottom: 20px;">
+                        <button type="button" class="layui-btn" lay-submit="" lay-filter="mchAdd">保存</button>
+                        <a class="layui-btn" lay-href="merchant/list/">返回</a>
+                    </div>
+                </div>
+
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    layui.use(['admin', 'form'],function(){
+        var form = layui.form
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,element = layui.element
+        ,layer = layui.layer ;
+
+        element.render('breadcrumb', 'breadcrumb');
+
+        form.on('radio(typeFilter)', function(data){
+            if('1' == data.elem.value){ //平台账户
+                $('#agentId').removeClass('layui-hide');
+            }else{ //私有账户
+                $('#agentId').val("").addClass('layui-hide');
+            }
+        });
+        
+        form.on('submit(mchAdd)', function(data) {
+            //这里可以写ajax方法提交表单
+            admin.req({
+                type: "POST",
+                url: layui.setter.baseUrl + '/mch_info/add',
+                data: data.field,
+                success: function(res){
+                    if(res.code == 0) {
+                        layer.alert(res.msg, {title: "提示"}, function(index){
+                          layer.close(index);
+                          location.href = layui.setter.baseLocal + 'merchant/list/';
+                        });
+                    }
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+        form.render();
+    })
+</script>

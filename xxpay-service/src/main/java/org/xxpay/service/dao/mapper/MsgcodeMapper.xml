@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.xxpay.service.dao.mapper.MsgcodeMapper" >
+  <resultMap id="BaseResultMap" type="org.xxpay.core.entity.Msgcode" >
+    <id column="ID" property="ID" jdbcType="BIGINT" />
+    <result column="PhoneNo" property="phoneNo" jdbcType="VARCHAR" />
+    <result column="Code" property="code" jdbcType="VARCHAR" />
+    <result column="bizType" property="bizType" jdbcType="TINYINT" />
+    <result column="ExpTime" property="expTime" jdbcType="TIMESTAMP" />
+    <result column="CreateTime" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    ID, PhoneNo, Code, bizType, ExpTime, CreateTime
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="org.xxpay.core.entity.MsgcodeExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from t_mgr_msgcode
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+    <if test="limit != null" >
+      <if test="offset != null" >
+        limit ${offset}, ${limit}
+      </if>
+      <if test="offset == null" >
+        limit ${limit}
+      </if>
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_mgr_msgcode
+    where ID = #{ID,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from t_mgr_msgcode
+    where ID = #{ID,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="org.xxpay.core.entity.MsgcodeExample" >
+    delete from t_mgr_msgcode
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="org.xxpay.core.entity.Msgcode" >
+    insert into t_mgr_msgcode (ID, PhoneNo, Code, 
+      bizType, ExpTime, CreateTime
+      )
+    values (#{ID,jdbcType=BIGINT}, #{phoneNo,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, 
+      #{bizType,jdbcType=TINYINT}, #{expTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="org.xxpay.core.entity.Msgcode" >
+    insert into t_mgr_msgcode
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="ID != null" >
+        ID,
+      </if>
+      <if test="phoneNo != null" >
+        PhoneNo,
+      </if>
+      <if test="code != null" >
+        Code,
+      </if>
+      <if test="bizType != null" >
+        bizType,
+      </if>
+      <if test="expTime != null" >
+        ExpTime,
+      </if>
+      <if test="createTime != null" >
+        CreateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="ID != null" >
+        #{ID,jdbcType=BIGINT},
+      </if>
+      <if test="phoneNo != null" >
+        #{phoneNo,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null" >
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="bizType != null" >
+        #{bizType,jdbcType=TINYINT},
+      </if>
+      <if test="expTime != null" >
+        #{expTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="org.xxpay.core.entity.MsgcodeExample" resultType="java.lang.Integer" >
+    select count(*) from t_mgr_msgcode
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update t_mgr_msgcode
+    <set >
+      <if test="record.ID != null" >
+        ID = #{record.ID,jdbcType=BIGINT},
+      </if>
+      <if test="record.phoneNo != null" >
+        PhoneNo = #{record.phoneNo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.code != null" >
+        Code = #{record.code,jdbcType=VARCHAR},
+      </if>
+      <if test="record.bizType != null" >
+        bizType = #{record.bizType,jdbcType=TINYINT},
+      </if>
+      <if test="record.expTime != null" >
+        ExpTime = #{record.expTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.createTime != null" >
+        CreateTime = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update t_mgr_msgcode
+    set ID = #{record.ID,jdbcType=BIGINT},
+      PhoneNo = #{record.phoneNo,jdbcType=VARCHAR},
+      Code = #{record.code,jdbcType=VARCHAR},
+      bizType = #{record.bizType,jdbcType=TINYINT},
+      ExpTime = #{record.expTime,jdbcType=TIMESTAMP},
+      CreateTime = #{record.createTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="org.xxpay.core.entity.Msgcode" >
+    update t_mgr_msgcode
+    <set >
+      <if test="phoneNo != null" >
+        PhoneNo = #{phoneNo,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null" >
+        Code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="bizType != null" >
+        bizType = #{bizType,jdbcType=TINYINT},
+      </if>
+      <if test="expTime != null" >
+        ExpTime = #{expTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null" >
+        CreateTime = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ID = #{ID,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.xxpay.core.entity.Msgcode" >
+    update t_mgr_msgcode
+    set PhoneNo = #{phoneNo,jdbcType=VARCHAR},
+      Code = #{code,jdbcType=VARCHAR},
+      bizType = #{bizType,jdbcType=TINYINT},
+      ExpTime = #{expTime,jdbcType=TIMESTAMP},
+      CreateTime = #{createTime,jdbcType=TIMESTAMP}
+    where ID = #{ID,jdbcType=BIGINT}
+  </update>
+  
+   <insert id="addCode" parameterType="java.util.Map" >
+  
+   		INSERT INTO t_mgr_msgcode (PhoneNo,Code,BizType, ExpTime,CreateTime) 
+   		select #{phoneNo}, #{code}, #{bizType}, date_add(now(), interval #{expTime} minute), now() FROM DUAL 
+   		
+   		<if test="todayLimit != null">
+   			WHERE (
+   			select count(*) from t_mgr_msgcode m1
+			where date_format(m1.CreateTime,'%Y-%m-%d') = date_format(now(), '%Y-%m-%d') 
+				and m1.phoneNo = #{phoneNo} and bizType = #{bizType} 
+<![CDATA[ 	) <   #{todayLimit}  ]]>
+   		</if>
+   		
+  </insert>
+  <!-- 仅 根据查询条件 并且根据创建时间倒叙的第一条判断 ， 避免发送多次验证码，旧码仍可验证通过的问题。-->
+  <select id="verifyCode" parameterType="java.util.Map" resultType="java.lang.Integer" >
+  	<![CDATA[ 
+  		 select count(1) from (
+ 		 	select * from t_mgr_msgcode  m where m.PhoneNo =#{phoneNo} and bizType = #{bizType} order by createTime desc limit 1
+		 ) temp where temp.`code` = ${code} and temp.expTime > now()
+	]]>
+  </select>
+  
+  
+</mapper>

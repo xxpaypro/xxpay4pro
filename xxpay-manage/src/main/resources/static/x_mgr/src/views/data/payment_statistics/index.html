@@ -1,0 +1,189 @@
+
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+      <a lay-href="">主页</a>
+      <a><cite>数据分析</cite></a>
+    </div>
+  </div>
+  
+  <div class="layui-fluid">
+    <div class="layui-card">
+      <div class="layui-tab layui-tab-brief">
+        <ul class="layui-tab-title">
+          <li class="layui-this">支付统计</li>
+        </ul>
+        <div class="layui-tab-content">
+          <div class="layui-tab-item layui-show">
+            <div class="layui-row">
+              <div class="layui-form" style="float:right;">
+                <div id="timeDiv" class="layui-form-item" style="margin:0;">
+                  <!--<div class="layui-input-inline">
+                    <input type="text" name="createTimeStart" id="createTimeStart" autocomplete="off" placeholder="开始时间" class="layui-input">
+                  </div>
+                  <div class="layui-input-inline">
+                    <input type="text" name="createTimeEnd" id="createTimeEnd" autocomplete="off" placeholder="结束时间" class="layui-input">
+                  </div>-->
+                  <div class="layui-input-inline">
+                    <input type="text" name="mchId" id="mchId" placeholder="商户ID" autocomplete="off" class="layui-input">
+                  </div>
+                  <div class="layui-input-inline">
+                    <select name="type" id="productType" placeholder="产品类型" lay-search="">
+                    <option value="-99">产品类型</option>
+                    <option value="1">收款</option>
+                    <option value="2">充值</option>
+                  </select>
+                  </div>
+                  <button id="search" class="layui-btn" data-type="reload">搜索</button>
+                </div>
+              </div>
+            <div class="layui-form-item" style="padding-top: 15px;">
+              <blockquote class="layui-elem-quote" id="amountTip">
+                 总笔数:<sapn id="totalCount" style="color: blue; margin-right: 10px;"></sapn>
+                 已付总金额:<span id="totalAmount" style="color: green; margin-right: 10px;"></span>
+              </blockquote>
+            </div>
+            </div>
+            <div class="layui-row">
+              <div class="layuiAdmin-btns" style="margin-bottom: 10px;">
+              </div>
+            </div>
+            <table id="zjdataAll" lay-filter="zjdataAll"></table>
+          </div>
+  
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script type="text/html" id="xxpayBa">
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+  </script>
+  
+  <script>
+  	layui.config({
+	    base: '/x_mgr/src/lib/extend/',
+	});
+    layui.use(['admin', 'table', 'util', 'laydate', 'timePick'], function(){
+      var $ = layui.$
+        ,admin = layui.admin
+        ,table = layui.table
+        ,element = layui.element
+        ,laydate = layui.laydate
+        ,timePick = layui.timePick
+        ,form = layui.form;
+        
+        timePick.init();  //第一个参数表示开始时间   第二个表示结束时间   0,0今天   -1,-1昨天   -7,0近一周   以此类推
+  
+      element.render('breadcrumb', 'breadcrumb');
+      $.setCountResult = function(mchId, productType, createTimeStart, createTimeEnd) {
+	    admin.req({
+	      type: 'get',
+	      url: layui.setter.baseUrl + '/data/count4PaymentStatistics',
+	      data: {
+	        mchId : mchId,
+	        productType : productType,
+	        createTimeStart : createTimeStart,
+	        createTimeEnd : createTimeEnd
+	      },
+	      error: function(err){
+	        layer.alert(JSON.stringify(err.field), {
+	          title: '错误提示'
+	        })
+	      },
+	      success: function(res){
+	        if(res.code == 0){
+	          if(res.data == null || res.data == ""){
+	          	$('#totalCount').html(0);
+	          }else{
+	          	$('#totalCount').html(res.data[0].totalCount);
+	          }
+	          if(res.data == null || res.data == ""){
+	          	$('#totalAmount').html(0);
+	          }else{
+	          	$('#totalAmount').html("￥" + res.data[0].totalAmount/100);
+	          }
+	        }
+	      }
+	    });
+	  };
+
+      // 初始化统计结果
+  	  var createTimeStart = $('#createTimeStart').val();
+      var createTimeEnd = $('#createTimeEnd').val();
+      var productType = $('#productType').val();
+      var mchId = $('#mchId').val();
+      
+      $.setCountResult(mchId, productType, createTimeStart, createTimeEnd);
+  
+      //商户列表
+      table.render({
+        elem: '#zjdataAll'
+        ,url: layui.setter.baseUrl + '/data/paymentStatistics' //列表接口
+        ,where: {
+            createTimeStart : createTimeStart,
+            createTimeEnd : createTimeEnd
+        }
+        ,id: 'tableReload'
+        ,page: true
+        ,cols: [[
+          {type: 'checkbox', fixed: 'left'}
+          ,{field: 'mchId', title: '商户ID'}
+          ,{field: 'name',title: '商户名称'}
+          ,{field: 'totalAmount',title: '金额',templet: '<div>{{ d.totalAmount/100 }}</div>'}
+          ,{field: 'totalCount',title: '笔数'}
+        ]]
+        ,skin: 'line'
+      });
+  
+      //监听工具条
+      table.on('tool(zjdataAll)', function(obj){
+        var data = obj.data;
+        if(obj.event === 'detail'){
+          location.href = layui.setter.baseLocal + "merchant/history/detail/id=" + data.id;
+        } 
+      });
+  
+      // 搜索
+      var $ = layui.$, active = {
+        reload: function(){
+          var createTimeStart = $('#createTimeStart').val();
+          var createTimeEnd = $('#createTimeEnd').val();
+          var productType = $('#productType').val();
+          var mchId = $('#mchId').val();
+          
+          $.setCountResult(mchId, productType, createTimeStart, createTimeEnd);
+          //执行重载
+          table.reload('tableReload', {
+            page: {
+              curr: 1 //重新从第 1 页开始
+            }
+            ,where: {
+              mchId: mchId,
+              productType: productType,
+              createTimeStart : createTimeStart,
+              createTimeEnd : createTimeEnd
+            }
+          });
+        }
+      };
+      $('#search').on('click', function() {
+        var type = $(this).data('type');
+        active[type] ? active[type].call(this) : '';
+      });
+
+      /*laydate.render({
+        elem: '#createTimeStart'
+        ,type: 'datetime'
+        ,format: 'yyyy-MM-dd HH:mm:ss'
+      });
+
+      laydate.render({
+        elem: '#createTimeEnd'
+        ,type: 'datetime'
+        ,format: 'yyyy-MM-dd HH:mm:ss'
+      });*/
+  
+      // 渲染表单
+      form.render();
+    });
+  </script>

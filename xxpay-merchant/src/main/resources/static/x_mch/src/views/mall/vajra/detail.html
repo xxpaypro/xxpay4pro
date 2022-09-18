@@ -1,0 +1,133 @@
+<style>
+    .xxpayPopupDiv .layui-form-label {
+        width:15% !important;
+        margin-left:1%;
+    }
+    .xxpayPopupDiv .layui-input-inline {
+        width: 33% !important;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <form class="layui-form layui-form-pane">
+            <div class="layui-tab layui-tab-brief">
+                <div class="layui-tab-content">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">金刚区名称</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="vajraName" name="vajraName" disabled="disabled" placeholder="输入金刚区名称" autocomplete="off" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">显示位置</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="authFrom" value="2" disabled="disabled" title="商城小程序首页" checked="checked">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">金刚区icon</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="mediaPath" name="mediaPath" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">跳转地址</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="jumpUrl" name="jumpUrl" disabled="disabled" placeholder="输入跳转地址" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">排序值</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="sortNum" name="sortNum" disabled="disabled" placeholder="输入排序值" autocomplete="off" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">跳转链接类型</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="jumpUrlType" name="jumpUrlType" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">状态</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="status" name="status" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">备注</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="remark" name="remark" autocomplete="off" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">创建时间</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="createTime" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">更新时间</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="updateTime" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    layui.use(['form','util','admin','laydate','upload','setter'], function(){
+        var form = layui.form
+            ,$ = layui.$
+            ,admin = layui.admin
+            ,element = layui.element
+            ,view = layui.view;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        var vajraId = view.getOpenParams('vajraId');
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/mini_vajra/get',
+            data: {
+                vajraId : vajraId
+            },
+            error: function(err){
+                layer.alert(JSON.stringify(err.field), {
+                    title: '错误提示'
+                })
+            },
+            success: function(res){
+                if(res.code == 0){
+                    $('#vajraName').val(res.data.vajraName);
+
+                    $('#mediaPath').val(res.data.mediaPath);
+                    $('#jumpUrl').val(res.data.jumpUrl);
+                    $('#sortNum').val(res.data.sortNum);
+                    $('#mchId').val(res.data.mchId);
+                    if(res.data.status == 0) {
+                        $('#status').val("停止使用");
+                    }else if(res.data.status == 1) {
+                        $('#status').val("正常使用");
+                    }
+                    if(res.data.jumpUrlType == 1) {
+                        $('#jumpUrlType').val("内部链接");
+                    }else if(res.data.jumpUrlType == 2) {
+                        $('#jumpUrlType').val("外部链接");
+                    }
+
+                    if(res.data.authFrom == 1) {
+                        $('#authFrom').val("点餐小程序首页");
+                    }else if(res.data.authFrom == 2) {
+                        $('#authFrom').val("商城小程序首页");
+                    }else {
+                        $('#authFrom').val("");
+                    }
+                    $('#remark').val(res.data.remark);
+
+                    if(res.data.createTime != "" && res.data.createTime != null) {
+                        $('#createTime').val(res.data.createTime);
+                    }
+                    if(res.data.updateTime != "" && res.data.updateTime != null) {
+                        $('#updateTime').val(res.data.updateTime);
+                    }
+                    form.render();
+                }
+            }
+        })
+
+    });
+</script>
+

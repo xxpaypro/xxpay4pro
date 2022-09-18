@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.xxpay.service.dao.mapper.AlipayMchSnapshotMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="org.xxpay.core.entity.AlipayMchSnapshot">
+        <id column="ApplyNo" property="ApplyNo" />
+        <result column="MchId" property="mchId" />
+        <result column="IsvId" property="isvId" />
+        <result column="ApplyStatus" property="applyStatus" />
+        <result column="AuditInfo" property="auditInfo" />
+        <result column="AlipayAccount" property="alipayAccount" />
+        <result column="ContactName" property="contactName" />
+        <result column="ContactMobile" property="contactMobile" />
+        <result column="ContactEmail" property="contactEmail" />
+        <result column="MccCode" property="mccCode" />
+        <result column="Rate" property="rate" />
+        <result column="BusinessLicenseNo" property="businessLicenseNo" />
+        <result column="DateLimitation" property="dateLimitation" />
+        <result column="LongTerm" property="longTerm" />
+        <result column="BusinessLicensePic" property="businessLicensePic" />
+        <result column="SpecialLicensePic" property="specialLicensePic" />
+        <result column="ShopSignBoardPic" property="shopSignBoardPic" />
+        <result column="BatchNo" property="batchNo" />
+        <result column="UserId" property="userId" />
+        <result column="AuthAppId" property="authAppId" />
+        <result column="AppAuthToken" property="appAuthToken" />
+        <result column="AppRefreshToken" property="appRefreshToken" />
+        <result column="ExpiresIn" property="expiresIn" />
+        <result column="ReExpiresIn" property="reExpiresIn" />
+        <result column="AgentAppId" property="agentAppId" />
+        <result column="MerchantPid" property="merchantPid" />
+        <result column="ConfirmUrl" property="confirmUrl" />
+    </resultMap>
+
+</mapper>

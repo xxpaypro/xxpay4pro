@@ -1,0 +1,173 @@
+<style>
+    .xxpayPopupDiv .layui-form-label {
+        width:15% !important;
+        margin-left:1%;
+    }
+    .xxpayPopupDiv .layui-input-inline {
+        width: 33% !important;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <div class="layui-tab-content">
+                <form class="layui-form layui-form-pane" action="">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">积分商品ID</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="goodsId" name="goodsId" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">商品名称</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="goodsName" name="goodsName" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">所需积分</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="points" name="points" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">商品价格</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="goodsPrice" name="goodsPrice" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">图片路径</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="imgPath" name="imgPath" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">状态</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="status" name="status" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">是否限制库存</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="stockLimitType" name="stockLimitType" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">库存数量</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="stockNum" name="stockNum" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">兑换限制数量</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="singleMemberLimit" name="singleMemberLimit" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">所属商户ID</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="mchId" name="mchId" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">活动开始时间</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="beginTime" name="beginTime" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">活动结束时间</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="endTime" name="endTime" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">是否限制门店</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="storeLimitType" name="storeLimitType" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">备注</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="remark" name="remark" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">创建时间</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="createTime" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">更新时间</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="updateTime" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    layui.use(['admin','form'],function(){
+        var form = layui.form
+            ,$ = layui.$
+            ,admin = layui.admin
+            ,element = layui.element
+            ,view = layui.view
+            ,layer = layui.layer ;
+        // 导航
+        element.render('breadcrumb', 'breadcrumb');
+        var goodsId = view.getOpenParams('goodsId');
+
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/points_goods/get',
+            data: {
+                goodsId : goodsId
+            },
+            error: function(err){
+                layer.alert(JSON.stringify(err.field), {
+                    title: '错误提示'
+                })
+            },
+            success: function(res){
+                if(res.code == 0){
+                    $('#goodsId').val(res.data.goodsId);
+                    $('#goodsName').val(res.data.goodsName);
+                    $('#points').val(res.data.points);
+                    $('#goodsPrice').val(res.data.goodsPrice/100);
+                    $('#imgPath').val(res.data.imgPath);
+                    $('#stockNum').val(res.data.stockNum);
+                    $('#mchId').val(res.data.mchId);
+                    if(res.data.status == 0) {
+                        $('#status').val("下架");
+                    }else if(res.data.status == 1) {
+                        $('#status').val("上架");
+                    }
+                    if(res.data.stockLimitType == 1) {
+                        $('#stockLimitType').val("不限库存");
+                    }else if(res.data.stockLimitType == 2) {
+                        $('#stockLimitType').val("限制库存");
+                    }
+                    if(res.data.storeLimitType == 0) {
+                        $('#storeLimitType').val("不限门店");
+                    }else if(res.data.stockLimitType == 1) {
+                        $('#storeLimitType').val("限制门店");
+                    }
+                    if(res.data.singleMemberLimit == -1) {
+                        $('#singleMemberLimit').val("不限制");
+                    }else {
+                        $('#singleMemberLimit').val(res.data.singleMemberLimit);
+                    }
+                    $('#remark').val(res.data.remark);
+
+                    if(res.data.beginTime != "" && res.data.beginTime != null) {
+                        $('#beginTime').val(layui.util.toDateString(res.data.beginTime));
+                    }
+                    if(res.data.endTime != "" && res.data.endTime != null) {
+                        $('#endTime').val(layui.util.toDateString(res.data.endTime));
+                    }
+                    if(res.data.createTime != "" && res.data.createTime != null) {
+                        $('#createTime').val(layui.util.toDateString(res.data.createTime));
+                    }
+                    if(res.data.updateTime != "" && res.data.updateTime != null) {
+                        $('#updateTime').val(layui.util.toDateString(res.data.updateTime));
+                    }
+                    form.render();
+                }
+            }
+        })
+    })
+</script>

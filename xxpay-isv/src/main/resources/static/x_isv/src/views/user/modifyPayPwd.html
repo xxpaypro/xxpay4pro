@@ -1,0 +1,94 @@
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a><cite>修改登陆密码</cite></a>
+    </span>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">修改支付密码</li>
+            </ul>
+            <div class="layui-tab-content" style="width:50%;margin:0 auto">
+                <form class="layui-form center">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">旧密码</label>
+                        <div class="layui-input-block">
+                            <input type="password" required  name="oldPayPassword"  lay-verify="required|pass" placeholder="请输入就的支付密码" autocomplete="off" class="layui-input oldPwd">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">新密码</label>
+                        <div class="layui-input-block">
+                            <input type="password" required  name="payPassword"  lay-verify="required|pass" placeholder="请输入新的支付密码" autocomplete="off" class="layui-input pwd">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux" style="margin-left: 110px;">支付密码为8-16位的字母和数字组合</div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">确认新密码</label>
+                        <div class="layui-input-block">
+                            <input type="password" required   lay-verify="required" placeholder="请输入确认密码" autocomplete="off" class="layui-input confirmPwd">
+                        </div>
+                    </div>
+                    <div class="layui-form-item ">
+                        <div class="layui-input-block">
+                            <button type="button" lay-submit lay-filter="resetBtn" class="layui-btn">保存</button>
+                            <a href="" class="layui-btn">返回</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['form','util','admin'], function(){
+       var form = layui.form
+       ,$ = layui.$
+       ,admin = layui.admin
+       ,element = layui.element;
+
+       element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+         //自定义表单验证 pass
+        form.verify({
+            pass: [
+                /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,16}$/
+                ,'不符合密码为8-16位的字母和数字组合'
+            ]
+        })
+
+       form.on('submit(resetBtn)', function(data){
+           var oldPwd = $.trim($('.oldPwd').val());
+           var firPwd = $.trim($('.pwd').val());
+           var conPwd = $.trim($('.confirmPwd').val());
+           // 验证新旧密码是否相同
+           if(oldPwd == firPwd){
+               layer.alert('新旧密码相同，请重新输入');
+               return ;
+           }
+           // 验证新密码与确认密码是否一致
+           if(firPwd != conPwd){
+               layer.alert('新密码与确认密码输入不一致，请重新输入');
+               return ;
+           }
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/agent/paypwd_update',
+                data: data.field,
+                success: function(res){
+                    if(res.code == 0){
+                        layer.alert(res.msg,{title: "提示"},function(index){
+                            layer.close(index);
+                            location.hash = '/';
+                        })
+                    }
+                }
+            })
+            return false;//阻止跳转
+        });
+        form.render();
+       
+    })
+</script>

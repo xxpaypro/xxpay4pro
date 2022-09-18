@@ -1,0 +1,220 @@
+<style>
+    .layui-input-inline{padding-right:10px;}
+</style>
+<div class="layui-card-header layui-card" style="margin-bottom: 0">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>商品管理</cite></a>
+        <a><cite>小程序商品库商品列表</cite></a>
+    </span>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">小程序商品库商品列表</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-row">
+                   <form action="" id="exportForm" method="post">
+                    <div class="layui-form" style="float:right; margin-bottom: 10px;">
+                        所属小程序：
+                        <div class="layui-input-inline">
+                            <select name="searchAuthFrom" id="searchAuthFrom" lay-search="">
+                                <option value="1">点餐</option>
+                                <option value="2" selected>商城</option>
+                            </select>
+                        </div>
+                        商品状态：
+                        <div class="layui-input-inline ">
+                            <select name="searchStatus" id="searchStatus" lay-search="">
+                                <option value="0">未审核</option>
+                                <option value="1">审核中</option>
+                                <option value="2" selected>审核通过</option>
+                                <option value="3">审核驳回</option>
+                            </select>
+                        </div>
+                        <div class="layui-input-inline">
+                            <button id="search" class="layui-btn" data-type="reload">搜索</button>
+                        </div>
+                    </div>
+                   </form>
+                </div>
+                <!--<div class="layui-row">
+                    <div class="layuiAdmin-btns" style="margin-bottom: 10px;">
+                        <a class="layui-btn" data-type="all" data-events="create">新增商品</a>
+                    </div>
+                </div>-->
+                <table id="goodsList" lay-filter="goodsList"></table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+     //标题内容模板
+     var tplTitle = function(d){
+         return '<a class="layui-btn layui-btn-xs" lay-event="edit" >修改</a> ' +
+                '<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>'
+     };
+
+     var tplPriceType = function(d){
+         if(d.priceType == 1) {
+             return '<span class="layui-badge layui-bg-green">一口价</span>';
+         }else if(d.priceType == 2) {
+             return '<span class="layui-badge layui-bg-cyan">价格区间</span>';
+         }else if(d.priceType == 3) {
+             return '<span class="layui-badge layui-bg-blue">折扣价</span>';
+         }
+     };
+
+     var tplThirdPartyTag = function(d){
+         if(d.thirdPartyTag == 1 || d.thirdPartyTag == 2) {
+             return '<span class="layui-badge layui-bg-green">系统后台添加</span>';
+         }else {
+             return '<span class="layui-badge layui-bg-gray">微信后台添加</span>';
+         }
+     };
+
+	 layui.config({
+	    base: '/x_mch/src/lib/extend/',
+	 });
+     layui.use(['table','util','admin'], function(){
+        var table = layui.table
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,element = layui.element
+        ,view = layui.view
+        ,form = layui.form;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+         var authFromOrigin = $("#searchAuthFrom").val();
+         var statusOrigin = $("#searchStatus").val();
+        table.render({
+            elem: '#goodsList'
+            ,id: "tableReload"
+            ,url: layui.setter.baseUrl + '/wx_mini/getapproved'
+            ,where: {
+                authFrom: authFromOrigin,
+                status: statusOrigin
+            }
+            ,cols: [[
+                {type: 'checkbox', fixed: 'left'}
+                ,{field: 'goodsId', title: '小程序商品库商品ID'}
+                ,{field: 'name',title: '商品名称'}
+                ,{field: 'priceType',title: '价格类型',templet: tplPriceType}
+                ,{field: 'price',title: '一口价/价格左区间'}
+                ,{field: 'price2',title: '价格右区间', templet: '<div>{{ d.priceType == 1 ? 0 : d.price2 }}</div>'}
+                ,{field: 'thirdPartyTag',title: '商品添加来源',templet: tplThirdPartyTag}
+                ,{field: 'edit', title: '操作', width: 400, templet: tplTitle }
+            ]]
+            ,page: true
+            ,limit: 30
+            ,loading: true
+            ,skin: 'line'
+        });
+
+         // 搜索
+         var $ = layui.$, active = {
+             reload: function(){
+                 var authFrom = $("#searchAuthFrom").val();
+                 var status = $("#searchStatus").val();
+                 //执行重载
+                 table.reload('tableReload', {
+                     page: {
+                         curr: 1 //重新从第 1 页开始
+                     }
+                     ,where: {
+                         authFrom: authFrom,
+                         status : status
+                     }
+                 });
+             }
+         };
+         $('#search').on('click', function() {
+             var type = $(this).data('type');
+             active[type] ? active[type].call(this) : '';
+             return false;
+         });
+
+         //监听工具条
+         table.on('tool(goodsList)', function(obj){
+             var data = obj.data;
+             var layEvent = obj.event;
+             var authFrom = $("#searchAuthFrom").val();
+
+             if(layEvent === 'edit'){ //编辑
+                 location.hash="/live/goods/wx_update/goodsId=" + data.goodsId + "/authFrom=" + authFrom;
+             } else if(obj.event === 'detail'){
+                 view.xxpayPopup("商品详情", "goods/list/detail", {goodsId: data.goodsId}, {btn:false});
+             } else if(obj.event === 'del'){
+                 layer.confirm('确认删除吗', function(index){
+                     admin.req({
+                         type: 'get',
+                         url: layui.setter.baseUrl + '/wx_mini/delete',
+                         data: {
+                             goodsId: data.goodsId,
+                             authFrom: authFrom
+                         },
+                         success: function(res){
+                             if(res.code == 0) {
+                                 layer.msg('删除成功', {
+                                     icon: 1
+                                 });
+                                 table.reload("tableReload");
+                             }
+                         }
+                     });
+                 });
+             }
+         });
+
+         // 事件处理
+         var events = {
+             create: function(othis, type){
+                 location.hash = "/goods/list/create";
+             },
+             addRecommendGoods: function(othis, type){
+                 var checkStatus = table.checkStatus("tableReload")
+                     ,data = checkStatus.data; //获得选中的数据
+                 if(data.length === 0) return layer.msg('请选择数据');
+                 var subGoodsId = "";
+                 $.each(data, function(i, n){
+                     subGoodsId = subGoodsId + "," + n.goodsId;
+                 });
+                 if(subGoodsId != "") {
+                     subGoodsId = subGoodsId.substring(1);
+                 }
+                 admin.req({
+                     type: 'get',
+                     url: layui.setter.baseUrl + '/mchGoods/recommend',
+                     data: {
+                         goodsId: subGoodsId,
+                     },
+                     success: function(res){
+                         if(res.code == 0) {
+                             layer.msg('添加成功', {
+                                 icon: 1
+                             });
+                             table.reload("tableReload");
+                         }
+                     }
+                 });
+                 layer.closeAll(); //关闭所有弹层
+                 layui.table.reload('tableReload'); //调用业务弹层外表格重新加载
+             }
+         };
+
+         $('.layuiAdmin-btns .layui-btn').on('click', function(){
+             var othis = $(this)
+                 ,thisEvent = othis.data('events')
+                 ,type = othis.data('type');
+             events[thisEvent] && events[thisEvent].call(this, othis, type);
+         });
+
+
+         // 渲染表单
+         form.render();
+        
+     })
+</script>

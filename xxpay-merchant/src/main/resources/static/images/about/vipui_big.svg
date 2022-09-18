@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #fff;
+      }
+
+      .cls-2 {
+        font-size: 18px;
+        font-family: PingFang SC Medium, PingFang SC;
+      }
+
+      .cls-3 {
+        fill: #e7441e;
+      }
+    </style>
+  </defs>
+  <g id="组_211" data-name="组 211" transform="translate(-997 -157)">
+    <rect id="矩形_141" data-name="矩形 141" class="cls-1" width="120" height="120" rx="10" transform="translate(997 157)"/>
+    <text id="VIPUI" class="cls-2" transform="translate(1035 242)"><tspan x="0" y="0">VIPUI</tspan></text>
+    <path id="路径_826" data-name="路径 826" class="cls-3" d="M1.094-154H18.5c.864,3.088.445,6.314.53,9.48-.077,4.6.5,9.514-1.685,13.752C14.815-125.311,9.417-122.033,4.02-120q-1.463-3.14-2.9-6.279a13.534,13.534,0,0,0,9.443-10.353c-3.173-.13-6.39.208-9.5-.536v-16.589Z" transform="translate(1046.94 335)"/>
+  </g>
+</svg>

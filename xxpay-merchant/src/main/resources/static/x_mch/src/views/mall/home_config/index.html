@@ -1,0 +1,241 @@
+<div class=" layui-card layadmin-header">
+	<div class="layui-breadcrumb" lay-filter="breadcrumb">
+		<a lay-href="">首页</a>
+		<a>商城管理</a>
+		<a>首页管理</a>
+	</div>
+</div>
+<div class="layui-fluid">
+	<div class="layui-card">
+		<div class="layui-tab layui-tab-brief">
+			<ul class="layui-tab-title">
+				<li class="layui-this tabLi" showDiv="agentConfigDiv">首页推荐商品</li>
+				<li class="tabLi" showDiv="uploadConfigDiv">热门搜索管理</li>
+			</ul>
+			<div class="layui-tab-content configDiv" id="agentConfigDiv">
+				<div class="layui-row">
+					<form action="" id="exportForm" method="post">
+						<div class="layui-form" style="float:right; margin-bottom: 10px;">
+							<div id="timeDiv" class="layui-form-item" style="margin:0;">
+								<div class="layui-input-inline margin-top">
+									<input type="text" name="searchGoodsId" id="searchGoodsId" lay-verify="number" placeholder="商品ID" autocomplete="off" class="layui-input">
+								</div>
+								<div class="layui-input-inline margin-top">
+									<input type="text" name="searchGoodsName" id="searchGoodsName" placeholder="商品名称" autocomplete="off" class="layui-input">
+								</div>
+								<div class="layui-input-inline margin-top">
+									<button id="search" class="layui-btn" data-type="reload">搜索</button>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+				<div class="layui-row">
+					<div class="layuiAdmin-btns" style="margin-bottom: 10px;">
+						<a class="layui-btn" data-type="all" data-events="create">添加精品推荐商品</a>
+					</div>
+				</div>
+				<table id="recommendGoodsList" lay-filter="recommendGoodsList"></table>
+            </div>
+
+			<div class="layui-tab-content configDiv layui-hide" id="uploadConfigDiv">
+				<form class="layui-form">
+					<div class="layui-form-item">
+						<label class="layui-form-label">存储位置</label>
+						<div class="layui-input-inline">
+							<input name="uploadFileSaveType" lay-filter="uploadFileSaveTypeFilter" value='1' type="radio" title="本地服务器" checked />
+							<input name="uploadFileSaveType" lay-filter="uploadFileSaveTypeFilter" value='2' type="radio" title="阿里云OSS存储" />
+						</div>
+					</div>
+					<div class="aliyunOssDiv layui-hide">
+						<div class="layui-form-item">
+							<label class="layui-form-label">EndPoint地域节点</label>
+							<div class="layui-input-inline">
+								<input class="layui-input" id="ossEndpoint" name="ossEndpoint" placeholder="请输入阿里云EndPoint地域节点（不包含http://和https://）"/>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">bucketName</label>
+							<div class="layui-input-inline">
+								<input class="layui-input" id="ossBucketName" name="ossBucketName" placeholder="请输入您创建的阿里云bucketName"/>
+							</div>
+						</div>
+
+						<div class="layui-form-item">
+							<label class="layui-form-label">accessKeyId</label>
+							<div class="layui-input-inline">
+								<input class="layui-input" id="ossAccessKeyId" name="ossAccessKeyId" placeholder="请输入您的阿里云accessKeyId"/>
+							</div>
+						</div>
+
+						<div class="layui-form-item">
+							<label class="layui-form-label">accessKeySecret</label>
+							<div class="layui-input-inline">
+								<input class="layui-input" id="ossAccessKeySecret" name="ossAccessKeySecret" placeholder="请输入您的阿里云accessKeySecret"/>
+							</div>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<div class="layui-input-inline">
+							<button type="button" class="layui-btn" lay-submit="" lay-filter="updateUploadConfigFilter" style="margin-left: 60px;">确认保存</button>
+						</div>
+					</div>
+				</form>
+			</div>
+        </div>
+    </div>
+
+
+</div>
+<script>
+	//标题内容模板
+	var tplTitle = function(d){
+		return '<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a> ' +
+				'<a class="layui-btn layui-btn-xs" lay-event="edit" >修改</a> ' +
+				'<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>'
+	};
+
+	var tplStatus = function(d){
+		if(d.status == 0) {
+			return '<span class="layui-badge layui-bg-red">下架</span>';
+		}else if(d.status == 1) {
+			return '<span class="layui-badge layui-bg-green">上架</span>';
+		}else if(d.status == 2) {
+			return '<span class="layui-badge layui-bg-orange">售罄</span>';
+		}
+	};
+
+	layui.use(['form', 'table', 'util', 'admin', 'view'], function() {
+		var form = layui.form,
+			$ = layui.$,
+			table = layui.table,
+			admin = layui.admin,
+			layer = layui.layer,
+			view = layui.view,
+			element = layui.element;
+
+		element.render('breadcrumb', 'breadcrumb'); //渲染导航信息
+
+		//获取本页面 所有设置信息
+		table.render({
+			elem: '#recommendGoodsList'
+			,id: "tableReload"
+			,url: layui.setter.baseUrl + '/mini_config/recommend'
+			,where: {authFrom: 2}
+			,cols: [[
+				{field: 'goodsId', title: '商品ID'}
+				,{field: 'goodsName',title: '商品名称'}
+				,{field: 'categoryName',title: '商品分类名称'}
+				,{field: 'cellingPrice',title: '售价', templet: '<div>{{ (d.cellingPrice/100) }}</div>>'}
+				,{field: 'actualSaleNum',title: '销量'}
+				,{field: 'status',title: '状态',templet: tplStatus}
+				,{field: 'createTime',  title: '时间', width: 180, templet: '<div>{{ layui.util.toDateString(d.createTime) }}</div>' }
+				,{field: 'edit', title: '操作', width: 400, templet: tplTitle }
+			]]
+			,page: true
+			,skin: 'line'
+		});
+
+		// 事件处理
+		var events = {
+			create: function(othis, type){
+				view.xxpayPopup("选择商品", "mall/home_config/add_goods", {outGoodsId: null});
+			}
+		};
+
+		$('.layuiAdmin-btns .layui-btn').on('click', function(){
+			var othis = $(this)
+					,thisEvent = othis.data('events')
+					,type = othis.data('type');
+			events[thisEvent] && events[thisEvent].call(this, othis, type);
+		});
+
+
+		//通用更新函数
+		var commonUpdateFunc = function(data){
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/sys/config/update',
+                data: data,
+                error: function(err) {layer.alert(err.msg, {title: "请求失败"})},
+                success: function(res) {
+                    if(res.code == 0) {
+                        layer.alert(res.msg, {title: '保存成功'});
+                    }
+                    form.render();
+                }
+            })
+		};
+
+
+		// 【代理商设置】
+        form.on('submit(updateAgentConfigFilter)', function(data) {
+            commonUpdateFunc(data.field);
+            return false;
+        });
+
+        form.on('submit(updateUploadConfigFilter)', function(data) {
+
+            if(data.field.uploadFileSaveType == 2){ //阿里云oss存储
+
+                if(!data.field.ossEndpoint){ return layer.msg("请输入EndPoint地域节点!", {icon: 2}); }
+                if(!data.field.ossBucketName){ return layer.msg("请输入bucketName!", {icon: 2}); }
+                if(!data.field.ossAccessKeyId){ return layer.msg("请输入accessKeyId!", {icon: 2}); }
+                if(!data.field.ossAccessKeySecret){ return layer.msg("请输入accessKeySecret!", {icon: 2}); }
+                if(data.field.ossEndpoint.startsWith("http://") || data.field.ossEndpoint.startsWith("https://")){ return layer.msg("EndPoint输入有误！", {icon: 2}); }
+			}
+
+            commonUpdateFunc(data.field);
+            return false;
+        });
+
+        //百度【OCR】设置
+        form.on('submit(updateBaiduOcrConfigFilter)', function(data) {
+
+            data.field["type"] = "baiduOCR";
+            commonUpdateFunc(data.field);
+            return false;
+        });
+
+        //百度【BCE】设置
+        form.on('submit(updateBaiduBceConfigFilter)', function(data) {
+
+            data.field["type"] = "baiduBCE";
+            commonUpdateFunc(data.field);
+            return false;
+        });
+
+        //UNIPUSH设置
+        form.on('submit(updateUniPushConfigFilter)', function(data) {
+            commonUpdateFunc(data.field);
+            return false;
+        });
+
+
+	$(".tabLi").click(function(){
+
+	    var showDiv = $(this).attr('showDiv');
+
+        $('.configDiv').addClass('layui-hide');
+	    $('#' + showDiv).removeClass('layui-hide');
+
+
+	});
+
+	form.on("radio(uploadFileSaveTypeFilter)", function(data){
+
+	    if(data.value == 1){ //本地存储
+
+	        $(".aliyunOssDiv").addClass("layui-hide");
+		}else{ //阿里云oss
+            $(".aliyunOssDiv").removeClass("layui-hide");
+		}
+	});
+
+
+
+
+
+
+
+})</script>

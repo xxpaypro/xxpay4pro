@@ -1,0 +1,183 @@
+
+<div class="layui-card layadmin-header">
+  <div class="layui-breadcrumb" lay-filter="breadcrumb">
+    <a lay-href="">主页</a>
+    <a><cite>下级代理商</cite></a>
+    <a><cite>所有下级代理商</cite></a>
+  </div>
+</div>
+
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-tab layui-tab-brief">
+      <ul class="layui-tab-title">
+        <li class="layui-this">代理商列表</li>
+      </ul>
+      <div class="layui-tab-content">
+        <div class="layui-tab-item layui-show">
+          <div class="layui-row">
+            <div class="layui-form" style="float:right;">
+              <div class="layui-form-item" style="margin:0;">
+                <div class="layui-input-inline">
+                  <input type="text" id="searchAgentName" placeholder="代理商名称" autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-input-inline">
+                  <select name="searchStatus" id="searchStatus" lay-search="">
+                    <option value="-99">状态</option>
+                    <option value="0">暂停使用</option>
+                    <option value="1">正常</option>
+                    <option value="-1">待审核</option>
+                    <option value="-2">审核不通过</option>
+                  </select>
+                </div>
+                <div class="layui-input-inline">
+                  <select name="searchAgentLevel" id="searchAgentLevel" lay-search="">
+                    <option value="-99">代理等级</option>
+                    <option value="1">一级代理</option>
+                    <option value="2">二级代理</option>
+                    <option value="3">三级代理</option>
+                  </select>
+                </div>
+                <div class="layui-input-inline">
+                  <input type="text" id="searchPid" placeholder="上级代理ID " autocomplete="off" class="layui-input">
+                </div>
+
+                <button id="search" class="layui-btn" data-type="reload">搜索</button>
+              </div>
+            </div>
+          </div>
+          <div class="layui-row">
+            <div class="layuiAdmin-btns" style="margin-bottom: 10px;">
+               <a class="layui-btn layui-hide" id='addSubAgentA' data-events="create">新增</a>
+            </div>
+          </div>
+          <table id="XxPay_Mgr_Agent_dataAll" lay-filter="XxPay_Mgr_Agent_dataAll"></table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  layui.use(['admin', 'table', 'util','view'], function(){
+    var $ = layui.$
+            ,admin = layui.admin
+            ,table = layui.table
+            ,element = layui.element
+            ,view = layui.view
+            ,form = layui.form;
+
+    element.render('breadcrumb', 'breadcrumb');
+
+    var tplStatus = function(d){
+      if(d.status == 1) {
+        return "<span style='color: green'>启用</span>";
+      }else if(d.status == -1) {
+        return "<span style='color: orange'>审核中</span>";
+      }else if(d.status == -2) {
+        return "<span style='color: red'>审核不通过</span>";
+      }
+      return "<span style='color: red'>停止</span>";
+    };
+
+    var tplEdit = function(d){
+    	return "<a class='layui-btn layui-btn-primary layui-btn-xs' lay-event='infoDetail'>查看信息</a>"
+            + "<a class='layui-btn layui-btn-primary layui-btn-xs' lay-event='resetLoginPwd'>重置密码</a>";
+    };
+
+    //商户列表
+    table.render({
+      elem: '#XxPay_Mgr_Agent_dataAll'
+      ,url: layui.setter.baseUrl + '/sub_agent/list' //列表接口
+      ,id: 'tableReload'
+      ,page: true
+      ,cols: [[
+        {type: 'checkbox', fixed: 'left'}
+        ,{field: 'agentId', title: '代理商ID'}
+        ,{field: 'agentName', title: '代理商名称'}
+        ,{field: 'status', title: '状态', templet: tplStatus}
+        ,{field: 'edit', title: '操作', width: 480, templet: tplEdit }
+      ]]
+      ,skin: 'line'
+    });
+
+    //监听工具条
+    table.on('tool(XxPay_Mgr_Agent_dataAll)', function(obj){
+      var data = obj.data;
+      if(obj.event === 'infoDetail'){
+        view.xxpayPopup("代理商信息", "agent/sub_agent/agent_view", {agentId: data.agentId}, {btn: false});
+      }else if(obj.event === 'edit') {
+          location.href = layui.setter.baseLocal + "agent/sub_agent/agent_edit/agentId=" + data.agentId;
+      }else if(obj.event === "resetLoginPwd"){ //重置密码
+
+          layer.confirm("确认重置代理商登录密码？ ", function(index){
+
+              admin.req({
+                  type: 'post',
+                  url: layui.setter.baseUrl + '/sub_agent/resetLoginPwd',
+                  data: {agentId : data.agentId},
+                  success: function(resData){
+                      layer.msg("重置成功", {icon: 1});
+                      layer.close(index);
+                  }
+              });
+          });
+      }
+    });
+
+    // 搜索
+    var $ = layui.$, active = {
+      reload: function(){
+          var agentLevel = $('#searchAgentLevel').val();
+          var pid = $('#searchPid').val();
+          var status = $('#searchStatus').val();
+          var agentName = $('#searchAgentName').val();
+        //执行重载
+        table.reload('tableReload', {
+          page: {
+            curr: 1 //重新从第 1 页开始
+          }
+          ,where: {
+              agentName: agentName,
+              agentLevel: agentLevel,
+              pid: pid,
+              status: status,
+          }
+        });
+      }
+    };
+    $('#search').on('click', function() {
+      var type = $(this).data('type');
+      active[type] ? active[type].call(this) : '';
+    });
+
+      admin.req({
+          url: layui.setter.baseUrl + '/agent/getAgentMaxlevel',
+          success: function(res){
+              //1.允许发展代理  && 最高 - 当前 >= 1  则允许再发展代理
+              if(res.data.allowAddSubAgent && (res.data.agentMaxlevel - res.data.currentAgentLevel >= 1 )){
+                  $('#addSubAgentA').removeClass('layui-hide');
+              }
+          }
+      });
+
+    // 事件处理
+    var events = {
+        create: function() {
+            view.xxpayPopup("新增下级代理商", "agent/sub_agent/agent_add");
+        }
+    };
+
+    $('.layuiAdmin-btns .layui-btn').on('click', function(){
+        var othis = $(this)
+            ,thisEvent = othis.data('events')
+            ,type = othis.data('type');
+        events[thisEvent] && events[thisEvent].call(this, othis, type);
+    });
+
+
+      // 渲染表单
+    form.render();
+  });
+</script>

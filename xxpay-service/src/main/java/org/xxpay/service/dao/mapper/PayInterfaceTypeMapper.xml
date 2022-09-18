@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.xxpay.service.dao.mapper.PayInterfaceTypeMapper">
+  <resultMap id="BaseResultMap" type="org.xxpay.core.entity.PayInterfaceType">
+    <id column="IfTypeCode" jdbcType="VARCHAR" property="ifTypeCode" />
+    <result column="IfTypeName" jdbcType="VARCHAR" property="ifTypeName" />
+    <result column="Status" jdbcType="TINYINT" property="status" />
+    <result column="IsvParam" jdbcType="VARCHAR" property="isvParam" />
+    <result column="MchParam" jdbcType="VARCHAR" property="mchParam" />
+    <result column="PrivateMchParam" jdbcType="VARCHAR" property="privateMchParam" />
+    <result column="Remark" jdbcType="VARCHAR" property="remark" />
+    <result column="CreateTime" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="UpdateTime" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    IfTypeCode, IfTypeName, Status, IsvParam, MchParam, PrivateMchParam, Remark, CreateTime,
+    UpdateTime
+  </sql>
+  <select id="selectByExample" parameterType="org.xxpay.core.entity.PayInterfaceTypeExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from t_pay_interface_type
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+    <if test="limit != null">
+      <if test="offset != null">
+        limit ${offset}, ${limit}
+      </if>
+      <if test="offset == null">
+        limit ${limit}
+      </if>
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_pay_interface_type
+    where IfTypeCode = #{ifTypeCode,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from t_pay_interface_type
+    where IfTypeCode = #{ifTypeCode,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="org.xxpay.core.entity.PayInterfaceTypeExample">
+    delete from t_pay_interface_type
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="org.xxpay.core.entity.PayInterfaceType">
+    insert into t_pay_interface_type (IfTypeCode, IfTypeName, Status,
+      IsvParam, MchParam, PrivateMchParam,
+      Remark, CreateTime, UpdateTime
+      )
+    values (#{ifTypeCode,jdbcType=VARCHAR}, #{ifTypeName,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT},
+      #{isvParam,jdbcType=VARCHAR}, #{mchParam,jdbcType=VARCHAR}, #{privateMchParam,jdbcType=VARCHAR},
+      #{remark,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="org.xxpay.core.entity.PayInterfaceType">
+    insert into t_pay_interface_type
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="ifTypeCode != null">
+        IfTypeCode,
+      </if>
+      <if test="ifTypeName != null">
+        IfTypeName,
+      </if>
+      <if test="status != null">
+        Status,
+      </if>
+      <if test="isvParam != null">
+        IsvParam,
+      </if>
+      <if test="mchParam != null">
+        MchParam,
+      </if>
+      <if test="privateMchParam != null">
+        PrivateMchParam,
+      </if>
+      <if test="remark != null">
+        Remark,
+      </if>
+      <if test="createTime != null">
+        CreateTime,
+      </if>
+      <if test="updateTime != null">
+        UpdateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="ifTypeCode != null">
+        #{ifTypeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="ifTypeName != null">
+        #{ifTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="isvParam != null">
+        #{isvParam,jdbcType=VARCHAR},
+      </if>
+      <if test="mchParam != null">
+        #{mchParam,jdbcType=VARCHAR},
+      </if>
+      <if test="privateMchParam != null">
+        #{privateMchParam,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="org.xxpay.core.entity.PayInterfaceTypeExample" resultType="java.lang.Integer">
+    select count(*) from t_pay_interface_type
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update t_pay_interface_type
+    <set>
+      <if test="record.ifTypeCode != null">
+        IfTypeCode = #{record.ifTypeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ifTypeName != null">
+        IfTypeName = #{record.ifTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.status != null">
+        Status = #{record.status,jdbcType=TINYINT},
+      </if>
+      <if test="record.isvParam != null">
+        IsvParam = #{record.isvParam,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mchParam != null">
+        MchParam = #{record.mchParam,jdbcType=VARCHAR},
+      </if>
+      <if test="record.privateMchParam != null">
+        PrivateMchParam = #{record.privateMchParam,jdbcType=VARCHAR},
+      </if>
+      <if test="record.remark != null">
+        Remark = #{record.remark,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createTime != null">
+        CreateTime = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateTime != null">
+        UpdateTime = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update t_pay_interface_type
+    set IfTypeCode = #{record.ifTypeCode,jdbcType=VARCHAR},
+    IfTypeName = #{record.ifTypeName,jdbcType=VARCHAR},
+    Status = #{record.status,jdbcType=TINYINT},
+    IsvParam = #{record.isvParam,jdbcType=VARCHAR},
+    MchParam = #{record.mchParam,jdbcType=VARCHAR},
+    PrivateMchParam = #{record.privateMchParam,jdbcType=VARCHAR},
+    Remark = #{record.remark,jdbcType=VARCHAR},
+    CreateTime = #{record.createTime,jdbcType=TIMESTAMP},
+    UpdateTime = #{record.updateTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="org.xxpay.core.entity.PayInterfaceType">
+    update t_pay_interface_type
+    <set>
+      <if test="ifTypeName != null">
+        IfTypeName = #{ifTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        Status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="isvParam != null">
+        IsvParam = #{isvParam,jdbcType=VARCHAR},
+      </if>
+      <if test="mchParam != null">
+        MchParam = #{mchParam,jdbcType=VARCHAR},
+      </if>
+      <if test="privateMchParam != null">
+        PrivateMchParam = #{privateMchParam,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        Remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        CreateTime = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        UpdateTime = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where IfTypeCode = #{ifTypeCode,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.xxpay.core.entity.PayInterfaceType">
+    update t_pay_interface_type
+    set IfTypeName = #{ifTypeName,jdbcType=VARCHAR},
+      Status = #{status,jdbcType=TINYINT},
+      IsvParam = #{isvParam,jdbcType=VARCHAR},
+      MchParam = #{mchParam,jdbcType=VARCHAR},
+      PrivateMchParam = #{privateMchParam,jdbcType=VARCHAR},
+      Remark = #{remark,jdbcType=VARCHAR},
+      CreateTime = #{createTime,jdbcType=TIMESTAMP},
+      UpdateTime = #{updateTime,jdbcType=TIMESTAMP}
+    where IfTypeCode = #{ifTypeCode,jdbcType=VARCHAR}
+  </update>
+</mapper>

@@ -1,0 +1,1605 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.xxpay.service.dao.mapper.MchTradeOrderMapper">
+  <resultMap id="BaseResultMap" type="org.xxpay.core.entity.MchTradeOrder">
+    <id column="TradeOrderId" jdbcType="VARCHAR" property="tradeOrderId" />
+    <result column="TradeType" jdbcType="TINYINT" property="tradeType" />
+    <result column="DepositMode" jdbcType="TINYINT" property="depositMode" />
+    <result column="MchId" jdbcType="BIGINT" property="mchId" />
+    <result column="AgentId" jdbcType="BIGINT" property="agentId" />
+    <result column="IsvId" jdbcType="BIGINT" property="isvId" />
+    <result column="AppId" jdbcType="VARCHAR" property="appId" />
+    <result column="ClientIp" jdbcType="VARCHAR" property="clientIp" />
+    <result column="Device" jdbcType="VARCHAR" property="device" />
+    <result column="GoodsId" jdbcType="VARCHAR" property="goodsId" />
+    <result column="Subject" jdbcType="VARCHAR" property="subject" />
+    <result column="Body" jdbcType="VARCHAR" property="body" />
+    <result column="OrderAmount" jdbcType="BIGINT" property="orderAmount" />
+    <result column="DiscountAmount" jdbcType="BIGINT" property="discountAmount" />
+    <result column="Amount" jdbcType="BIGINT" property="amount" />
+    <result column="DepositAmount" jdbcType="BIGINT" property="depositAmount" />
+    <result column="MchIncome" jdbcType="BIGINT" property="mchIncome" />
+    <result column="UserId" jdbcType="VARCHAR" property="userId" />
+    <result column="ChannelUserId" jdbcType="VARCHAR" property="channelUserId" />
+    <result column="Status" jdbcType="TINYINT" property="status" />
+    <result column="PayOrderId" jdbcType="VARCHAR" property="payOrderId" />
+    <result column="ProductId" jdbcType="INTEGER" property="productId" />
+    <result column="ProductType" jdbcType="TINYINT" property="productType" />
+    <result column="MchCouponId" jdbcType="BIGINT" property="mchCouponId" />
+    <result column="MemberCouponNo" jdbcType="VARCHAR" property="memberCouponNo" />
+    <result column="StoreId" jdbcType="BIGINT" property="storeId" />
+    <result column="StoreNo" jdbcType="VARCHAR" property="storeNo" />
+    <result column="StoreName" jdbcType="VARCHAR" property="storeName" />
+    <result column="OperatorId" jdbcType="VARCHAR" property="operatorId" />
+    <result column="OperatorName" jdbcType="VARCHAR" property="operatorName" />
+    <result column="MemberId" jdbcType="BIGINT" property="memberId" />
+    <result column="MemberTel" jdbcType="VARCHAR" property="memberTel" />
+    <result column="RuleId" jdbcType="BIGINT" property="ruleId" />
+    <result column="GivePoints" jdbcType="BIGINT" property="givePoints" />
+    <result column="RefundTotalAmount" jdbcType="BIGINT" property="refundTotalAmount" />
+    <result column="TradeSuccTime" jdbcType="TIMESTAMP" property="tradeSuccTime" />
+    <result column="SettTaskStatus" jdbcType="TINYINT" property="settTaskStatus" />
+    <result column="IsvDeviceNo" jdbcType="VARCHAR" property="isvDeviceNo" />
+    <result column="IndustryType" jdbcType="TINYINT" property="industryType" />
+    <result column="PostType" jdbcType="TINYINT" property="postType" />
+    <result column="StoreAreaId" jdbcType="BIGINT" property="storeAreaId" />
+    <result column="AreaName" jdbcType="VARCHAR" property="areaName" />
+    <result column="AppointmentTime" jdbcType="TIMESTAMP" property="appointmentTime" />
+    <result column="AddressId" jdbcType="BIGINT" property="addressId" />
+    <result column="ProvinceCode" jdbcType="INTEGER" property="provinceCode" />
+    <result column="CityCode" jdbcType="INTEGER" property="cityCode" />
+    <result column="AreaCode" jdbcType="INTEGER" property="areaCode" />
+    <result column="AreaInfo" jdbcType="VARCHAR" property="areaInfo" />
+    <result column="Address" jdbcType="VARCHAR" property="address" />
+    <result column="ReceiveTel" jdbcType="VARCHAR" property="receiveTel" />
+    <result column="ReceiveName" jdbcType="VARCHAR" property="receiveName" />
+    <result column="PostId" jdbcType="BIGINT" property="postId" />
+    <result column="TransportNo" jdbcType="VARCHAR" property="transportNo" />
+    <result column="PostStatus" jdbcType="TINYINT" property="postStatus" />
+    <result column="Evaluation" jdbcType="VARCHAR" property="evaluation" />
+    <result column="EvaluationImage" jdbcType="VARCHAR" property="evaluationImage" />
+    <result column="DeleteFlag" property="deleteFlag" />
+    <result column="ReturnReasonId" jdbcType="BIGINT" property="returnReasonId" />
+    <result column="ReturnDesc" jdbcType="VARCHAR" property="returnDesc" />
+    <result column="ImgPathMain" jdbcType="VARCHAR" property="imgPathMain" />
+    <result column="Remark" jdbcType="VARCHAR" property="remark" />
+    <result column="PostPrice" jdbcType="BIGINT" property="postPrice" />
+    <result column="CreateTime" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="UpdateTime" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="org.xxpay.core.entity.MchTradeOrder">
+    <result column="GoodsDesc" jdbcType="LONGVARCHAR" property="goodsDesc" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithOrderId" type="org.xxpay.core.entity.MchTradeOrder">
+    <result column="ChannelOrderNo" jdbcType="VARCHAR" property="channelOrderNo" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    TradeOrderId, TradeType, DepositMode, MchId, AgentId, IsvId, AppId, ClientIp, Device,
+    GoodsId, Subject, Body, OrderAmount, DiscountAmount, Amount, DepositAmount, MchIncome,
+    UserId, ChannelUserId, Status, PayOrderId, ProductId, ProductType, MchCouponId, MemberCouponNo,
+    StoreId, StoreNo, StoreName, OperatorId, OperatorName, MemberId, MemberTel, RuleId,
+    GivePoints, RefundTotalAmount, TradeSuccTime, SettTaskStatus, IsvDeviceNo, IndustryType,
+    PostType, StoreAreaId, AreaName, AppointmentTime, AddressId, ProvinceCode, CityCode,
+    AreaCode, AreaInfo, Address, ReceiveTel, ReceiveName, PostId, TransportNo, PostStatus,
+    Evaluation, EvaluationImage, ReturnReasonId, ReturnDesc, ImgPathMain, Remark, PostPrice,
+    CreateTime, UpdateTime
+  </sql>
+  <sql id="Blob_Column_List">
+    GoodsDesc
+  </sql>
+  <select id="selectByExampleWithBLOBs" parameterType="org.xxpay.core.entity.MchTradeOrderExample" resultMap="ResultMapWithBLOBs">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from t_mch_trade_order
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" parameterType="org.xxpay.core.entity.MchTradeOrderExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from t_mch_trade_order
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+    <if test="limit != null">
+      <if test="offset != null">
+        limit ${offset}, ${limit}
+      </if>
+      <if test="offset == null">
+        limit ${limit}
+      </if>
+    </if>
+  </select>
+
+  <select id="selectPlusByExample" parameterType="org.xxpay.core.entity.MchTradeOrderExample" resultMap="ResultMapWithOrderId">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,(select ChannelOrderNo from t_pay_order p where p.PayOrderId = m.PayOrderId limit 1) ChannelOrderNo
+    from t_mch_trade_order m
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+    <if test="limit != null">
+      <if test="offset != null">
+        limit ${offset}, ${limit}
+      </if>
+      <if test="offset == null">
+        limit ${limit}
+      </if>
+    </if>
+  </select>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="ResultMapWithBLOBs">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from t_mch_trade_order
+    where TradeOrderId = #{tradeOrderId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from t_mch_trade_order
+    where TradeOrderId = #{tradeOrderId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="org.xxpay.core.entity.MchTradeOrderExample">
+    delete from t_mch_trade_order
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="org.xxpay.core.entity.MchTradeOrder">
+    insert into t_mch_trade_order (TradeOrderId, TradeType, DepositMode,
+      MchId, AgentId, IsvId,
+      AppId, ClientIp, Device,
+      GoodsId, Subject, Body,
+      OrderAmount, DiscountAmount, Amount,
+      DepositAmount, MchIncome, UserId,
+      ChannelUserId, Status, PayOrderId,
+      ProductId, ProductType, MchCouponId,
+      MemberCouponNo, StoreId, StoreNo,
+      StoreName, OperatorId, OperatorName,
+      MemberId, MemberTel, RuleId,
+      GivePoints, RefundTotalAmount, TradeSuccTime,
+      SettTaskStatus, IsvDeviceNo, IndustryType,
+      PostType, StoreAreaId, AreaName,
+      AppointmentTime, AddressId, ProvinceCode,
+      CityCode, AreaCode, AreaInfo,
+      Address, ReceiveTel, ReceiveName,
+      PostId, TransportNo, PostStatus,
+      Evaluation, EvaluationImage, ReturnReasonId,
+      ReturnDesc, ImgPathMain, Remark,
+      PostPrice, CreateTime, UpdateTime,
+      GoodsDesc)
+    values (#{tradeOrderId,jdbcType=VARCHAR}, #{tradeType,jdbcType=TINYINT}, #{depositMode,jdbcType=TINYINT},
+      #{mchId,jdbcType=BIGINT}, #{agentId,jdbcType=BIGINT}, #{isvId,jdbcType=BIGINT},
+      #{appId,jdbcType=VARCHAR}, #{clientIp,jdbcType=VARCHAR}, #{device,jdbcType=VARCHAR},
+      #{goodsId,jdbcType=VARCHAR}, #{subject,jdbcType=VARCHAR}, #{body,jdbcType=VARCHAR},
+      #{orderAmount,jdbcType=BIGINT}, #{discountAmount,jdbcType=BIGINT}, #{amount,jdbcType=BIGINT},
+      #{depositAmount,jdbcType=BIGINT}, #{mchIncome,jdbcType=BIGINT}, #{userId,jdbcType=VARCHAR},
+      #{channelUserId,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT}, #{payOrderId,jdbcType=VARCHAR},
+      #{productId,jdbcType=INTEGER}, #{productType,jdbcType=TINYINT}, #{mchCouponId,jdbcType=BIGINT},
+      #{memberCouponNo,jdbcType=VARCHAR}, #{storeId,jdbcType=BIGINT}, #{storeNo,jdbcType=VARCHAR},
+      #{storeName,jdbcType=VARCHAR}, #{operatorId,jdbcType=VARCHAR}, #{operatorName,jdbcType=VARCHAR},
+      #{memberId,jdbcType=BIGINT}, #{memberTel,jdbcType=VARCHAR}, #{ruleId,jdbcType=BIGINT},
+      #{givePoints,jdbcType=BIGINT}, #{refundTotalAmount,jdbcType=BIGINT}, #{tradeSuccTime,jdbcType=TIMESTAMP},
+      #{settTaskStatus,jdbcType=TINYINT}, #{isvDeviceNo,jdbcType=VARCHAR}, #{industryType,jdbcType=TINYINT},
+      #{postType,jdbcType=TINYINT}, #{storeAreaId,jdbcType=BIGINT}, #{areaName,jdbcType=VARCHAR},
+      #{appointmentTime,jdbcType=TIMESTAMP}, #{addressId,jdbcType=BIGINT}, #{provinceCode,jdbcType=INTEGER},
+      #{cityCode,jdbcType=INTEGER}, #{areaCode,jdbcType=INTEGER}, #{areaInfo,jdbcType=VARCHAR},
+      #{address,jdbcType=VARCHAR}, #{receiveTel,jdbcType=VARCHAR}, #{receiveName,jdbcType=VARCHAR},
+      #{postId,jdbcType=BIGINT}, #{transportNo,jdbcType=VARCHAR}, #{postStatus,jdbcType=TINYINT},
+      #{evaluation,jdbcType=VARCHAR}, #{evaluationImage,jdbcType=VARCHAR}, #{returnReasonId,jdbcType=BIGINT},
+      #{returnDesc,jdbcType=VARCHAR}, #{imgPathMain,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR},
+      #{postPrice,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP},
+      #{goodsDesc,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="org.xxpay.core.entity.MchTradeOrder">
+    insert into t_mch_trade_order
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="tradeOrderId != null">
+        TradeOrderId,
+      </if>
+      <if test="tradeType != null">
+        TradeType,
+      </if>
+      <if test="depositMode != null">
+        DepositMode,
+      </if>
+      <if test="mchId != null">
+        MchId,
+      </if>
+      <if test="agentId != null">
+        AgentId,
+      </if>
+      <if test="isvId != null">
+        IsvId,
+      </if>
+      <if test="appId != null">
+        AppId,
+      </if>
+      <if test="clientIp != null">
+        ClientIp,
+      </if>
+      <if test="device != null">
+        Device,
+      </if>
+      <if test="goodsId != null">
+        GoodsId,
+      </if>
+      <if test="subject != null">
+        Subject,
+      </if>
+      <if test="body != null">
+        Body,
+      </if>
+      <if test="orderAmount != null">
+        OrderAmount,
+      </if>
+      <if test="discountAmount != null">
+        DiscountAmount,
+      </if>
+      <if test="amount != null">
+        Amount,
+      </if>
+      <if test="depositAmount != null">
+        DepositAmount,
+      </if>
+      <if test="mchIncome != null">
+        MchIncome,
+      </if>
+      <if test="userId != null">
+        UserId,
+      </if>
+      <if test="channelUserId != null">
+        ChannelUserId,
+      </if>
+      <if test="status != null">
+        Status,
+      </if>
+      <if test="payOrderId != null">
+        PayOrderId,
+      </if>
+      <if test="productId != null">
+        ProductId,
+      </if>
+      <if test="productType != null">
+        ProductType,
+      </if>
+      <if test="mchCouponId != null">
+        MchCouponId,
+      </if>
+      <if test="memberCouponNo != null">
+        MemberCouponNo,
+      </if>
+      <if test="storeId != null">
+        StoreId,
+      </if>
+      <if test="storeNo != null">
+        StoreNo,
+      </if>
+      <if test="storeName != null">
+        StoreName,
+      </if>
+      <if test="operatorId != null">
+        OperatorId,
+      </if>
+      <if test="operatorName != null">
+        OperatorName,
+      </if>
+      <if test="memberId != null">
+        MemberId,
+      </if>
+      <if test="memberTel != null">
+        MemberTel,
+      </if>
+      <if test="ruleId != null">
+        RuleId,
+      </if>
+      <if test="givePoints != null">
+        GivePoints,
+      </if>
+      <if test="refundTotalAmount != null">
+        RefundTotalAmount,
+      </if>
+      <if test="tradeSuccTime != null">
+        TradeSuccTime,
+      </if>
+      <if test="settTaskStatus != null">
+        SettTaskStatus,
+      </if>
+      <if test="isvDeviceNo != null">
+        IsvDeviceNo,
+      </if>
+      <if test="industryType != null">
+        IndustryType,
+      </if>
+      <if test="postType != null">
+        PostType,
+      </if>
+      <if test="storeAreaId != null">
+        StoreAreaId,
+      </if>
+      <if test="areaName != null">
+        AreaName,
+      </if>
+      <if test="appointmentTime != null">
+        AppointmentTime,
+      </if>
+      <if test="addressId != null">
+        AddressId,
+      </if>
+      <if test="provinceCode != null">
+        ProvinceCode,
+      </if>
+      <if test="cityCode != null">
+        CityCode,
+      </if>
+      <if test="areaCode != null">
+        AreaCode,
+      </if>
+      <if test="areaInfo != null">
+        AreaInfo,
+      </if>
+      <if test="address != null">
+        Address,
+      </if>
+      <if test="receiveTel != null">
+        ReceiveTel,
+      </if>
+      <if test="receiveName != null">
+        ReceiveName,
+      </if>
+      <if test="postId != null">
+        PostId,
+      </if>
+      <if test="transportNo != null">
+        TransportNo,
+      </if>
+      <if test="postStatus != null">
+        PostStatus,
+      </if>
+      <if test="evaluation != null">
+        Evaluation,
+      </if>
+      <if test="evaluationImage != null">
+        EvaluationImage,
+      </if>
+      <if test="returnReasonId != null">
+        ReturnReasonId,
+      </if>
+      <if test="returnDesc != null">
+        ReturnDesc,
+      </if>
+      <if test="imgPathMain != null">
+        ImgPathMain,
+      </if>
+      <if test="remark != null">
+        Remark,
+      </if>
+      <if test="postPrice != null">
+        PostPrice,
+      </if>
+      <if test="createTime != null">
+        CreateTime,
+      </if>
+      <if test="updateTime != null">
+        UpdateTime,
+      </if>
+      <if test="goodsDesc != null">
+        GoodsDesc,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="tradeOrderId != null">
+        #{tradeOrderId,jdbcType=VARCHAR},
+      </if>
+      <if test="tradeType != null">
+        #{tradeType,jdbcType=TINYINT},
+      </if>
+      <if test="depositMode != null">
+        #{depositMode,jdbcType=TINYINT},
+      </if>
+      <if test="mchId != null">
+        #{mchId,jdbcType=BIGINT},
+      </if>
+      <if test="agentId != null">
+        #{agentId,jdbcType=BIGINT},
+      </if>
+      <if test="isvId != null">
+        #{isvId,jdbcType=BIGINT},
+      </if>
+      <if test="appId != null">
+        #{appId,jdbcType=VARCHAR},
+      </if>
+      <if test="clientIp != null">
+        #{clientIp,jdbcType=VARCHAR},
+      </if>
+      <if test="device != null">
+        #{device,jdbcType=VARCHAR},
+      </if>
+      <if test="goodsId != null">
+        #{goodsId,jdbcType=VARCHAR},
+      </if>
+      <if test="subject != null">
+        #{subject,jdbcType=VARCHAR},
+      </if>
+      <if test="body != null">
+        #{body,jdbcType=VARCHAR},
+      </if>
+      <if test="orderAmount != null">
+        #{orderAmount,jdbcType=BIGINT},
+      </if>
+      <if test="discountAmount != null">
+        #{discountAmount,jdbcType=BIGINT},
+      </if>
+      <if test="amount != null">
+        #{amount,jdbcType=BIGINT},
+      </if>
+      <if test="depositAmount != null">
+        #{depositAmount,jdbcType=BIGINT},
+      </if>
+      <if test="mchIncome != null">
+        #{mchIncome,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="channelUserId != null">
+        #{channelUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="payOrderId != null">
+        #{payOrderId,jdbcType=VARCHAR},
+      </if>
+      <if test="productId != null">
+        #{productId,jdbcType=INTEGER},
+      </if>
+      <if test="productType != null">
+        #{productType,jdbcType=TINYINT},
+      </if>
+      <if test="mchCouponId != null">
+        #{mchCouponId,jdbcType=BIGINT},
+      </if>
+      <if test="memberCouponNo != null">
+        #{memberCouponNo,jdbcType=VARCHAR},
+      </if>
+      <if test="storeId != null">
+        #{storeId,jdbcType=BIGINT},
+      </if>
+      <if test="storeNo != null">
+        #{storeNo,jdbcType=VARCHAR},
+      </if>
+      <if test="storeName != null">
+        #{storeName,jdbcType=VARCHAR},
+      </if>
+      <if test="operatorId != null">
+        #{operatorId,jdbcType=VARCHAR},
+      </if>
+      <if test="operatorName != null">
+        #{operatorName,jdbcType=VARCHAR},
+      </if>
+      <if test="memberId != null">
+        #{memberId,jdbcType=BIGINT},
+      </if>
+      <if test="memberTel != null">
+        #{memberTel,jdbcType=VARCHAR},
+      </if>
+      <if test="ruleId != null">
+        #{ruleId,jdbcType=BIGINT},
+      </if>
+      <if test="givePoints != null">
+        #{givePoints,jdbcType=BIGINT},
+      </if>
+      <if test="refundTotalAmount != null">
+        #{refundTotalAmount,jdbcType=BIGINT},
+      </if>
+      <if test="tradeSuccTime != null">
+        #{tradeSuccTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="settTaskStatus != null">
+        #{settTaskStatus,jdbcType=TINYINT},
+      </if>
+      <if test="isvDeviceNo != null">
+        #{isvDeviceNo,jdbcType=VARCHAR},
+      </if>
+      <if test="industryType != null">
+        #{industryType,jdbcType=TINYINT},
+      </if>
+      <if test="postType != null">
+        #{postType,jdbcType=TINYINT},
+      </if>
+      <if test="storeAreaId != null">
+        #{storeAreaId,jdbcType=BIGINT},
+      </if>
+      <if test="areaName != null">
+        #{areaName,jdbcType=VARCHAR},
+      </if>
+      <if test="appointmentTime != null">
+        #{appointmentTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="addressId != null">
+        #{addressId,jdbcType=BIGINT},
+      </if>
+      <if test="provinceCode != null">
+        #{provinceCode,jdbcType=INTEGER},
+      </if>
+      <if test="cityCode != null">
+        #{cityCode,jdbcType=INTEGER},
+      </if>
+      <if test="areaCode != null">
+        #{areaCode,jdbcType=INTEGER},
+      </if>
+      <if test="areaInfo != null">
+        #{areaInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="receiveTel != null">
+        #{receiveTel,jdbcType=VARCHAR},
+      </if>
+      <if test="receiveName != null">
+        #{receiveName,jdbcType=VARCHAR},
+      </if>
+      <if test="postId != null">
+        #{postId,jdbcType=BIGINT},
+      </if>
+      <if test="transportNo != null">
+        #{transportNo,jdbcType=VARCHAR},
+      </if>
+      <if test="postStatus != null">
+        #{postStatus,jdbcType=TINYINT},
+      </if>
+      <if test="evaluation != null">
+        #{evaluation,jdbcType=VARCHAR},
+      </if>
+      <if test="evaluationImage != null">
+        #{evaluationImage,jdbcType=VARCHAR},
+      </if>
+      <if test="returnReasonId != null">
+        #{returnReasonId,jdbcType=BIGINT},
+      </if>
+      <if test="returnDesc != null">
+        #{returnDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="imgPathMain != null">
+        #{imgPathMain,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="postPrice != null">
+        #{postPrice,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="goodsDesc != null">
+        #{goodsDesc,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="org.xxpay.core.entity.MchTradeOrderExample" resultType="java.lang.Long">
+    select count(*) from t_mch_trade_order
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update t_mch_trade_order
+    <set>
+      <if test="record.tradeOrderId != null">
+        TradeOrderId = #{record.tradeOrderId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.tradeType != null">
+        TradeType = #{record.tradeType,jdbcType=TINYINT},
+      </if>
+      <if test="record.depositMode != null">
+        DepositMode = #{record.depositMode,jdbcType=TINYINT},
+      </if>
+      <if test="record.mchId != null">
+        MchId = #{record.mchId,jdbcType=BIGINT},
+      </if>
+      <if test="record.agentId != null">
+        AgentId = #{record.agentId,jdbcType=BIGINT},
+      </if>
+      <if test="record.isvId != null">
+        IsvId = #{record.isvId,jdbcType=BIGINT},
+      </if>
+      <if test="record.appId != null">
+        AppId = #{record.appId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.clientIp != null">
+        ClientIp = #{record.clientIp,jdbcType=VARCHAR},
+      </if>
+      <if test="record.device != null">
+        Device = #{record.device,jdbcType=VARCHAR},
+      </if>
+      <if test="record.goodsId != null">
+        GoodsId = #{record.goodsId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.subject != null">
+        Subject = #{record.subject,jdbcType=VARCHAR},
+      </if>
+      <if test="record.body != null">
+        Body = #{record.body,jdbcType=VARCHAR},
+      </if>
+      <if test="record.orderAmount != null">
+        OrderAmount = #{record.orderAmount,jdbcType=BIGINT},
+      </if>
+      <if test="record.discountAmount != null">
+        DiscountAmount = #{record.discountAmount,jdbcType=BIGINT},
+      </if>
+      <if test="record.amount != null">
+        Amount = #{record.amount,jdbcType=BIGINT},
+      </if>
+      <if test="record.depositAmount != null">
+        DepositAmount = #{record.depositAmount,jdbcType=BIGINT},
+      </if>
+      <if test="record.mchIncome != null">
+        MchIncome = #{record.mchIncome,jdbcType=BIGINT},
+      </if>
+      <if test="record.userId != null">
+        UserId = #{record.userId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.channelUserId != null">
+        ChannelUserId = #{record.channelUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.status != null">
+        Status = #{record.status,jdbcType=TINYINT},
+      </if>
+      <if test="record.payOrderId != null">
+        PayOrderId = #{record.payOrderId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.productId != null">
+        ProductId = #{record.productId,jdbcType=INTEGER},
+      </if>
+      <if test="record.productType != null">
+        ProductType = #{record.productType,jdbcType=TINYINT},
+      </if>
+      <if test="record.mchCouponId != null">
+        MchCouponId = #{record.mchCouponId,jdbcType=BIGINT},
+      </if>
+      <if test="record.memberCouponNo != null">
+        MemberCouponNo = #{record.memberCouponNo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.storeId != null">
+        StoreId = #{record.storeId,jdbcType=BIGINT},
+      </if>
+      <if test="record.storeNo != null">
+        StoreNo = #{record.storeNo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.storeName != null">
+        StoreName = #{record.storeName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.operatorId != null">
+        OperatorId = #{record.operatorId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.operatorName != null">
+        OperatorName = #{record.operatorName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.memberId != null">
+        MemberId = #{record.memberId,jdbcType=BIGINT},
+      </if>
+      <if test="record.memberTel != null">
+        MemberTel = #{record.memberTel,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ruleId != null">
+        RuleId = #{record.ruleId,jdbcType=BIGINT},
+      </if>
+      <if test="record.givePoints != null">
+        GivePoints = #{record.givePoints,jdbcType=BIGINT},
+      </if>
+      <if test="record.refundTotalAmount != null">
+        RefundTotalAmount = #{record.refundTotalAmount,jdbcType=BIGINT},
+      </if>
+      <if test="record.tradeSuccTime != null">
+        TradeSuccTime = #{record.tradeSuccTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.settTaskStatus != null">
+        SettTaskStatus = #{record.settTaskStatus,jdbcType=TINYINT},
+      </if>
+      <if test="record.isvDeviceNo != null">
+        IsvDeviceNo = #{record.isvDeviceNo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.industryType != null">
+        IndustryType = #{record.industryType,jdbcType=TINYINT},
+      </if>
+      <if test="record.postType != null">
+        PostType = #{record.postType,jdbcType=TINYINT},
+      </if>
+      <if test="record.storeAreaId != null">
+        StoreAreaId = #{record.storeAreaId,jdbcType=BIGINT},
+      </if>
+      <if test="record.areaName != null">
+        AreaName = #{record.areaName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.appointmentTime != null">
+        AppointmentTime = #{record.appointmentTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.addressId != null">
+        AddressId = #{record.addressId,jdbcType=BIGINT},
+      </if>
+      <if test="record.provinceCode != null">
+        ProvinceCode = #{record.provinceCode,jdbcType=INTEGER},
+      </if>
+      <if test="record.cityCode != null">
+        CityCode = #{record.cityCode,jdbcType=INTEGER},
+      </if>
+      <if test="record.areaCode != null">
+        AreaCode = #{record.areaCode,jdbcType=INTEGER},
+      </if>
+      <if test="record.areaInfo != null">
+        AreaInfo = #{record.areaInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.address != null">
+        Address = #{record.address,jdbcType=VARCHAR},
+      </if>
+      <if test="record.receiveTel != null">
+        ReceiveTel = #{record.receiveTel,jdbcType=VARCHAR},
+      </if>
+      <if test="record.receiveName != null">
+        ReceiveName = #{record.receiveName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.postId != null">
+        PostId = #{record.postId,jdbcType=BIGINT},
+      </if>
+      <if test="record.transportNo != null">
+        TransportNo = #{record.transportNo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.postStatus != null">
+        PostStatus = #{record.postStatus,jdbcType=TINYINT},
+      </if>
+      <if test="record.evaluation != null">
+        Evaluation = #{record.evaluation,jdbcType=VARCHAR},
+      </if>
+      <if test="record.evaluationImage != null">
+        EvaluationImage = #{record.evaluationImage,jdbcType=VARCHAR},
+      </if>
+      <if test="record.returnReasonId != null">
+        ReturnReasonId = #{record.returnReasonId,jdbcType=BIGINT},
+      </if>
+      <if test="record.returnDesc != null">
+        ReturnDesc = #{record.returnDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="record.imgPathMain != null">
+        ImgPathMain = #{record.imgPathMain,jdbcType=VARCHAR},
+      </if>
+      <if test="record.remark != null">
+        Remark = #{record.remark,jdbcType=VARCHAR},
+      </if>
+      <if test="record.postPrice != null">
+        PostPrice = #{record.postPrice,jdbcType=BIGINT},
+      </if>
+      <if test="record.createTime != null">
+        CreateTime = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateTime != null">
+        UpdateTime = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.goodsDesc != null">
+        GoodsDesc = #{record.goodsDesc,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map">
+    update t_mch_trade_order
+    set TradeOrderId = #{record.tradeOrderId,jdbcType=VARCHAR},
+    TradeType = #{record.tradeType,jdbcType=TINYINT},
+    DepositMode = #{record.depositMode,jdbcType=TINYINT},
+    MchId = #{record.mchId,jdbcType=BIGINT},
+    AgentId = #{record.agentId,jdbcType=BIGINT},
+    IsvId = #{record.isvId,jdbcType=BIGINT},
+    AppId = #{record.appId,jdbcType=VARCHAR},
+    ClientIp = #{record.clientIp,jdbcType=VARCHAR},
+    Device = #{record.device,jdbcType=VARCHAR},
+    GoodsId = #{record.goodsId,jdbcType=VARCHAR},
+    Subject = #{record.subject,jdbcType=VARCHAR},
+    Body = #{record.body,jdbcType=VARCHAR},
+    OrderAmount = #{record.orderAmount,jdbcType=BIGINT},
+    DiscountAmount = #{record.discountAmount,jdbcType=BIGINT},
+    Amount = #{record.amount,jdbcType=BIGINT},
+    DepositAmount = #{record.depositAmount,jdbcType=BIGINT},
+    MchIncome = #{record.mchIncome,jdbcType=BIGINT},
+    UserId = #{record.userId,jdbcType=VARCHAR},
+    ChannelUserId = #{record.channelUserId,jdbcType=VARCHAR},
+    Status = #{record.status,jdbcType=TINYINT},
+    PayOrderId = #{record.payOrderId,jdbcType=VARCHAR},
+    ProductId = #{record.productId,jdbcType=INTEGER},
+    ProductType = #{record.productType,jdbcType=TINYINT},
+    MchCouponId = #{record.mchCouponId,jdbcType=BIGINT},
+    MemberCouponNo = #{record.memberCouponNo,jdbcType=VARCHAR},
+    StoreId = #{record.storeId,jdbcType=BIGINT},
+    StoreNo = #{record.storeNo,jdbcType=VARCHAR},
+    StoreName = #{record.storeName,jdbcType=VARCHAR},
+    OperatorId = #{record.operatorId,jdbcType=VARCHAR},
+    OperatorName = #{record.operatorName,jdbcType=VARCHAR},
+    MemberId = #{record.memberId,jdbcType=BIGINT},
+    MemberTel = #{record.memberTel,jdbcType=VARCHAR},
+    RuleId = #{record.ruleId,jdbcType=BIGINT},
+    GivePoints = #{record.givePoints,jdbcType=BIGINT},
+    RefundTotalAmount = #{record.refundTotalAmount,jdbcType=BIGINT},
+    TradeSuccTime = #{record.tradeSuccTime,jdbcType=TIMESTAMP},
+    SettTaskStatus = #{record.settTaskStatus,jdbcType=TINYINT},
+    IsvDeviceNo = #{record.isvDeviceNo,jdbcType=VARCHAR},
+    IndustryType = #{record.industryType,jdbcType=TINYINT},
+    PostType = #{record.postType,jdbcType=TINYINT},
+    StoreAreaId = #{record.storeAreaId,jdbcType=BIGINT},
+    AreaName = #{record.areaName,jdbcType=VARCHAR},
+    AppointmentTime = #{record.appointmentTime,jdbcType=TIMESTAMP},
+    AddressId = #{record.addressId,jdbcType=BIGINT},
+    ProvinceCode = #{record.provinceCode,jdbcType=INTEGER},
+    CityCode = #{record.cityCode,jdbcType=INTEGER},
+    AreaCode = #{record.areaCode,jdbcType=INTEGER},
+    AreaInfo = #{record.areaInfo,jdbcType=VARCHAR},
+    Address = #{record.address,jdbcType=VARCHAR},
+    ReceiveTel = #{record.receiveTel,jdbcType=VARCHAR},
+    ReceiveName = #{record.receiveName,jdbcType=VARCHAR},
+    PostId = #{record.postId,jdbcType=BIGINT},
+    TransportNo = #{record.transportNo,jdbcType=VARCHAR},
+    PostStatus = #{record.postStatus,jdbcType=TINYINT},
+    Evaluation = #{record.evaluation,jdbcType=VARCHAR},
+    EvaluationImage = #{record.evaluationImage,jdbcType=VARCHAR},
+    ReturnReasonId = #{record.returnReasonId,jdbcType=BIGINT},
+    ReturnDesc = #{record.returnDesc,jdbcType=VARCHAR},
+    ImgPathMain = #{record.imgPathMain,jdbcType=VARCHAR},
+    Remark = #{record.remark,jdbcType=VARCHAR},
+    PostPrice = #{record.postPrice,jdbcType=BIGINT},
+    CreateTime = #{record.createTime,jdbcType=TIMESTAMP},
+    UpdateTime = #{record.updateTime,jdbcType=TIMESTAMP},
+    GoodsDesc = #{record.goodsDesc,jdbcType=LONGVARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update t_mch_trade_order
+    set TradeOrderId = #{record.tradeOrderId,jdbcType=VARCHAR},
+    TradeType = #{record.tradeType,jdbcType=TINYINT},
+    DepositMode = #{record.depositMode,jdbcType=TINYINT},
+    MchId = #{record.mchId,jdbcType=BIGINT},
+    AgentId = #{record.agentId,jdbcType=BIGINT},
+    IsvId = #{record.isvId,jdbcType=BIGINT},
+    AppId = #{record.appId,jdbcType=VARCHAR},
+    ClientIp = #{record.clientIp,jdbcType=VARCHAR},
+    Device = #{record.device,jdbcType=VARCHAR},
+    GoodsId = #{record.goodsId,jdbcType=VARCHAR},
+    Subject = #{record.subject,jdbcType=VARCHAR},
+    Body = #{record.body,jdbcType=VARCHAR},
+    OrderAmount = #{record.orderAmount,jdbcType=BIGINT},
+    DiscountAmount = #{record.discountAmount,jdbcType=BIGINT},
+    Amount = #{record.amount,jdbcType=BIGINT},
+    DepositAmount = #{record.depositAmount,jdbcType=BIGINT},
+    MchIncome = #{record.mchIncome,jdbcType=BIGINT},
+    UserId = #{record.userId,jdbcType=VARCHAR},
+    ChannelUserId = #{record.channelUserId,jdbcType=VARCHAR},
+    Status = #{record.status,jdbcType=TINYINT},
+    PayOrderId = #{record.payOrderId,jdbcType=VARCHAR},
+    ProductId = #{record.productId,jdbcType=INTEGER},
+    ProductType = #{record.productType,jdbcType=TINYINT},
+    MchCouponId = #{record.mchCouponId,jdbcType=BIGINT},
+    MemberCouponNo = #{record.memberCouponNo,jdbcType=VARCHAR},
+    StoreId = #{record.storeId,jdbcType=BIGINT},
+    StoreNo = #{record.storeNo,jdbcType=VARCHAR},
+    StoreName = #{record.storeName,jdbcType=VARCHAR},
+    OperatorId = #{record.operatorId,jdbcType=VARCHAR},
+    OperatorName = #{record.operatorName,jdbcType=VARCHAR},
+    MemberId = #{record.memberId,jdbcType=BIGINT},
+    MemberTel = #{record.memberTel,jdbcType=VARCHAR},
+    RuleId = #{record.ruleId,jdbcType=BIGINT},
+    GivePoints = #{record.givePoints,jdbcType=BIGINT},
+    RefundTotalAmount = #{record.refundTotalAmount,jdbcType=BIGINT},
+    TradeSuccTime = #{record.tradeSuccTime,jdbcType=TIMESTAMP},
+    SettTaskStatus = #{record.settTaskStatus,jdbcType=TINYINT},
+    IsvDeviceNo = #{record.isvDeviceNo,jdbcType=VARCHAR},
+    IndustryType = #{record.industryType,jdbcType=TINYINT},
+    PostType = #{record.postType,jdbcType=TINYINT},
+    StoreAreaId = #{record.storeAreaId,jdbcType=BIGINT},
+    AreaName = #{record.areaName,jdbcType=VARCHAR},
+    AppointmentTime = #{record.appointmentTime,jdbcType=TIMESTAMP},
+    AddressId = #{record.addressId,jdbcType=BIGINT},
+    ProvinceCode = #{record.provinceCode,jdbcType=INTEGER},
+    CityCode = #{record.cityCode,jdbcType=INTEGER},
+    AreaCode = #{record.areaCode,jdbcType=INTEGER},
+    AreaInfo = #{record.areaInfo,jdbcType=VARCHAR},
+    Address = #{record.address,jdbcType=VARCHAR},
+    ReceiveTel = #{record.receiveTel,jdbcType=VARCHAR},
+    ReceiveName = #{record.receiveName,jdbcType=VARCHAR},
+    PostId = #{record.postId,jdbcType=BIGINT},
+    TransportNo = #{record.transportNo,jdbcType=VARCHAR},
+    PostStatus = #{record.postStatus,jdbcType=TINYINT},
+    Evaluation = #{record.evaluation,jdbcType=VARCHAR},
+    EvaluationImage = #{record.evaluationImage,jdbcType=VARCHAR},
+    ReturnReasonId = #{record.returnReasonId,jdbcType=BIGINT},
+    ReturnDesc = #{record.returnDesc,jdbcType=VARCHAR},
+    ImgPathMain = #{record.imgPathMain,jdbcType=VARCHAR},
+    Remark = #{record.remark,jdbcType=VARCHAR},
+    PostPrice = #{record.postPrice,jdbcType=BIGINT},
+    CreateTime = #{record.createTime,jdbcType=TIMESTAMP},
+    UpdateTime = #{record.updateTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="org.xxpay.core.entity.MchTradeOrder">
+    update t_mch_trade_order
+    <set>
+      <if test="tradeType != null">
+        TradeType = #{tradeType,jdbcType=TINYINT},
+      </if>
+      <if test="depositMode != null">
+        DepositMode = #{depositMode,jdbcType=TINYINT},
+      </if>
+      <if test="mchId != null">
+        MchId = #{mchId,jdbcType=BIGINT},
+      </if>
+      <if test="agentId != null">
+        AgentId = #{agentId,jdbcType=BIGINT},
+      </if>
+      <if test="isvId != null">
+        IsvId = #{isvId,jdbcType=BIGINT},
+      </if>
+      <if test="appId != null">
+        AppId = #{appId,jdbcType=VARCHAR},
+      </if>
+      <if test="clientIp != null">
+        ClientIp = #{clientIp,jdbcType=VARCHAR},
+      </if>
+      <if test="device != null">
+        Device = #{device,jdbcType=VARCHAR},
+      </if>
+      <if test="goodsId != null">
+        GoodsId = #{goodsId,jdbcType=VARCHAR},
+      </if>
+      <if test="subject != null">
+        Subject = #{subject,jdbcType=VARCHAR},
+      </if>
+      <if test="body != null">
+        Body = #{body,jdbcType=VARCHAR},
+      </if>
+      <if test="orderAmount != null">
+        OrderAmount = #{orderAmount,jdbcType=BIGINT},
+      </if>
+      <if test="discountAmount != null">
+        DiscountAmount = #{discountAmount,jdbcType=BIGINT},
+      </if>
+      <if test="amount != null">
+        Amount = #{amount,jdbcType=BIGINT},
+      </if>
+      <if test="depositAmount != null">
+        DepositAmount = #{depositAmount,jdbcType=BIGINT},
+      </if>
+      <if test="mchIncome != null">
+        MchIncome = #{mchIncome,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null">
+        UserId = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="channelUserId != null">
+        ChannelUserId = #{channelUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        Status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="payOrderId != null">
+        PayOrderId = #{payOrderId,jdbcType=VARCHAR},
+      </if>
+      <if test="productId != null">
+        ProductId = #{productId,jdbcType=INTEGER},
+      </if>
+      <if test="productType != null">
+        ProductType = #{productType,jdbcType=TINYINT},
+      </if>
+      <if test="mchCouponId != null">
+        MchCouponId = #{mchCouponId,jdbcType=BIGINT},
+      </if>
+      <if test="memberCouponNo != null">
+        MemberCouponNo = #{memberCouponNo,jdbcType=VARCHAR},
+      </if>
+      <if test="storeId != null">
+        StoreId = #{storeId,jdbcType=BIGINT},
+      </if>
+      <if test="storeNo != null">
+        StoreNo = #{storeNo,jdbcType=VARCHAR},
+      </if>
+      <if test="storeName != null">
+        StoreName = #{storeName,jdbcType=VARCHAR},
+      </if>
+      <if test="operatorId != null">
+        OperatorId = #{operatorId,jdbcType=VARCHAR},
+      </if>
+      <if test="operatorName != null">
+        OperatorName = #{operatorName,jdbcType=VARCHAR},
+      </if>
+      <if test="memberId != null">
+        MemberId = #{memberId,jdbcType=BIGINT},
+      </if>
+      <if test="memberTel != null">
+        MemberTel = #{memberTel,jdbcType=VARCHAR},
+      </if>
+      <if test="ruleId != null">
+        RuleId = #{ruleId,jdbcType=BIGINT},
+      </if>
+      <if test="givePoints != null">
+        GivePoints = #{givePoints,jdbcType=BIGINT},
+      </if>
+      <if test="refundTotalAmount != null">
+        RefundTotalAmount = #{refundTotalAmount,jdbcType=BIGINT},
+      </if>
+      <if test="tradeSuccTime != null">
+        TradeSuccTime = #{tradeSuccTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="settTaskStatus != null">
+        SettTaskStatus = #{settTaskStatus,jdbcType=TINYINT},
+      </if>
+      <if test="isvDeviceNo != null">
+        IsvDeviceNo = #{isvDeviceNo,jdbcType=VARCHAR},
+      </if>
+      <if test="industryType != null">
+        IndustryType = #{industryType,jdbcType=TINYINT},
+      </if>
+      <if test="postType != null">
+        PostType = #{postType,jdbcType=TINYINT},
+      </if>
+      <if test="storeAreaId != null">
+        StoreAreaId = #{storeAreaId,jdbcType=BIGINT},
+      </if>
+      <if test="areaName != null">
+        AreaName = #{areaName,jdbcType=VARCHAR},
+      </if>
+      <if test="appointmentTime != null">
+        AppointmentTime = #{appointmentTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="addressId != null">
+        AddressId = #{addressId,jdbcType=BIGINT},
+      </if>
+      <if test="provinceCode != null">
+        ProvinceCode = #{provinceCode,jdbcType=INTEGER},
+      </if>
+      <if test="cityCode != null">
+        CityCode = #{cityCode,jdbcType=INTEGER},
+      </if>
+      <if test="areaCode != null">
+        AreaCode = #{areaCode,jdbcType=INTEGER},
+      </if>
+      <if test="areaInfo != null">
+        AreaInfo = #{areaInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        Address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="receiveTel != null">
+        ReceiveTel = #{receiveTel,jdbcType=VARCHAR},
+      </if>
+      <if test="receiveName != null">
+        ReceiveName = #{receiveName,jdbcType=VARCHAR},
+      </if>
+      <if test="postId != null">
+        PostId = #{postId,jdbcType=BIGINT},
+      </if>
+      <if test="transportNo != null">
+        TransportNo = #{transportNo,jdbcType=VARCHAR},
+      </if>
+      <if test="postStatus != null">
+        PostStatus = #{postStatus,jdbcType=TINYINT},
+      </if>
+      <if test="evaluation != null">
+        Evaluation = #{evaluation,jdbcType=VARCHAR},
+      </if>
+      <if test="evaluationImage != null">
+        EvaluationImage = #{evaluationImage,jdbcType=VARCHAR},
+      </if>
+      <if test="returnReasonId != null">
+        ReturnReasonId = #{returnReasonId,jdbcType=BIGINT},
+      </if>
+      <if test="returnDesc != null">
+        ReturnDesc = #{returnDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="imgPathMain != null">
+        ImgPathMain = #{imgPathMain,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        Remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="postPrice != null">
+        PostPrice = #{postPrice,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null">
+        CreateTime = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        UpdateTime = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="goodsDesc != null">
+        GoodsDesc = #{goodsDesc,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where TradeOrderId = #{tradeOrderId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="org.xxpay.core.entity.MchTradeOrder">
+    update t_mch_trade_order
+    set TradeType = #{tradeType,jdbcType=TINYINT},
+      DepositMode = #{depositMode,jdbcType=TINYINT},
+      MchId = #{mchId,jdbcType=BIGINT},
+      AgentId = #{agentId,jdbcType=BIGINT},
+      IsvId = #{isvId,jdbcType=BIGINT},
+      AppId = #{appId,jdbcType=VARCHAR},
+      ClientIp = #{clientIp,jdbcType=VARCHAR},
+      Device = #{device,jdbcType=VARCHAR},
+      GoodsId = #{goodsId,jdbcType=VARCHAR},
+      Subject = #{subject,jdbcType=VARCHAR},
+      Body = #{body,jdbcType=VARCHAR},
+      OrderAmount = #{orderAmount,jdbcType=BIGINT},
+      DiscountAmount = #{discountAmount,jdbcType=BIGINT},
+      Amount = #{amount,jdbcType=BIGINT},
+      DepositAmount = #{depositAmount,jdbcType=BIGINT},
+      MchIncome = #{mchIncome,jdbcType=BIGINT},
+      UserId = #{userId,jdbcType=VARCHAR},
+      ChannelUserId = #{channelUserId,jdbcType=VARCHAR},
+      Status = #{status,jdbcType=TINYINT},
+      PayOrderId = #{payOrderId,jdbcType=VARCHAR},
+      ProductId = #{productId,jdbcType=INTEGER},
+      ProductType = #{productType,jdbcType=TINYINT},
+      MchCouponId = #{mchCouponId,jdbcType=BIGINT},
+      MemberCouponNo = #{memberCouponNo,jdbcType=VARCHAR},
+      StoreId = #{storeId,jdbcType=BIGINT},
+      StoreNo = #{storeNo,jdbcType=VARCHAR},
+      StoreName = #{storeName,jdbcType=VARCHAR},
+      OperatorId = #{operatorId,jdbcType=VARCHAR},
+      OperatorName = #{operatorName,jdbcType=VARCHAR},
+      MemberId = #{memberId,jdbcType=BIGINT},
+      MemberTel = #{memberTel,jdbcType=VARCHAR},
+      RuleId = #{ruleId,jdbcType=BIGINT},
+      GivePoints = #{givePoints,jdbcType=BIGINT},
+      RefundTotalAmount = #{refundTotalAmount,jdbcType=BIGINT},
+      TradeSuccTime = #{tradeSuccTime,jdbcType=TIMESTAMP},
+      SettTaskStatus = #{settTaskStatus,jdbcType=TINYINT},
+      IsvDeviceNo = #{isvDeviceNo,jdbcType=VARCHAR},
+      IndustryType = #{industryType,jdbcType=TINYINT},
+      PostType = #{postType,jdbcType=TINYINT},
+      StoreAreaId = #{storeAreaId,jdbcType=BIGINT},
+      AreaName = #{areaName,jdbcType=VARCHAR},
+      AppointmentTime = #{appointmentTime,jdbcType=TIMESTAMP},
+      AddressId = #{addressId,jdbcType=BIGINT},
+      ProvinceCode = #{provinceCode,jdbcType=INTEGER},
+      CityCode = #{cityCode,jdbcType=INTEGER},
+      AreaCode = #{areaCode,jdbcType=INTEGER},
+      AreaInfo = #{areaInfo,jdbcType=VARCHAR},
+      Address = #{address,jdbcType=VARCHAR},
+      ReceiveTel = #{receiveTel,jdbcType=VARCHAR},
+      ReceiveName = #{receiveName,jdbcType=VARCHAR},
+      PostId = #{postId,jdbcType=BIGINT},
+      TransportNo = #{transportNo,jdbcType=VARCHAR},
+      PostStatus = #{postStatus,jdbcType=TINYINT},
+      Evaluation = #{evaluation,jdbcType=VARCHAR},
+      EvaluationImage = #{evaluationImage,jdbcType=VARCHAR},
+      ReturnReasonId = #{returnReasonId,jdbcType=BIGINT},
+      ReturnDesc = #{returnDesc,jdbcType=VARCHAR},
+      ImgPathMain = #{imgPathMain,jdbcType=VARCHAR},
+      Remark = #{remark,jdbcType=VARCHAR},
+      PostPrice = #{postPrice,jdbcType=BIGINT},
+      CreateTime = #{createTime,jdbcType=TIMESTAMP},
+      UpdateTime = #{updateTime,jdbcType=TIMESTAMP},
+      GoodsDesc = #{goodsDesc,jdbcType=LONGVARCHAR}
+    where TradeOrderId = #{tradeOrderId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.xxpay.core.entity.MchTradeOrder">
+    update t_mch_trade_order
+    set TradeType = #{tradeType,jdbcType=TINYINT},
+      DepositMode = #{depositMode,jdbcType=TINYINT},
+      MchId = #{mchId,jdbcType=BIGINT},
+      AgentId = #{agentId,jdbcType=BIGINT},
+      IsvId = #{isvId,jdbcType=BIGINT},
+      AppId = #{appId,jdbcType=VARCHAR},
+      ClientIp = #{clientIp,jdbcType=VARCHAR},
+      Device = #{device,jdbcType=VARCHAR},
+      GoodsId = #{goodsId,jdbcType=VARCHAR},
+      Subject = #{subject,jdbcType=VARCHAR},
+      Body = #{body,jdbcType=VARCHAR},
+      OrderAmount = #{orderAmount,jdbcType=BIGINT},
+      DiscountAmount = #{discountAmount,jdbcType=BIGINT},
+      Amount = #{amount,jdbcType=BIGINT},
+      DepositAmount = #{depositAmount,jdbcType=BIGINT},
+      MchIncome = #{mchIncome,jdbcType=BIGINT},
+      UserId = #{userId,jdbcType=VARCHAR},
+      ChannelUserId = #{channelUserId,jdbcType=VARCHAR},
+      Status = #{status,jdbcType=TINYINT},
+      PayOrderId = #{payOrderId,jdbcType=VARCHAR},
+      ProductId = #{productId,jdbcType=INTEGER},
+      ProductType = #{productType,jdbcType=TINYINT},
+      MchCouponId = #{mchCouponId,jdbcType=BIGINT},
+      MemberCouponNo = #{memberCouponNo,jdbcType=VARCHAR},
+      StoreId = #{storeId,jdbcType=BIGINT},
+      StoreNo = #{storeNo,jdbcType=VARCHAR},
+      StoreName = #{storeName,jdbcType=VARCHAR},
+      OperatorId = #{operatorId,jdbcType=VARCHAR},
+      OperatorName = #{operatorName,jdbcType=VARCHAR},
+      MemberId = #{memberId,jdbcType=BIGINT},
+      MemberTel = #{memberTel,jdbcType=VARCHAR},
+      RuleId = #{ruleId,jdbcType=BIGINT},
+      GivePoints = #{givePoints,jdbcType=BIGINT},
+      RefundTotalAmount = #{refundTotalAmount,jdbcType=BIGINT},
+      TradeSuccTime = #{tradeSuccTime,jdbcType=TIMESTAMP},
+      SettTaskStatus = #{settTaskStatus,jdbcType=TINYINT},
+      IsvDeviceNo = #{isvDeviceNo,jdbcType=VARCHAR},
+      IndustryType = #{industryType,jdbcType=TINYINT},
+      PostType = #{postType,jdbcType=TINYINT},
+      StoreAreaId = #{storeAreaId,jdbcType=BIGINT},
+      AreaName = #{areaName,jdbcType=VARCHAR},
+      AppointmentTime = #{appointmentTime,jdbcType=TIMESTAMP},
+      AddressId = #{addressId,jdbcType=BIGINT},
+      ProvinceCode = #{provinceCode,jdbcType=INTEGER},
+      CityCode = #{cityCode,jdbcType=INTEGER},
+      AreaCode = #{areaCode,jdbcType=INTEGER},
+      AreaInfo = #{areaInfo,jdbcType=VARCHAR},
+      Address = #{address,jdbcType=VARCHAR},
+      ReceiveTel = #{receiveTel,jdbcType=VARCHAR},
+      ReceiveName = #{receiveName,jdbcType=VARCHAR},
+      PostId = #{postId,jdbcType=BIGINT},
+      TransportNo = #{transportNo,jdbcType=VARCHAR},
+      PostStatus = #{postStatus,jdbcType=TINYINT},
+      Evaluation = #{evaluation,jdbcType=VARCHAR},
+      EvaluationImage = #{evaluationImage,jdbcType=VARCHAR},
+      ReturnReasonId = #{returnReasonId,jdbcType=BIGINT},
+      ReturnDesc = #{returnDesc,jdbcType=VARCHAR},
+      ImgPathMain = #{imgPathMain,jdbcType=VARCHAR},
+      Remark = #{remark,jdbcType=VARCHAR},
+      PostPrice = #{postPrice,jdbcType=BIGINT},
+      CreateTime = #{createTime,jdbcType=TIMESTAMP},
+      UpdateTime = #{updateTime,jdbcType=TIMESTAMP}
+    where TradeOrderId = #{tradeOrderId,jdbcType=VARCHAR}
+  </update>
+
+
+
+  <!-- 统计所有订单 -->
+  <select id="count4All" resultType="java.util.Map" parameterType="java.util.Map" >
+    SELECT
+    ifnull(SUM(Amount), 0)  AS totalAmount,
+    ifnull(SUM(MchIncome), 0)  AS totalMchIncome,
+    ifnull(SUM(DiscountAmount), 0)  AS totalDiscountAmount,
+    ifnull(SUM(RefundTotalAmount), 0)  AS totalRefundAmount,
+    COUNT(1) AS totalCount
+    FROM t_mch_trade_order
+    WHERE 1 = 1
+    <if test="mchId != null"> AND MchId = #{mchId} </if>
+    <if test="storeId != null"> AND StoreId = #{storeId} </if>
+    <if test="tradeOrderId != null"> AND TradeOrderId = #{tradeOrderId} </if>
+    <if test="payOrderId != null"> AND PayOrderId = #{payOrderId} </if>
+    <if test="tradeType != null"> AND TradeType = #{tradeType} </if>
+    <if test="status != null"> AND Status = #{status} </if>
+    <if test="createTimeStart != null"> AND CreateTime &gt;= #{createTimeStart} </if>
+    <if test="createTimeEnd != null"> AND CreateTime &lt;= #{createTimeEnd} </if>;
+  </select>
+
+  <!-- 更新订单状态为 退款， 并累加退款金额  -->
+  <update id="updateRefundStatusAndAddTotalAmount" parameterType="Map">
+
+    update t_mch_trade_order set `Status` =
+    case (RefundTotalAmount + #{refundAmount})
+    when Amount then 5  <!-- 全额退款 -->
+    else 4  <!-- 部分退款 -->
+    end
+    , RefundTotalAmount = (RefundTotalAmount + #{refundAmount})
+    , GivePoints = (ifnull(GivePoints, 0) - #{subPoints})
+    where TradeOrderId = #{tradeOrderId} and Status in(2, 4)  and (RefundTotalAmount + #{refundAmount}) &lt;= Amount
+  </update>
+
+  <!-- 统计查询相关sql -->
+  <sql id="statisticsCondition">
+
+    <if test="beginTime != null"> and CreateTime &gt;= #{beginTime} </if>   <!-- 订单开始时间 -->
+
+    <if test="endTime != null"> and CreateTime &lt;= #{endTime} </if>   <!-- 订单结束时间 -->
+
+    <if test="isvId != null"> and IsvId = #{isvId} </if>   <!-- 服务商ID -->
+
+    <if test="agentId != null"> and AgentId = #{agentId} </if>   <!-- 代理商ID -->
+
+    <if test="agentIdList != null">
+      and AgentId in
+      <foreach collection="agentIdList" item="agentId" index="index" open="(" close=")" separator=",">
+        #{agentId}
+      </foreach>
+    </if>
+
+    <if test="mchId != null"> and MchId = #{mchId} </if>   <!-- 商户ID -->
+
+    <if test="storeId != null"> and StoreId = #{storeId} </if>   <!-- 门店ID -->
+
+    <if test="operatorId != null"> and OperatorId = #{operatorId} </if>   <!-- 操作员ID -->
+
+    <if test="productType != null"> and ProductType = #{productType} </if>   <!-- 产品类型 -->
+
+    <if test="provinceCode != null"> and ProvinceCode = #{provinceCode} </if>   <!-- 查询省 -->
+
+    <if test="cityCode != null"> and CityCode = #{cityCode} </if>   <!-- 查询市 -->
+
+  </sql>
+
+  <!-- 总交易额 -->
+  <select id="sumTradeAmount" resultType="java.math.BigDecimal">
+    select ifnull(sum(DiscountAmount + Amount), 0) from t_mch_trade_order
+    where Status in (2, 4, 5) and TradeType = 1
+    <include refid="statisticsCondition" />
+  </select>
+
+  <!-- 实收金额 -->
+  <select id="sumRealAmount" resultType="java.math.BigDecimal">
+    select ifnull(sum(Amount - RefundTotalAmount), 0) from t_mch_trade_order
+    where Status in (2, 4, 5) and TradeType = 1
+    <include refid="statisticsCondition" />
+  </select>
+
+  <!-- 会员消费金额 -->
+  <select id="sumMemberAmount" resultType="java.math.BigDecimal">
+    select ifnull(sum(Amount - RefundTotalAmount), 0) from t_mch_trade_order
+    where Status in (2, 4, 5) and TradeType = 1 and ProductType = 2
+    <include refid="statisticsCondition" />
+  </select>
+
+  <!-- 非会员消费金额 -->
+  <select id="sumNotMemberAmount" resultType="java.math.BigDecimal">
+    select ifnull(sum(Amount - RefundTotalAmount), 0) from t_mch_trade_order
+    where Status in (2, 4, 5) and MemberId is null and TradeType = 1
+    <include refid="statisticsCondition" />
+  </select>
+
+  <!-- 优惠金额 -->
+  <select id="sumDiscountAmount" resultType="java.math.BigDecimal">
+    select ifnull(sum(DiscountAmount), 0) from t_mch_trade_order
+    where Status in (2, 4, 5)  and TradeType = 1
+    <include refid="statisticsCondition" />
+  </select>
+
+  <!-- 退款金额 -->
+  <select id="sumRefundAmount" resultType="java.math.BigDecimal">
+    select ifnull(sum(RefundTotalAmount), 0) from t_mch_trade_order
+    where Status in (4, 5)
+    <include refid="statisticsCondition" />
+  </select>
+
+  <!-- 会员充值金额 -->
+  <select id="sumRechargeAmount" resultType="java.math.BigDecimal">
+    select ifnull(sum(DiscountAmount + Amount), 0) from t_mch_trade_order
+    where status in (2) and TradeType = 2
+    <include refid="statisticsCondition" />
+  </select>
+
+  <!-- 赠送积分, 包含消费赠送和充值赠送 -->
+  <select id="sumGivePoints" resultType="java.math.BigDecimal">
+    select ifnull(sum(GivePoints), 0) from t_mch_trade_order
+    where status in (2, 4, 5)
+    <include refid="statisticsCondition" />
+  </select>
+
+  <!-- 充值赠送金额 -->
+  <select id="sumRechargeGiveAmount" resultType="java.math.BigDecimal">
+    select ifnull(sum(DiscountAmount), 0) from t_mch_trade_order
+    where TradeType = 2 and status in (2)
+    <include refid="statisticsCondition" />
+  </select>
+
+  <!-- 交易笔数 -->
+  <select id="countTrade" resultType="java.lang.Long" >
+    select count(1) from t_mch_trade_order
+    where Status in (2, 4, 5)
+    <include refid="statisticsCondition" />
+  </select>
+
+  <!-- 退款笔数 -->
+  <select id="countRefund" resultType="java.lang.Long" >
+    select count(1) from t_mch_trade_order
+    where Status in (4, 5)
+    <include refid="statisticsCondition" />
+  </select>
+
+  <!-- 充值笔数 -->
+  <select id="countRecharge" resultType="java.lang.Long" >
+    select count(1) from t_mch_trade_order
+    where TradeType = 2 and Status in (2)
+    <include refid="statisticsCondition" />
+  </select>
+
+  <!-- 统计支付方式 -->
+  <select id="countByGroupProductType" resultType="Map" >
+    select ProductType as productType, count(1) as totalCount, ifnull(sum(DiscountAmount + Amount), 0) as totalAmount
+    from t_mch_trade_order
+    where status in (2)
+    <include refid="statisticsCondition" />
+    group by ProductType
+  </select>
+
+  <!-- 会员消费金额 -->
+  <select id="sumMbrAmount" resultType="java.math.BigDecimal">
+    select ifnull(sum(Amount - RefundTotalAmount), 0) from t_mch_trade_order
+    where Status in (2, 4, 5) and TradeType = 1 and MemberId is not null
+    <include refid="statisticsCondition" />
+  </select>
+
+  <!-- 会员退款金额 -->
+  <select id="sumMbrRefundAmount" resultType="java.math.BigDecimal">
+    select ifnull(sum(RefundTotalAmount), 0) from t_mch_trade_order
+    where Status in (4, 5) and MemberId is not null
+    <include refid="statisticsCondition" />
+  </select>
+
+  <!-- 会员消费笔数 -->
+  <select id="countMbrTrade" resultType="java.lang.Long" >
+    select count(1) from t_mch_trade_order
+    where Status in (2, 4, 5) and TradeType = 1 and MemberId is not null
+    <include refid="statisticsCondition" />
+  </select>
+
+  <!-- 会员退款笔数 -->
+  <select id="countMbrRefund" resultType="java.lang.Long" >
+    select count(1) from t_mch_trade_order
+    where Status in (4, 5) and MemberId is not null
+    <include refid="statisticsCondition" />
+  </select>
+
+  <!-- 会员充值笔数 -->
+  <select id="countMbrRecharge" resultType="java.lang.Long" >
+    select count(1) from t_mch_trade_order
+    where TradeType = 2 and Status in (2)
+    <include refid="statisticsCondition" />
+  </select>
+
+  <!-- 会员交易笔数 -->
+  <select id="countMemberActive" resultType="java.lang.Long" >
+    select count(1) from t_mch_trade_order
+    where MemberId != ''
+
+    <if test="beginTime != null"> and CreateTime &gt;= #{beginTime} </if>   <!-- 订单开始时间 -->
+
+    <if test="endTime != null"> and CreateTime &lt;= #{endTime} </if>   <!-- 订单结束时间 -->
+
+    <if test="mchId != null"> and MchId = #{mchId} </if>   <!-- 商户ID -->
+  </select>
+
+  <!-- 统计会员消费订单数 / 非会员消费订单数  -->
+  <select id="countTradeOrderByMember" resultType="java.lang.Long">
+    (
+    select count(1) as totalCount from t_mch_trade_order where Status in (2, 4, 5) and MemberId is not null and TradeType = 1
+    <include refid="statisticsCondition" />
+    )
+    union all
+    (
+    select count(1) as totalCount from t_mch_trade_order where Status in (2, 4, 5) and MemberId is null and TradeType = 1
+    <include refid="statisticsCondition"/>
+    )
+  </select>
+
+  <!-- 根据服务商设备信息查询统计信息 -->
+  <select id="selectByIsvDevice" parameterType="Map" resultType="Map" >
+    select IsvDeviceNo as isvDeviceNo,
+    count(1) as orderCount, ifnull(sum(Amount - RefundTotalAmount), 0) as orderTotalAmount
+    from t_mch_trade_order
+    where Status in (2, 4, 5)
+    and  IsvId = #{isvId}
+    and IsvDeviceNo in
+    <foreach collection="isvDeviceNoList" item="isvDeviceNo" index="index" open="(" close=")" separator=",">
+      #{isvDeviceNo}
+    </foreach>
+    GROUP BY IsvDeviceNo
+  </select>
+
+
+  <!--  =========================================================== 开始纳呈查账收款小程序查询统计 ============================================================ -->
+
+    <!-- 统计支付方式, 纳呈新增 -->
+    <select id="countByGroupProductTypeForNc" resultType="Map" >
+        select ProductType as productType, count(1) as totalCount, IFNULL(SUM(Amount - RefundTotalAmount), 0) as totalAmount
+        from t_mch_trade_order
+        where status in (2, 4, 5) and TradeType = 1
+        <include refid="statisticsCondition" />
+        group by ProductType
+    </select>
+
+  <!-- 近3日有交易的医院数  -->
+  <select id="countMchForTrade" parameterType="java.util.List" resultType="java.lang.Long">
+    select count(distinct mt.hospitalId) from t_mch_trade_order mto left join t_mch_info mt on mto.mchId = mt.mchId
+    where 1 = 1
+    <if test="mchIds != null">
+      and mto.mchId in
+      <foreach collection="mchIds" item="mchId" index="index" open="(" close=")" separator=",">
+        #{mchId}
+      </foreach>
+    </if>
+    and mt.hospitalId is not null
+    and mto.createTime > date_sub(now(), interval 3 day)
+    and mto.status > 1
+    and mto.amount > 0
+  </select>
+
+
+  <!--   =========================================================== 结束纳呈查账收款小程序查询统计 ============================================================  -->
+
+</mapper>

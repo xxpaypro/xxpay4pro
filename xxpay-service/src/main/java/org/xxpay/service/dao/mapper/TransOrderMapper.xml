@@ -1,0 +1,843 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.xxpay.service.dao.mapper.TransOrderMapper" >
+  <resultMap id="BaseResultMap" type="org.xxpay.core.entity.TransOrder" >
+    <id column="TransOrderId" property="transOrderId" jdbcType="VARCHAR" />
+    <result column="InfoId" property="infoId" jdbcType="BIGINT" />
+    <result column="InfoType" property="infoType" jdbcType="TINYINT" />
+    <result column="MchType" property="mchType" jdbcType="TINYINT" />
+    <result column="AppId" property="appId" jdbcType="VARCHAR" />
+    <result column="MchTransNo" property="mchTransNo" jdbcType="VARCHAR" />
+    <result column="ChannelType" property="channelType" jdbcType="VARCHAR" />
+    <result column="ChannelId" property="channelId" jdbcType="VARCHAR" />
+    <result column="PassageId" property="passageId" jdbcType="INTEGER" />
+    <result column="PassageAccountId" property="passageAccountId" jdbcType="INTEGER" />
+    <result column="Amount" property="amount" jdbcType="BIGINT" />
+    <result column="Currency" property="currency" jdbcType="VARCHAR" />
+    <result column="Status" property="status" jdbcType="TINYINT" />
+    <result column="Result" property="result" jdbcType="TINYINT" />
+    <result column="ClientIp" property="clientIp" jdbcType="VARCHAR" />
+    <result column="Device" property="device" jdbcType="VARCHAR" />
+    <result column="RemarkInfo" property="remarkInfo" jdbcType="VARCHAR" />
+    <result column="ChannelUser" property="channelUser" jdbcType="VARCHAR" />
+    <result column="AccountAttr" property="accountAttr" jdbcType="TINYINT" />
+    <result column="AccountType" property="accountType" jdbcType="TINYINT" />
+    <result column="AccountName" property="accountName" jdbcType="VARCHAR" />
+    <result column="AccountNo" property="accountNo" jdbcType="VARCHAR" />
+    <result column="Province" property="province" jdbcType="VARCHAR" />
+    <result column="City" property="city" jdbcType="VARCHAR" />
+    <result column="BankName" property="bankName" jdbcType="VARCHAR" />
+    <result column="BankType" property="bankType" jdbcType="BIGINT" />
+    <result column="BankCode" property="bankCode" jdbcType="VARCHAR" />
+    <result column="ChannelMchId" property="channelMchId" jdbcType="VARCHAR" />
+    <result column="ChannelRate" property="channelRate" jdbcType="DECIMAL" />
+    <result column="channelFeeEvery" property="channelFeeEvery" jdbcType="BIGINT" />
+    <result column="ChannelCost" property="channelCost" jdbcType="BIGINT" />
+    <result column="ChannelOrderNo" property="channelOrderNo" jdbcType="VARCHAR" />
+    <result column="ChannelErrCode" property="channelErrCode" jdbcType="VARCHAR" />
+    <result column="ChannelErrMsg" property="channelErrMsg" jdbcType="VARCHAR" />
+    <result column="Extra" property="extra" jdbcType="VARCHAR" />
+    <result column="NotifyUrl" property="notifyUrl" jdbcType="VARCHAR" />
+    <result column="Param1" property="param1" jdbcType="VARCHAR" />
+    <result column="Param2" property="param2" jdbcType="VARCHAR" />
+    <result column="ExpireTime" property="expireTime" jdbcType="TIMESTAMP" />
+    <result column="TransSuccTime" property="transSuccTime" jdbcType="TIMESTAMP" />
+    <result column="CreateTime" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="UpdateTime" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    TransOrderId, InfoId, InfoType, MchType, AppId, MchTransNo, ChannelType, ChannelId,
+    PassageId, PassageAccountId, Amount, Currency, Status, Result, ClientIp, Device,
+    RemarkInfo, ChannelUser, AccountAttr, AccountType, AccountName, AccountNo, Province,
+    City, BankName, BankType, BankCode, ChannelMchId, ChannelRate, channelFeeEvery, ChannelCost,
+    ChannelOrderNo, ChannelErrCode, ChannelErrMsg, Extra, NotifyUrl, Param1, Param2,
+    ExpireTime, TransSuccTime, CreateTime, UpdateTime
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="org.xxpay.core.entity.TransOrderExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from t_trans_order
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+    <if test="limit != null" >
+      <if test="offset != null" >
+        limit ${offset}, ${limit}
+      </if>
+      <if test="offset == null" >
+        limit ${limit}
+      </if>
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from t_trans_order
+    where TransOrderId = #{transOrderId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from t_trans_order
+    where TransOrderId = #{transOrderId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="org.xxpay.core.entity.TransOrderExample" >
+    delete from t_trans_order
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="org.xxpay.core.entity.TransOrder" >
+    insert into t_trans_order (TransOrderId, InfoId, InfoType,
+      MchType, AppId, MchTransNo,
+      ChannelType, ChannelId, PassageId,
+      PassageAccountId, Amount, Currency,
+      Status, Result, ClientIp,
+      Device, RemarkInfo, ChannelUser,
+      AccountAttr, AccountType, AccountName,
+      AccountNo, Province, City,
+      BankName, BankType, BankCode,
+      ChannelMchId, ChannelRate, channelFeeEvery,
+      ChannelCost, ChannelOrderNo, ChannelErrCode,
+      ChannelErrMsg, Extra, NotifyUrl,
+      Param1, Param2, ExpireTime,
+      TransSuccTime, CreateTime, UpdateTime
+      )
+    values (#{transOrderId,jdbcType=VARCHAR}, #{infoId,jdbcType=BIGINT}, #{infoType,jdbcType=TINYINT},
+      #{mchType,jdbcType=TINYINT}, #{appId,jdbcType=VARCHAR}, #{mchTransNo,jdbcType=VARCHAR},
+      #{channelType,jdbcType=VARCHAR}, #{channelId,jdbcType=VARCHAR}, #{passageId,jdbcType=INTEGER},
+      #{passageAccountId,jdbcType=INTEGER}, #{amount,jdbcType=BIGINT}, #{currency,jdbcType=VARCHAR},
+      #{status,jdbcType=TINYINT}, #{result,jdbcType=TINYINT}, #{clientIp,jdbcType=VARCHAR},
+      #{device,jdbcType=VARCHAR}, #{remarkInfo,jdbcType=VARCHAR}, #{channelUser,jdbcType=VARCHAR},
+      #{accountAttr,jdbcType=TINYINT}, #{accountType,jdbcType=TINYINT}, #{accountName,jdbcType=VARCHAR},
+      #{accountNo,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR},
+      #{bankName,jdbcType=VARCHAR}, #{bankType,jdbcType=BIGINT}, #{bankCode,jdbcType=VARCHAR},
+      #{channelMchId,jdbcType=VARCHAR}, #{channelRate,jdbcType=DECIMAL}, #{channelFeeEvery,jdbcType=BIGINT},
+      #{channelCost,jdbcType=BIGINT}, #{channelOrderNo,jdbcType=VARCHAR}, #{channelErrCode,jdbcType=VARCHAR},
+      #{channelErrMsg,jdbcType=VARCHAR}, #{extra,jdbcType=VARCHAR}, #{notifyUrl,jdbcType=VARCHAR},
+      #{param1,jdbcType=VARCHAR}, #{param2,jdbcType=VARCHAR}, #{expireTime,jdbcType=TIMESTAMP},
+      #{transSuccTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="org.xxpay.core.entity.TransOrder" >
+    insert into t_trans_order
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="transOrderId != null" >
+        TransOrderId,
+      </if>
+      <if test="infoId != null" >
+        InfoId,
+      </if>
+      <if test="infoType != null" >
+        InfoType,
+      </if>
+      <if test="mchType != null" >
+        MchType,
+      </if>
+      <if test="appId != null" >
+        AppId,
+      </if>
+      <if test="mchTransNo != null" >
+        MchTransNo,
+      </if>
+      <if test="channelType != null" >
+        ChannelType,
+      </if>
+      <if test="channelId != null" >
+        ChannelId,
+      </if>
+      <if test="passageId != null" >
+        PassageId,
+      </if>
+      <if test="passageAccountId != null" >
+        PassageAccountId,
+      </if>
+      <if test="amount != null" >
+        Amount,
+      </if>
+      <if test="currency != null" >
+        Currency,
+      </if>
+      <if test="status != null" >
+        Status,
+      </if>
+      <if test="result != null" >
+        Result,
+      </if>
+      <if test="clientIp != null" >
+        ClientIp,
+      </if>
+      <if test="device != null" >
+        Device,
+      </if>
+      <if test="remarkInfo != null" >
+        RemarkInfo,
+      </if>
+      <if test="channelUser != null" >
+        ChannelUser,
+      </if>
+      <if test="accountAttr != null" >
+        AccountAttr,
+      </if>
+      <if test="accountType != null" >
+        AccountType,
+      </if>
+      <if test="accountName != null" >
+        AccountName,
+      </if>
+      <if test="accountNo != null" >
+        AccountNo,
+      </if>
+      <if test="province != null" >
+        Province,
+      </if>
+      <if test="city != null" >
+        City,
+      </if>
+      <if test="bankName != null" >
+        BankName,
+      </if>
+      <if test="bankType != null" >
+        BankType,
+      </if>
+      <if test="bankCode != null" >
+        BankCode,
+      </if>
+      <if test="channelMchId != null" >
+        ChannelMchId,
+      </if>
+      <if test="channelRate != null" >
+        ChannelRate,
+      </if>
+      <if test="channelFeeEvery != null" >
+        channelFeeEvery,
+      </if>
+      <if test="channelCost != null" >
+        ChannelCost,
+      </if>
+      <if test="channelOrderNo != null" >
+        ChannelOrderNo,
+      </if>
+      <if test="channelErrCode != null" >
+        ChannelErrCode,
+      </if>
+      <if test="channelErrMsg != null" >
+        ChannelErrMsg,
+      </if>
+      <if test="extra != null" >
+        Extra,
+      </if>
+      <if test="notifyUrl != null" >
+        NotifyUrl,
+      </if>
+      <if test="param1 != null" >
+        Param1,
+      </if>
+      <if test="param2 != null" >
+        Param2,
+      </if>
+      <if test="expireTime != null" >
+        ExpireTime,
+      </if>
+      <if test="transSuccTime != null" >
+        TransSuccTime,
+      </if>
+      <if test="createTime != null" >
+        CreateTime,
+      </if>
+      <if test="updateTime != null" >
+        UpdateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="transOrderId != null" >
+        #{transOrderId,jdbcType=VARCHAR},
+      </if>
+      <if test="infoId != null" >
+        #{infoId,jdbcType=BIGINT},
+      </if>
+      <if test="infoType != null" >
+        #{infoType,jdbcType=TINYINT},
+      </if>
+      <if test="mchType != null" >
+        #{mchType,jdbcType=TINYINT},
+      </if>
+      <if test="appId != null" >
+        #{appId,jdbcType=VARCHAR},
+      </if>
+      <if test="mchTransNo != null" >
+        #{mchTransNo,jdbcType=VARCHAR},
+      </if>
+      <if test="channelType != null" >
+        #{channelType,jdbcType=VARCHAR},
+      </if>
+      <if test="channelId != null" >
+        #{channelId,jdbcType=VARCHAR},
+      </if>
+      <if test="passageId != null" >
+        #{passageId,jdbcType=INTEGER},
+      </if>
+      <if test="passageAccountId != null" >
+        #{passageAccountId,jdbcType=INTEGER},
+      </if>
+      <if test="amount != null" >
+        #{amount,jdbcType=BIGINT},
+      </if>
+      <if test="currency != null" >
+        #{currency,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="result != null" >
+        #{result,jdbcType=TINYINT},
+      </if>
+      <if test="clientIp != null" >
+        #{clientIp,jdbcType=VARCHAR},
+      </if>
+      <if test="device != null" >
+        #{device,jdbcType=VARCHAR},
+      </if>
+      <if test="remarkInfo != null" >
+        #{remarkInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="channelUser != null" >
+        #{channelUser,jdbcType=VARCHAR},
+      </if>
+      <if test="accountAttr != null" >
+        #{accountAttr,jdbcType=TINYINT},
+      </if>
+      <if test="accountType != null" >
+        #{accountType,jdbcType=TINYINT},
+      </if>
+      <if test="accountName != null" >
+        #{accountName,jdbcType=VARCHAR},
+      </if>
+      <if test="accountNo != null" >
+        #{accountNo,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null" >
+        #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null" >
+        #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="bankName != null" >
+        #{bankName,jdbcType=VARCHAR},
+      </if>
+      <if test="bankType != null" >
+        #{bankType,jdbcType=BIGINT},
+      </if>
+      <if test="bankCode != null" >
+        #{bankCode,jdbcType=VARCHAR},
+      </if>
+      <if test="channelMchId != null" >
+        #{channelMchId,jdbcType=VARCHAR},
+      </if>
+      <if test="channelRate != null" >
+        #{channelRate,jdbcType=DECIMAL},
+      </if>
+      <if test="channelFeeEvery != null" >
+        #{channelFeeEvery,jdbcType=BIGINT},
+      </if>
+      <if test="channelCost != null" >
+        #{channelCost,jdbcType=BIGINT},
+      </if>
+      <if test="channelOrderNo != null" >
+        #{channelOrderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="channelErrCode != null" >
+        #{channelErrCode,jdbcType=VARCHAR},
+      </if>
+      <if test="channelErrMsg != null" >
+        #{channelErrMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="extra != null" >
+        #{extra,jdbcType=VARCHAR},
+      </if>
+      <if test="notifyUrl != null" >
+        #{notifyUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="param1 != null" >
+        #{param1,jdbcType=VARCHAR},
+      </if>
+      <if test="param2 != null" >
+        #{param2,jdbcType=VARCHAR},
+      </if>
+      <if test="expireTime != null" >
+        #{expireTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="transSuccTime != null" >
+        #{transSuccTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="org.xxpay.core.entity.TransOrderExample" resultType="java.lang.Integer" >
+    select count(*) from t_trans_order
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update t_trans_order
+    <set >
+      <if test="record.transOrderId != null" >
+        TransOrderId = #{record.transOrderId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.infoId != null" >
+        InfoId = #{record.infoId,jdbcType=BIGINT},
+      </if>
+      <if test="record.infoType != null" >
+        InfoType = #{record.infoType,jdbcType=TINYINT},
+      </if>
+      <if test="record.mchType != null" >
+        MchType = #{record.mchType,jdbcType=TINYINT},
+      </if>
+      <if test="record.appId != null" >
+        AppId = #{record.appId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mchTransNo != null" >
+        MchTransNo = #{record.mchTransNo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.channelType != null" >
+        ChannelType = #{record.channelType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.channelId != null" >
+        ChannelId = #{record.channelId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.passageId != null" >
+        PassageId = #{record.passageId,jdbcType=INTEGER},
+      </if>
+      <if test="record.passageAccountId != null" >
+        PassageAccountId = #{record.passageAccountId,jdbcType=INTEGER},
+      </if>
+      <if test="record.amount != null" >
+        Amount = #{record.amount,jdbcType=BIGINT},
+      </if>
+      <if test="record.currency != null" >
+        Currency = #{record.currency,jdbcType=VARCHAR},
+      </if>
+      <if test="record.status != null" >
+        Status = #{record.status,jdbcType=TINYINT},
+      </if>
+      <if test="record.result != null" >
+        Result = #{record.result,jdbcType=TINYINT},
+      </if>
+      <if test="record.clientIp != null" >
+        ClientIp = #{record.clientIp,jdbcType=VARCHAR},
+      </if>
+      <if test="record.device != null" >
+        Device = #{record.device,jdbcType=VARCHAR},
+      </if>
+      <if test="record.remarkInfo != null" >
+        RemarkInfo = #{record.remarkInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.channelUser != null" >
+        ChannelUser = #{record.channelUser,jdbcType=VARCHAR},
+      </if>
+      <if test="record.accountAttr != null" >
+        AccountAttr = #{record.accountAttr,jdbcType=TINYINT},
+      </if>
+      <if test="record.accountType != null" >
+        AccountType = #{record.accountType,jdbcType=TINYINT},
+      </if>
+      <if test="record.accountName != null" >
+        AccountName = #{record.accountName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.accountNo != null" >
+        AccountNo = #{record.accountNo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.province != null" >
+        Province = #{record.province,jdbcType=VARCHAR},
+      </if>
+      <if test="record.city != null" >
+        City = #{record.city,jdbcType=VARCHAR},
+      </if>
+      <if test="record.bankName != null" >
+        BankName = #{record.bankName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.bankType != null" >
+        BankType = #{record.bankType,jdbcType=BIGINT},
+      </if>
+      <if test="record.bankCode != null" >
+        BankCode = #{record.bankCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.channelMchId != null" >
+        ChannelMchId = #{record.channelMchId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.channelRate != null" >
+        ChannelRate = #{record.channelRate,jdbcType=DECIMAL},
+      </if>
+      <if test="record.channelFeeEvery != null" >
+        channelFeeEvery = #{record.channelFeeEvery,jdbcType=BIGINT},
+      </if>
+      <if test="record.channelCost != null" >
+        ChannelCost = #{record.channelCost,jdbcType=BIGINT},
+      </if>
+      <if test="record.channelOrderNo != null" >
+        ChannelOrderNo = #{record.channelOrderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.channelErrCode != null" >
+        ChannelErrCode = #{record.channelErrCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.channelErrMsg != null" >
+        ChannelErrMsg = #{record.channelErrMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="record.extra != null" >
+        Extra = #{record.extra,jdbcType=VARCHAR},
+      </if>
+      <if test="record.notifyUrl != null" >
+        NotifyUrl = #{record.notifyUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="record.param1 != null" >
+        Param1 = #{record.param1,jdbcType=VARCHAR},
+      </if>
+      <if test="record.param2 != null" >
+        Param2 = #{record.param2,jdbcType=VARCHAR},
+      </if>
+      <if test="record.expireTime != null" >
+        ExpireTime = #{record.expireTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.transSuccTime != null" >
+        TransSuccTime = #{record.transSuccTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.createTime != null" >
+        CreateTime = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateTime != null" >
+        UpdateTime = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update t_trans_order
+    set TransOrderId = #{record.transOrderId,jdbcType=VARCHAR},
+    InfoId = #{record.infoId,jdbcType=BIGINT},
+    InfoType = #{record.infoType,jdbcType=TINYINT},
+    MchType = #{record.mchType,jdbcType=TINYINT},
+    AppId = #{record.appId,jdbcType=VARCHAR},
+    MchTransNo = #{record.mchTransNo,jdbcType=VARCHAR},
+    ChannelType = #{record.channelType,jdbcType=VARCHAR},
+    ChannelId = #{record.channelId,jdbcType=VARCHAR},
+    PassageId = #{record.passageId,jdbcType=INTEGER},
+    PassageAccountId = #{record.passageAccountId,jdbcType=INTEGER},
+    Amount = #{record.amount,jdbcType=BIGINT},
+    Currency = #{record.currency,jdbcType=VARCHAR},
+    Status = #{record.status,jdbcType=TINYINT},
+    Result = #{record.result,jdbcType=TINYINT},
+    ClientIp = #{record.clientIp,jdbcType=VARCHAR},
+    Device = #{record.device,jdbcType=VARCHAR},
+    RemarkInfo = #{record.remarkInfo,jdbcType=VARCHAR},
+    ChannelUser = #{record.channelUser,jdbcType=VARCHAR},
+    AccountAttr = #{record.accountAttr,jdbcType=TINYINT},
+    AccountType = #{record.accountType,jdbcType=TINYINT},
+    AccountName = #{record.accountName,jdbcType=VARCHAR},
+    AccountNo = #{record.accountNo,jdbcType=VARCHAR},
+    Province = #{record.province,jdbcType=VARCHAR},
+    City = #{record.city,jdbcType=VARCHAR},
+    BankName = #{record.bankName,jdbcType=VARCHAR},
+    BankType = #{record.bankType,jdbcType=BIGINT},
+    BankCode = #{record.bankCode,jdbcType=VARCHAR},
+    ChannelMchId = #{record.channelMchId,jdbcType=VARCHAR},
+    ChannelRate = #{record.channelRate,jdbcType=DECIMAL},
+    channelFeeEvery = #{record.channelFeeEvery,jdbcType=BIGINT},
+    ChannelCost = #{record.channelCost,jdbcType=BIGINT},
+    ChannelOrderNo = #{record.channelOrderNo,jdbcType=VARCHAR},
+    ChannelErrCode = #{record.channelErrCode,jdbcType=VARCHAR},
+    ChannelErrMsg = #{record.channelErrMsg,jdbcType=VARCHAR},
+    Extra = #{record.extra,jdbcType=VARCHAR},
+    NotifyUrl = #{record.notifyUrl,jdbcType=VARCHAR},
+    Param1 = #{record.param1,jdbcType=VARCHAR},
+    Param2 = #{record.param2,jdbcType=VARCHAR},
+    ExpireTime = #{record.expireTime,jdbcType=TIMESTAMP},
+    TransSuccTime = #{record.transSuccTime,jdbcType=TIMESTAMP},
+    CreateTime = #{record.createTime,jdbcType=TIMESTAMP},
+    UpdateTime = #{record.updateTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="org.xxpay.core.entity.TransOrder" >
+    update t_trans_order
+    <set >
+      <if test="infoId != null" >
+        InfoId = #{infoId,jdbcType=BIGINT},
+      </if>
+      <if test="infoType != null" >
+        InfoType = #{infoType,jdbcType=TINYINT},
+      </if>
+      <if test="mchType != null" >
+        MchType = #{mchType,jdbcType=TINYINT},
+      </if>
+      <if test="appId != null" >
+        AppId = #{appId,jdbcType=VARCHAR},
+      </if>
+      <if test="mchTransNo != null" >
+        MchTransNo = #{mchTransNo,jdbcType=VARCHAR},
+      </if>
+      <if test="channelType != null" >
+        ChannelType = #{channelType,jdbcType=VARCHAR},
+      </if>
+      <if test="channelId != null" >
+        ChannelId = #{channelId,jdbcType=VARCHAR},
+      </if>
+      <if test="passageId != null" >
+        PassageId = #{passageId,jdbcType=INTEGER},
+      </if>
+      <if test="passageAccountId != null" >
+        PassageAccountId = #{passageAccountId,jdbcType=INTEGER},
+      </if>
+      <if test="amount != null" >
+        Amount = #{amount,jdbcType=BIGINT},
+      </if>
+      <if test="currency != null" >
+        Currency = #{currency,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        Status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="result != null" >
+        Result = #{result,jdbcType=TINYINT},
+      </if>
+      <if test="clientIp != null" >
+        ClientIp = #{clientIp,jdbcType=VARCHAR},
+      </if>
+      <if test="device != null" >
+        Device = #{device,jdbcType=VARCHAR},
+      </if>
+      <if test="remarkInfo != null" >
+        RemarkInfo = #{remarkInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="channelUser != null" >
+        ChannelUser = #{channelUser,jdbcType=VARCHAR},
+      </if>
+      <if test="accountAttr != null" >
+        AccountAttr = #{accountAttr,jdbcType=TINYINT},
+      </if>
+      <if test="accountType != null" >
+        AccountType = #{accountType,jdbcType=TINYINT},
+      </if>
+      <if test="accountName != null" >
+        AccountName = #{accountName,jdbcType=VARCHAR},
+      </if>
+      <if test="accountNo != null" >
+        AccountNo = #{accountNo,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null" >
+        Province = #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null" >
+        City = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="bankName != null" >
+        BankName = #{bankName,jdbcType=VARCHAR},
+      </if>
+      <if test="bankType != null" >
+        BankType = #{bankType,jdbcType=BIGINT},
+      </if>
+      <if test="bankCode != null" >
+        BankCode = #{bankCode,jdbcType=VARCHAR},
+      </if>
+      <if test="channelMchId != null" >
+        ChannelMchId = #{channelMchId,jdbcType=VARCHAR},
+      </if>
+      <if test="channelRate != null" >
+        ChannelRate = #{channelRate,jdbcType=DECIMAL},
+      </if>
+      <if test="channelFeeEvery != null" >
+        channelFeeEvery = #{channelFeeEvery,jdbcType=BIGINT},
+      </if>
+      <if test="channelCost != null" >
+        ChannelCost = #{channelCost,jdbcType=BIGINT},
+      </if>
+      <if test="channelOrderNo != null" >
+        ChannelOrderNo = #{channelOrderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="channelErrCode != null" >
+        ChannelErrCode = #{channelErrCode,jdbcType=VARCHAR},
+      </if>
+      <if test="channelErrMsg != null" >
+        ChannelErrMsg = #{channelErrMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="extra != null" >
+        Extra = #{extra,jdbcType=VARCHAR},
+      </if>
+      <if test="notifyUrl != null" >
+        NotifyUrl = #{notifyUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="param1 != null" >
+        Param1 = #{param1,jdbcType=VARCHAR},
+      </if>
+      <if test="param2 != null" >
+        Param2 = #{param2,jdbcType=VARCHAR},
+      </if>
+      <if test="expireTime != null" >
+        ExpireTime = #{expireTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="transSuccTime != null" >
+        TransSuccTime = #{transSuccTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null" >
+        CreateTime = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        UpdateTime = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where TransOrderId = #{transOrderId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.xxpay.core.entity.TransOrder" >
+    update t_trans_order
+    set InfoId = #{infoId,jdbcType=BIGINT},
+      InfoType = #{infoType,jdbcType=TINYINT},
+      MchType = #{mchType,jdbcType=TINYINT},
+      AppId = #{appId,jdbcType=VARCHAR},
+      MchTransNo = #{mchTransNo,jdbcType=VARCHAR},
+      ChannelType = #{channelType,jdbcType=VARCHAR},
+      ChannelId = #{channelId,jdbcType=VARCHAR},
+      PassageId = #{passageId,jdbcType=INTEGER},
+      PassageAccountId = #{passageAccountId,jdbcType=INTEGER},
+      Amount = #{amount,jdbcType=BIGINT},
+      Currency = #{currency,jdbcType=VARCHAR},
+      Status = #{status,jdbcType=TINYINT},
+      Result = #{result,jdbcType=TINYINT},
+      ClientIp = #{clientIp,jdbcType=VARCHAR},
+      Device = #{device,jdbcType=VARCHAR},
+      RemarkInfo = #{remarkInfo,jdbcType=VARCHAR},
+      ChannelUser = #{channelUser,jdbcType=VARCHAR},
+      AccountAttr = #{accountAttr,jdbcType=TINYINT},
+      AccountType = #{accountType,jdbcType=TINYINT},
+      AccountName = #{accountName,jdbcType=VARCHAR},
+      AccountNo = #{accountNo,jdbcType=VARCHAR},
+      Province = #{province,jdbcType=VARCHAR},
+      City = #{city,jdbcType=VARCHAR},
+      BankName = #{bankName,jdbcType=VARCHAR},
+      BankType = #{bankType,jdbcType=BIGINT},
+      BankCode = #{bankCode,jdbcType=VARCHAR},
+      ChannelMchId = #{channelMchId,jdbcType=VARCHAR},
+      ChannelRate = #{channelRate,jdbcType=DECIMAL},
+      channelFeeEvery = #{channelFeeEvery,jdbcType=BIGINT},
+      ChannelCost = #{channelCost,jdbcType=BIGINT},
+      ChannelOrderNo = #{channelOrderNo,jdbcType=VARCHAR},
+      ChannelErrCode = #{channelErrCode,jdbcType=VARCHAR},
+      ChannelErrMsg = #{channelErrMsg,jdbcType=VARCHAR},
+      Extra = #{extra,jdbcType=VARCHAR},
+      NotifyUrl = #{notifyUrl,jdbcType=VARCHAR},
+      Param1 = #{param1,jdbcType=VARCHAR},
+      Param2 = #{param2,jdbcType=VARCHAR},
+      ExpireTime = #{expireTime,jdbcType=TIMESTAMP},
+      TransSuccTime = #{transSuccTime,jdbcType=TIMESTAMP},
+      CreateTime = #{createTime,jdbcType=TIMESTAMP},
+      UpdateTime = #{updateTime,jdbcType=TIMESTAMP}
+    where TransOrderId = #{transOrderId,jdbcType=VARCHAR}
+  </update>
+
+  <!--金额求和-->
+  <select id="sumAmountByExample" parameterType="org.xxpay.core.entity.TransOrderExample" resultType="java.lang.Long" >
+    select ifnull(sum(Amount), 0) from t_trans_order
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+
+  <!-- 统计所有订单 -->
+  <select id="count4All" resultType="java.util.Map" parameterType="java.util.Map" >
+    SELECT
+    SUM(Amount) AS totalAmount,
+    COUNT(1) AS totalCount
+    FROM t_trans_order
+    WHERE 1 = 1
+    <if test="mchId != null"> AND mchId = #{mchId} </if>
+    <if test="transOrderId != null"> AND TransOrderId = #{transOrderId} </if>
+    <if test="mchTransNo != null"> AND MchTransNo = #{mchTransNo} </if>
+    <if test="createTimeStart != null"> AND CreateTime &gt;= #{createTimeStart} </if>
+    <if test="createTimeEnd != null"> AND CreateTime &lt;= #{createTimeEnd} </if>;
+  </select>
+
+  <!-- 统计成功订单 -->
+  <select id="count4Success" resultType="java.util.Map" parameterType="java.util.Map" >
+    SELECT
+    SUM(Amount) AS totalAmount,
+    SUM(ChannelCost) AS totalChannelCost,
+    COUNT(1) AS totalCount
+    FROM t_trans_order
+    WHERE Result = 2
+    <if test="mchId != null"> AND mchId = #{mchId} </if>
+    <if test="transOrderId != null"> AND TransOrderId = #{transOrderId} </if>
+    <if test="mchTransNo != null"> AND MchTransNo = #{mchTransNo} </if>
+    <if test="createTimeStart != null"> AND CreateTime &gt;= #{createTimeStart} </if>
+    <if test="createTimeEnd != null"> AND CreateTime &lt;= #{createTimeEnd} </if>;
+  </select>
+
+</mapper>

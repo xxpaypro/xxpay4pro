@@ -1,0 +1,155 @@
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a><cite>二维码列表</cite></a>
+    </span>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">二维码列表</li>
+            </ul>
+            <div class="layui-tab-content" id="cnotent">
+                <div class="layui-row">
+                    <div class="layuiAdmin-btns" style="margin-bottom: 10px;">
+                        <button class="layui-btn" data-type="all" data-events="create">创建二维码</button>
+                    </div>
+                </div>
+                <table class="layui-hide" id="smList"></table>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .layui-layer-title {
+        background-color: #15c786 !important;
+        border-bottom: 1px dashed #fff !important;
+        font-size: 16px;
+    }
+   .layui-layer-content {
+        text-align: center;
+    }
+    .layui-wrap-content {
+        width: 100%;
+        text-align: center;
+        background-color: #15c786;
+        padding: 2px 0px;
+    }
+    #qrcode {
+        width: 50%;
+        margin: 30px auto;
+        padding: 15px;
+        background-color: #fff;
+        text-align: center;
+        border-radius: 10px;
+    }
+    #qrcode img {
+        margin: 0 auto;
+    }
+    .layui-layer-title {
+        text-align: center;
+        height: 50px;
+        padding: 0;
+        /* padding-top: 10px; */
+    }
+</style>
+
+<script>
+
+    //标题内容模板
+    var tplTitle = function(d){
+            return '<a class="layui-btn layui-btn-xs" lay-href="account/qrcode/update/id='+ d.id +'/appId='+ d.appId +'">修改</a> <a class="layui-btn layui-btn-xs layui-btn-normal" lay-href="account/qrcode/ewmdetail/id='+ d.id +'">详情</a> <a class="layui-btn ckEwm layui-btn-xs layui-btn-primary" data-vierm="'+ d.id +'" data-peizhi="'+ JSON.parse(d.channels) +'">查看二维码</a>'
+        };
+        
+
+
+    layui.use(['table','util','admin'], function(){
+        var table = layui.table
+        ,admin = layui.admin
+        ,$ = layui.$
+        ,element = layui.element;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        var appid = location.href.split('?')[1];
+        if(!appid) {
+            appid = layui.router().search.appId;
+        }
+        table.render({
+            elem: '#smList'
+            ,url: layui.setter.baseUrl + '/mch_qrcode/list'
+            ,where: {appId:appid}
+            ,cols: [[
+                {field:'id', title: '二维码ID', sort: true }
+                ,{field:'codeName', title: '二维码名称' }
+                ,{field:'channels', title: '支持的扫码支付渠道',templet: '<div>{{ JSON.parse(d.channels) }}</div>' }
+                ,{field:'createTime',  title: '创建时间', templet: '<div>{{ layui.util.toDateString(d.createTime) }}</div>' }
+                ,{field:'edite', title: '操作', width: 200, templet: tplTitle }
+            ]]
+            ,page: true
+            ,skin: 'line'
+        });
+
+
+        $('#cnotent').on('click','.ckEwm',function(){
+            var curEWM = $(this).data('vierm');
+            var peizhiT = $(this).data('peizhi').split(',');
+              
+            admin.req({
+                url: layui.setter.baseUrl + '/mch_qrcode/view_code'
+                ,data: { id: curEWM }
+                ,success: function(res){
+                    if(res.code == 0){
+                        layer.open({
+                            type: 1,
+                            skin: 'layui-layer-molv', //样式类名
+                            title: '扫码付款',
+                            scrollbar: false,//浏览器滚动条已锁
+                            closeBtn: 0, //不显示关闭按钮
+                            shadeClose: true, //开启遮罩关闭
+                            // area: ['300px', '380px'],
+                            area: '300px',
+                            content:  '<div class="layui-wrap-content"><div><div style="margin-bottom:5px;"></div><img src="'+res.data.codeImgUrl+'"/></div></div><div style="margin:10px auto;text-align:center"><img id="zhifubao" style="display:none" src="layui/images/imgs/zfb.png" alt="支付宝"/><img id="weixin" style="display:none" src="layui/images/imgs/wxpay.png" alt="微信"/></div>'
+                        });
+
+                        for(var i = 0;i< peizhiT.length;i++){
+                            if(peizhiT[i].split('_')[0] == 'wxpay'){
+                                $('#weixin').css('display','inline-block');
+                            }else if(peizhiT[i].split('_')[0] == 'alipay'){
+                                $('#zhifubao').css('display','inline-block');
+                            }
+                        }
+
+                        /*var qrcode = new QRCode(document.getElementById("qrcode"),{
+                            text: res.data.codeUrl,
+                            width: 100,
+                            height: 100,
+
+                        });*/
+
+                    }
+                }
+            })
+
+           
+
+        })
+
+        // 事件处理
+        var events = {
+            create: function(othis, type){
+                location.hash =  "/account/qrcode/create/appId=" + appid;
+            }
+        };
+        $('.layuiAdmin-btns .layui-btn').on('click', function(){
+            var othis = $(this)
+                    ,thisEvent = othis.data('events')
+                    ,type = othis.data('type');
+            events[thisEvent] && events[thisEvent].call(this, othis, type);
+        });
+
+
+    })
+
+</script>

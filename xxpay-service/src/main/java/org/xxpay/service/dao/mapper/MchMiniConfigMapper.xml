@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.xxpay.service.dao.mapper.MchMiniConfigMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="org.xxpay.core.entity.MchMiniConfig">
+        <id column="ConfigId" property="ConfigId" />
+        <result column="ConfigCode" property="configCode" />
+        <result column="ConfigName" property="configName" />
+        <result column="Icon" property="icon" />
+        <result column="Value" property="value" />
+        <result column="MchId" property="mchId" />
+        <result column="AuthFrom" property="authFrom" />
+        <result column="Status" property="status" />
+        <result column="SortNum" property="sortNum" />
+        <result column="IsDraft" property="isDraft" />
+        <result column="Remark" property="remark" />
+        <result column="CreateTime" property="createTime" />
+        <result column="UpdateTime" property="updateTime" />
+    </resultMap>
+
+</mapper>

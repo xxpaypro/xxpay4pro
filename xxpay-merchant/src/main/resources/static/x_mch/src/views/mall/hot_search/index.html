@@ -1,0 +1,165 @@
+<div class=" layui-card layadmin-header">
+	<div class="layui-breadcrumb" lay-filter="breadcrumb">
+		<a lay-href="">首页</a>
+		<a>商城管理</a>
+	</div>
+</div>
+<style>
+	.layui-form-label {
+		width: 20% !important;
+	}
+	.layui-input-inline {
+		width: 70% !important;
+	}
+</style>
+<div class="layui-fluid">
+	<div class="layui-card">
+		<div class="layui-tab layui-tab-brief">
+			<ul class="layui-tab-title">
+				<li class="layui-this tabLi" showDiv="hotSearchConfigDiv">热门搜索管理</li>
+			</ul>
+
+			<div class="layui-tab-content" id="hotSearchConfigDiv">
+				<div class="layui-row">
+					<form class="layui-form layui-form-pane">
+						<input type="hidden" value="hotSearch" name="configCode" >
+						<input type="hidden" value="hotSearch" name="configName" >
+						<div class="layui-form-item">
+							<label class="layui-form-label">热门搜索所属小程序</label>
+							<div class="layui-input-block">
+								<!--<input type="radio" name="authFrom" value="1" title="点餐小程序" lay-filter="authFromFilter"  />-->
+								<input type="radio" name="authFrom" value="2" title="商城小程序" lay-filter="authFromFilter" checked="checked" />
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">热搜商品关键字</label>
+							<div class="layui-input-inline">
+								<input type="text" id="value" name="value" placeholder="热搜商品关键字，以,隔开" class="layui-input" >
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<div class="layui-input-inline" style="color: red;font-size: 12px;padding-left: 20%">
+								请确保热搜关键字可搜索到商品，最多十条
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<div class="layui-input-block">
+								<button type="button" lay-submit="" lay-filter="saveHotSerch" class="layui-btn">保存</button>
+							</div>
+						</div>
+					</form>
+				</div>
+				<!--<div class="layui-row">
+					<div class="layuiAdmin-btns" style="margin-bottom: 10px;">
+						<a class="layui-btn" data-type="all" data-events="create">新增</a>
+					</div>
+				</div>
+				<table id="hotSearchConfigList" lay-filter="hotSearchConfigList"></table>-->
+			</div>
+        </div>
+    </div>
+
+
+</div>
+<script>
+	layui.use(['form', 'table', 'util', 'admin', 'view'], function() {
+		var form = layui.form,
+			$ = layui.$,
+			table = layui.table,
+			admin = layui.admin,
+			layer = layui.layer,
+			view = layui.view,
+			element = layui.element;
+
+		element.render('breadcrumb', 'breadcrumb'); //渲染导航信息
+
+		//热搜列表
+		/*table.render({
+			elem: '#hotSearchConfigList'
+			,id: "tableReload"
+			,url: layui.setter.baseUrl + '/mini_config/hot_search_list'
+			,where: {
+				authFrom: 2
+			}
+			,cols: [[
+				{field: 'configName', title: '热搜名称'}
+				,{field: 'value',title: '跳转页面'}
+				,{field: 'sortNum',title: '排序值'}
+				,{field: 'edit', title: '操作', width: 400 }
+			]]
+			,page: true
+			,skin: 'line'
+		});*/
+
+		// 事件处理
+		/*var events = {
+			create: function(othis, type){
+				location.hash = "/mall/hot_search/add_hot_search";
+			}
+		};
+
+		$('.layuiAdmin-btns .layui-btn').on('click', function(){
+			var othis = $(this)
+					,thisEvent = othis.data('events')
+					,type = othis.data('type');
+			events[thisEvent] && events[thisEvent].call(this, othis, type);
+		});*/
+
+		//通用更新函数
+		var commonUpdateFunc = function(data){
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/sys/config/update',
+                data: data,
+                error: function(err) {layer.alert(err.msg, {title: "请求失败"})},
+                success: function(res) {
+                    if(res.code == 0) {
+                        layer.alert(res.msg, {title: '保存成功'});
+                    }
+                    form.render();
+                }
+            })
+		};
+
+
+        form.on('submit(hotSearchConfigFilter)', function(data) {
+
+            commonUpdateFunc(data.field);
+            return false;
+        });
+
+		admin.req({
+			type: 'post',
+			url: layui.setter.baseUrl + '/mini_config/get',
+			data: {
+				authFrom: 2,
+				configCode: 'hotSearch'
+			},
+			success: function(res){
+				if(res.code == 0){
+					$("#value").val(res.data.value)
+				}
+			}
+		});
+
+		//监听提交
+		form.on('submit(saveHotSerch)', function(data){
+			// 在这个回调函数里面写ajax提交
+			admin.req({
+				type: 'post',
+				url: layui.setter.baseUrl + '/mini_config/save',
+				data: data.field,
+				success: function(res){
+					if(res.code == 0){
+						layer.msg("保存成功");
+					}
+				}
+			});
+			return false;//阻止跳转
+		});
+
+
+		form.render();
+
+})
+</script>

@@ -1,0 +1,404 @@
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>卡券营销</cite></a>
+        <a><cite>新增卡券</cite></a>
+    </span>
+</div>
+<style>
+    .layui-form-label {
+        width:15% !important;
+        margin-left:1%;
+    }
+    .layui-input-inline {
+        width: 33% !important;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <form class="layui-form layui-form-pane">
+            <div class="layui-tab layui-tab-brief">
+                <ul class="layui-tab-title">
+                    <li class="layui-this">基本信息</li>
+                </ul>
+                <div class="layui-tab-content">
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">优惠券名称</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="couponName" name="couponName" lay-verify="required" placeholder="输入优惠券名称" autocomplete="off" class="layui-input">
+                        </div>
+                        <label class="layui-form-label" id="previewColor">优惠券配色</label>
+                        <div class="layui-input-inline">
+                            <select name="couponColor" id="couponColor" lay-search="" lay-verify="required" lay-filter="color">
+                                <option value="">请选择</option>
+                                <option type="select" value="#63b359">浅绿</option>
+                                <option type="select" value="#2c9f67">深绿</option>
+                                <option type="select" value="#509fc9">淡蓝</option>
+                                <option type="select" value="#5885cf">深蓝</option>
+                                <option type="select" value="#9062c0">紫色</option>
+                                <option type="select" value="#d09a45">土黄</option>
+                                <option type="select" value="#e4b138">黄色</option>
+                                <option type="select" value="#ee903c">浅橘</option>
+                                <option type="select" value="#f08500">橘黄</option>
+                                <option type="select" value="#a9d92d">浅绿</option>
+                                <option type="select" value="#dd6549">红色</option>
+                                <option type="select" value="#cc463d">深红1</option>
+                                <option type="select" value="#cf3e36">深红2</option>
+                                <option type="select" value="#5E6671">黑色</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">优惠券logo</label>
+                        <div class="layui-input-inline">
+                            <input type="hidden" name="logoImgPath" id="logoImgPath" class="layui-hide">
+                            <img class="uploadImg layui-hide" style="height:38px; margin-left:30px;cursor: pointer;" title="点击放大" />
+                            <button class="uploadImgBtn layui-btn layui-btn-sm" type="button" style="margin-left: 20px;margin-top: 5px;">上传图片</button>
+                            <button class="delImgBtn layui-btn layui-btn-sm layui-btn-danger layui-hide" style="margin-top: 5px;" type="button">删除图片</button>
+                        </div>
+                        <label class="layui-form-label">优惠券面值</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="couponAmount" name="couponAmount" lay-verify="number" placeholder="输入优惠券面值" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">总发放数量</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="totalNum" name="totalNum" lay-verify="number" placeholder="输入总发放数量" autocomplete="off" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">活动时间</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="activityTime" name="activityTime" readonly placeholder="输入活动时间" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">最低消费金额</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="payAmountLimit" name="payAmountLimit" lay-verify="number" placeholder="输入最低消费金额" autocomplete="off" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">状态</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="status" value="0" title="暂停发放">
+                            <input type="radio" name="status" value="1" title="正常发放" checked="checked">
+                            <input type="radio" name="status" value="2" title="活动已结束">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">是否同步到微信卡包</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="syncWX" value="1" title="是">
+                            <input type="radio" name="syncWX" value="0" title="否" checked="checked">
+                        </div>
+                        <label class="layui-form-label">备注</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="remark" name="remark" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-tab layui-tab-brief">
+                <ul class="layui-tab-title">
+                    <li class="layui-this">用户相关</li>
+                </ul>
+                <div class="layui-tab-content">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">是否限制用户领取数量</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="singleLimit" value="1" title="是" checked="checked" lay-filter="singleUserLimit">
+                            <input type="radio" name="singleLimit" value="2" title="否" lay-filter="singleUserLimit">
+                        </div>
+                        <label class="layui-form-label singleUserLimit">数量限制</label>
+                        <div class="layui-input-inline singleUserLimit">
+                            <input type="text" id="singleUserLimit" name="singleUserLimit" placeholder="输入数量限制" autocomplete="off" class="layui-input singleUserLimit">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">是否过期前提醒</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="warningTime" value="1" title="是" checked="checked" lay-filter="expiredWarningTime">
+                            <input type="radio" name="warningTime" value="2" title="否" lay-filter="expiredWarningTime">
+                        </div>
+                        <label class="layui-form-label warningTime">过期提醒提前天数</label>
+                        <div class="layui-input-inline warningTime">
+                            <input type="text" id="expiredWarningTime" name="expiredWarningTime" placeholder="输入过期提醒提前天数" autocomplete="off" class="layui-input warningTime">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">有效期类型</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="validateType" value="1" title="领取后天数" checked="checked" lay-filter="validateDay">
+                            <input type="radio" name="validateType" value="2" title="按活动日期" lay-filter="validateDay">
+                        </div>
+                        <label class="layui-form-label validateDay">领取后有效期天数</label>
+                        <div class="layui-input-inline validateDay">
+                            <input type="text" id="validateDay" name="validateDay" placeholder="输入领取后有效期天数" autocomplete="off" class="layui-input validateDay">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">是否限制门店</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="storeLimitType" value="0" title="不限门店" checked="checked" lay-filter="storeLimitType">
+                            <input type="radio" name="storeLimitType" value="1" title="限制门店" lay-filter="storeLimitType">
+                        </div>
+                        <label class="layui-form-label storeId">门店ID</label>
+                        <div class="layui-input-inline storeId">
+                            <input name="storeIds" id="storeIds" readonly class="layui-input storeId">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-tab layui-tab-brief">
+                <ul class="layui-tab-title">
+                    <li class="layui-this">使用限制</li>
+                </ul>
+                <div class="layui-tab-content">
+                <div class="layui-form-item">
+                        <label class="layui-form-label">允许星期几使用</label>
+                        <input type="hidden" name="weekDays" id="weekDay">
+                        <div class="layui-input-inline">
+                            <input class="weekDay" type="checkbox" name="weekDay" title="星期一" value="1" lay-skin="primary">
+                            <input class="weekDay" type="checkbox" name="weekDay" title="星期二" value="2" lay-skin="primary">
+                            <input class="weekDay" type="checkbox" name="weekDay" title="星期三" value="3" lay-skin="primary">
+                            <input class="weekDay" type="checkbox" name="weekDay" title="星期四" value="4" lay-skin="primary">
+                            <input class="weekDay" type="checkbox" name="weekDay" title="星期五" value="5" lay-skin="primary">
+                            <input class="weekDay" type="checkbox" name="weekDay" title="星期六" value="6" lay-skin="primary">
+                            <input class="weekDay" type="checkbox" name="weekDay" title="星期日" value="7" lay-skin="primary">
+                        </div>
+                        <label class="layui-form-label">使用时间</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="useTime" name="useTime" readonly placeholder="输入使用时间" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block" style="padding-bottom: 20px;">
+                        <button type="button" class="layui-btn" lay-submit="" lay-filter="couponAdd">保存</button>
+                        <a class="layui-btn" lay-href="/account/coupon/">返回</a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    layui.use(['form','util','admin','laydate','upload','setter'], function(){
+        var form = layui.form
+            ,$ = layui.$
+            ,admin = layui.admin
+            ,element = layui.element
+            ,view = layui.view
+            ,upload = layui.upload
+            ,setter = layui.setter
+            ,laydate = layui.laydate;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        //默认不限门店，隐藏门店ID
+        $(".storeId").css("display","none");
+        $(".weekDay").attr("checked", "checked");
+        $("#useTime").val("00:00:00 ~ 23:59:59");
+        //监听提交
+        form.on('submit(couponAdd)', function(data){
+            var weekDayCheckbox = $("input[name='weekDay']");
+            var weekDays = "";
+            for(i = 0; i < weekDayCheckbox.length; i++){
+                if(weekDayCheckbox[i].checked){
+                    var val = weekDayCheckbox[i].value;
+                    if(weekDays.length>0){
+                        weekDays += "," + val;
+                    }else{
+                        weekDays += val;
+                    }
+                }
+            }
+            if (weekDays == "") {
+                return layer.msg('请选择使用星期！');
+            }
+            if (data.field.useTime == "") {
+                return layer.msg('请选择使用时间！');
+            }
+            data.field.weekDays = weekDays;
+            //若为限制门店判断是否选择门店
+            if (data.field.storeLimitType == 1){
+                var storeIds = $("#storeIds").val();
+                if (storeIds.length == 0){
+                    return layer.msg('请选择要限制的门店！');
+                }
+            }
+            // 验证输入格式是否正确（数字）
+            var reg = /^[0-9]+$/;
+            if (data.field.singleLimit == 1) {
+                if(!reg.test(data.field.singleUserLimit)) {
+                    return layer.msg('请输入有效的数量限制！');
+                }
+            }
+            if (data.field.warningTime == 1) {
+                if(!reg.test(data.field.expiredWarningTime)) {
+                    return layer.msg('请输入有效的提醒天数！');
+                }
+            }
+            if (data.field.validateType == 1) {
+                if (data.field.validateDay == "") {
+                    return layer.msg('请输入有效的领取后天数！');
+                }
+            }
+            //活动范围
+            var times = $("#activityTime").val().split("~");
+            if (times.length <= 1){
+                return layer.msg('请选择活动范围！');
+            }
+            //优惠券面额
+            var couponAmount = $("#couponAmount").val() * 100;
+            //最低消费金额
+            var payAmountLimit = $("#payAmountLimit").val() * 100;
+            //判断面额是否合理
+            if (couponAmount >= payAmountLimit) {
+                return layer.msg('优惠券面值大于最低消费金额！');
+            }
+            data.field.couponAmount = couponAmount;
+            data.field.payAmountLimit = payAmountLimit;
+
+            data.field.beginTime = times[0].trim();
+            data.field.endTime = times[1].trim();
+            // 在这个回调函数里面写ajax提交
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/coupon/add',
+                data: data.field,
+                success: function(res){
+                    if(res.code == 0){
+                        layer.alert(res.msg,{title: "保存成功"},function(index){
+                            layer.close(index);
+                            location.hash = '/account/coupon/';
+                        })
+                    }
+                }
+            });
+            return false;//阻止跳转
+        });
+
+        //是否限制门店
+        form.on('radio(storeLimitType)', function(data){
+            if (data.value == 0){
+                $(".storeId").css("display","none");
+            } else if (data.value == 1){
+                view.xxpayPopup("选择门店", "account/coupon/points_stores", null, {btn:false});
+                $(".storeId").show();
+            }
+        });
+
+        form.on('select(color)', function(data){
+            console.log(data);
+            $("#previewColor").css("backgroundColor", data.value);
+        });
+
+        var headers = {};
+        headers[setter.request.tokenName] = layui.data(setter.tableName)[setter.request.tokenName];
+        var uploadInst = upload.render({
+            elem: '.uploadImgBtn'
+            , url: layui.setter.baseUrl + '/upload/coupon'
+            , headers: headers
+            , size: 2048  //仅支持2M图片上传
+            ,before: function (obj) {
+                obj.preview(function(index, file, result) {
+                    $('#img').attr('src', result);
+                })
+            },done: function(res){
+                //如果上传失败
+                if(res.code != 0){
+                    return layer.msg('上传失败['+res.msg+']', {icon: 2});
+                }
+                //上传成功
+                $("#logoImgPath").val(res.data);
+                var divElem = $(this.item).parent();
+                divElem.find('.uploadImg').attr("src", res.data).removeClass('layui-hide');
+                divElem.find('.delImgBtn').removeClass('layui-hide');
+                divElem.find('.uploadImgBtn').text('重新上传');
+            }
+        });
+
+        //点击[图片] 按钮， 事件
+        $('.uploadImg').click(function(){
+            var imgSrc = $(this).attr('src');
+            layer.photos({photos: {
+                    "title": "查看上传图片", //相册标题
+                    "id": 1, //相册id
+                    "start": 0, //初始显示的图片序号，默认0
+                    "data": [   //相册包含的图片，数组格式
+                        {
+                            "alt": "图片",
+                            "pid": 1, //图片id
+                            "src": imgSrc, //原图地址
+                            "thumb": "" //缩略图地址
+                        }
+                    ]
+                } ,anim: 5});
+        });
+
+        //点击[删除图片] 按钮， 事件
+        $('.delImgBtn').click(function(){
+
+            var divElem = $(this).parent();
+            divElem.find('.imgVal').val(""); //清空图片真实路径
+            divElem.find('.uploadImgBtn').text("上传图片");
+            divElem.find('.uploadImg').attr("src", "").addClass('layui-hide');
+            divElem.find('.delImgBtn').addClass('layui-hide');
+            form.render();
+        });
+        //用户领取限制
+        form.on('radio(singleUserLimit)', function(data){
+            if (data.value == 1) {
+                $(".singleUserLimit").show();
+            }else {
+                $(".singleUserLimit").css("display","none");
+            }
+        });
+        //过期提醒天数
+        form.on('radio(expiredWarningTime)', function(data){
+            if (data.value == 1) {
+                $(".warningTime").show();
+            }else {
+                $(".warningTime").css("display","none");
+            }
+        });
+        //领取后有效天数
+        form.on('radio(validateDay)', function(data){
+            if (data.value == 1) {
+                $(".validateDay").show();
+            }else {
+                $(".validateDay").css("display","none");
+            }
+        });
+        form.render();
+        // 获取当前时间
+        var date = new Date();
+        var year = date.getFullYear();
+        var month = date.getMonth() + 1;
+        var day = date.getDate();
+        if (month < 10) {
+            month = "0" + month;
+        }
+        if (day < 10) {
+            day = "0" + day;
+        }
+        var nowDate = year + "-" + month +"-" + day;
+        //时间选择
+        laydate.render({
+            elem: '#activityTime'
+            ,type: 'datetime'
+            ,range: '~'
+            ,trigger: 'click'
+            ,value: nowDate + " 00:00:00" + " ~ " + nowDate + " 23:59:59"
+        });
+        //使用时间
+        laydate.render({
+            elem: '#useTime'
+            ,type: 'time'
+            ,range: '~'
+            ,trigger: 'click'
+        });
+
+    });
+</script>
+

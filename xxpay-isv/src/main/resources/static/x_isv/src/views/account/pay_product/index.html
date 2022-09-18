@@ -1,0 +1,89 @@
+<style>
+    .layui-input-inline{margin-top:10px;}
+</style>
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a><cite>费率配置</cite></a>
+    </span>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">费率配置</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-row"></div>
+                <table id="cList" lay-filter="cList"></table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+     //标题内容模板
+     var tplEdit = function(d){
+         return "<a class='layui-btn layui-btn-primary layui-btn-xs' lay-event='config'>配置</a>";
+     };
+
+     //费率
+     var tplRate = function(d){
+         if(d.ps.feeScale){
+             return "<span style='color:blue'>" +d.ps.feeScale.fee + "%" + "</span>";
+         }else{
+             return "<span style='color:darkred'>未设置</span>";
+         }
+     };
+
+     //支付接口
+     var tplIfType = function(d){
+         if(d.ps.feeScale){
+             return d.ps.feeScale.extConfig;
+         }else{
+             return "<span style='color:darkred'>未设置</span>";
+         }
+     };
+
+
+
+
+     layui.use(['table','util','admin', 'laydate','view'], function(){
+        var table = layui.table
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,laydate = layui.laydate
+        ,element = layui.element
+        ,view = layui.view
+        ,form = layui.form;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+
+         table.render({
+             elem: '#cList'
+             ,url: layui.setter.baseUrl + '/pay_product/list'
+             ,id: 'tableReload'
+             ,cols: [[
+                 {field:'id', title: '产品ID'}
+                 ,{field:'productName',  title: '产品名称'}
+                 ,{title: '支付接口', templet: tplIfType}
+                 ,{title: '费率', templet: tplRate}
+                 ,{width: 200, title: '操作', templet: tplEdit }
+             ]]
+             ,page: true
+             ,skin: 'line'
+         });
+
+        //监听工具条
+         table.on('tool(cList)', function(obj){
+             var data = obj.data;
+             if(obj.event === 'config'){
+                 view.xxpayPopup("配置产品接口", "account/pay_product/product_config", {productId: data.id}, {area: ['30%', '45%']});
+             }
+         });
+
+         // 渲染表单
+         form.render();
+        
+     })
+</script>

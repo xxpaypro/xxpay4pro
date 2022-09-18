@@ -1,0 +1,84 @@
+server:
+  port: 8201
+
+# 服务节点,要求分布式下每个节点不同
+node: 01
+
+dubbo:
+  application:
+    name: ${spring.application.name}
+  protocol:
+    name: dubbo
+    port: -1
+  registry:
+    address: @zookeeper.url@
+    file: ${user.home}/dubbo-cache/${spring.application.name}/dubbo.cache
+  scan:
+    base-packages: org.xxpay.pay.service.impl
+
+spring:
+  application:
+    name: xxpay-pay
+  cache:
+    type: redis
+  redis:
+    host: @redis.ip@
+    port: @redis.port@
+    timeout: 1000
+    database: 1
+    password: @redis.pass@
+    jedis:
+      pool:
+        max-active: 1000
+        max-wait: -1ms
+        max-idle: 100
+        min-idle: 1
+  activemq:
+    broker-url: @activemq.url@
+    user: admin
+    password: admin
+    in-memory: false
+    pool:
+      enabled: true
+      max-connections: 10
+      idle-timeout: 30000  # 空闲的连接过期时间，默认为30秒
+  freemarker:
+    cache: false
+    charset: UTF-8
+    check-template-location: true
+    content-type: text/html
+    expose-request-attributes: true
+    expose-session-attributes: true
+    request-context-attribute: request
+    suffix: .ftl
+    templateEncoding: UTF-8
+    templateLoaderPath: classpath:/templates/
+    settings:
+      number_format: 0.##
+
+config:
+  notifyUrl: @pay.site.url@/notify/%s/notify_res.htm
+  returnUrl: @pay.site.url@/notify/%s/return_res.htm
+  notifyTransUrl: @pay.site.url@/notify/%s/trans_notify.htm
+  payUrl: @pay.site.url@/api
+  qrcodeUrl: @pay.site.url@/qrcode
+  uploadIsvCertRootDir: @upload.isv.cert.root.dir@
+  agentpayNotifyUrl: @pay.site.url@/api/agentpay/notify
+  wxOauth2CodeUrl: @wx.auth2code.url@
+  mchNotifyUrl: @mch.site.url@/api/payment/notify #商户系统的回调地址
+  toNewMemberUrl: @mbr.site.url@/x_mbr/index.html#/ #会员开卡URL, 不带任何参数
+task:
+  reissue.pay.switch: @task.reissue.pay.switch@
+  reissue.pay.ip: @task.reissue.pay.ip@
+  reissue.trans.switch: @task.reissue.trans.switch@
+  reissue.trans.ip: @task.reissue.trans.ip@
+  reissue.agentpay.switch: @task.reissue.agentpay.switch@
+  reissue.agentpay.ip: @task.reissue.agentpay.ip@
+
+sqlit:
+  file:
+    path: jdbc:sqlite:@sqlit.file.path@
+
+
+
+

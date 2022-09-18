@@ -1,0 +1,174 @@
+<style>
+    .xxpayPopupDiv .layui-form-label {
+        width:120px !important;
+        margin-left:1%;
+    }
+    .xxpayPopupDiv .layui-input-inline {
+        width: 80% !important;
+    }
+    .xxpayPopupDiv .layui-input , .layui-textarea{
+        width: 80%;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <div class="layui-tab-content">
+
+                <form class="layui-form center">
+                    <input id="id" type="hidden">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">接口类型代码</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="ifTypeCode" readonly="readonly" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">接口类型名称</label>
+                        <div class="layui-input-inline">
+                            <input type="text" readonly="readonly" id="ifTypeName" placeholder="请输入接口类型名称" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">状态</label>
+                        <div class="layui-input-inline" >
+                            <input type="radio" name="status" title="开启" value="1" />
+                            <input type="radio" name="status" title="关闭" value="0" />
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">备注信息</label>
+                        <div class="layui-input-inline">
+                            <input id="remark" type="text" placeholder="请输入备注信息" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+
+                    <fieldset class="layui-elem-field">
+                        <legend><button class='layui-btn layui-btn-xs layui-btn-danger'><span id="ifTypeNameSpan"></span> 子商户配置</button></legend>
+                        <div id="paramInfo"></div>
+                    </fieldset>
+
+
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button type="button" class="layui-hide xxpayYesBtn" lay-submit="" lay-filter="saveConfig">保存</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    layui.use(['form','table','util','admin','view'],function(){
+        var form = layui.form
+            , $ = layui.$
+            , admin = layui.admin
+            , layer = layui.layer
+            , element = layui.element
+            , view = layui.view
+            , table = layui.table;
+
+        element.render('breadcrumb', 'breadcrumb'); //渲染导航信息
+
+        var ifTypeCode = view.getOpenParams('ifTypeCode'); //接口代码
+        var mchId = view.getOpenParams('mchId');  //商户ID
+
+        admin.req({
+            type: 'post',
+            url: layui.setter.baseUrl + '/mch_info/pay_passage_get',
+            data: {
+                ifTypeCode:ifTypeCode, mchId: mchId
+            },
+            error: function(err){
+                layer.alert(err);
+            },
+            success: function(res){
+                if(res.code == 0){
+
+                    var paramVal = {};
+                    if(res.data.ps && res.data.ps.mchPassage){ //存在数据
+                        $("#id").val(res.data.ps.mchPassage.id);
+                        paramVal = JSON.parse(res.data.ps.mchPassage.mchParam);
+                        $("input[name='status'][value='"+res.data.ps.mchPassage.status+"']").attr("checked",true);
+                        $('#remark').val(res.data.ps.mchPassage.remark);
+                    }
+
+                    $('#ifTypeCode').val(res.data.ifTypeCode);
+                    $('#ifTypeName').val(res.data.ifTypeName);
+                    $("#ifTypeNameSpan").html(res.data.ifTypeName);
+                    var jsonObj = JSON.parse(res.data.mchParam);
+
+                    // 根据paramVal填充表单值
+                    var htm = '';
+                    $.each(jsonObj, function(i, obj){
+
+                        if(obj.type == 'hidden'){
+                            htm += ` <input type="hidden" name="` + obj.name + `" value="` + (paramVal[obj.name] == undefined ? "" : paramVal[obj.name]) + `"/>`;
+                            return true;
+                        }
+
+                        htm += `
+                                        <div class="layui-form-item">
+                                            <label class="layui-form-label"> ` + obj.desc + ` [` + obj.name + `]` +`</label>
+                                            <div class="layui-input-block"> `;
+                        if(obj.type == 'text') {
+                            htm += ` <input type="text" name="` + obj.name + `" lay-verify="` + obj.verify + `" value="` + (paramVal[obj.name] == undefined ? "" : paramVal[obj.name]) + `" placeholder="请输入` + obj.desc + `" autocomplete="off" class="layui-input">`;
+                        }else if(obj.type == 'textarea') {
+                            htm += ` <textarea required name="` + obj.name + `" lay-verify="` + obj.verify + `" placeholder="请输入` + obj.desc + `" class="layui-textarea">` + (paramVal[obj.name] == undefined ? "" : paramVal[obj.name]) + `</textarea>`;
+                        }
+                        htm += ` </div>
+                                        </div>`;
+                    });
+                    htm += ``;
+                    $('#paramInfo').html(htm);
+                    form.render();
+
+                }else{
+                    layer.alert(res.msg,{title:"请求失败"})
+                }
+            }
+        });
+
+        form.on('submit(saveConfig)', function(data){
+
+            if(!data.field.status){
+                return layer.alert('请选择状态！');
+            }
+
+            var reqParam = {};
+            reqParam.id = $("#id").val();
+            reqParam.ifTypeCode = ifTypeCode;
+            reqParam.passageName = $("#ifTypeName").val();
+            reqParam.belongInfoId = mchId;
+            reqParam.belongInfoType = 1; //1-商户
+            reqParam.status = data.field.status;
+            reqParam.remark = $("#remark").val();
+
+            var mchParam = data.field;
+            delete mchParam.status; //删除状态，默认其他都为isv参数
+            reqParam.mchParam = JSON.stringify(mchParam); //toString
+
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/mch_info/pay_passage_save',
+                data: reqParam,
+                error: function(err){layer.alert(err.msg,{title:"请求失败"})},
+                success: function(res){
+                    if(res.code == 0){
+                        layer.closeAll(); //关闭所有弹层
+                        layer.msg("配置成功");
+                        layui.table.reload('tableReload', {page: {curr: 1}}); //调用业务弹层外表格重新加载
+                    }
+                }
+            })
+            return false;
+        });
+
+        $('#btnBack_Param').on('click', function() {
+            location.hash = '/biz/pay_passage//mchId=' + mchId;
+        });
+
+    });
+</script>

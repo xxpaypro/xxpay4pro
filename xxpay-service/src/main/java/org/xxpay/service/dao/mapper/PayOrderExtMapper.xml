@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.xxpay.service.dao.mapper.PayOrderExtMapper" >
+  <resultMap id="BaseResultMap" type="org.xxpay.core.entity.PayOrderExt" >
+    <id column="PayOrderId" property="payOrderId" jdbcType="VARCHAR" />
+    <result column="MchId" property="mchId" jdbcType="BIGINT" />
+    <result column="MchOrderNo" property="mchOrderNo" jdbcType="VARCHAR" />
+    <result column="retData" property="retData" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    PayOrderId, MchId, MchOrderNo, retData
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="org.xxpay.core.entity.PayOrderExtExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from t_pay_order_ext
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+    <if test="limit != null" >
+      <if test="offset != null" >
+        limit ${offset}, ${limit}
+      </if>
+      <if test="offset == null" >
+        limit ${limit}
+      </if>
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_pay_order_ext
+    where PayOrderId = #{payOrderId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from t_pay_order_ext
+    where PayOrderId = #{payOrderId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="org.xxpay.core.entity.PayOrderExtExample" >
+    delete from t_pay_order_ext
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="org.xxpay.core.entity.PayOrderExt" >
+    insert into t_pay_order_ext (PayOrderId, MchId, MchOrderNo, 
+      retData)
+    values (#{payOrderId,jdbcType=VARCHAR}, #{mchId,jdbcType=BIGINT}, #{mchOrderNo,jdbcType=VARCHAR}, 
+      #{retData,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="org.xxpay.core.entity.PayOrderExt" >
+    insert into t_pay_order_ext
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="payOrderId != null" >
+        PayOrderId,
+      </if>
+      <if test="mchId != null" >
+        MchId,
+      </if>
+      <if test="mchOrderNo != null" >
+        MchOrderNo,
+      </if>
+      <if test="retData != null" >
+        retData,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="payOrderId != null" >
+        #{payOrderId,jdbcType=VARCHAR},
+      </if>
+      <if test="mchId != null" >
+        #{mchId,jdbcType=BIGINT},
+      </if>
+      <if test="mchOrderNo != null" >
+        #{mchOrderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="retData != null" >
+        #{retData,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="org.xxpay.core.entity.PayOrderExtExample" resultType="java.lang.Integer" >
+    select count(*) from t_pay_order_ext
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update t_pay_order_ext
+    <set >
+      <if test="record.payOrderId != null" >
+        PayOrderId = #{record.payOrderId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mchId != null" >
+        MchId = #{record.mchId,jdbcType=BIGINT},
+      </if>
+      <if test="record.mchOrderNo != null" >
+        MchOrderNo = #{record.mchOrderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.retData != null" >
+        retData = #{record.retData,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update t_pay_order_ext
+    set PayOrderId = #{record.payOrderId,jdbcType=VARCHAR},
+      MchId = #{record.mchId,jdbcType=BIGINT},
+      MchOrderNo = #{record.mchOrderNo,jdbcType=VARCHAR},
+      retData = #{record.retData,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="org.xxpay.core.entity.PayOrderExt" >
+    update t_pay_order_ext
+    <set >
+      <if test="mchId != null" >
+        MchId = #{mchId,jdbcType=BIGINT},
+      </if>
+      <if test="mchOrderNo != null" >
+        MchOrderNo = #{mchOrderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="retData != null" >
+        retData = #{retData,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where PayOrderId = #{payOrderId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.xxpay.core.entity.PayOrderExt" >
+    update t_pay_order_ext
+    set MchId = #{mchId,jdbcType=BIGINT},
+      MchOrderNo = #{mchOrderNo,jdbcType=VARCHAR},
+      retData = #{retData,jdbcType=VARCHAR}
+    where PayOrderId = #{payOrderId,jdbcType=VARCHAR}
+  </update>
+  
+  <select id="queryCanRepeatPlaceOrderExt" resultType="java.lang.String" parameterType="java.util.Map">
+  
+  	select ext.retData from t_pay_order o inner join t_pay_order_ext ext 
+  	on o.PayOrderId = ext.PayOrderId 
+  	where o.`Status` = 1 and o.MchId = #{mchId} and o.MchOrderNo = #{mchOrderNo}
+
+  </select>
+  
+</mapper>

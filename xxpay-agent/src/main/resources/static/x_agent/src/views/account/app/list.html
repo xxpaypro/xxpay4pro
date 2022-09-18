@@ -1,0 +1,61 @@
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a><cite>应用列表</cite></a>
+    </span>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">应用列表信息</li>
+            </ul>
+            <div class="layui-tab-content">
+                <table class="layui-hide" id="tList"></table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    layui.use(['table','util',], function(){
+        var table = layui.table
+        ,$ = layui.$
+        ,element = layui.element;
+        
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        //标题内容模板
+        var tplTitle = function(d){
+            if(d.mchType == 1) {
+                return '<a class="layui-btn layui-btn-xs" lay-href="account/app/update/appId='+ d.appId +'">修改</a> ' +
+                        '<a class="layui-btn layui-btn-xs layui-btn-primary" lay-href="account/app/detail/appId='+ d.appId +'">详情</a>  ' +
+                        '<a class="layui-btn layui-btn-xs layui-btn-primary" lay-href="account/qrcode/list/appId='+ d.appId +'">二维码管理</a>';
+            }else if (d.mchType == 2) {
+                return '<a class="layui-btn layui-btn-xs" lay-href="account/app/update/appId='+ d.appId +'">修改</a> ' +
+                        '<a class="layui-btn layui-btn-xs layui-btn-primary" lay-href="account/app/detail/appId='+ d.appId +'">详情</a>  ' +
+                        '<a class="layui-btn layui-btn-xs layui-btn-normal" lay-href="account/app/channelList/appId='+ d.appId +'">支付渠道配置</a>  ' +
+                        '<a class="layui-btn layui-btn-xs layui-btn-primary" lay-href="account/qrcode/list/appId='+ d.appId +'">二维码管理</a>';
+            }else {
+                return '<a class="layui-btn layui-btn-xs" lay-href="account/app/update/appId='+ d.appId +'">修改</a> ' +
+                        '<a class="layui-btn layui-btn-xs layui-btn-primary" lay-href="account/app/detail/appId='+ d.appId +'">详情</a>  ';
+            }
+
+        };
+
+        table.render({
+            elem: '#tList'
+            ,url: layui.setter.baseUrl + '/app/list'
+            ,cols: [[
+                {type:'checkbox'}
+                ,{field:'appId', title: '应用ID', sort: true }
+                ,{field:'appName', title: '应用名称' }
+                ,{field:'status',  title: '应用状态',templet: '<div>{{d.status == 0?"停止使用":"使用中"}}</div>' }
+                ,{field:'createTime',  title: '创建时间', templet: '<div>{{ layui.util.toDateString(d.createTime) }}</div>' }
+                ,{field:'edite', width: 300, title: '操作', templet: tplTitle }
+            ]]
+            ,page: true
+            ,skin: 'line'
+        });
+    });
+</script>

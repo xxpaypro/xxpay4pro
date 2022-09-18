@@ -1,0 +1,98 @@
+<style>
+    .xxpayPopupDiv .layui-form-label {
+        width:15% !important;
+        margin-left:1%;
+    }
+    .xxpayPopupDiv .layui-input-inline {
+        width: 33% !important;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <form class="layui-form layui-form-pane">
+            <div class="layui-tab layui-tab-brief">
+                <div class="layui-tab-content">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">充值金额</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="rechargeAmount" name="rechargeAmount" lay-verify="required" placeholder="输入充值金额" autocomplete="off" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">赠送优惠券ID</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="giveCouponId" name="giveCouponId" placeholder="输入赠送优惠券ID" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">赠送返点, 余额/积分</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="givePoints" name="givePoints" placeholder="输入赠送返点" autocomplete="off" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">赠送规则</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="ruleType" value="1" title="赠余额">
+                            <input type="radio" name="ruleType" value="2" title="赠积分" checked="checked">
+                            <input type="radio" name="ruleType" value="3" title="赠优惠券">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">推荐标识</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="firstFlag" value="0" title="否">
+                            <input type="radio" name="firstFlag" value="1" title="是" checked="checked">
+                        </div>
+                        <label class="layui-form-label">状态</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="status" value="0" title="停止使用">
+                            <input type="radio" name="status" value="1" title="正常使用" checked="checked">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">备注</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="remark" name="remark" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="layui-hide xxpayYesBtn" lay-submit="" lay-filter="storeAdd">保存</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+   
+    layui.use(['form','util','admin'], function(){
+        var form = layui.form
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,element = layui.element;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        //监听提交
+        form.on('submit(storeAdd)', function(data){
+            //如果为赠余额，转化返点为分
+            if (data.field.ruleType == 1) {
+                data.field.givePoints = data.field.givePoints*100;
+            }
+            //充值金额转化
+            data.field.rechargeAmount = data.field.rechargeAmount*100;
+            // 在这个回调函数里面写ajax提交
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/member_recharge_rule/add',
+                data: data.field,
+                success: function(res){
+                    if(res.code == 0){
+                        layer.closeAll(); //关闭所有弹层
+                        layer.msg("保存成功");
+                        layui.table.reload('tableReload', {page: {curr: 1}}); //调用业务弹层外表格重新加载
+                    }
+                }
+            });
+            return false;//阻止跳转
+        });
+        form.render();
+    });
+
+        
+</script>

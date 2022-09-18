@@ -1,0 +1,102 @@
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>用户管理</cite></a>
+        <a><cite>查看用户</cite></a>
+    </div>
+</div>
+
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-tab layui-tab-brief">
+      <ul class="layui-tab-title">
+        <li class="layui-this">用户详情</li>
+      </ul>
+      <div class="layui-tab-content">
+          <form class="layui-form layui-form-pane" action="">
+              <div class="layui-form-item">
+                  <label class="layui-form-label">用户ID</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="userId" disabled="disabled" class="layui-input">
+                  </div>
+              </div>
+              <div class="layui-form-item">
+                  <label class="layui-form-label">用户名</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="userName" disabled="disabled" class="layui-input">
+                  </div>
+              </div>
+              <div class="layui-form-item">
+                  <label class="layui-form-label">用户昵称</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="nickName" disabled="disabled" class="layui-input">
+                  </div>
+              </div>
+              <div class="layui-form-item">
+                  <label class="layui-form-label">邮箱</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="email" disabled="disabled" class="layui-input">
+                  </div>
+              </div>
+              <div class="layui-form-item">
+                  <label class="layui-form-label">手机号</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="mobile" disabled="disabled" class="layui-input">
+                  </div>
+              </div>
+              <div class="layui-form-item">
+                  <label class="layui-form-label">状态</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="status" disabled="disabled" class="layui-input">
+                  </div>
+              </div>
+              <div class="layui-form-item">
+                  <div class="layui-input-block">
+                      <a class="layui-btn" lay-href="sys/perm/user">返回</a>
+                  </div>
+              </div>
+          </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    layui.use(['admin','form'],function(){
+        var form = layui.form
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,element = layui.element
+        ,layer = layui.layer ;
+        // 导航
+        element.render('breadcrumb', 'breadcrumb');
+        var userId = location.href.split('?')[1];
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/sys_user/get',
+            data: {
+                userId : userId
+            },
+            error: function(err){
+                layer.alert(JSON.stringify(err.field), {
+                    title: '错误提示'
+                })
+            },
+            success: function(res){
+                if(res.code == 0){
+                    $('#userId').val(res.data.userId);
+                    $('#userName').val(res.data.userName);
+                    $('#nickName').val(res.data.nickName);
+                    $('#email').val(res.data.email);
+                    $('#mobile').val(res.data.mobile);
+                    if(res.data.status == 1) {
+                        $('#status').val("启用");
+                    }else {
+                        $('#status').val("停止");
+                    }
+                    form.render();
+                }
+            }
+        })
+    })
+</script>

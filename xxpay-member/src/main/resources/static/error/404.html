@@ -1,0 +1,37 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <title>错误</title>
+    <style type="text/css">
+        *{ padding: 0; margin: 0; }
+        body{ background: #fff; font-family: "Microsoft Yahei","Helvetica Neue",Helvetica,Arial,sans-serif; color: #333; font-size: 16px; }
+        .system-message{ padding: 24px 48px; }
+        .system-message h1{ font-size: 100px; font-weight: normal; line-height: 120px; margin-bottom: 12px; }
+        .system-message .jump{ padding-top: 10px; }
+        .system-message .jump a{ color: #333; }
+        .errorDIV{ line-height: 1.8em; font-size: 36px; }
+    </style>
+</head>
+<body>
+<div class="system-message">
+    <h1>: ( </h1>
+    <p class="errorDIV">页面未找到 ...</p>
+    <p class="jump">
+        <b id="waitTime">5</b><b>s</b> 将自动 <a id="href" href="javascript:history.back(-1);">跳转到上一页</a>
+    </p>
+</div>
+<script type="text/javascript">
+    (function(){
+        var wait = document.getElementById('waitTime'),
+            href = document.getElementById('href').href;
+        var interval = setInterval(function(){
+            var time = --wait.innerHTML;
+            if(time*1 <= 0) {
+                location.href = href;
+                clearInterval(interval);
+            };
+        }, 1000);
+    })();
+</script>
+</body>
+</html>

@@ -1,0 +1,145 @@
+<style>
+    .layui-wrap-content {
+        width: 100%;
+        text-align: center;
+        background-color: #15c786;
+        padding: 2px 0px;
+    }
+</style>
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a><cite>二维码列表</cite></a>
+    </span>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">二维码列表</li>
+            </ul>
+            <div class="layui-tab-content" id="cnotent">
+                <div class="layui-row">
+                    <div class="layuiAdmin-btns" style="margin-bottom: 10px;">
+                        <button class="layui-btn" data-type="all" data-events="create">创建二维码</button>
+                    </div>
+                </div>
+                <table id="qrcodeList" lay-filter="qrcodeList"></table>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/html" id="qrcodeImg">
+    <img class="layui-table-cell" src={{ d.url }}>
+</script>
+<script>
+
+    //标题内容模板
+    var tplTitle = function(d){
+            return '<a class="layui-btn layui-btn-primary layui-btn-xs"lay-event="detail" >详情</a> ' +
+                '<a class="layui-btn layui-btn-xs" lay-event="edit">修改</a> ' +
+                '<a class="layui-btn ckEwm layui-btn-xs layui-btn-primary" data-vierm="'+ d.id +'">查看二维码</a>'
+        };
+        
+    var tplStatus = function(d){
+        if (d.status == 1) {
+            return '<span class="layui-badge layui-bg-green">启用</span>'
+        }else if (d.status == 0) {
+            return '<span class="layui-badge layui-bg-red">停用</span>'
+        }
+    };
+
+
+    layui.use(['table','util','admin'], function(){
+        var table = layui.table
+        ,admin = layui.admin
+        ,$ = layui.$
+        ,view = layui.view
+        ,element = layui.element;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        var appid = location.href.split('?')[1];
+        if(!appid) {
+            appid = layui.router().search.appId;
+        }
+
+        table.render({
+            elem: '#qrcodeList'
+            ,id: "tableReload"
+            ,url: layui.setter.baseUrl + '/mch_qrcode/list'
+            ,cols: [[
+                {field:'id', title: '二维码ID'}
+                ,{field: 'url', title: '二维码', templet: '#qrcodeImg'}
+                ,{field:'codeName', title: '二维码名称' }
+                ,{field:'payAmount', title: '固定金额', templet: '<div>{{ d.payAmount/100 }}</div>'}
+                ,{field:'storeId', title: '门店ID' }
+                ,{field:'operatorId', title: '操作员ID' }
+                ,{field:'status', title: '状态', templet: tplStatus }
+                ,{field:'createTime',  title: '创建时间', templet: '<div>{{ layui.util.toDateString(d.createTime) }}</div>' }
+                ,{field:'edite', title: '操作', width: 200, templet: tplTitle }
+            ]]
+            ,page: true
+            ,skin: 'line'
+            ,done:function(){
+                $('.layui-table-cell').css({'height':'auto'}
+                );
+            }
+        });
+
+        $('#cnotent').on('click','.ckEwm',function(){
+            var curEWM = $(this).data('vierm');
+
+            admin.req({
+                url: layui.setter.baseUrl + '/mch_qrcode/view_code'
+                ,data: { id: curEWM }
+                ,success: function(res){
+                    if(res.code == 0){
+                        layer.open({
+                            type: 1,
+                            skin: 'layui-layer-molv', //样式类名
+                            title: '扫码付款',
+                            scrollbar: false,//浏览器滚动条已锁
+                            closeBtn: 0, //不显示关闭按钮
+                            shadeClose: true, //开启遮罩关闭
+                            // area: ['300px', '380px'],
+                            area: '300px',
+                            content:  '<div class="layui-wrap-content"><div><div style="margin-bottom:5px;"></div><img src="'+res.data.codeImgUrl+'"/></div></div><div style="margin:10px auto;text-align:center"><img id="zhifubao" src="/images/alipay-sm.png" alt="支付宝"/><img id="weixin" style="margin-left:20px" src="layui/images/imgs/wxpay.png" alt="微信"/></div>'
+                        });
+                    }
+                }
+            })
+
+           
+
+        });
+
+        //监听工具条
+        table.on('tool(qrcodeList)', function(obj){
+            var data = obj.data;
+            var layEvent = obj.event;
+
+            if(layEvent === 'edit'){ //编辑
+                view.xxpayPopup("编辑二维码信息", "order/qrcode/update", {id: data.id});
+            } else if(obj.event === 'detail'){
+                view.xxpayPopup("查看二维码信息", "order/qrcode/detail", {id: data.id}, {btn:false});
+            }
+        });
+
+        // 事件处理
+        var events = {
+            create: function(othis, type){
+                view.xxpayPopup("创建二维码", "order/qrcode/create", {appId: appid});
+            }
+        };
+
+        $('.layuiAdmin-btns .layui-btn').on('click', function(){
+            var othis = $(this)
+                ,thisEvent = othis.data('events')
+                ,type = othis.data('type');
+            events[thisEvent] && events[thisEvent].call(this, othis, type);
+        });
+
+    })
+
+</script>

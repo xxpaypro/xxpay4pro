@@ -1,0 +1,180 @@
+<style>
+    .xxpayPopupDiv .layui-form-label {
+        width:15% !important;
+        margin-left:1%;
+    }
+    .xxpayPopupDiv .layui-input-inline {
+        width: 33% !important;
+    }
+</style>
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-tab layui-tab-brief">
+      <div class="layui-tab-content">
+          <form class="layui-form layui-form-pane" action="">
+              <div class="layui-form-item">
+                  <label class="layui-form-label">交易单号</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="tradeOrderId" disabled="disabled" class="layui-input">
+                  </div>
+                  <label class="layui-form-label">支付订单号</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="payOrderId" disabled="disabled" class="layui-input">
+                  </div>
+              </div>
+              <div class="layui-form-item">
+                  <label class="layui-form-label">商户ID</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="mchId" disabled="disabled" class="layui-input">
+                  </div>
+                  <label class="layui-form-label">应用ID</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="appId" disabled="disabled" class="layui-input">
+                  </div>
+              </div>
+              <div class="layui-form-item">
+                  <label class="layui-form-label">交易类型</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="tradeType" disabled="disabled" class="layui-input">
+                  </div>
+                  <label class="layui-form-label">支付产品</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="productName" disabled="disabled" class="layui-input">
+                  </div>
+              </div>
+              <div class="layui-form-item">
+                  <label class="layui-form-label">交易金额(元)</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="amount" disabled="disabled" class="layui-input">
+                  </div>
+                  <label class="layui-form-label">入账金额(元)</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="mchIncome" disabled="disabled" class="layui-input">
+                  </div>
+              </div>
+              <div class="layui-form-item">
+                  <label class="layui-form-label">客户端IP</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="clientIp" disabled="disabled" class="layui-input">
+                  </div>
+                  <label class="layui-form-label">设备</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="device" disabled="disabled" class="layui-input">
+                  </div>
+              </div>
+              <div class="layui-form-item">
+                  <label class="layui-form-label">商品标题</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="subject" disabled="disabled" class="layui-input">
+                  </div>
+                  <label class="layui-form-label">商品描述</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="body" disabled="disabled" class="layui-input">
+                  </div>
+              </div>
+              <div class="layui-form-item">
+                  <label class="layui-form-label">用户ID</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="userId" disabled="disabled" class="layui-input">
+                  </div>
+                  <label class="layui-form-label">渠道用户ID</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="channelUserId" disabled="disabled" class="layui-input">
+                  </div>
+              </div>
+              <div class="layui-form-item">
+                  <label class="layui-form-label">交易状态</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="status" disabled="disabled" class="layui-input">
+                  </div>
+                  <label class="layui-form-label">支付成功时间</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="tradeSuccTime" disabled="disabled" class="layui-input">
+                  </div>
+              </div>
+              <div class="layui-form-item">
+                  <label class="layui-form-label">创建时间</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="createTime" disabled="disabled" class="layui-input">
+                  </div>
+                  <label class="layui-form-label">修改时间</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="updateTime" disabled="disabled" class="layui-input">
+                  </div>
+              </div>
+           </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    layui.use(['admin', 'form','view'],function(){
+        var form = layui.form
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,element = layui.element
+        ,view = layui.view
+        ,layer = layui.layer ;
+        // 导航
+        element.render('breadcrumb', 'breadcrumb');
+        var tradeOrderId = view.getOpenParams('tradeOrderId');
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/trade_order/get',
+            data: {
+                tradeOrderId : tradeOrderId
+            },
+            error: function(err){
+                layer.alert(JSON.stringify(err.field), {
+                    title: '错误提示'
+                })
+            },
+            success: function(res){
+                if(res.code == 0){
+                    $('#tradeOrderId').val(res.data.tradeOrderId);
+                    $('#payOrderId').val(res.data.payOrderId);
+                    $('#mchId').val(res.data.mchId);
+                    $('#appId').val(res.data.appId);
+                    if(res.data.tradeType == 1) {
+                        $('#tradeType').val("收款");
+                    }else if(res.data.tradeType == 2) {
+                        $('#tradeType').val("充值");
+                    }
+                    $('#productName').val(res.data.productName);
+                    $('#subject').val(res.data.subject);
+                    $('#body').val(res.data.body);
+                    $('#clientIp').val(res.data.clientIp);
+                    $('#device').val(res.data.device);
+                    $('#amount').val(res.data.amount/100);
+                    $('#mchIncome').val(res.data.mchIncome/100);
+                    $('#userId').val(res.data.userId);
+                    $('#channelUserId').val(res.data.channelUserId);
+                    if(res.data.status == 0) {
+                        $('#status').val("订单生成");
+                    }else if(res.data.status == 1) {
+                        $('#status').val("订单处理中");
+                    }else if(res.data.status == 2) {
+                        $('#status').val("支付成功");
+                    }else if(res.data.status == 4) {
+                        $('#status').val("部分退款");
+                    }else if(res.data.status == 5) {
+                        $('#status').val("全部退款");
+                    }else if(res.data.status == -1) {
+                        $('#status').val("处理失败");
+                    }
+                    if(res.data.tradeSuccTime != "" && res.data.tradeSuccTime != null) {
+                        $('#tradeSuccTime').val(layui.util.toDateString(res.data.tradeSuccTime));
+                    }
+                    if(res.data.createTime != "" && res.data.createTime != null) {
+                        $('#createTime').val(layui.util.toDateString(res.data.createTime));
+                    }
+                    if(res.data.updateTime != "" && res.data.updateTime != null) {
+                        $('#updateTime').val(layui.util.toDateString(res.data.updateTime));
+                    }
+                    form.render();
+                }
+            }
+        })
+    })
+</script>

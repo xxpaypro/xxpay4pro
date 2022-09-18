@@ -1,0 +1,182 @@
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a><cite>基本信息</cite></a>
+    </span>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">基本信息</li>
+            </ul>
+            <div class="layui-tab-content">
+                <style>
+                    .leftT {
+                        text-align: left;
+                    }
+                    table tbody tr:nth-child(even){
+                        background-color: #FBFBFB;
+                    }
+                </style>
+                <table  class="layui-table" id="BasicView" style="text-align:center"></table>
+                <!-- 模板 -->
+                <script type="text/html" id="BasicInfo">
+                    <table>
+                        <colgroup>
+                            <col width="25%">
+                            <col>
+                            <col width="25%">
+                            <col>
+                            <col width="25%">
+                            <col>
+                        </colgroup>
+                        <tbody>
+                            <tr>
+                                <td>商户ID</td>
+                                <td class="leftT">{{d.mchId}}</td>
+                                <td>商户名称</td>
+                                <td class="leftT">{{d.mchName}}</td>
+                            </tr>
+                            <tr>
+                                <td>商户状态</td>
+                                <td class="leftT">{{(d.status == -1)?"待审核":(d.status == 0)?"停止使用":(d.status == 1)?"使用中":"非法状态"}}</td>
+                                <td>上级代理商ID</td>
+                                <td class="leftT">{{d.agentId == null ? '' : d.agentId}}</td>
+                            </tr>
+                            <tr>
+                                <td>登录用户名</td>
+                                <td class="leftT">{{d.loginUserName == null ? '' : d.loginUserName}}</td>
+                                <td>真实姓名</td>
+                                <td class="leftT">{{d.realName == null ? '' : d.realName}}</td>
+                            </tr>
+                            <tr>
+                                <td>身份证号</td>
+                                <td class="leftT">{{d.idCard == null ? '' : d.idCard}}</td>
+                                <td>手机号</td>
+                                <td class="leftT">{{d.mobile == null ? '' : d.mobile}}</td>
+                            </tr>
+                            <tr>
+                                <td>QQ</td>
+                                <td class="leftT">{{d.qq == null ? '' : d.qq}}</td>
+                                <td>邮箱</td>
+                                <td class="leftT">{{d.email == null ? '' : d.email}}</td>
+                            </tr>
+                            <tr>
+                                <td>网站名称</td>
+                                <td class="leftT">{{d.siteName == null ? '' : d.siteName}}</td>
+                                <td>网站地址</td>
+                                <td class="leftT">{{d.siteUrl == null ? '' : d.siteUrl}}</td>
+                            </tr>
+                            <tr>
+                                <td>通讯地址</td>
+                                <td class="leftT">{{d.address == null ? '' : d.address}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br/>
+                </script>
+            </div>
+        </div>
+
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">账户信息</li>
+            </ul>
+            <div class="layui-tab-content">
+
+                <table id="AccountView" class="layui-table" style="text-align:center"></table>
+                <!-- 模板 -->
+                <script type="text/html" id="AccountInfo">
+                    <table>
+                        <colgroup>
+                            <col width="25%">
+                            <col>
+                            <col width="25%">
+                            <col>
+                            <col width="25%">
+                            <col>
+                        </colgroup>
+                        <tbody>
+                            <tr>
+                                <td>账户余额(元)</td>
+                                <td class="leftT">{{d.balanceAmount/100}}</td>
+                                <td>不可用余额(元)</td>
+                                <td class="leftT" colspan="3">{{d.balanceUnAmount/100}}</td>
+                            </tr>
+                            <tr>
+                                <td>可结算金额(元)</td>
+                                <td class="leftT">{{d.balanceSettAmount/100}}</td>
+                            </tr>
+                            <tr>
+                                <td>保证金(元)</td>
+                                <td class="leftT">{{d.bailAmount/100}}</td>
+                                <td>冻结金额(元)</td>
+                                <td class="leftT" colspan="3">{{d.balanceFrozenAmount/100}}</td>
+                            </tr>
+                            <tr>
+                                <td>代付余额(元)</td>
+                                <td class="leftT">{{d.agpayAmount/100}}</td>
+                                <td>不可用代付余额(元)</td>
+                                <td class="leftT" colspan="3">{{d.agpayUnAmount/100}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </script>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+   layui.use(['table','laytpl','admin',], function(){
+        var form = layui.form
+            ,laytpl = layui.laytpl
+            ,table = layui.table
+            ,$ = layui.$
+            ,admin = layui.admin
+            ,element = layui.element;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        admin.req({
+           type: 'get',
+           url:  layui.setter.baseUrl + '/mch/get' //模拟基本信息接口,
+           ,error: function(err){
+               console.log(err)
+           },
+           success: function(res){
+               if(res.code == 0){
+                   var getTpl = BasicInfo.innerHTML
+                           ,view = document.getElementById('BasicView');
+                   laytpl(getTpl).render(res.data, function(html){
+                       view.innerHTML = html;
+                   });
+                   table.render();
+               }
+           }
+        })
+
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/account/get' //模拟账户信息接口,
+            ,error: function(err){
+                console.log(err);
+            },
+            success: function(res){
+                if(res.code == 0){
+                    var getTpl = AccountInfo.innerHTML
+                    ,view = document.getElementById('AccountView');
+                    laytpl(getTpl).render(res.data, function(html){
+                        view.innerHTML = html;
+                    });
+                    table.render();
+                }
+            }
+        });
+
+    });
+
+</script>

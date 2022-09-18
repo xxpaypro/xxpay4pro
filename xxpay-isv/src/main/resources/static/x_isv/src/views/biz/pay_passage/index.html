@@ -1,0 +1,154 @@
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a><cite>商户列表</cite></a>
+        <a><cite>支付通道</cite></a>
+    </span>
+</div>
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-tab layui-tab-brief">
+      <ul class="layui-tab-title">
+        <li class="layui-this">支付通道</li>
+      </ul>
+      <div class="layui-tab-content">
+        <style>
+          .center {
+            width: 80%;
+          }
+        </style>
+        <table class="layui-hide center" id="cList" lay-filter="payPassageListFilter"></table>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  layui.use(['table','util','view'], function(){
+    var $ = layui.$
+            ,admin = layui.admin
+            ,table = layui.table
+            ,element = layui.element
+            ,view = layui.view
+            ,form = layui.form;
+
+    element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+    var router = layui.router();
+    var mchId = router.search.mchId;
+
+    var tplStatus = function(d){
+      if(d.ps && d.ps.mchPassage) {
+          if(d.ps.mchPassage.status == 1){
+              return "<span style='color: green'>开启</span>";
+          }else{
+              return "<span style='color: red'>关闭</span>";
+          }
+      }else {
+          return "<span>未配置</span>";
+      }
+    };
+
+    var tplAgentRate = function(d){
+      if(d.agentRate == '' || d.agentRate == null) {
+        return "未设置";
+      }else {
+        return "<span style='color: blue'>"+ d.agentRate+"%<span>";
+      }
+    };
+
+    var tplMchRate = function(d){
+      if(d.mchRate == '' || d.mchRate == null) {
+        return "未设置";
+      }else {
+        if(d.agentRate > d.mchRate) {
+          return "<span style='color: red'>"+ d.mchRate+"%<span>";
+        }else {
+          return "<span style='color: blue'>"+ d.mchRate+"%<span>";
+        }
+
+      }
+    };
+    
+    //标题内容模板
+    var tplConfig = function(d){
+
+        var btnHtml = "";
+
+        btnHtml += '<a class="layui-btn layui-btn-sm" lay-event="config">配置</a>';
+
+        if(d.ifTypeCode == 'alipay') { //如果接口类型为支付宝， 需要商户进行授权操作；
+            if(d.ps.mchPassage){
+                btnHtml += '<a class="layui-btn layui-btn-sm" lay-event="alipayAuth">重新授权</a>';
+            }else{
+                btnHtml += '<a class="layui-btn layui-btn-sm" lay-event="alipayAuth">发起授权</a>';
+            }
+        }
+
+        return btnHtml;
+    };
+
+    table.render({
+       id: 'tableReload'
+      ,elem: '#cList'
+      ,url: layui.setter.baseUrl + '/mch_info/pay_passage_list'
+      ,where: {
+        mchId: mchId
+      }
+      ,cols: [[
+         {field:'ifTypeCode', title: '接口代码'}
+        ,{field:'passageName', title: '通道名称'}
+        ,{field:'status', title: '接口状态',templet: tplStatus }
+        ,{title: '配置', templet: tplConfig }
+      ]]
+      ,page: false
+      ,skin: 'line'
+    });
+
+    //监听工具条
+    table.on('tool(payPassageListFilter)', function(obj){
+      var data = obj.data;
+      if(obj.event === 'alipayAuth'){
+
+          admin.req({
+              type: 'post',
+              url: layui.setter.baseUrl + '/pay_passage/alipay_auth_url',
+              data: { mchId: mchId},
+              error: function(err){layer.alert(err);},
+              success: function(res){
+
+                  var imgUrl = res.data.imgUrl;
+                  var mchAuthUrl = res.data.mchAuthUrl;
+                  layer.open({
+                      type: 1,
+                      title: '商户授权',
+                      scrollbar: false,//浏览器滚动条已锁
+                      closeBtn: 1, //不显示关闭按钮
+                      area: ['450px','450px'],
+                      content:
+                          `<div class="layui-wrap-content" style="text-align: center;">
+                            <div>
+                                <div style="margin-bottom:15px;">请商户扫描该二维码进行授权操作</div>
+                                <img src="`+imgUrl+`" />
+                            </div>
+
+                            <div style="margin-top:30px">
+                            或请商户访问<br/>
+                            <span style="background-color:gainsboro">`+mchAuthUrl+`</span>
+                            <br/>引导授权
+                            </div>
+                      </div>
+                      `
+                  });
+              }
+          });
+
+      }else if (obj.event === 'config'){
+          view.xxpayPopup("配置", "biz/pay_passage/config", {mchId: mchId, ifTypeCode: data.ifTypeCode});
+      }
+
+    });
+
+
+  });
+
+</script>

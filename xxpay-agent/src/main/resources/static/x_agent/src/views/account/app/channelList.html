@@ -1,0 +1,92 @@
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a><cite>渠道列表</cite></a>
+    </span>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">渠道列表信息</li>
+            </ul>
+            <div class="layui-tab-content">
+                <style>
+                    .center {
+                        width: 80%;
+                    }
+                </style>
+                <table class="layui-hide center" id="cList"></table>
+            </div>
+        </div>
+    </div>
+</div>
+    <script>
+        layui.use(['table','util'], function(){
+            var table = layui.table
+            ,$ = layui.$
+            ,element = layui.element;
+
+            element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+            var router = layui.router();
+            var curAppId = router.search.appId;
+            
+             //标题内容模板
+            var tplTitle = function(d){
+                return '<a class="layui-btn layui-btn-sm" lay-href="account/app/channel/appId='+ d.appId +'/channelId='+ d.channelId +'/channelType='+ d.channelType +'">配置</a>'
+            };
+
+            var tplStatus = function(d){
+                if(d.status == 0) {
+                    return "未开通";
+                }else if(d.status == 1) {
+                    return "<span style='color: red'>已开通</span>";
+                }
+            };
+
+            var channelTypeStatus = function(d){
+                if(d.channelType == "alipay") {
+                    return "支付宝";
+                }else if(d.channelType == "wxpay") {
+                    return "微信支付"
+                }else if(d.channelType == "qpay") {
+                    return "qq支付"
+                }else if(d.channelType == "upacp") {
+                    return "银联支付";
+                }else if(d.channelType == "applepay") {
+                    return "苹果支付";
+                }else if(d.channelType == "bfb") {
+                    return "百付宝支付"
+                }else if(d.channelType == "jdpay") {
+                    return "京东支付";
+                }else if(d.channelType == "kqpay") {
+                    return "快钱支付";
+                }else if(d.channelType == "swiftpay") {
+                    return "威富通支付";
+                }else if(d.channelType == "gomepay") {
+                    return "银盈通支付";
+                }else if(d.channelType == "accountpay") {
+                    return "账户支付";
+                }else {
+                    return "";
+                }
+            };
+
+            table.render({
+                elem: '#cList'
+                ,url: layui.setter.baseUrl + '/channel/list'
+                ,where: {appId:curAppId }
+                ,cols: [[
+                    {field:'channelId', title: '支付渠道ID'}
+                    ,{field:'channelType',  title: '支付产品',templet: channelTypeStatus}
+                    ,{field:'scene', title: '应用场景',templet: '<div>{{d.scene == 1?"移动APP":(d.scene == 2)?"移动网页":(d.scene == 3)?"PC网页":(d.scene == 4)?"微信公众平台":(d.scene == 5)?"手机扫码":""}}</div>'  }
+                    ,{field:'status', title: '状态',templet: tplStatus }
+                    ,{field:'edite', width: 200, title: '操作', templet: tplTitle }
+                ]]
+                ,page: false
+                ,skin: 'line'
+            });
+        });
+      
+    </script>

@@ -1,0 +1,197 @@
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a>支付配置</a>
+        <a><cite>新增支付接口配置参数模板</cite></a>
+    </span>
+</div>
+
+<style>
+    .layui-form-label {
+        width:120px !important;
+        margin-left:1%;
+    }
+    .layui-input-inline {
+        width: 80% !important;
+    }
+    .layui-input , .layui-textarea{
+        width: 80%;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">支付接口参数模板</li>
+            </ul>
+            <div class="layui-tab-content">
+                <form class="layui-form center">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">接口类型</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="ifTypeInfo" autocomplete="off" class="layui-input" readonly>
+                            <input type="hidden" id="ifTypeCode" name='ifTypeCode' >
+                            <input type="hidden" id="id" name='id' >
+                        </div>
+                    </div>
+                    
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">模板名称</label>
+                        <div class="layui-input-inline">
+                        	<input type="text" name="templateName" id="templateName" placeholder="请输入模板名称" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">模板状态</label>
+                        <div class="layui-input-inline" >
+                            <input type="radio" name="status" title="开启" value="1" checked />
+                            <input type="radio" name="status" title="关闭" value="0" />
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">备注信息</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="remark" id="remark" placeholder="请输入备注信息" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">渠道商户ID模板</label>
+                        <div class="layui-input-inline">
+                            <textarea name="passageMchIdTemplate" id='passageMchIdTemplate' placeholder="请输入渠道商户ID" required lay-verify="required" class="layui-textarea"></textarea>
+                        </div>
+                    </div>
+                    
+                    <fieldset class="layui-elem-field layui-hide" id='tempFieldSet'>
+                    	<legend><button class='layui-btn layui-btn-xs layui-btn-danger'>账户配置模板</button></legend>
+                        <div id="paramInfo"></div>
+                 	</fieldset>
+
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button type="button" class="layui-btn" lay-submit="" lay-filter="update">保存</button>
+                            <a id="btnBack_Param" class="layui-btn ">返回</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['form','table','util','admin',],function(){
+        var form = layui.form
+        , $ = layui.$
+        , admin = layui.admin
+        , layer = layui.layer 
+        , element = layui.element
+        , table = layui.table;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+        var tid = layui.router().search.tid;
+        var ifTypeCode = layui.router().search.ifTypeCode;
+        $("#id").val(tid);
+        $("#ifTypeCode").val(ifTypeCode);
+        
+        $('#btnBack_Param').on('click', function() {
+            location.hash = '/config/pay_interface_type/template//ifTypeCode=' + ifTypeCode;
+        });
+
+        form.render();
+        
+        
+        admin.req({
+            type: 'post',
+            url: layui.setter.baseUrl + '/config/pay_interface_type/template/get',
+            data: {id : tid},
+            error: function(err){layer.alert(err);},
+            success: function(res){
+            	
+            	var templateIfTypeCode = res.data.ifTypeCode;
+            	
+            	$("#templateName").val(res.data.templateName);
+            	$("input[name='status'][value='"+res.data.status+"']").prop('checked', true);
+            	$("#remark").val(res.data.remark);
+            	$("#passageMchIdTemplate").val(res.data.passageMchIdTemplate);
+            	
+            	var paramValJson = {};
+            	try{paramValJson = JSON.parse(res.data.paramTemplate);}catch(err){}
+            	
+            	admin.req({
+                    type: 'post',
+                    url: layui.setter.baseUrl + '/config/pay_interface_type/get',
+                    data: {ifTypeCode : templateIfTypeCode},
+                    error: function(err){ layer.alert(err); },
+                    success: function(res){
+                        	
+                       	$('#ifTypeInfo').val(res.data.ifTypeName + "[ " + res.data.ifTypeCode + " ]");
+						                            
+                        if(!res.data.param){
+    						return false;
+                        }
+                        
+                        var jsonObj = "";
+                       	try{jsonObj = JSON.parse(res.data.param);}catch(err){}
+                          
+                        if(!jsonObj || (!(jsonObj instanceof Array)) ){
+                    		return false;
+                        }
+                        	
+                        var htm = '';
+                        $.each(jsonObj, function(i, obj){
+                        	
+                        	var thisValue = paramValJson[obj.name] ? paramValJson[obj.name] : "";
+                            htm += `
+                                            <div class="layui-form-item">
+                                                <label class="layui-form-label"> ` + obj.desc + ` [` + obj.name + `]` +`</label>
+                                                <div class="layui-input-block"> `;
+                            if(obj.type == 'text') {
+                                htm += ` <input type="text" value="`+thisValue+`" templateField="1" fieldname="` + obj.name + `" lay-verify="` + obj.verify + `" placeholder="请输入` + obj.desc + `" autocomplete="off" class="layui-input">`;
+                            }else if(obj.type == 'textarea') {
+                                htm += ` <textarea required templateField="1" fieldname="` + obj.name + `" lay-verify="` + obj.verify + `" placeholder="请输入` + obj.desc + `" class="layui-textarea">`+thisValue+`</textarea>`;
+                            }
+                            htm += `   </div>
+                                    </div> `;
+                                        
+                        });
+                        htm += ``;
+                        $('#paramInfo').html(htm);
+                        $('#tempFieldSet').removeClass('layui-hide');     
+                        form.render();
+                 	}
+            	 });
+               }
+        	});
+ 		form.on('submit(update)', function(data){
+        	
+        	var paramTemplate = "";
+       		//获取参数
+           	var tempObj = {};
+           	$.each($("form").find('input[fieldname][templateField="1"],textarea[fieldname][templateField="1"]'), function(){
+           		var name = $(this).attr('fieldname');
+           	    tempObj[name] = $(this).val();
+           	});
+           	
+           	paramTemplate = JSON.stringify(tempObj);
+        	
+        	data.field.paramTemplate = paramTemplate;
+        	
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/config/pay_interface_type/template/update', //模拟接口,
+                data: data.field,
+                error: function(err){layer.alert(err.msg,{title:"请求失败"})},
+                success: function(res){
+                    if(res.code == 0){
+                        layer.alert(res.msg, {title: '保存成功'},function(index){
+                            layer.close(index);
+                            location.hash = '/config/pay_interface_type/template//ifTypeCode=' + ifTypeCode;
+                        });
+                    }
+                }
+            });
+            return false;
+        });
+    })
+</script>

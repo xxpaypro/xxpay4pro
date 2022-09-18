@@ -1,0 +1,118 @@
+<style>
+    .xxpayPopupDiv .layui-form-label {
+        width:165px !important;
+        margin-left:1%;
+    }
+    .xxpayPopupDiv .layui-input-inline {
+        width: 80% !important;
+    }
+    .xxpayPopupDiv .layui-input , .layui-textarea{
+        width: 80%;
+    }
+</style>
+
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-tab layui-tab-brief">
+      <div class="layui-tab-content">
+          <form class="layui-form layui-form-pane" action="">
+
+              <div class="layui-form-item">
+                  <label class="layui-form-label">客户端类型</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="clientTypeShow" disabled="disabled" class="layui-input">
+                      <input type="hidden" id="clientType" name="clientType">
+                  </div>
+              </div>
+
+              <div class="layui-form-item">
+                  <label class="layui-form-label">版本名称</label>
+                  <div class="layui-input-inline">
+                      <input type="text" placeholder="请输入版本名称" name="versionName" lay-verify="required" class="layui-input">
+                  </div>
+              </div>
+              <div class="layui-form-item">
+                  <label class="layui-form-label">版本序列号</label>
+                  <div class="layui-input-inline">
+                      <input type="text" placeholder="请输入版本序列号" name="versionSN" lay-verify="required" class="layui-input">
+                  </div>
+              </div>
+              <div class="layui-form-item">
+                  <label class="layui-form-label">版本描述信息</label>
+                  <div class="layui-input-inline">
+                      <textarea class="layui-textarea" placeholder="请输入版本描述信息" lay-verify="required" name="versionDesc"></textarea>
+                  </div>
+              </div>
+              <div class="layui-form-item">
+                  <label class="layui-form-label">是否需要强制更新</label>
+                  <div class="layui-input-inline">
+                      <input type="radio" name="forceUpdate" value="0" title="不强制更新" checked>
+                      <input type="radio" name="forceUpdate" value="1" title="强制更新">
+                  </div>
+              </div>
+              <div class="layui-form-item">
+                  <label class="layui-form-label">下载地址</label>
+                  <div class="layui-input-inline">
+                      <input type="text" name="downloadUrl" placeholder="请输入下载地址， http:// 或者 https://开头" lay-verify="required" class="layui-input">
+                  </div>
+              </div>
+              <div class="layui-form-item">
+                  <label class="layui-form-label">文件大小，单位：M</label>
+                  <div class="layui-input-inline">
+                      <input type="text" placeholder="请输入文件大小，单位：M" name="fileSize" lay-verify="required" class="layui-input">
+                  </div>
+              </div>
+              <button type="button" class="layui-hide xxpayYesBtn" lay-submit lay-filter="saveVersionBtn"></button>
+          </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    layui.use(['form','admin'],function(){
+        var form = layui.form
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,element = layui.element
+        ,view = layui.view
+        ,layer = layui.layer ;
+
+        element.render('breadcrumb', 'breadcrumb');
+
+        var clientTypeVal = view.getOpenParams("clientType");
+        $("#clientType").val(clientTypeVal);
+        if(clientTypeVal == 'FACE_CLIENT'){
+            $('#clientTypeShow').val("刷脸设备");
+        }else if(clientTypeVal == 'MCH_APP'){
+            $('#clientTypeShow').val("商家APP");
+        }else if(clientTypeVal == 'PC_PLUGIN'){
+            $('#clientTypeShow').val("商家PC收银插件");
+        }else if(clientTypeVal == 'APP_COLLECT'){
+            $('#clientTypeShow').val("进件APP");
+        }
+
+        form.on('submit(saveVersionBtn)', function(data) {
+
+            if(data.field.downloadUrl.indexOf("http://") != 0 && data.field.downloadUrl.indexOf("https://") != 0){
+                return layer.msg("请输入正确的下载地址！", {icon: 2});
+            }
+
+            //这里可以写ajax方法提交表单
+            admin.req({
+                type: "POST",
+                url: layui.setter.baseUrl + '/sys/clientVersion/add',
+                data: data.field,
+                success: function(res){
+                    if(res.code == 0) {
+                        layer.closeAll(); //关闭所有弹层
+                        layer.msg("保存成功");
+                        layui.table.reload('tableReload', {page: {curr: 1}}); //调用业务弹层外表格重新加载
+                    }
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+        form.render();
+    })
+</script>

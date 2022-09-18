@@ -1,0 +1,142 @@
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a><cite>支付配置</cite></a>
+    </span>
+</div>
+
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">代付通道账户</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-row">
+                    <div class="layuiAdmin-btns" style="margin-bottom: 10px;">
+                        <button class="layui-btn" data-type="all" data-events="create">新增账户</button>
+                    </div>
+                </div>
+                <table id="cList" lay-filter="cList"></table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['table','util', 'form', 'admin'], function(){
+        var table = layui.table
+        ,$ = layui.$
+        , admin = layui.admin
+        ,form = layui.form
+        ,element = layui.element;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        var router = layui.router();
+        var agentpayPassageId = router.search.agentpayPassageId;
+
+        var tplEdit = function(d){
+            return "<a class='layui-btn layui-btn-primary layui-btn-xs' lay-event='risk'>风控</a>" +
+                    /*"<a class='layui-btn layui-btn-danger layui-btn-xs' lay-event='balance'>余额</a>" +*/
+                    "<a class='layui-btn layui-btn-xs' lay-event='edit'>编辑</a>";
+        };
+
+        var tplStatus = function(d){
+
+            var checkedHtml = " recordId='"+d.id+"' ";
+            if(d.status == 1) {
+                checkedHtml += " checked";
+            }
+            return '<input type="checkbox" lay-filter="statusSwitch" lay-skin="switch" '+checkedHtml+' lay-text="启用|停用">';
+        };
+
+        table.render({
+            elem: '#cList'
+            ,url: layui.setter.baseUrl + '/config/agpay_passage_account/list'
+            ,where: { agentpayPassageId: agentpayPassageId}
+            ,id: 'tableReload'
+            ,cols: [[
+                {field:'id', title: '账户ID'}
+                ,{field:'accountName', title: '账户名称'}
+                ,{field:'ifCode', title: '接口代码'}
+                ,{field:'ifName', title: '接口名称'}
+                ,{field:'ifTypeCode', title: '接口类型代码'}
+                ,{field:'ifTypeName', title: '接口类型名称'}
+                ,{field:'balance', title: '余额'}
+                ,{field:'status', title: '账户状态',templet: tplStatus }
+                ,{field:'edite', width: 260, title: '操作', templet: tplEdit }
+            ]]
+            ,page: true
+            ,skin: 'line'
+        });
+
+        //监听工具条
+        table.on('tool(cList)', function(obj){
+            var data = obj.data;
+            if(obj.event === 'risk'){
+                location.href = layui.setter.baseLocal + "agpay_config/agpay_passage_account/risk_set/id=" + data.id;
+            } else if(obj.event === 'edit'){
+                location.href = layui.setter.baseLocal + "agpay_config/agpay_passage_account/update/id=" + data.id;
+            } else if(obj.event == 'balance') {
+                layer.msg('正在查询账户余额...', {icon: 16});
+                admin.req({
+                    type: 'post',
+                    url: layui.setter.baseUrl + '/config/agpay_passage_account/balance',
+                    data: {
+                        id: data.id
+                    },
+                    error: function(err){
+                        layer.alert(err);
+                    },
+                    success: function(res){
+                        layer.closeAll('loading');
+                        if(res.code == 0){
+                            layer.open({
+                                title: '账户' + data.accountName + '余额'
+                                ,content: res.data
+                            });
+                        }
+                    }
+                });
+            }
+        });
+
+        // 事件处理
+        var events = {
+            create: function(othis, type){
+                location.hash =  "/agpay_config/agpay_passage_account/create/agentpayPassageId=" + agentpayPassageId;
+            }
+        };
+        $('.layuiAdmin-btns .layui-btn').on('click', function(){
+            var othis = $(this)
+                    ,thisEvent = othis.data('events')
+                    ,type = othis.data('type');
+            events[thisEvent] && events[thisEvent].call(this, othis, type);
+        });
+
+        form.on('switch(statusSwitch)', function(data){
+
+            var updateRecordId = $(data.elem).attr('recordId');
+            var updateState = data.elem.checked ? "1" : "0";
+            var loadingIndex = layer.load();
+            admin.req({
+                type: "POST",
+                url: layui.setter.baseUrl + '/config/agpay_passage_account/update',
+                data: {id: updateRecordId, status: updateState},
+                success: function(res){
+                    if(res.code == 0) {
+                        table.reload('tableReload');
+                    }
+                },
+                complete:function(){
+                    layer.close(loadingIndex);
+                }
+            });
+        });
+
+        // 渲染表单
+        form.render();
+
+    });
+    
+</script>

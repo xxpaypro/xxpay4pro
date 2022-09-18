@@ -1,0 +1,101 @@
+<style>
+    .xxpayPopupDiv .layui-form-label {
+        width:15% !important;
+        margin-left:1%;
+    }
+    .xxpayPopupDiv .layui-input-inline {
+        width: 33% !important;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <div class="layui-tab-content">
+                <form class="layui-form layui-form-pane" action="">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">二维码ID</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="id" name="id" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">二维码名称</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="codeName" name="codeName" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">二维码金额</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="payAmount" name="payAmount" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">门店ID</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="storeId" name="storeId" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">操作员ID</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="operatorId" name="operatorId" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">状态</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="status" name="status" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">备注</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="remark" name="remark" disabled="disabled" class="layui-input">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['table','util','admin'], function(){
+        var table = layui.table
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,view = layui.view
+        ,element = layui.element;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+
+        var id = view.getOpenParams('id');
+
+        admin.req({
+            type:'get',
+            url: layui.setter.baseUrl + '/mch_qrcode/get',
+            data: {
+                id: id
+            },
+            error: function(err){
+                layer.alert(err)
+            },
+            success: function(res){
+                if(res.code == 0){
+                    $("#id").val(res.data.id);
+                    $("#codeName").val(res.data.codeName);
+                    $("#payAmount").val(res.data.payAmount/100);
+                    $("#storeId").val(res.data.storeId);
+                    $("#operatorId").val(res.data.operatorId);
+                    $("#remark").val(res.data.remark);
+                    if (res.data.status == 0){
+                        $("#status").val("停止使用");
+                    }else if (res.data.status == 1){
+                        $("#status").val("正常使用");
+                    }
+                }else {
+                    layer.alert('请求数据失败');
+                }
+            }
+
+        });
+
+    })
+</script>

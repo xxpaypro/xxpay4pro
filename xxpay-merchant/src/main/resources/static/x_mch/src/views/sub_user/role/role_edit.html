@@ -1,0 +1,86 @@
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-tab layui-tab-brief">
+      <div class="layui-tab-content">
+          <form class="layui-form center">
+            <div class="layui-form-item">
+              <div class="layui-inline">
+                  <label class="layui-form-label">角色ID</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="roleId" name="roleId" readonly="readonly" class="layui-input">
+                  </div>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-inline">
+                <label class="layui-form-label">角色名称</label>
+                <div class="layui-input-inline">
+                  <input type="text" id="roleName" name="roleName" lay-verify="required" placeholder="输入角色名称" autocomplete="off" class="layui-input">
+                </div>
+              </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button type="button" class="layui-hide xxpayYesBtn" lay-submit="" lay-filter="roleEdit">保存</button>
+                </div>
+            </div>
+          </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    layui.use(['form','admin','view'],function(){
+        var form = layui.form
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,element = layui.element
+        ,view = layui.view
+        ,layer = layui.layer ;
+        // 导航
+        element.render('breadcrumb', 'breadcrumb');
+        var roleId = view.getOpenParams('roleId');
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/subuser/role/get',
+            data: {
+                roleId : roleId
+            },
+            error: function(err){
+                layer.alert(JSON.stringify(err.field), {
+                    title: '错误提示'
+                })
+            },
+            success: function(res){
+                if(res.code == 0){
+                    $('#roleId').val(res.data.roleId);
+                    $('#roleName').val(res.data.roleName);
+                    form.render();
+                }
+            }
+        })
+
+        form.on('submit(roleEdit)', function(data) {
+            //这里可以写ajax方法提交表单
+            admin.req({
+                type: "POST",
+                url: layui.setter.baseUrl + '/subuser/role/update',
+                data: "params=" + JSON.stringify(data.field),
+                success: function(res){
+                    if(res.code == 0) {
+                        layer.closeAll(); //关闭所有弹层
+                        layer.msg("保存成功");
+                        layui.table.reload('tableReload', {page: {curr: 1}}); //调用业务弹层外表格重新加载
+                    }else {
+                        layer.alert(res.msg, {
+                            title: '保存失败'
+                        }); 
+                    }
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+    })
+</script>

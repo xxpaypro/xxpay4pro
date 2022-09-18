@@ -1,0 +1,83 @@
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a>差错列表</a>
+        <a><cite>编辑</cite></a>
+    </span>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">编辑</li>
+            </ul>
+            <div class="layui-tab-content">
+                <form class="layui-form" style="width:40%">
+                    <div class="layui-form-item layui-form-text">
+                        <label class="layui-form-label">单选框</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="handleType" value="bank" title="以银行为准" checked="">
+                            <!-- <input type="radio" name="handleType" value="女" title="女"> -->
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">备注信息</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="handleRemark"  autocomplete="off" placeholder="请输入备注信息" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button class="layui-btn" lay-submit lay-filter="savBtn">保存</button>
+                            <a class="layui-btn" lay-href="reconciliation/mistake/">返回</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    layui.use(['form','table', 'admin', 'util', 'layedit'], function(){
+        var form = layui.form
+        ,table = layui.table
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,layedit = layui.layedit
+        ,element = layui.element;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        form.on('submit(savBtn)',function(data){
+            console.log(data);
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/bill/check_mistake/handle',
+                data: {
+                    id: layui.router().search.id,
+                    handleType: data.field.handleType,
+                    handleRemark: data.field.handleRemark
+                },
+                error: function(err){
+                    layer.alert(err.msg,{title: '请求失败'})
+                },
+                success: function(res){
+                    if(res.code == 0){
+                        layer.alert(res.msg, {title: '保存成功'}, function(index){
+                            layer.close(index);
+                            location.hash = '/reconciliation/mistake/';
+                        })
+                    }else{
+                        layer.alert('获取数据失败')
+                    }
+                }
+            })
+            return false;
+        })
+        form.render();
+
+
+
+    })
+</script>

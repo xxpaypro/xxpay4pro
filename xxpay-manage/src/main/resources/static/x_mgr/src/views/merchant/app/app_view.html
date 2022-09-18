@@ -1,0 +1,111 @@
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>应用管理</cite></a>
+        <a><cite>查看应用</cite></a>
+    </div>
+</div>
+<style>
+    .layui-form-label {
+        width:15% !important;
+        margin-left:1%;
+    }
+    .layui-input-inline {
+        width: 33% !important;
+    }
+</style>
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-tab layui-tab-brief">
+      <ul class="layui-tab-title">
+        <li class="layui-this">应用详情</li>
+      </ul>
+      <div class="layui-tab-content">
+          <form class="layui-form layui-form-pane" action="">
+              <div class="layui-form-item">
+                  <label class="layui-form-label">应用ID</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="appid" disabled="disabled" class="layui-input">
+                  </div>
+                  <label class="layui-form-label">应用名称</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="appname" disabled="disabled" class="layui-input">
+                  </div>
+              </div>
+              <div class="layui-form-item">
+                  <label class="layui-form-label">应用状态</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="status" disabled="disabled" class="layui-input">
+                  </div>
+                  <label class="layui-form-label">备注</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="remark" disabled="disabled" class="layui-input">
+                  </div>
+              </div>
+              <div class="layui-form-item">
+                  <label class="layui-form-label">创建时间</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="createTime" disabled="disabled" class="layui-input">
+                  </div>
+                  <label class="layui-form-label">修改时间</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="modifyTime" disabled="disabled" class="layui-input">
+                  </div>
+              </div>
+              <div class="layui-form-item">
+                  <div class="layui-input-block">
+                      <a class="layui-btn" lay-href="merchant/app/">返回</a>
+                  </div>
+              </div>
+          </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    layui.use(['admin', 'form'],function(){
+        var form = layui.form
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,element = layui.element
+        ,layer = layui.layer ;
+        // 导航
+        element.render('breadcrumb', 'breadcrumb');
+        var router = layui.router();
+        var appId = router.search.appId;
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/app/get',
+            data: {
+                appId : appId
+            },
+            error: function(err){
+                layer.alert(JSON.stringify(err.field), {
+                    title: '错误提示'
+                })
+            },
+            success: function(res){
+                if(res.code == 0){
+                    $('#mchId').val(res.data.mchId);
+                    $('#name').val(res.data.mchName);
+                    $('#appid').val(res.data.appId);
+                    $('#appname').val(res.data.appName);
+                    $('#remark').val(res.data.remark);
+                    if(res.data.status == 1) {
+                        $('#status').val("启用");
+                    }else {
+                        $('#status').val("停止");
+                    }
+                    if(res.data.createTime != "" && res.data.createTime != null) {
+                        $('#createTime').val(layui.util.toDateString(res.data.createTime));
+                    }
+                    if(res.data.updateTime != "" && res.data.updateTime != null) {
+                        $('#modifyTime').val(layui.util.toDateString(res.data.updateTime));
+                    }
+                    form.render();
+                }
+            }
+        })
+    })
+</script>

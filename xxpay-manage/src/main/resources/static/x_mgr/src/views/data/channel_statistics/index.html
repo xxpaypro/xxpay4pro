@@ -1,0 +1,172 @@
+
+<div class="layui-card layadmin-header">
+  <div class="layui-breadcrumb" lay-filter="breadcrumb">
+    <a lay-href="">主页</a>
+    <a><cite>数据分析</cite></a>
+  </div>
+</div>
+
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-tab layui-tab-brief">
+      <ul class="layui-tab-title">
+        <li class="layui-this">通道统计</li>
+      </ul>
+      <div class="layui-tab-content">
+        <div class="layui-tab-item layui-show">
+          <div class="layui-row" style="margin-bottom: 10px;">
+            <div class="layui-form" style="float:right;">
+              <div id="timeDiv" class="layui-form-item" style="margin:0;">
+                <div class="layui-input-inline">
+                  <select name="productId" id="productId" lay-search="">
+                    <option value="-99">选择支付产品</option>
+                  </select>
+                </div>
+                <div class="layui-input-inline">
+                  <select name="payType" id="payType" lay-filter="payTypeFilter">
+	                  <option value="-99">选择支付类型</option>
+	                </select>
+                </div>
+                <div class="layui-input-inline">
+                  <select name="ifCode" id="ifCode" lay-search="">
+                    <option value="-99">选择支付接口</option>
+                  </select>
+                </div>
+                <button id="search" class="layui-btn" data-type="reload">搜索</button>
+              </div>
+            </div>
+          </div>
+
+          <table id="channel_statistics" lay-filter="channel_statistics"></table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+	layui.config({
+	    base: '/x_mgr/src/lib/extend/',
+	});
+layui.use(['admin', 'table', 'util', 'laydate', 'timePick'], function(){
+  var $ = layui.$
+  ,admin = layui.admin
+  ,table = layui.table
+  ,element = layui.element
+  ,laydate = layui.laydate
+  ,timePick = layui.timePick
+  ,form = layui.form;
+  
+  timePick.init();  //第一个参数表示开始时间   第二个表示结束时间   0,0今天   -1,-1昨天   -7,0近一周   以此类推
+  element.render('breadcrumb', 'breadcrumb');
+
+	var createTimeStart = $('#createTimeStart').val();
+  var createTimeEnd = $('#createTimeEnd').val();
+  
+  //通道统计列表
+  table.render({
+    elem: '#channel_statistics'
+    ,url: layui.setter.baseUrl + '/data/channelStatistics' //列表接口
+    ,where: {
+        createTimeStart : createTimeStart,
+        createTimeEnd : createTimeEnd
+    }
+    ,id: 'tableReload'
+    ,page: false
+    ,cols: [[
+      {field: 'PassageName', title: '通道名称'}
+      ,{field: 'totalAmount', title: '金额',templet: '<div>{{d.totalAmount/100}}</div>'}
+      ,{field: 'succsssRate', title: '成功率'}
+      ,{field: 'payTypeName', title: '支付类型'}
+      ,{field: 'IfCode', title: '支付接口'}
+    ]]
+    ,skin: 'line'
+  });
+
+  // 搜索
+  var $ = layui.$, active = {
+    reload: function(){
+      var createTimeStart = $('#createTimeStart').val();
+      var createTimeEnd = $('#createTimeEnd').val();
+      var productId = $('#productId').val();
+      var ifCode = $('#ifCode').val();
+      var payType = $("#payType").val();
+      //执行重载
+      table.reload('tableReload', {
+        page: false
+        ,where: {
+          createTimeStart: createTimeStart,
+          createTimeEnd: createTimeEnd,
+          productId: productId,
+          ifCode: ifCode,
+          payType: payType
+        }
+      });
+    }
+  };
+  $('#search').on('click', function() {
+    var type = $(this).data('type');
+    active[type] ? active[type].call(this) : '';
+  });
+
+	// 加载支付产品
+  admin.req({
+    type: 'post',
+    url: layui.setter.baseUrl + '/config/common/pay_product_all',
+    error: function(err){
+      layer.alert(err);
+    },
+    success: function(res){
+      if(res.code == 0){
+        var payProductList = res.data;
+        //遍历赋值
+        for(var i in payProductList){
+          $("#productId").append('<option value= '+payProductList[i].id+'>'+payProductList[i].productName+'</option>');
+        }
+        form.render('select');
+      }
+    }
+  });
+
+	// 加载支付接口
+	admin.req({
+	    type: 'post',
+	    url: layui.setter.baseUrl + '/config/common/pay_interface_all',
+	    error: function(err){
+	        layer.alert(err);
+	    },
+	    success: function(res){
+	        if(res.code == 0){
+	            var ifList = res.data;
+	            //遍历赋值
+	            for(var i in ifList){
+	                $("#ifCode").append('<option value= '+ifList[i].ifCode+'>'+ '[' +ifList[i].ifCode + '] ' + ifList[i].ifName+'</option>');
+	            }
+	            form.render('select');
+	        }
+	    }
+	});
+
+	// 加载支付类型
+	admin.req({
+	    type: 'post',
+	    url: layui.setter.baseUrl + '/config/common/pay_type_all',
+	    error: function(err){
+	        layer.alert(err);
+	    },
+	    success: function(res){
+	        if(res.code == 0){
+	            var payTypeList = res.data;
+	            //遍历赋值
+	            for(var i in payTypeList){
+	                $("#payType").append('<option value= '+payTypeList[i].payTypeCode+'>'+payTypeList[i].payTypeName+'</option>');
+	            }
+	            form.render('select');
+	        }
+	    }
+	});
+  // 渲染表单
+  form.render();
+});
+</script>

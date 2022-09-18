@@ -1,0 +1,144 @@
+
+<div class="layui-card layadmin-header">
+  <div class="layui-breadcrumb" lay-filter="breadcrumb">
+    <a lay-href="">主页</a>
+    <a><cite>数据分析</cite></a>
+  </div>
+</div>
+
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-tab layui-tab-brief">
+      <ul class="layui-tab-title">
+        <li class="layui-this">商户充值排行</li>
+      </ul>
+      <div class="layui-tab-content">
+        <div class="layui-tab-item layui-show">
+          <div class="layui-row" style="margin-bottom: 10px;">
+            <div class="layui-form" style="float:right;">
+              <div id="timeDiv" class="layui-form-item" style="margin:0;">
+                <!--<div class="layui-input-inline">
+                  <input type="text" name="createTimeStart" id="createTimeStart" autocomplete="off" placeholder="起始时间" class="layui-input">
+                </div>
+                <div class="layui-input-inline">
+                  <input type="text" name="createTimeEnd" id="createTimeEnd" autocomplete="off" placeholder="结束时间" class="layui-input">
+                </div>-->
+                <div class="layui-input-inline">
+                  <input type="text" name="agentId" id="agentId" placeholder="代理商ID" autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-input-inline">
+                  <input type="text" name="mchId" id="mchId" placeholder="商户ID" autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-input-inline">
+                  <select name="type" id="productType" placeholder="产品类型" lay-search="">
+                    <option value="-99">产品类型</option>
+                    <option value="1">收款</option>
+                    <option value="2">充值</option>
+                  </select>
+                </div>
+                <button id="search" class="layui-btn" data-type="reload">搜索</button>
+              </div>
+            </div>
+          </div>
+
+          <table id="XxPay_Bcd_User_dataAll" lay-filter="XxPay_Bcd_User_dataAll"></table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+	layui.config({
+	    base: '/x_mgr/src/lib/extend/',
+	});
+layui.use(['admin', 'table', 'util', 'laydate', 'timePick'], function(){
+  var $ = layui.$
+  ,admin = layui.admin
+  ,table = layui.table
+  ,element = layui.element
+  ,laydate = layui.laydate
+  ,timePick = layui.timePick
+  ,form = layui.form;
+  
+  timePick.init();  //第一个参数表示开始时间   第二个表示结束时间   0,0今天   -1,-1昨天   -7,0近一周   以此类推
+  element.render('breadcrumb', 'breadcrumb');
+
+  var tplOutAmount2 = function(d){
+    return d.outAmount - d.feeAmount;
+  };
+
+	var createTimeStart = $('#createTimeStart').val();
+  var createTimeEnd = $('#createTimeEnd').val();
+  //用户统计列表
+  table.render({
+    elem: '#XxPay_Bcd_User_dataAll'
+    ,cellMinWidth: 90
+    ,url: layui.setter.baseUrl + '/data/count4MchTop'
+    ,where: {
+      
+      createTimeStart: createTimeStart,
+      createTimeEnd: createTimeEnd
+    }
+    ,initSort: {
+      field: 'totalAmount' //排序字段，对应 cols 设定的各字段名
+      ,type: 'desc' //排序方式  asc: 升序、desc: 降序、null: 默认排序
+    }
+    ,id: 'tableReload'
+    ,page: false
+    ,cols: [[
+      {field: 'mchId', title: '商户ID'}
+      ,{field: 'mchName', title: '商户名称'}
+      ,{field: 'totalAmount', title: '充值金额', sort: true, templet: '<div>{{ d.totalAmount/100 }}</div>'}
+      ,{field: 'totalMchIncome', title: '入账金额', sort: true, templet: '<div>{{ d.totalMchIncome/100 }}</div>'}
+      ,{field: 'totalCount', title: '充值笔数', sort: true}
+    ]]
+    ,skin: 'line'
+  });
+
+  // 搜索
+  var $ = layui.$, active = {
+    reload: function(){
+      var createTimeStart = $('#createTimeStart').val();
+      var createTimeEnd = $('#createTimeEnd').val();
+      var mchId = $('#mchId').val();
+      var agentId = $('#agentId').val();
+      var productType = $("#productType").val();
+      //执行重载
+      table.reload('tableReload', {
+        page: {
+          curr: 1 //重新从第 1 页开始
+        }
+        ,page: false
+        ,where: {
+          createTimeStart: createTimeStart,
+          createTimeEnd: createTimeEnd,
+          mchId: mchId,
+          agentId: agentId,
+          productType: productType
+        }
+      });
+    }
+  };
+  $('#search').on('click', function() {
+    var type = $(this).data('type');
+    active[type] ? active[type].call(this) : '';
+  });
+
+  /*laydate.render({
+    elem: '#createTimeStart'
+    ,type: 'datetime'
+    ,format: 'yyyy-MM-dd HH:mm:ss'
+  });
+
+  laydate.render({
+    elem: '#createTimeEnd'
+    ,type: 'datetime'
+    ,format: 'yyyy-MM-dd HH:mm:ss'
+  });*/
+
+  // 渲染表单
+  form.render();
+});
+</script>

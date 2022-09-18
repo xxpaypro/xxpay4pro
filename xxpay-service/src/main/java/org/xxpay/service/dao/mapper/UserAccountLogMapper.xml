@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.xxpay.service.dao.mapper.UserAccountLogMapper" >
+  <resultMap id="BaseResultMap" type="org.xxpay.core.entity.UserAccountLog" >
+    <id column="LogId" property="logId" jdbcType="BIGINT" />
+    <result column="UserId" property="userId" jdbcType="VARCHAR" />
+    <result column="MchId" property="mchId" jdbcType="BIGINT" />
+    <result column="ChangeAmount" property="changeAmount" jdbcType="BIGINT" />
+    <result column="Type" property="type" jdbcType="SMALLINT" />
+    <result column="AccountType" property="accountType" jdbcType="SMALLINT" />
+    <result column="OldBalance" property="oldBalance" jdbcType="BIGINT" />
+    <result column="OldUpdateTimeJava" property="oldUpdateTimeJava" jdbcType="BIGINT" />
+    <result column="OldCheckSum" property="oldCheckSum" jdbcType="VARCHAR" />
+    <result column="NewBalance" property="newBalance" jdbcType="BIGINT" />
+    <result column="NewUpdateTimeJava" property="newUpdateTimeJava" jdbcType="BIGINT" />
+    <result column="NewCheckSum" property="newCheckSum" jdbcType="VARCHAR" />
+    <result column="CreateTime" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="UpdateTime" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    LogId, UserId, MchId, ChangeAmount, Type, AccountType, OldBalance, OldUpdateTimeJava, 
+    OldCheckSum, NewBalance, NewUpdateTimeJava, NewCheckSum, CreateTime, UpdateTime
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="org.xxpay.core.entity.UserAccountLogExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from t_user_account_log
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+    <if test="limit != null" >
+      <if test="offset != null" >
+        limit ${offset}, ${limit}
+      </if>
+      <if test="offset == null" >
+        limit ${limit}
+      </if>
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_user_account_log
+    where LogId = #{logId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from t_user_account_log
+    where LogId = #{logId,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="org.xxpay.core.entity.UserAccountLogExample" >
+    delete from t_user_account_log
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="org.xxpay.core.entity.UserAccountLog" >
+    insert into t_user_account_log (LogId, UserId, MchId, 
+      ChangeAmount, Type, AccountType, 
+      OldBalance, OldUpdateTimeJava, OldCheckSum, 
+      NewBalance, NewUpdateTimeJava, NewCheckSum, 
+      CreateTime, UpdateTime)
+    values (#{logId,jdbcType=BIGINT}, #{userId,jdbcType=VARCHAR}, #{mchId,jdbcType=BIGINT}, 
+      #{changeAmount,jdbcType=BIGINT}, #{type,jdbcType=SMALLINT}, #{accountType,jdbcType=SMALLINT}, 
+      #{oldBalance,jdbcType=BIGINT}, #{oldUpdateTimeJava,jdbcType=BIGINT}, #{oldCheckSum,jdbcType=VARCHAR}, 
+      #{newBalance,jdbcType=BIGINT}, #{newUpdateTimeJava,jdbcType=BIGINT}, #{newCheckSum,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="org.xxpay.core.entity.UserAccountLog" useGeneratedKeys="true" keyProperty="logId" >
+    insert into t_user_account_log
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="logId != null" >
+        LogId,
+      </if>
+      <if test="userId != null" >
+        UserId,
+      </if>
+      <if test="mchId != null" >
+        MchId,
+      </if>
+      <if test="changeAmount != null" >
+        ChangeAmount,
+      </if>
+      <if test="type != null" >
+        Type,
+      </if>
+      <if test="accountType != null" >
+        AccountType,
+      </if>
+      <if test="oldBalance != null" >
+        OldBalance,
+      </if>
+      <if test="oldUpdateTimeJava != null" >
+        OldUpdateTimeJava,
+      </if>
+      <if test="oldCheckSum != null" >
+        OldCheckSum,
+      </if>
+      <if test="newBalance != null" >
+        NewBalance,
+      </if>
+      <if test="newUpdateTimeJava != null" >
+        NewUpdateTimeJava,
+      </if>
+      <if test="newCheckSum != null" >
+        NewCheckSum,
+      </if>
+      <if test="createTime != null" >
+        CreateTime,
+      </if>
+      <if test="updateTime != null" >
+        UpdateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="logId != null" >
+        #{logId,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="mchId != null" >
+        #{mchId,jdbcType=BIGINT},
+      </if>
+      <if test="changeAmount != null" >
+        #{changeAmount,jdbcType=BIGINT},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=SMALLINT},
+      </if>
+      <if test="accountType != null" >
+        #{accountType,jdbcType=SMALLINT},
+      </if>
+      <if test="oldBalance != null" >
+        #{oldBalance,jdbcType=BIGINT},
+      </if>
+      <if test="oldUpdateTimeJava != null" >
+        #{oldUpdateTimeJava,jdbcType=BIGINT},
+      </if>
+      <if test="oldCheckSum != null" >
+        #{oldCheckSum,jdbcType=VARCHAR},
+      </if>
+      <if test="newBalance != null" >
+        #{newBalance,jdbcType=BIGINT},
+      </if>
+      <if test="newUpdateTimeJava != null" >
+        #{newUpdateTimeJava,jdbcType=BIGINT},
+      </if>
+      <if test="newCheckSum != null" >
+        #{newCheckSum,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="org.xxpay.core.entity.UserAccountLogExample" resultType="java.lang.Integer" >
+    select count(*) from t_user_account_log
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update t_user_account_log
+    <set >
+      <if test="record.logId != null" >
+        LogId = #{record.logId,jdbcType=BIGINT},
+      </if>
+      <if test="record.userId != null" >
+        UserId = #{record.userId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mchId != null" >
+        MchId = #{record.mchId,jdbcType=BIGINT},
+      </if>
+      <if test="record.changeAmount != null" >
+        ChangeAmount = #{record.changeAmount,jdbcType=BIGINT},
+      </if>
+      <if test="record.type != null" >
+        Type = #{record.type,jdbcType=SMALLINT},
+      </if>
+      <if test="record.accountType != null" >
+        AccountType = #{record.accountType,jdbcType=SMALLINT},
+      </if>
+      <if test="record.oldBalance != null" >
+        OldBalance = #{record.oldBalance,jdbcType=BIGINT},
+      </if>
+      <if test="record.oldUpdateTimeJava != null" >
+        OldUpdateTimeJava = #{record.oldUpdateTimeJava,jdbcType=BIGINT},
+      </if>
+      <if test="record.oldCheckSum != null" >
+        OldCheckSum = #{record.oldCheckSum,jdbcType=VARCHAR},
+      </if>
+      <if test="record.newBalance != null" >
+        NewBalance = #{record.newBalance,jdbcType=BIGINT},
+      </if>
+      <if test="record.newUpdateTimeJava != null" >
+        NewUpdateTimeJava = #{record.newUpdateTimeJava,jdbcType=BIGINT},
+      </if>
+      <if test="record.newCheckSum != null" >
+        NewCheckSum = #{record.newCheckSum,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createTime != null" >
+        CreateTime = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateTime != null" >
+        UpdateTime = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update t_user_account_log
+    set LogId = #{record.logId,jdbcType=BIGINT},
+      UserId = #{record.userId,jdbcType=VARCHAR},
+      MchId = #{record.mchId,jdbcType=BIGINT},
+      ChangeAmount = #{record.changeAmount,jdbcType=BIGINT},
+      Type = #{record.type,jdbcType=SMALLINT},
+      AccountType = #{record.accountType,jdbcType=SMALLINT},
+      OldBalance = #{record.oldBalance,jdbcType=BIGINT},
+      OldUpdateTimeJava = #{record.oldUpdateTimeJava,jdbcType=BIGINT},
+      OldCheckSum = #{record.oldCheckSum,jdbcType=VARCHAR},
+      NewBalance = #{record.newBalance,jdbcType=BIGINT},
+      NewUpdateTimeJava = #{record.newUpdateTimeJava,jdbcType=BIGINT},
+      NewCheckSum = #{record.newCheckSum,jdbcType=VARCHAR},
+      CreateTime = #{record.createTime,jdbcType=TIMESTAMP},
+      UpdateTime = #{record.updateTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="org.xxpay.core.entity.UserAccountLog" >
+    update t_user_account_log
+    <set >
+      <if test="userId != null" >
+        UserId = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="mchId != null" >
+        MchId = #{mchId,jdbcType=BIGINT},
+      </if>
+      <if test="changeAmount != null" >
+        ChangeAmount = #{changeAmount,jdbcType=BIGINT},
+      </if>
+      <if test="type != null" >
+        Type = #{type,jdbcType=SMALLINT},
+      </if>
+      <if test="accountType != null" >
+        AccountType = #{accountType,jdbcType=SMALLINT},
+      </if>
+      <if test="oldBalance != null" >
+        OldBalance = #{oldBalance,jdbcType=BIGINT},
+      </if>
+      <if test="oldUpdateTimeJava != null" >
+        OldUpdateTimeJava = #{oldUpdateTimeJava,jdbcType=BIGINT},
+      </if>
+      <if test="oldCheckSum != null" >
+        OldCheckSum = #{oldCheckSum,jdbcType=VARCHAR},
+      </if>
+      <if test="newBalance != null" >
+        NewBalance = #{newBalance,jdbcType=BIGINT},
+      </if>
+      <if test="newUpdateTimeJava != null" >
+        NewUpdateTimeJava = #{newUpdateTimeJava,jdbcType=BIGINT},
+      </if>
+      <if test="newCheckSum != null" >
+        NewCheckSum = #{newCheckSum,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        CreateTime = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        UpdateTime = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where LogId = #{logId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.xxpay.core.entity.UserAccountLog" >
+    update t_user_account_log
+    set UserId = #{userId,jdbcType=VARCHAR},
+      MchId = #{mchId,jdbcType=BIGINT},
+      ChangeAmount = #{changeAmount,jdbcType=BIGINT},
+      Type = #{type,jdbcType=SMALLINT},
+      AccountType = #{accountType,jdbcType=SMALLINT},
+      OldBalance = #{oldBalance,jdbcType=BIGINT},
+      OldUpdateTimeJava = #{oldUpdateTimeJava,jdbcType=BIGINT},
+      OldCheckSum = #{oldCheckSum,jdbcType=VARCHAR},
+      NewBalance = #{newBalance,jdbcType=BIGINT},
+      NewUpdateTimeJava = #{newUpdateTimeJava,jdbcType=BIGINT},
+      NewCheckSum = #{newCheckSum,jdbcType=VARCHAR},
+      CreateTime = #{createTime,jdbcType=TIMESTAMP},
+      UpdateTime = #{updateTime,jdbcType=TIMESTAMP}
+    where LogId = #{logId,jdbcType=BIGINT}
+  </update>
+
+  <insert id="insertBatch" parameterType="org.xxpay.core.entity.UserAccountLog">
+    insert into t_user_account_log (
+      UserId,
+      MchId,
+      ChangeAmount,
+      Type,
+      AccountType,
+      OldBalance,
+      OldUpdateTimeJava,
+      OldCheckSum,
+      NewBalance,
+      NewUpdateTimeJava,
+      NewCheckSum
+    )
+    values
+    <foreach collection="list" item="userAccountLog" index="index" separator=",">
+      (
+        #{userAccountLog.userId,jdbcType=VARCHAR},
+        #{userAccountLog.mchId,jdbcType=BIGINT},
+        #{userAccountLog.changeAmount,jdbcType=BIGINT},
+        #{userAccountLog.type,jdbcType=SMALLINT},
+        #{userAccountLog.accountType,jdbcType=SMALLINT},
+        #{userAccountLog.oldBalance,jdbcType=BIGINT},
+        #{userAccountLog.oldUpdateTimeJava,jdbcType=BIGINT},
+        #{userAccountLog.oldCheckSum,jdbcType=VARCHAR},
+        #{userAccountLog.newBalance,jdbcType=BIGINT},
+        #{userAccountLog.newUpdateTimeJava,jdbcType=BIGINT},
+        #{userAccountLog.newCheckSum,jdbcType=VARCHAR}
+      )
+    </foreach>
+  </insert>
+
+</mapper>

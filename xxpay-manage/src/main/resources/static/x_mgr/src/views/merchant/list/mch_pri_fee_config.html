@@ -1,0 +1,279 @@
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>商户管理</cite></a>
+        <a><cite>费用配置</cite></a>
+    </div>
+</div>
+<style>
+    .layui-form-label {
+        width:15% !important;
+        margin-left:1%;
+    }
+    .layui-input-inline {
+        width: 33% !important;
+    }
+</style>
+
+<form class="layui-form layui-form-pane">
+    <input type="hidden" name="mchId" id="mchId" />
+    <input type="hidden" name="id1" id="id1" />
+    <input type="hidden" name="id2" id="id2" />
+<div class="layui-fluid">
+    <div class="layui-card">
+
+            <div class="layui-tab layui-tab-brief">
+                <ul class="layui-tab-title">
+                    <li class="layui-this">私有账户费用配置</li>
+                </ul>
+            </div>
+
+            <div class="layui-tab-content">
+                <fieldset class="layui-elem-field">
+                    <legend><button class='layui-btn layui-btn-xs layui-btn-danger'>支付功能</button></legend>
+                        <div class="layui-form-item" style="margin-top: 20px">
+                            <label class="layui-form-label">选择计费类型</label>
+                            <div class="layui-input-inline">
+                                <input type="radio" name="feeScale1" value="1" title="每笔" lay-filter="feeScaleFilter1">
+                                <input type="radio" name="feeScale1" value="2" title="按年" lay-filter="feeScaleFilter1">
+                                <input type="radio" name="feeScale1" value="3" title="按月" lay-filter="feeScaleFilter1">
+                                <input type="radio" name="feeScale1" value="4" title="按季度" lay-filter="feeScaleFilter1">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item layui-hide" id="singleFeeTypeDiv1" >
+                            <label class="layui-form-label">选择每笔计费类型</label>
+                            <div class="layui-input-inline">
+                                <input type="radio" name="singleFeeType1" value="1" title="每笔按固定费用" lay-filter="singleFeeTypeFilter1">
+                                <input type="radio" name="singleFeeType1" value="2" title="每笔按订单费率" lay-filter="singleFeeTypeFilter1">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item layui-hide" id="feeScaleStepDiv1">
+                            <label class="layui-form-label">计费梯度</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="feeScaleStep1" name="feeScaleStep1" class="layui-input">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">输入<span id="feeSpan1">费率(%)</span></label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="fee1" name="fee1" class="layui-input">
+                            </div>
+                        </div>
+                </fieldset>
+            </div>
+
+            <div class="layui-tab-content">
+                <fieldset class="layui-elem-field">
+                    <legend><button class='layui-btn layui-btn-xs layui-btn-danger'>代付功能</button></legend>
+                        <div class="layui-form-item" style="margin-top: 20px">
+                            <label class="layui-form-label">选择计费类型</label>
+                            <div class="layui-input-inline">
+                                <input type="radio" name="feeScale2" value="1" title="每笔" lay-filter="feeScaleFilter2">
+                                <input type="radio" name="feeScale2" value="2" title="按年" lay-filter="feeScaleFilter2">
+                                <input type="radio" name="feeScale2" value="3" title="按月" lay-filter="feeScaleFilter2">
+                                <input type="radio" name="feeScale2" value="4" title="按季度" lay-filter="feeScaleFilter2">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item layui-hide" id="singleFeeTypeDiv2">
+                            <label class="layui-form-label">选择每笔计费类型</label>
+                            <div class="layui-input-inline">
+                                <input type="radio" name="singleFeeType2" value="1" title="每笔按固定费用" lay-filter="singleFeeTypeFilter2">
+                                <input type="radio" name="singleFeeType2" value="2" title="每笔按订单费率" lay-filter="singleFeeTypeFilter2">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item layui-hide" id="feeScaleStepDiv2">
+                            <label class="layui-form-label">计费梯度</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="feeScaleStep2" name="feeScaleStep2" class="layui-input">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">输入<span id="feeSpan2">费率(%)</span></label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="fee2" name="fee2" class="layui-input">
+                            </div>
+                        </div>
+                </fieldset>
+            </div>
+
+            <div class="layui-form-item">
+                <div class="layui-input-block" style="padding-bottom: 20px;">
+                    <button type="button" class="layui-btn" lay-submit="" lay-filter="feeSave">保存</button>
+                    <a class="layui-btn" lay-href="merchant/list/">返回</a>
+                </div>
+            </div>
+    </div>
+</div>
+</form>
+<script>
+    layui.use(['admin', 'form'],function(){
+        var form = layui.form
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,element = layui.element
+        ,layer = layui.layer ;
+        // 导航
+        element.render('breadcrumb', 'breadcrumb');
+        var router = layui.router();
+        var mchId = router.search.mchId;
+
+        $('#mchId').val(mchId);
+
+
+        $.chooseFeeType = function(idSuffix, radioValue){
+
+            $('#feeScaleStepDiv'+idSuffix ).addClass('layui-hide'); //梯度
+            $('#singleFeeTypeDiv'+idSuffix ).addClass('layui-hide'); //每笔收费类型
+
+            $('#feeScaleStep'+idSuffix ).val("");
+            $('#fee'+idSuffix ).val("");
+
+            $.changeFeeSpanText(idSuffix, 1);
+
+            $("input[name='singleFeeType"+idSuffix+"'][value='1']").prop('checked', 'checked');
+
+            if(radioValue == 1) { //按每笔
+                $('#singleFeeTypeDiv'+idSuffix).removeClass('layui-hide');
+            }else{ //根据梯度固定收费
+                $('#feeScaleStepDiv'+idSuffix).removeClass('layui-hide');
+            }
+
+            form.render();
+        }
+
+        $.changeFeeSpanText = function(idSuffix, radioValue){
+
+            $('#fee'+idSuffix ).val("");
+            if(radioValue == 1) { //固定金额
+                $("#feeSpan"+idSuffix).text('费用（元）：');
+            }else{ //费率
+                $("#feeSpan"+idSuffix).text('费率（%）：');
+            }
+
+        }
+
+        form.on('radio(feeScaleFilter1)', function(data){
+            $.chooseFeeType(1, data.value);
+        });
+
+        form.on('radio(feeScaleFilter2)', function(data){
+            $.chooseFeeType(2, data.value);
+        });
+
+        form.on('radio(singleFeeTypeFilter1)', function(data){
+            $.changeFeeSpanText(1, data.value);
+        });
+        form.on('radio(singleFeeTypeFilter2)', function(data){
+            $.changeFeeSpanText(2, data.value);
+        });
+
+
+        $.checkFormVal = function(feeScale, feeScaleStep, singleFeeType, fee){
+            if(!feeScale){
+                layer.alert("请选择计费类型！") ;  return false;
+            }
+            if(!fee){
+                layer.alert("请输入费率/费用！"); return false;
+            }
+            if(isNaN(fee)){
+                layer.alert("请输入正确的费率/费用！"); return false;
+            }
+            if(feeScale == 1 && !singleFeeType){
+                layer.alert("请选择单笔收费类型！"); return false;
+            }
+            if(feeScale != 1 && !feeScaleStep){
+                layer.alert("请输入计费梯度！"); return false;
+            }
+            return true;
+        }
+
+        form.on('submit(feeSave)', function(data) {
+
+
+            var feeScale1 = data.field.feeScale1; //计费类型
+            var feeScaleStep1 = data.field.feeScaleStep1;  //计费梯度
+            var singleFeeType1 = data.field.singleFeeType1;   //每笔收费类型
+            var fee1 = data.field.fee1; //费用 /费率
+
+            var feeScale2 = data.field.feeScale2; //计费类型
+            var feeScaleStep2 = data.field.feeScaleStep2;  //计费梯度
+            var singleFeeType2 = data.field.singleFeeType2;   //每笔收费类型
+            var fee2 = data.field.fee2; //费用 /费率
+
+           if( !$.checkFormVal(feeScale1, feeScaleStep1, singleFeeType1, fee1)
+               || !$.checkFormVal(feeScale2, feeScaleStep2, singleFeeType2, fee2) ){
+               return false;
+           }
+
+            admin.req({
+                type: "POST",
+                url: layui.setter.baseUrl + '/mch_info/upd_private_fee_config',
+                data: data.field,
+                success: function(res){
+                    if(res.code == 0) {
+                        layer.alert(res.msg, {title: "提示"}, function(index){
+                            layer.close(index);
+                            location.href = layui.setter.baseLocal + 'merchant/list/';
+                        });
+                    }
+                }
+            });
+            return false;
+        });
+
+
+
+        $.initData = function(idSuffix, payFeeScale){
+            if(payFeeScale.feeScale == null){ //对象feeScale属性为空 说明，本次为新增操作，不做任何处理
+                return false;
+            }
+
+            $("input[name='feeScale"+idSuffix+"'][value='"+payFeeScale.feeScale+"']").prop('checked', 'checked'); //计费类型选择项
+            $.chooseFeeType(idSuffix, payFeeScale.feeScale); //切换选择项
+
+            $('#feeScaleStep'+idSuffix).val(payFeeScale.feeScaleStep);  //计费梯度
+            if(payFeeScale.feeScale == 1 && payFeeScale.singleFeeType == 2){ //只有费率模式显示原始字样
+
+                $.changeFeeSpanText(idSuffix, 2); //改变span文字
+                $("input[name='singleFeeType"+idSuffix+"'][value='2']").prop('checked', 'checked'); //选择单笔收费类型为费率
+
+                $('#fee' + idSuffix).val(payFeeScale.fee);
+            }else{
+                $('#fee' + idSuffix).val(payFeeScale.fee / 100);
+            }
+
+        }
+
+        //初始化操作
+        admin.req({
+            type: "POST",
+            url: layui.setter.baseUrl + '/mch_info/get_private_fee_config',
+            data: {mchId: mchId},
+            success: function(res){
+                if(res.code == 0) {
+
+                    var payFeeScale = res.data.payFeeScale;
+                    var agpayFeeScale = res.data.agpayFeeScale;
+
+                    $('#id1').val(payFeeScale.id);
+                    $('#id2').val(agpayFeeScale.id);
+
+                    $.initData(1, payFeeScale);
+                    $.initData(2, agpayFeeScale);
+
+                    form.render();
+                }
+            }
+        });
+
+        form.render();
+
+    });
+
+</script>

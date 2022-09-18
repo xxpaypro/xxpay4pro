@@ -1,0 +1,132 @@
+<style>
+    .xxpayPopupDiv .layui-form-label {
+        width:15% !important;
+        margin-left:1%;
+    }
+    .xxpayPopupDiv .layui-input-inline {
+        width: 33% !important;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <div class="layui-tab-content">
+                <form class="layui-form layui-form-pane" action="">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">规则ID</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="ruleId" name="ruleId" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">充值金额</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="rechargeAmount" name="rechargeAmount" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">赠送规则</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="ruleType" name="ruleType" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">赠送返点, 余额/积分</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="givePoints" name="givePoints" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">赠送优惠券ID</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="giveCouponId" name="giveCouponId" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">推荐标识</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="firstFlag" name="firstFlag" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">状态</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="status" name="status" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">备注</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="remark" name="remark" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">创建时间</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="createTime" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">更新时间</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="updateTime" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    layui.use(['admin','form','view'],function(){
+        var form = layui.form
+            ,$ = layui.$
+            ,admin = layui.admin
+            ,element = layui.element
+            ,view = layui.view
+            ,layer = layui.layer ;
+        // 导航
+        element.render('breadcrumb', 'breadcrumb');
+
+        var ruleId = view.getOpenParams('ruleId');
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/member_recharge_rule/get',
+            data: {
+                ruleId : ruleId
+            },
+            error: function(err){
+                layer.alert(JSON.stringify(err.field), {
+                    title: '错误提示'
+                })
+            },
+            success: function(res){
+                if(res.code == 0){
+                    $('#ruleId').val(res.data.ruleId);
+                    $('#rechargeAmount').val(res.data.rechargeAmount/100);
+                    $('#giveCouponId').val(res.data.giveCouponId);
+                    if(res.data.ruleType == 1) {
+                        $('#givePoints').val(res.data.givePoints/100);
+                        $('#ruleType').val("赠余额");
+                    }else if(res.data.ruleType == 2) {
+                        $('#givePoints').val(res.data.givePoints);
+                        $('#ruleType').val("赠积分");
+                    }else if(res.data.ruleType == 3) {
+                        $('#ruleType').val("赠优惠券");
+                    }
+                    if(res.data.firstFlag == 0) {
+                        $('#firstFlag').val("否");
+                    }else if(res.data.firstFlag == 1) {
+                        $('#firstFlag').val("是");
+                    }
+                    if(res.data.status == 0) {
+                        $('#status').val("停止使用");
+                    }else if(res.data.status == 1) {
+                        $('#status').val("正常使用");
+                    }
+                    $('#remark').val(res.data.remark);
+
+                    if(res.data.createTime != "" && res.data.createTime != null) {
+                        $('#createTime').val(layui.util.toDateString(res.data.createTime));
+                    }
+                    if(res.data.updateTime != "" && res.data.updateTime != null) {
+                        $('#updateTime').val(layui.util.toDateString(res.data.updateTime));
+                    }
+                    form.render();
+                }
+            }
+        })
+    })
+</script>

@@ -1,0 +1,324 @@
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a><cite>申请结算</cite></a>
+    </span>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">申请结算</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-form-item">
+                    <blockquote class="layui-elem-quote" id="amountTip"></blockquote>
+                </div>
+                <form class="layui-form center" id="settForm">
+                        <table id="settTable" class="layui-table">
+                            <colgroup>
+                                <col width="200">
+                                <col width="350">
+                                <col width="120">
+                            </colgroup>
+                            <thead>
+	                            <tr>
+	                                <th>结算账户</th>
+	                                <th>结算金额(元)</th>
+	                                <th class='batchShow'>操作</th>
+	                            </tr>
+                            </thead>
+                            <tbody>
+                            	<tr class='settTr'>
+                                	<td><select id="mainAccountSelect" class='accountSelect'>
+                              				<option value="">请选择结算账户</option>
+                          				</select>
+                          			</td>
+                                	<td><input type="text" class="settAmount layui-input" required lay-verify="required|number" placeholder="请输入结算金额" autocomplete="off"></td>
+                                	<td class='batchShow'><button id="addRow" class="layui-btn layui-btn-sm">增加</button></td>
+                               </tr>
+                            </tbody>
+                        </table>
+                       <div id='currentAuthDivForAuth'></div>
+                       <div class="layui-form-item ">
+	                        <div class="layui-input-block">
+	                            <button type="button" lay-submit lay-filter="btnJSJ" class="layui-btn">提交申请</button>
+	                        </div>
+                      </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['form','util','admin'], function(){
+       var form = layui.form
+       ,$ = layui.$
+       ,admin = layui.admin
+       ,element = layui.element;
+
+       element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+       
+       
+       $.genCurrentAuthHtml = function (payType, securityAuthType){
+     	   
+          	//无需验证
+       	   if(payType == '0'){
+       		   return "";
+       	   }
+             //仅支付密码验证
+       	   else if(payType == '1'){
+       		  return `
+   			   <div class="layui-form-item layui-form-text">
+   		         <label class="layui-form-label">支付密码</label>
+   		         <div class="layui-input-block">
+   		            <input type="password" name="payPassword" required lay-verify="required" placeholder="请输入支付密码" autocomplete="off" class="layui-input">
+   		         </div>
+   		   	   </div>`;
+       	   }
+          	//仅安全认证
+       	   else if(payType == '2'){
+       		   return  $.genSecurityAuthHtml(securityAuthType);
+       		   
+       	   }
+          	//支付密码 + 安全认证
+       	   else if(payType == '3'){}
+   	     	  return `
+   			   <div class="layui-form-item layui-form-text">
+   		         <label class="layui-form-label">支付密码</label>
+   		         <div class="layui-input-block">
+   		            <input type="password" name="payPassword" required lay-verify="required" placeholder="请输入支付密码" autocomplete="off" class="layui-input">
+   		         </div>
+   		   	   </div>` + $.genSecurityAuthHtml(securityAuthType);
+       	};
+       	
+       	$.genSecurityAuthHtml = function (securityAuthType){
+     	   
+     	   if(securityAuthType == '1'){ //谷歌验证码
+     		   
+     			return `
+     			   <div class="layui-form-item layui-form-text">
+     		         <label class="layui-form-label">谷歌验证码</label>
+     		         <div class="layui-input-block">
+     		            <input type="text" name="vercode" required lay-verify="required|number" placeholder="请输入谷歌验证码" autocomplete="off" class="layui-input">
+     		         </div>
+     		   	   </div>`;
+     	   }else if(securityAuthType == '2'){ //手机验证码
+     		   
+     	       $('body').off('click', '.sendMsgCodeBtn').on('click', ".sendMsgCodeBtn", function(){
+     	    	   	  var _thisBtn = $(this);
+     	    	      admin.req({
+     	    	        url: layui.setter.baseUrl + '/agent/sms_send'
+     	    	        ,data :{bizType : 35}
+     	    	        ,success: function(res){
+     	    	        	if(!res.code == 0 ){
+     	    	        		return false;
+     	    	        	}
+     	    	       	    var seconds = 60 ,timer, countDown = function(loop){
+     		    	            seconds--;
+     		    	            if(seconds < 0){
+     		    	            	 _thisBtn.removeClass("layui-disabled").removeAttr('disabled').html('发送手机验证码');
+     		    	               seconds = 60;
+     		    	               clearInterval(timer);
+     		    	            } else {
+     		    	            	 _thisBtn.addClass("layui-disabled").attr('disabled', 'disabled').html(seconds + '秒后重获');
+     		    	            }
+     		 	   	            if(!loop){
+     		    	               timer = setInterval(function(){countDown(true);}, 1000);
+     		    	            }
+     	    	            };
+     	    	           layer.msg('验证码已发送至你的手机，请注意查收', {icon: 1, shade: 0});
+     	    	           countDown();
+     	    	        }
+     	    	      });
+     	    	      return false; //阻止表单提交
+     	       });
+     		 	return `
+     			   <div class="layui-form-item layui-form-text">
+     		         <label class="layui-form-label">手机验证码</label>
+     		         <div class="layui-input-inline">
+     		            <input type="text" class="layui-input" name="vercode" required lay-verify="required|number" placeholder="请输入手机验证码" autocomplete="off" >
+     		         </div>
+     		         <button class="layui-btn layui-btn-primary sendMsgCodeBtn">发送手机验证码</button>
+     		   	   </div>`;
+     	   }
+        };
+       	
+
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/sett/is_allow_apply',
+            error: function(err){
+                layer.alert(err.msg,{title:'请求失败'})
+            },
+            success:function(res){
+                if(res.code == 0){
+                    if(res.msg.length > 0) {
+                        $('#amountTip').html("<span style='color: red'>" + res.msg + "</span>");
+                    }else {
+                        $("#applyForm").show();
+                        admin.req({
+                            type: 'get',
+                            url: layui.setter.baseUrl + '/account/get',
+                            error: function(err){
+                                layer.alert(err.msg,{title:'请求失败'})
+                            },
+                            success:function(res){
+                                if(res.code == 0 && res.data != null){
+                                    $('#amountTip').html("可结算金额: <span style='color: red'>" + res.data.availableSettAmount / 100 + "</span> 元");
+                                }
+                            }
+                        });
+                        
+                        admin.req({
+                            type: 'get',
+                            url: layui.setter.baseUrl + '/bank_account/list',
+                            error: function(err){
+                                layer.alert(err.msg,{title:'请求失败'})
+                            },
+                            success:function(res){
+                            	if(res.code == 0){
+                                    var accList = res.data;
+                                    //遍历赋值
+                                    for(var i in accList){
+                                    	
+                                    	var typeStr = "";
+                                    	if(accList[i].accountType == '1'){typeStr = "银行卡";}
+                                    	if(accList[i].accountType == '2'){typeStr = "微信";}
+                                    	if(accList[i].accountType == '3'){typeStr = "支付宝";}
+                                    	
+                                        $("#mainAccountSelect").append('<option value= '+accList[i].id+'>'+'['+typeStr+']' +accList[i].bankName + '|' + accList[i].accountNo+'  |  '+accList[i].accountName+'</option>');
+                                    }
+                                    form.render('select');
+                                }
+                            }
+                        });
+
+                        admin.req({
+                            type: 'get',
+                            url: layui.setter.baseUrl + '/agent/get',
+                            error: function(err){
+                                layer.alert(err.msg,{title:'请求失败'})
+                            },
+                            success:function(res){
+                                if(res.code == 0 && res.data != null){
+                                    $("#currentAuthDivForAuth").html($.genCurrentAuthHtml(res.data.payType, res.data.securityAuthType));
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+        });
+
+
+
+
+
+       form.on('submit(btnJSJ)', function(data){
+           
+		   var errMsg = '';
+    	   var settReqParams = [];
+    	   
+    	   $.each($('#settTable .settTr'),function(){   //遍历tr标签
+    		   var thisAccountSelect = $(this).find('select.accountSelect');
+    		   var thisAmountInput = $(this).find('input.settAmount');
+    		   
+    		   if(!thisAccountSelect.val()){  //银行账户select
+    			   thisAccountSelect.focus();
+    			   errMsg = "请选择结算银行卡账户!";
+    			   return false;
+    		   }
+    		   if( thisAmountInput.val() * 1 <= 0 ){  //结算金额input
+    			   thisAmountInput.focus();
+    			   errMsg = "结算金额请输入大于0的金额!";
+    			   return false;
+    		   }
+    		   
+    		   var paramObj = {};
+    		   paramObj['accountId'] = thisAccountSelect.val();
+    		   paramObj['settAmount'] = thisAmountInput.val();
+    		   settReqParams.push(paramObj);
+    		   
+    	   });
+    	   
+    	   if(errMsg){  //当存在问题，提示错误信息
+    		   layer.alert(errMsg, function(index){
+                   layer.close(index);
+               });
+    		   return false;
+    	   }
+    	   
+    	   var totalSettAmount = 0 ;
+    	   var calFeeParams = "";  //用于计算手续费的参数
+    	   for(var i = 0; i < settReqParams.length; i++){
+    		   totalSettAmount += settReqParams[i]['settAmount'] * 1;
+    		   calFeeParams += settReqParams[i]['settAmount'] * 1 ;
+    		   if(i != settReqParams.length -1){
+    			   calFeeParams += "##";
+    		   }
+    	   }
+    	   
+    	   //计算手续费
+    	   var settFee = 0;
+           admin.req({
+                   type: 'post',
+                   url: layui.setter.baseUrl + '/sett/calculateSettFee',
+                   async: false, //同步处理
+                   data: {
+                	   settAmount: calFeeParams
+                   },
+                   success: function(res){
+                	   settFee = res.data / 100;
+                   }
+               });
+           if(settFee <= 0){
+        	   layer.close(index);
+               return false;
+           }
+         
+           data.field.settAmountJson = JSON.stringify(settReqParams);
+           var conMsg = "申请结算金额:" + totalSettAmount + "元,手续费:" + settFee + "元,确定申请么?";
+           layer.confirm(conMsg, function(index){
+               admin.req({
+                   type: 'post',
+                   url: layui.setter.baseUrl + '/sett/apply',
+                   data: data.field,
+                   success: function(res){
+                       if(res.code == 0){
+                           layer.alert(res.msg,{title: "保存成功"},function(index){
+                               layer.close(index);
+                               location.hash = '/sett/list/';
+                           })
+                       }
+                   }
+               });
+           });
+            return false;//阻止跳转
+        });
+       
+       $("#addRow").click( function() {
+       	
+	     if($("#settTable .settTr").length >= 10 ){  //最多支持添加10个账户
+	       		return false;
+	     }
+       	
+         var settRowHtml = '<tr class="settTr">' +
+                 '<td><select class="accountSelect">'+$("#mainAccountSelect").html()+'</select></td>' +
+                 '<td><input type="text" required lay-verify="required|number" placeholder="请输入结算金额" autocomplete="off" class="settAmount layui-input"></td>' +
+                 '<td><button class="delSettRow layui-btn layui-btn-danger layui-btn-sm">删除</button></td>' +
+                 '</tr>';
+         $("#settTable tr:last").after( settRowHtml );
+         form.render(); //重新渲染表单
+         return false;
+       });
+       
+       $('#settTable').on('click', '.delSettRow', function(){
+	       	$(this).parent().parent().remove();
+	       	return false;
+       });
+       
+       form.render();
+       
+    })
+</script>

@@ -1,0 +1,90 @@
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <div class="layui-tab-content">
+                <form class="layui-form" style="width:100%">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">文章栏目</label>
+                        <div class="layui-input-block">
+                            <select name="articleType" id="articleType" lay-search="" lay-verify="required">
+                                <option value="">文章栏目</option>
+                                <option value="1" selected>服务政策&隐私协议</option>
+                                <option value="2">支付安全</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">文章标题</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="title" lay-verify="required" placeholder="请输入文章标题" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item layui-form-text">
+                        <label class="layui-form-label">文章内容</label>
+                        <div class="layui-input-block">
+                            <textarea id="content" name="content" placeholder="请输入内容" class="layui-textarea"></textarea>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button type="button" class="layui-hide xxpayYesBtn" lay-submit lay-filter="saveBtn">保存</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['form','util','admin', 'layedit', 'setter'], function(){
+        var form = layui.form
+        ,$ = layui.$
+        ,layedit = layui.layedit
+        ,layer = layui.layer 
+        ,admin = layui.admin
+        ,setter = layui.setter
+        ,element = layui.element;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        //富文本上传图片
+        var headers = {};
+        headers[setter.request.tokenName] = layui.data(setter.tableName)[setter.request.tokenName];
+        layedit.set({
+            uploadImage: {
+                url: layui.setter.baseUrl + '/upload/article'
+                ,headers: headers
+                ,size: 1024  //仅支持1M图片上传
+            }
+        });
+        //建立富文本编辑器
+        var layeditIndex = layedit.build('content');
+
+        form.on('submit(saveBtn)',function(data){
+            if (data.field.articleType == "") {
+                layer.msg("请选择文章类型");
+                return false;
+            }
+            admin.req({
+                type: 'POST',
+                url: layui.setter.baseUrl + '/sys/article/add',
+                data: {
+                    title: data.field.title,
+                    content: layedit.getContent(layeditIndex),
+                    articleType: data.field.articleType
+                },
+                success: function(res){
+                    if(res.code == 0){
+                        layer.alert(res.msg,{title: '新建成功'},function(index){
+                            layer.closeAll(); //关闭所有弹层
+                            layui.table.reload('tableReload'); //调用业务弹层外表格重新加载
+                        })
+                    }
+                }
+            });
+            return false;
+        });
+        // 渲染表单
+        form.render();
+    })
+</script>

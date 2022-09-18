@@ -1,0 +1,104 @@
+<div class="layui-card-header layui-card">
+        <span class="layui-breadcrumb" lay-filter="breadcrumb">
+            <a lay-href="">首页</a>
+            <a>结算</a>
+            <a><cite>银行详情</cite></a>
+        </span>
+    </div>
+    <div class="layui-fluid">
+        <div class="layui-card">
+            <div class="layui-tab layui-tab-brief">
+                <ul class="layui-tab-title">
+                    <li class="layui-this">银行详情</li>
+                </ul>
+                <div class="layui-tab-content">
+                    <table class="layui-table" id="bankListD"></table>
+                    <a lay-href="merchant/bank/"  class="layui-btn" style="margin-left:10%;">返回</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <style>
+        table{
+            text-align: center;
+        }
+        .leftT {
+            text-align: left;
+        }
+      
+    </style>
+    
+    <script>
+        layui.use(['admin', 'table','util','element',], function(){
+            var table = layui.table
+            ,$ = layui.$
+            ,admin = layui.admin
+            ,element = layui.element;
+            
+            element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+            
+            var router = layui.router();
+    
+            admin.req({
+                type: 'get',
+                url: layui.setter.baseUrl + '/bank_account/get',
+                data: {
+                    id: router.search.id,
+                },
+                error: function(err){
+                    layer.alert(err);
+                },
+                success: function(res){
+                    if(res.code == 0 && res.data != null){
+                        var html = '';
+                        
+                        html += `
+                            <table>
+                                <colgroup>
+                                    <col width="25%" >
+                                    <col>
+                                    <col width="25%" >
+                                    <col>
+                                </colgroup>
+                                <tbody>
+                                    <tr>
+                                        <td>银行账号ID</td>
+                                        <td class="leftT">${res.data.id}</td>
+                                        <td>商户ID</td>
+                                        <td class="leftT">${res.data.mchId}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>商户名称</td>
+                                        <td class="leftT">${res.data.name}</td>
+                                        <td>账号信息</td>
+                                        <td class="leftT">${res.data.accountNo}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>账户类型</td>
+                                        <td class="leftT">${res.data.accountType == 1?"银行账号":res.data.mchType == 2?"支付宝账号":"微信账号"}</td>
+                                        <td>是否默认</td>
+                                        <td class="leftT">${res.data.isDefault == 1?"默认":"不是默认"}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>创建时间</td>
+                                        <td class="leftT">${ layui.util.toDateString(res.data.createTime) }</td>
+                                        <td>修改时间</td>
+                                        <td class="leftT">${ layui.util.toDateString(res.data.updateTime) }</td>
+                                    </tr>
+                                    <tr>
+                                        <td>备注</td>
+                                        <td class="leftT">${res.data.remark}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        `
+                        $('#bankListD').html(html);
+                    }else {
+                        layer.alert('请求数据为空，失败');
+                    }
+                }
+    
+            })
+          
+        });
+    </script>

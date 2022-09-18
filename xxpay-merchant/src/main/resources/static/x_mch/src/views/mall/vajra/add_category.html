@@ -1,0 +1,95 @@
+<style>
+    .btn-group-bottom{
+        position: absolute;
+        bottom: 10px;
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+                <table id="categoryList" lay-filter="categoryList"></table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="layui-row btn-group-bottom">
+    <div class="layuiAdmin-btns" style="margin-bottom: 10px;">
+        <a class="layui-btn layui-btn-normal" data-type="all" data-events="addGoods">确认添加</a>
+        <a class="layui-btn layui-btn-primary" data-type="all" data-events="cancel">取消</a>
+    </div>
+</div>
+<script>
+
+    var tplAuthFrom = function(d){
+        if(d.authFrom == 1) {
+            return '餐饮';
+        }else if (d.authFrom == 2) {
+            return '电商';
+        }
+    };
+   
+    layui.use(['form','admin', 'table', 'view'], function(){
+        var form = layui.form
+        ,$ = layui.$
+        ,table = layui.table
+        ,view = layui.view
+        ,element = layui.element;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        var authFrom = view.getOpenParams('authFrom');
+        var jumpUrl = view.getOpenParams('jumpUrl');
+
+        table.render({
+            elem: '#categoryList'
+            ,id: "tableReload"
+            ,url: layui.setter.baseUrl + '/mchGoods/category/list'
+            ,where: {
+                authFrom: authFrom
+            }
+            ,cols: [[
+                {type: 'checkbox', fixed: 'left'}
+                ,{field: 'categoryId', title: '分类ID'}
+                ,{field: 'categoryName',title: '分类名称'}
+                ,{field: 'authFrom',title: '所属小程序',templet: tplAuthFrom}
+            ]]
+            ,page: true
+            ,skin: 'line'
+        });
+
+        // 事件处理
+        var events = {
+            addGoods: function(othis, type){
+                var checkStatus = table.checkStatus("tableReload")
+                    ,data = checkStatus.data; //获得选中的数据
+                if(data.length === 0) return layer.msg('请选择数据');
+                if(data.length > 1) return layer.msg('只能选择一个商品');
+                var subGoodsId = "";
+                var title = "";
+                $.each(data, function(i, n){
+                    subGoodsId = n.categoryId;
+                    title = n.categoryName;
+                });
+                $("#jumpUrl").val(jumpUrl + "?categoryId=" + subGoodsId + "&title=" + title);
+                layer.closeAll(); //关闭所有弹层
+            },
+            cancel: function () {
+                layer.closeAll(); //关闭所有弹层
+            }
+        };
+
+        $('.layuiAdmin-btns .layui-btn').on('click', function(){
+            var othis = $(this)
+                ,thisEvent = othis.data('events')
+                ,type = othis.data('type');
+            events[thisEvent] && events[thisEvent].call(this, othis, type);
+        });
+
+    });
+
+</script>

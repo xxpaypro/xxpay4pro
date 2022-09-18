@@ -1,0 +1,93 @@
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a><cite>商户支付通道管理</cite></a>
+    </span>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">支付通道</li>
+            </ul>
+            <div class="layui-tab-content">
+                <style>
+                    .center {
+                        width: 80%;
+                    }
+                </style>
+                <table class="layui-hide center" id="cList"></table>
+            </div>
+        </div>
+    </div>
+</div>
+    <script>
+        layui.use(['table','util'], function(){
+            var $ = layui.$
+            ,admin = layui.admin
+            ,table = layui.table
+            ,element = layui.element
+            ,form = layui.form;
+
+            element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+            var router = layui.router();
+            var mchId = router.search.mchId;
+            
+             //标题内容模板
+            var tplTitle = function(d){
+                return '<a class="layui-btn layui-btn-sm" lay-href="merchant/pay_passage/config/mchId='+mchId +'/productId='+ d.ps.productId +'">配置</a>'
+            };
+
+            var tplStatus = function(d){
+                if(d.status == '0') {
+                    return '<span class="layui-badge layui-bg-gray">关闭</span>';
+                }else if(d.status == 1) {
+                    return '<span class="layui-badge">开启</span>';
+                }
+                return "未设置";
+            };
+
+            var tplIfMode = function(d){
+
+                if(d.ifMode == 1) {
+                    return "单独";
+                }else if(d.ifMode == 2) {
+                    return "<span style='color: red'>轮询</span>";
+                }
+
+                return "-";
+            };
+
+            var tplMchRate = function(d){
+                if(!d.fee) { return "-";}
+                return "<span style='color: blue'>"+ d.fee+"%<span>";
+            };
+
+            var tplAgentRate = function(d){
+
+                if(!d.ps.parentAgentFee) { return "-";}
+                return "<span style='color: blue'>"+ d.ps.parentAgentFee+"%<span>";
+            };
+
+
+            table.render({
+                elem: '#cList'
+                ,url: layui.setter.baseUrl + '/mch_pay_passage/list'
+                ,where: {mchId : mchId}
+                ,cols: [[
+                    {width: 120, title: '产品ID', templet: "<span>{{ d.ps.productId }}</span>"}
+                    ,{width: 250,title: '产品名称', templet: "<span>{{ d.ps.productName }}</span>"}
+                    ,{width: 120,title: '产品类型',templet: "<span>{{ d.ps.productType == '1' ? '收款': '充值' }}</span>"}
+                    ,{width: 150, title: '上级代理商费率',templet: tplAgentRate}
+                    ,{width: 150, title: '商户费率',templet: tplMchRate}
+                    ,{width: 150,  title: '商户接口模式',templet: tplIfMode}
+                    ,{width: 120,  title: '状态',templet: tplStatus }
+                    ,{width: 100, title: '操作', templet: tplTitle }
+                ]]
+                ,page: false
+                ,skin: 'line'
+            });
+        });
+      
+    </script>

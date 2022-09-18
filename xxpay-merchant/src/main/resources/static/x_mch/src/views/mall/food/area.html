@@ -1,0 +1,179 @@
+<style>
+    .margin-top{margin-top:10px;}
+</style>
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>商城管理</cite></a>
+        <a><cite>餐饮</cite></a>
+        <a><cite>区域管理</cite></a>
+    </span>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">区域管理</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-row">
+                   <form action="" id="exportForm" method="post">
+                   </form>
+                </div>
+                <div class="layui-row">
+                    <div class="layuiAdmin-btns" style="margin-bottom: 10px;">
+                        <a class="layui-btn" data-type="all" data-events="createOne">新增区域</a>
+                        <a class="layui-btn" data-type="all" data-events="create">批量新增区域</a>
+                        <a class="layui-btn layui-bg-red" data-type="all" data-events="del">删除</a>
+                    </div>
+                </div>
+                <table id="categoryList" lay-filter="categoryList"></table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+     //标题内容模板
+     var tplTitle = function(d){
+         return '<a class="layui-btn layui-btn-xs" lay-event="createQrcode">生成小程序码</a>'
+                + '<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>'
+     };
+
+     var tplParentCategoryId = function(d){
+         if(d.parentCategoryId == 0) {
+             return '<span></span>';
+         }else {
+             return '<span>'+d.parentCategoryId+'</span>';
+         }
+     };
+
+	 layui.config({
+	    base: '/x_mch/src/lib/extend/',
+	 });
+     layui.use(['table', 'view', 'admin', 'form'], function(){
+        var table = layui.table
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,element = layui.element
+        ,view = layui.view
+        ,form = layui.form;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        table.render({
+            elem: '#categoryList'
+            ,id: "tableReload"
+            ,url: layui.setter.baseUrl + '/mchStoreAreaManage/list'
+            ,cols: [[
+                {type: 'checkbox', fixed: 'left'}
+                ,{field: 'id', title: 'ID'}
+                ,{field: 'storeId', title: '门店ID'}
+                ,{field: 'areaName',title: '区域名'}
+                ,{field: 'edit', title: '操作', width: 400, templet: tplTitle }
+            ]]
+            ,page: true
+            ,skin: 'line'
+        });
+
+         //监听工具条
+         table.on('tool(categoryList)', function(obj){
+             var data = obj.data;
+             var layEvent = obj.event;
+
+             if(obj.event === 'del'){
+                 layer.confirm('确认删除么', function(index){
+                     admin.req({
+                         type: 'get',
+                         url: layui.setter.baseUrl + '/mchStoreAreaManage/delete',
+                         data: {
+                             id: data.id
+                         },
+                         success: function(res){
+                             if(res.code == 0) {
+                                 layer.msg('删除成功', {
+                                     icon: 1
+                                 });
+                                 table.reload("tableReload");
+                             }
+                         }
+                     });
+                 });
+             }else if(obj.event === 'createQrcode'){//生成小程序码
+                 admin.req({
+                     type: 'get',
+                     url: layui.setter.baseUrl + '/mchStoreAreaManage/create_wxacode',
+                     data: {
+                         id: data.id
+                     },
+                     success: function(res){
+                         if(res.code == 0) {
+                             layer.open({
+                                 type: 1,
+                                 title: '小程序点餐码',
+                                 scrollbar: false,//浏览器滚动条已锁
+                                 closeBtn: 1, //不显示关闭按钮
+                                 area: ['300px','300px'],
+                                 content:
+                                     `<div class="layui-wrap-content" style="text-align: center;">
+                                    <div>
+                                        <img src="`+res.data.codeImgUrl+`" />
+                                    </div>
+                                   </div>`
+                             });
+                         }
+                     }
+                 });
+             }
+         });
+
+         // 事件处理
+         var events = {
+             create: function(othis, type){
+                 view.xxpayPopup("批量新增区域", "mall/food/areaCreate", null, {area:["40%", "60%"]});
+             },
+             del: function (othis, type) {
+                 var checkStatus = table.checkStatus("tableReload")
+                     ,checkData = checkStatus.data; //得到选中的数据
+                 if(checkData.length === 0){
+                     return layer.msg('请选择数据');
+                 }
+                 var idArr = new Array();
+                 for (var i=0;i<checkData.length;i++){
+                     idArr.push(checkData[i].id);
+                 }
+
+                 layer.confirm('确定删除吗？', function(index) {
+                     admin.req({
+                         type: 'get',
+                         url: layui.setter.baseUrl + '/mchStoreAreaManage/delete',
+                         data: {
+                             ids: idArr.toString()
+                         },
+                         success: function(res){
+                             if(res.code == 0) {
+                                 layer.msg('删除成功', {
+                                     icon: 1
+                                 });
+                                 table.reload("tableReload");
+                             }
+                         }
+                     });
+                 });
+             },
+             createOne: function () {
+                 view.xxpayPopup("新增区域", "mall/food/areaCreateOne", null, {area:["30%", "40%"]});
+             }
+         };
+
+         $('.layuiAdmin-btns .layui-btn').on('click', function(){
+             var othis = $(this)
+                 ,thisEvent = othis.data('events')
+                 ,type = othis.data('type');
+             events[thisEvent] && events[thisEvent].call(this, othis, type);
+         });
+
+         // 渲染表单
+         form.render();
+        
+     })
+</script>

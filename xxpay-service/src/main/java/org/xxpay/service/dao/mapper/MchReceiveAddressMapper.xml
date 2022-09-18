@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.xxpay.service.dao.mapper.MchReceiveAddressMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="org.xxpay.core.entity.MchReceiveAddress">
+        <id column="AddressId" property="AddressId" />
+        <result column="MemberId" property="memberId" />
+        <result column="ContactName" property="contactName" />
+        <result column="Tel" property="tel" />
+        <result column="ProvinceCode" property="provinceCode" />
+        <result column="CityCode" property="cityCode" />
+        <result column="AreaCode" property="areaCode" />
+        <result column="AreaInfo" property="areaInfo" />
+        <result column="Address" property="address" />
+        <result column="isDefaultAddress" property="isDefaultAddress" />
+        <result column="MchId" property="mchId" />
+        <result column="IsvId" property="isvId" />
+        <result column="CreateTime" property="createTime" />
+        <result column="UpdateTime" property="updateTime" />
+    </resultMap>
+
+</mapper>

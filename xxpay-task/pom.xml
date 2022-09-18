@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<artifactId>xxpay-task</artifactId>
+	<packaging>jar</packaging>
+	<name>xxpay-task</name>
+	<description>xxpay-task</description>
+
+	<parent>
+		<groupId>org.xxpay</groupId>
+		<artifactId>xxpay</artifactId>
+		<version>1.0.0</version>
+	</parent>
+
+	<!-- 项目属性 -->
+	<properties>
+		<projectRootDir>${basedir}/../</projectRootDir>
+	</properties>
+
+	<dependencies>
+	
+		<!--wx_pay -->
+		<dependency>
+			<groupId>com.github.binarywang</groupId>
+			<artifactId>weixin-java-pay</artifactId>
+		</dependency>
+		
+		<!--ali_pay-->
+		<dependency>
+			<groupId>com.alipay.sdk</groupId>
+			<artifactId>alipay-sdk-java</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>dom4j</groupId>
+			<artifactId>dom4j</artifactId>
+		</dependency>
+
+		<!-- csv工具  可用于生成对账文件 -->
+		<dependency>
+			<groupId>net.sourceforge.javacsv</groupId>
+			<artifactId>javacsv</artifactId>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<finalName>${project.name}</finalName>
+		<plugins>
+			<!-- 指定jdk版本 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
+				<configuration>
+					<!-- 源码的编译器版本 -->
+					<source>${java.version}</source>
+					<!-- class的编译器版本 -->
+					<target>${java.version}</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

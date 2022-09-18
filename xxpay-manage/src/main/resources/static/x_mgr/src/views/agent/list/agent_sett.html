@@ -1,0 +1,319 @@
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>代理商管理</cite></a>
+        <a><cite>结算设置</cite></a>
+    </div>
+</div>
+<style>
+    .layui-form-label {
+        width:15% !important;
+        margin-left:1%;
+    }
+    .layui-input-inline {
+        width: 33% !important;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <form class="layui-form layui-form-pane">
+            <div class="layui-tab layui-tab-brief">
+                <ul class="layui-tab-title">
+                    <li class="layui-this">结算设置</li>
+                </ul>
+                <input type="hidden" id="agentId" name="agentId" class="layui-input">
+                <div class="layui-tab-content">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">代理商名称</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="agentName" name="agentName" lay-verify="required" autocomplete="off" class="layui-input" disabled="disabled">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">结算配置</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="settConfigMode" value="1" title="继承系统" lay-filter="settConfigModeFilter">
+                            <input type="radio" name="settConfigMode" value="2" title="自定义" lay-filter="settConfigModeFilter">
+                            <button type="button" class="layui-btn layui-btn-sm" id="copyBtn" lay-filter="copyBtnFilter" style="display: none">复制系统配置</button>
+                        </div>
+                    </div>
+                    <div id="customConfigDiv" style="display: none">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">提现开关</label>
+                            <div class="layui-input-inline">
+                                <input type="radio" name="drawFlag" value="1" title="开启" checked>
+                                <input type="radio" name="drawFlag" value="0" title="关闭">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">允许星期几提现</label>
+                            <div class="layui-input-inline">
+                                <input type="checkbox" name="allowDrawWeekDay" title="星期一" value="1" lay-skin="primary">
+                                <input type="checkbox" name="allowDrawWeekDay" title="星期二" value="2" lay-skin="primary">
+                                <input type="checkbox" name="allowDrawWeekDay" title="星期三" value="3" lay-skin="primary">
+                                <input type="checkbox" name="allowDrawWeekDay" title="星期四" value="4" lay-skin="primary">
+                                <input type="checkbox" name="allowDrawWeekDay" title="星期五" value="5" lay-skin="primary">
+                                <input type="checkbox" name="allowDrawWeekDay" title="星期六" value="6" lay-skin="primary">
+                                <input type="checkbox" name="allowDrawWeekDay" title="星期日" value="7" lay-skin="primary">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">每日提现开始时间</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="drawDayStartTime" id="drawDayStartTime" placeholder="输入提现开始时间,格式为:01:30:00"  autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">每日提现结束时间</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="drawDayEndTime" id="drawDayEndTime" placeholder="输入提现结束时间,格式为:21:00:00"  autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">每日提现次数</label>
+                            <div class="layui-input-inline">
+                                <input type="tel" id="dayDrawTimes" name="dayDrawTimes" placeholder="输入每日提现次数" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">每日提现最大金额(元)</label>
+                            <div class="layui-input-inline">
+                                <input type="tel" id="drawMaxDayAmount" name="drawMaxDayAmount" placeholder="输入每日提现最大金额" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">单笔最大提现金额(元)</label>
+                            <div class="layui-input-inline">
+                                <input type="tel" id="maxDrawAmount" name="maxDrawAmount" placeholder="输入最大提现金额" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">单笔最小提现金额(元)</label>
+                            <div class="layui-input-inline">
+                                <input type="tel" id="minDrawAmount" name="minDrawAmount" placeholder="输入最小提现金额" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">结算手续费类型</label>
+                            <div class="layui-input-inline" >
+                                <input type="radio" name="feeType" value="1" title="百分比收费" lay-filter="feeTypeFilter">
+                                <input type="radio" name="feeType" value="2" title="固定收费" lay-filter="feeTypeFilter" checked="checked">
+                            </div>
+                        </div>
+                        <div class="layui-form-item" id="feeRateId" style="display: none">
+                            <label class="layui-form-label">结算手续费比例(%)</label>
+                            <div class="layui-input-inline">
+                                <input type="tel" id="feeRate" name="feeRate" placeholder="输入结算手续费比例" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item" id="feeLevelId" style="display: none">
+                            <label class="layui-form-label">每笔手续费(元)</label>
+                            <div class="layui-input-inline">
+                                <input type="tel" id="feeLevel" name="feeLevel" placeholder="输入每笔手续费" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">单笔手续费上限(元)</label>
+                            <div class="layui-input-inline">
+                                <input type="tel" id="drawFeeLimit" name="drawFeeLimit" placeholder="输入单笔手续费上限" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">结算类型</label>
+                            <div class="layui-input-inline">
+                                <input type="radio" name="settType" value="1" title="自动结算" disabled="disabled">
+                                <input type="radio" name="settType" value="0" title="手动提现" checked="checked" disabled="disabled">
+                            </div>
+                        </div>
+                       <div class="layui-form-item">
+			              <label class="layui-form-label">结算周期类型</label>
+			              <div class="layui-input-inline">
+			                <input type="radio" name="settMode" value="1" title="D(自然日)" checked="checked">
+			                <!-- <input type="radio" name="settMode" value="2" title="T(工作日，节假日顺延)">  -->
+			              </div>
+			            </div>
+			            <div class="layui-form-item">
+			              <label class="layui-form-label">结算风险预存期,单位：天</label>
+			              <div class="layui-input-inline">
+			              	<input type="tel" id="settRiskDay" name="settRiskDay" lay-verify="number" placeholder="结算风险预存期，单位：天" autocomplete="off" class="layui-input">
+			              </div>
+			            </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block" style="padding-bottom: 20px;">
+                        <button type="button" class="layui-btn" lay-submit="" lay-filter="agentSett">保存</button>
+                        <a class="layui-btn" lay-href="agent/list/">返回</a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    layui.use(['admin', 'form', 'laydate'],function(){
+        var form = layui.form
+                ,$ = layui.$
+                ,admin = layui.admin
+                ,element = layui.element
+                ,laydate = layui.laydate
+                ,layer = layui.layer ;
+        // 导航
+        element.render('breadcrumb', 'breadcrumb');
+        var router = layui.router();
+        var agentId = router.search.agentId;
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/agent_info/get',
+            data: {
+                agentId : agentId
+            },
+            error: function(err){
+                layer.alert(JSON.stringify(err.field), {
+                    title: '错误提示'
+                })
+            },
+            success: function(res){
+                if(res.code == 0){
+                    $('#agentId').val(res.data.agentId);
+                    $('#agentName').val(res.data.agentName);
+                    $("input[name='settConfigMode'][value='"+res.data.settConfigMode+"']").attr("checked",true);
+                    if(res.data.settConfigMode == 1) {   // 继承
+                        $("#customConfigDiv").hide();
+                        $("#copyBtn").hide();
+                    }else if(res.data.settConfigMode == 2) {    // 自定义
+                        $("#customConfigDiv").show();
+                        $("#copyBtn").show();
+                    }
+                    $.setForm(res);
+                    form.render();
+                }
+            }
+        })
+
+        form.on('submit(agentSett)', function(data) {
+            // 将星期几形成1,2,3格式
+            var allowDrawWeekDayCheckbox = $("input[name='allowDrawWeekDay']");
+            var vals = "";
+            for(i = 0; i < allowDrawWeekDayCheckbox.length; i++){
+                if(allowDrawWeekDayCheckbox[i].checked){
+                    var val = allowDrawWeekDayCheckbox[i].value;
+                    if(vals.length>0){
+                        vals += "," + val;
+                    }else{
+                        vals += val;
+                    }
+                }
+            }
+            data.field.allowDrawWeekDay = vals;
+            //这里可以写ajax方法提交表单
+            admin.req({
+                type: "POST",
+                url: layui.setter.baseUrl + '/agent_info/sett_update',
+                data: data.field,
+                success: function(res){
+                    if(res.code == 0) {
+                        layer.alert(res.msg, {title: "提示"}, function(index){
+                            layer.close(index);
+                            location.href = layui.setter.baseLocal + 'agent/list/';
+                        });
+                    }
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+        $("#copyBtn").click( function () {
+            admin.req({
+                type: 'get',
+                url: layui.setter.baseUrl + '/sys/config/get',
+                data: {
+                    type : 'sett'
+                },
+                error: function(err){
+                    layer.alert(JSON.stringify(err.field), {
+                        title: '错误提示'
+                    })
+                },
+                success: function(res){
+                    $.setForm(res);
+                }
+            })
+        });
+
+        form.on('radio(feeTypeFilter)', function(data){
+            if(data.value == 1) {
+                $("#feeRateId").show();
+                $("#feeLevelId").hide();
+            }else if(data.value == 2) {
+                $("#feeRateId").hide();
+                $("#feeLevelId").show();
+            }
+        });
+
+        form.on('radio(settConfigModeFilter)', function(data){
+            if(data.value == 1) {   // 继承
+                $("#customConfigDiv").hide();
+                $("#copyBtn").hide();
+            }else if(data.value == 2) { // 自定义
+                $("#customConfigDiv").show();
+                $("#copyBtn").show();
+            }
+        });
+
+        laydate.render({
+            elem: '#drawDayStartTime'
+            ,type: 'time'
+            ,format: 'HH:mm:ss'
+        });
+
+        laydate.render({
+            elem: '#drawDayEndTime'
+            ,type: 'time'
+            ,format: 'HH:mm:ss'
+        });
+
+        $.setForm = function(res) {
+            if(res.code == 0){
+                // 使用模拟点击才生效
+                $("input[name='drawFlag'][value='"+res.data.drawFlag+"']").trigger("click");
+                var allowDrawWeekDay = res.data.allowDrawWeekDay;
+                if(allowDrawWeekDay != null && allowDrawWeekDay.length > 0) {
+                    var all = $("input[name='allowDrawWeekDay']");
+                    for(i = 0; i< all.length; i++) {
+                        all[i].checked = false;
+                    }
+                    var vals = allowDrawWeekDay.split(",");
+                    for(i = 0; i < vals.length; i++) {
+                        $("input[name='allowDrawWeekDay']")[vals[i]-1].checked=true;
+                    }
+                }
+                $('#drawDayStartTime').val(res.data.drawDayStartTime);
+                $('#drawDayEndTime').val(res.data.drawDayEndTime);
+                $('#dayDrawTimes').val(res.data.dayDrawTimes);
+                $('#drawMaxDayAmount').val(res.data.drawMaxDayAmount/100);
+                $('#maxDrawAmount').val(res.data.maxDrawAmount/100);
+                $('#minDrawAmount').val(res.data.minDrawAmount/100);
+                $('#settRiskDay').val(res.data.settRiskDay);
+
+                if(res.data.feeType == 1) {
+                    $("input[name='feeType'][value='"+res.data.feeType+"']").trigger("click");
+                    $("#feeRateId").show();
+                    $("#feeLevelId").hide();
+                }else if(res.data.feeType == 2) {
+                    $("input[name='feeType'][value='"+res.data.feeType+"']").trigger("click");
+                    $("#feeRateId").hide();
+                    $("#feeLevelId").show();
+                }
+                $('#feeRate').val(res.data.feeRate);
+                $('#feeLevel').val(res.data.feeLevel/100);
+                $('#drawFeeLimit').val(res.data.drawFeeLimit/100);
+                $("input[name='settType'][value='"+res.data.settType+"']").trigger("click");
+                $("input[name='settMode'][value='"+res.data.settMode+"']").trigger("click");
+                form.render();
+            }
+        };
+
+    })
+</script>

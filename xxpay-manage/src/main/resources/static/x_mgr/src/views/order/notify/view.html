@@ -1,0 +1,166 @@
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>商户通知</cite></a>
+        <a><cite>查看通知</cite></a>
+    </div>
+</div>
+
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-tab layui-tab-brief">
+      <ul class="layui-tab-title">
+        <li class="layui-this">通知详情</li>
+      </ul>
+      <div class="layui-tab-content">
+          <form class="layui-form layui-form-pane" action="">
+              <div class="layui-row">
+                  <div class="layui-col-xs6">
+                      <div class="layui-form-item">
+                          <label class="layui-form-label">订单号</label>
+                          <div class="layui-input-block">
+                              <input type="text" id="orderId" disabled="disabled" class="layui-input">
+                          </div>
+                      </div>
+                      <div class="layui-form-item">
+                          <label class="layui-form-label">商户订单号</label>
+                          <div class="layui-input-block">
+                              <input type="text" id="mchOrderNo" disabled="disabled" class="layui-input">
+                          </div>
+                      </div>
+                      <div class="layui-form-item">
+                          <label class="layui-form-label">订单类型</label>
+                          <div class="layui-input-block">
+                              <input type="text" id="orderType" disabled="disabled" class="layui-input">
+                          </div>
+                      </div>
+                      <div class="layui-form-item">
+                          <label class="layui-form-label">通知状态</label>
+                          <div class="layui-input-block">
+                              <input type="text" id="status" disabled="disabled" class="layui-input">
+                          </div>
+                      </div>
+                      <div class="layui-form-item">
+                          <label class="layui-form-label">创建时间</label>
+                          <div class="layui-input-block">
+                              <input type="text" id="createTime" disabled="disabled" class="layui-input">
+                          </div>
+                      </div>
+                  </div>
+                  <div class="layui-col-xs6">
+                      <div class="layui-form-item">
+                          <label class="layui-form-label">商户ID</label>
+                          <div class="layui-input-block">
+                              <input type="text" id="mchId" disabled="disabled" class="layui-input">
+                          </div>
+                      </div>
+                      <div class="layui-form-item">
+                          <label class="layui-form-label">应用ID</label>
+                          <div class="layui-input-block">
+                              <input type="text" id="appId" disabled="disabled" class="layui-input">
+                          </div>
+                      </div>
+                      <div class="layui-form-item">
+                          <label class="layui-form-label">通知次数</label>
+                          <div class="layui-input-block">
+                              <input type="text" id="notifyCount" disabled="disabled" class="layui-input">
+                          </div>
+                      </div>
+
+                      <div class="layui-form-item">
+                          <label class="layui-form-label">响应结果</label>
+                          <div class="layui-input-block">
+                              <input type="text" id="result" disabled="disabled" class="layui-input">
+                          </div>
+                      </div>
+                      <div class="layui-form-item">
+                          <label class="layui-form-label">修改时间</label>
+                          <div class="layui-input-block">
+                              <input type="text" id="updateTime" disabled="disabled" class="layui-input">
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              <div class="layui-form-item">
+                  <label class="layui-form-label">最后通知</label>
+                  <div class="layui-input-block">
+                      <input type="text" id="lastNotifyTime" disabled="disabled" class="layui-input">
+                  </div>
+              </div>
+              <div class="layui-form-item">
+                  <label class="layui-form-label">通知地址</label>
+                  <div class="layui-input-block">
+                     <!-- <input type="text" id="notifyUrl" disabled="disabled" class="layui-input">-->
+                      <textarea disabled="disabled" class="layui-textarea" id="notifyUrl"></textarea>
+                  </div>
+              </div>
+              <div class="layui-form-item">
+                  <div class="layui-input-block">
+                      <a class="layui-btn" lay-href="order/notify/">返回</a>
+                  </div>
+              </div>
+          </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    layui.use(['admin', 'form'],function(){
+        var form = layui.form
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,element = layui.element
+        ,layer = layui.layer ;
+        // 导航
+        element.render('breadcrumb', 'breadcrumb');
+        var orderId = location.href.split('?')[1];
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/mch_notify/get',
+            data: {
+                orderId : orderId
+            },
+            error: function(err){
+                layer.alert(JSON.stringify(err.field), {
+                    title: '错误提示'
+                })
+            },
+            success: function(res){
+                if(res.code == 0){
+                    $('#orderId').val(res.data.orderId);
+                    $('#mchId').val(res.data.mchId);
+                    $('#appId').val(res.data.appId);
+                    $('#mchOrderNo').val(res.data.mchOrderNo);
+                    if(res.data.orderType == "1") {
+                        $('#orderType').val("支付");
+                    }else if(res.data.orderType == "2") {
+                        $('#orderType').val("转账");
+                    }else if(res.data.orderType == "3") {
+                        $('#orderType').val("退款");
+                    }
+                    if(res.data.status == 1) {
+                        $('#status').val("通知中");
+                    }else if(res.data.status == 2) {
+                        $('#status').val("通知成功");
+                    }else if(res.data.status == 3) {
+                        $('#status').val("通知失败");
+                    }
+                    $('#notifyUrl').val(res.data.notifyUrl);
+                    $('#notifyCount').val(res.data.notifyCount);
+                    $('#result').val(res.data.result);
+                    if(res.data.lastNotifyTime != "" && res.data.lastNotifyTime != null) {
+                        $('#lastNotifyTime').val(layui.util.toDateString(res.data.lastNotifyTime));
+                    }
+                    if(res.data.createTime != "" && res.data.createTime != null) {
+                        $('#createTime').val(layui.util.toDateString(res.data.createTime));
+                    }
+                    if(res.data.updateTime != "" && res.data.updateTime != null) {
+                        $('#updateTime').val(layui.util.toDateString(res.data.updateTime));
+                    }
+                    form.render();
+                }
+            }
+        })
+    })
+</script>

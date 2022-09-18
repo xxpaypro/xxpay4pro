@@ -1,0 +1,91 @@
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a><cite>代理商</cite></a>
+    </span>
+</div>
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-tab layui-tab-brief">
+      <ul class="layui-tab-title">
+        <li class="layui-this">支付通道</li>
+      </ul>
+      <div class="layui-tab-content">
+        <style>
+          .center {
+            width: 80%;
+          }
+        </style>
+        <table class="layui-hide center" id="cList"></table>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  layui.use(['table','util'], function(){
+    var $ = layui.$
+            ,admin = layui.admin
+            ,table = layui.table
+            ,element = layui.element
+            ,form = layui.form;
+
+    element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+    var router = layui.router();
+    var mchId = router.search.mchId;
+
+    var tplStatus = function(d){
+      if(d.status == 0) {
+        return "关闭";
+      }else if(d.status == 1) {
+        return "<span style='color: green'>开启</span>";
+      }
+    };
+
+    var tplAgentRate = function(d){
+      if(d.agentRate == '' || d.agentRate == null) {
+        return "未设置";
+      }else {
+        return "<span style='color: blue'>"+ d.agentRate+"%<span>";
+      }
+    };
+
+    var tplMchRate = function(d){
+      if(d.mchRate == '' || d.mchRate == null) {
+        return "未设置";
+      }else {
+        if(d.agentRate > d.mchRate) {
+          return "<span style='color: red'>"+ d.mchRate+"%<span>";
+        }else {
+          return "<span style='color: blue'>"+ d.mchRate+"%<span>";
+        }
+
+      }
+    };
+    
+    //标题内容模板
+    var tplConfig = function(d){
+        return '<a class="layui-btn layui-btn-sm" lay-href="biz/pay_passage/config/mchId='+ mchId +'/productId='+ d.productId +'">配置</a>'
+    };
+    
+
+    table.render({
+      elem: '#cList'
+      ,url: layui.setter.baseUrl + '/mch_info/pay_passage_list'
+      ,where: {
+        mchId: mchId
+      }
+      ,cols: [[
+         {field:'productId', title: '产品ID'}
+        ,{field:'productName', title: '产品名称'}
+        ,{field:'agentRate', title: '代理费率',templet: tplAgentRate}
+        ,{field:'status', title: '代理状态',templet: tplStatus }
+        ,{field:'mchRate', title: '商户费率',templet: tplMchRate}
+        ,{title: '配置', templet: tplConfig }
+      ]]
+      ,page: false
+      ,skin: 'line'
+    });
+  });
+
+</script>

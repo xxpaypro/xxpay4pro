@@ -1,0 +1,133 @@
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>商户通道</cite></a>
+        <a><cite>修改商户通道</cite></a>
+    </div>
+</div>
+    
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">修改商户通道</li>
+            </ul>
+            <div class="layui-tab-content">
+                <style>
+                    .center {
+                        width: 45%;
+                    }
+                </style>
+                <form class="layui-form center">
+                    <input type="hidden" id="id" name="id" >
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">商户ID</label>
+                        <div class="layui-input-block">
+                            <input type="text" required id="mchId" name="mchId" readonly="readonly" lay-verify="required" autocomplete="off" class="layui-input appId">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">通道ID</label>
+                        <div class="layui-input-block">
+                            <input type="text" required id="passageId" name="passageId" lay-verify="required" autocomplete="off" class="layui-input appName">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">商户费率(%)</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="mchRate" name="mchRate" lay-verify="required" placeholder="输入商户费率" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">状态</label>
+                            <div class="layui-input-block">
+                                <input type="radio" name="status" value="1" title="开启">
+                                <input type="radio" name="status" value="0" title="关闭">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item ">
+                        <div class="layui-input-block">
+                            <button type="button" lay-filter="btnM" lay-submit class="layui-btn ">保存</button>
+                            <button type="button" id="btnBack" class="layui-btn">返回</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    
+    layui.use(['admin', 'form','element'],function(){
+        var form = layui.form
+        , $ = layui.$
+        ,admin = layui.admin
+        , layer = layui.layer 
+        ,element = layui.element;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        var router = layui.router();
+        var id = router.search.id;
+        var mchId = router.search.mchId;
+
+        $('#btnBack').on('click', function() {
+            location.hash = '/merchant/passage//mchId=' + mchId;
+        });
+
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/mch_passage/get',
+            data: {
+                id : id
+            },
+            error: function(err){
+                layer.alert(err, {
+                    title: 'error'
+                })
+            },
+            success: function(res){
+                if(res.code == '0'){
+                    $('#id').val(res.data.id);
+                    $('#mchId').val(res.data.mchId);
+                    $('#passageId').val(res.data.passageId);
+                    $('#mchRate').val(res.data.mchRate);
+                    if(res.data.status == 1) {
+                        $("input[name='status'][value='1']").attr("checked",true);
+                    }else {
+                        $("input[name='status'][value='0']").attr("checked",true);
+                    }
+                    form.render(); 
+                }else {
+                    layer.alert(res.msg,{title: '请求失败'})
+                }
+            }
+        })
+
+
+        //监听提交
+        form.on('submit(btnM)', function(data){
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/mch_passage/update',
+                data: data.field,
+                error: function(err){layer.alert(err.msg,{title:"请求失败"})},
+                success: function(res){
+                    if(res.code == 0){
+                        layer.alert(res.msg, {title: '保存成功'},function(index){
+                            layer.close(index);
+                            location.hash = '/merchant/passage//mchId=' + mchId;
+                        });
+                    }else {
+                        layer.alert(res.msg,{title: '保存失败'})
+                    }
+                }
+                })
+            return false;
+        });
+    })
+</script>

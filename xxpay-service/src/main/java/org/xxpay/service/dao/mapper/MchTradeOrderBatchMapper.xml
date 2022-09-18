@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.xxpay.service.dao.mapper.MchTradeOrderBatchMapper">
+
+        <!--  查询结果集-->
+        <resultMap id="BaseResultMap" type="org.xxpay.core.entity.MchTradeOrderBatch">
+                <id column="BatchId" jdbcType="VARCHAR" property="batchId" />
+                <result column="BatchDate" jdbcType="VARCHAR" property="batchDate" />
+                <result column="BatchMonth" jdbcType="VARCHAR" property="batchMonth" />
+                <result column="MchId" jdbcType="BIGINT" property="mchId" />
+                <result column="WxSumRealAmount" jdbcType="BIGINT" property="wxSumRealAmount" />
+                <result column="WxSumRefundAmount" jdbcType="BIGINT" property="wxSumRefundAmount" />
+                <result column="WxCuntTrade" jdbcType="BIGINT" property="wxCuntTrade" />
+                <result column="WxRefundCunt" jdbcType="BIGINT" property="wxRefundCunt" />
+                <result column="AliPaySumRealAmount" jdbcType="BIGINT" property="aliPaySumRealAmount" />
+                <result column="AliPaySumRefundAmount" jdbcType="BIGINT" property="aliPaySumRefundAmount" />
+                <result column="AliPayCuntTrade" jdbcType="BIGINT" property="aliPayCuntTrade" />
+                <result column="AliPayRefundCount" jdbcType="BIGINT" property="aliPayRefundCount" />
+                <result column="BatchTaskStatus" jdbcType="TINYINT" property="batchTaskStatus" />
+                <result column="HospitalId" jdbcType="BIGINT" property="hospitalId" />
+                <result column="ProvinceCode" jdbcType="INTEGER" property="provinceCode" />
+                <result column="CityCode" jdbcType="INTEGER" property="cityCode" />
+                <result column="AreaCode" jdbcType="INTEGER" property="areaCode" />
+                <result column="Remark" jdbcType="VARCHAR" property="remark" />
+                <result column="CreateTime" jdbcType="TIMESTAMP" property="createTime" />
+                <result column="UpdateTime" jdbcType="TIMESTAMP" property="updateTime" />
+        </resultMap>
+
+
+        <!-- 日交易分析数据趋势, 从昨天开始向前推30天 -->
+        <select id="selectDataTrend" parameterType="java.util.Map" resultMap="BaseResultMap">
+                SELECT h.BatchDate AS  batchDate
+                ,SUM(IFNULL(h.WxSumRealAmount, 0)) AS wxSumRealAmount,         SUM(IFNULL(h.WxSumRefundAmount, 0)) AS wxSumRefundAmount
+                ,SUM(IFNULL(h.WxCuntTrade, 0)) AS wxCuntTrade,                 SUM(IFNULL(h.WxRefundCunt, 0)) AS wxRefundCunt
+                ,SUM(IFNULL(h.AliPaySumRealAmount, 0)) AS aliPaySumRealAmount, SUM(IFNULL(h.AliPaySumRefundAmount, 0)) AS aliPaySumRefundAmount
+                ,SUM(IFNULL(h.AliPayCuntTrade, 0)) AS aliPayCuntTrade,         SUM(IFNULL(h.AliPayRefundCount, 0)) AS aliPayRefundCount
+                FROM t_mch_trade_order_batch h
+                where str_to_date(h.BatchDate, '%Y-%m-%d') &gt; date_sub(curdate(),interval 31 day)
+                  and str_to_date(h.BatchDate, '%Y-%m-%d') &lt; str_to_date(#{payDate}, '%Y-%m-%d')
+                <if test="areaCode != null">
+                        and h.AreaCode = #{areaCode}
+                </if>
+                <if test="hospitalId != null">
+                        and h.HospitalId = #{hospitalId}
+                </if>
+                GROUP BY h.BatchDate
+        </select>
+
+
+        <!-- 月交易分析 -->
+        <select id="selectDataTrendForMonth" parameterType="java.util.Map" resultMap="BaseResultMap">
+                SELECT h.BatchDate AS  batchDate
+                ,SUM(IFNULL(h.WxSumRealAmount, 0)) AS wxSumRealAmount,         SUM(IFNULL(h.WxSumRefundAmount, 0)) AS wxSumRefundAmount
+                ,SUM(IFNULL(h.WxCuntTrade, 0)) AS wxCuntTrade,                 SUM(IFNULL(h.WxRefundCunt, 0)) AS wxRefundCunt
+                ,SUM(IFNULL(h.AliPaySumRealAmount, 0)) AS aliPaySumRealAmount, SUM(IFNULL(h.AliPaySumRefundAmount, 0)) AS aliPaySumRefundAmount
+                ,SUM(IFNULL(h.AliPayCuntTrade, 0)) AS aliPayCuntTrade,         SUM(IFNULL(h.AliPayRefundCount, 0)) AS aliPayRefundCount
+                FROM t_mch_trade_order_batch h
+                where h.BatchMonth = #{payMonth}
+                <if test="areaCode != null">
+                        and h.AreaCode = #{areaCode}
+                </if>
+                <if test="hospitalId != null">selectDataTrendByMonth
+                        and h.HospitalId = #{hospitalId}
+                </if>
+                GROUP BY h.BatchDate
+        </select>
+
+
+        <!-- 按日期统计 -->
+        <select id="selectDataTrendByDay" parameterType="java.util.Map" resultType="org.xxpay.core.entity.MchTradeOrderBatch">
+                SELECT h.BatchDate AS  batchDate
+                ,SUM(IFNULL(h.WxSumRealAmount, 0)) AS wxSumRealAmount,         SUM(IFNULL(h.WxSumRefundAmount, 0)) AS wxSumRefundAmount
+                ,SUM(IFNULL(h.WxCuntTrade, 0)) AS wxCuntTrade,                 SUM(IFNULL(h.WxRefundCunt, 0)) AS wxRefundCunt
+                ,SUM(IFNULL(h.AliPaySumRealAmount, 0)) AS aliPaySumRealAmount, SUM(IFNULL(h.AliPaySumRefundAmount, 0)) AS aliPaySumRefundAmount
+                ,SUM(IFNULL(h.AliPayCuntTrade, 0)) AS aliPayCuntTrade,         SUM(IFNULL(h.AliPayRefundCount, 0)) AS aliPayRefundCount
+                FROM t_mch_trade_order_batch h
+                where h.BatchDate = #{payDate}
+                <if test="areaCode != null">
+                        and h.AreaCode = #{areaCode}
+                </if>
+                <if test="hospitalId != null">
+                        and h.HospitalId = #{hospitalId}
+                </if>
+                GROUP BY h.BatchDate
+        </select>
+
+        <!-- 按月份统计 -->
+        <select id="selectDataTrendByMonth" parameterType="java.util.Map" resultType="org.xxpay.core.entity.MchTradeOrderBatch">
+                SELECT h.BatchMonth AS  batchMonth
+                ,SUM(IFNULL(h.WxSumRealAmount, 0)) AS wxSumRealAmount,         SUM(IFNULL(h.WxSumRefundAmount, 0)) AS wxSumRefundAmount
+                ,SUM(IFNULL(h.WxCuntTrade, 0)) AS wxCuntTrade,                 SUM(IFNULL(h.WxRefundCunt, 0)) AS wxRefundCunt
+                ,SUM(IFNULL(h.AliPaySumRealAmount, 0)) AS aliPaySumRealAmount, SUM(IFNULL(h.AliPaySumRefundAmount, 0)) AS aliPaySumRefundAmount
+                ,SUM(IFNULL(h.AliPayCuntTrade, 0)) AS aliPayCuntTrade,         SUM(IFNULL(h.AliPayRefundCount, 0)) AS aliPayRefundCount
+                FROM t_mch_trade_order_batch h
+                where h.BatchMonth = #{payMonth}
+                <if test="areaCode != null">
+                        and h.AreaCode = #{areaCode}
+                </if>
+                <if test="hospitalId != null">
+                        and h.HospitalId = #{hospitalId}
+                </if>
+                GROUP BY h.BatchMonth
+        </select>
+
+
+        <!--  交易分析-日报 -->
+        <select id="selectDataTrendDailyPage" parameterType="java.util.Map" resultType="java.util.Map">
+                select h.BatchDate as  batchDate
+                ,sum(ifnull(h.WxSumRealAmount, 0)) + sum(ifnull(h.AliPaySumRealAmount, 0)) as sumRealAmount
+                ,count(distinct h.HospitalId, if((ifnull(h.WxSumRealAmount, 0) + ifnull(h.AliPaySumRealAmount, 0)) > 0, true, null)) hospitalIds
+                from t_mch_trade_order_batch h
+                where 1 = 1
+                <if test="areaCode != null">
+                        and h.AreaCode = #{areaCode}
+                </if>
+                <if test="hospitalId != null">
+                        and h.HospitalId = #{hospitalId}
+                </if>
+                group by h.BatchDate
+                order by h.CreateTime desc
+                <if test="limit != null" >
+                       <if test="offset != null" >
+                              limit ${offset}, ${limit}
+                       </if>
+                       <if test="offset == null" >
+                              limit ${limit}
+                       </if>
+                </if>
+        </select>
+
+        <!--  交易分析-日报 -->
+        <select id="selectDataTrendMonthPage" parameterType="java.util.Map" resultType="java.util.Map">
+                select h.BatchMonth as  batchMonth
+                ,sum(ifnull(h.WxSumRealAmount, 0)) + sum(ifnull(h.AliPaySumRealAmount, 0)) as sumRealAmount
+                ,sum(ifnull(h.WxCuntTrade, 0)) + sum(ifnull(h.AliPayCuntTrade, 0)) AS sumTradeCnt
+                ,count(distinct h.HospitalId, if((ifnull(h.WxSumRealAmount, 0) + ifnull(h.AliPaySumRealAmount, 0)) > 0, true, null)) hospitalIds
+                from t_mch_trade_order_batch h
+                where 1 = 1
+                <if test="areaCode != null">
+                        and h.AreaCode = #{areaCode}
+                </if>
+                <if test="hospitalId != null">
+                        and h.HospitalId = #{hospitalId}
+                </if>
+                group by h.BatchMonth
+                order by h.CreateTime desc
+                <if test="limit != null" >
+                        <if test="offset != null" >
+                                limit ${offset}, ${limit}
+                        </if>
+                        <if test="offset == null" >
+                                limit ${limit}
+                        </if>
+                </if>
+        </select>
+
+
+
+</mapper>

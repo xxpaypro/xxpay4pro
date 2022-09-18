@@ -1,0 +1,196 @@
+<style>
+    .margin-top{margin-top:10px;}
+</style>
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>储值规则</cite></a>
+    </span>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">储值规则列表</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-row">
+                   <form action="" id="exportForm" method="post">
+                    <div class="layui-form" style="float:right; margin-bottom: 10px;">
+                        <div id="timeDiv" class="layui-form-item" style="margin:0;">
+                            <div class="layui-input-inline margin-top">
+                                <input type="text" name="searchGiveCouponId" id="searchGiveCouponId" placeholder="赠送优惠券ID" autocomplete="off" class="layui-input">
+                            </div>
+                            <div class="layui-input-inline margin-top">
+                                <select name="searchRuleType" id="searchRuleType" lay-search="">
+                                    <option value="">赠送规则</option>
+                                    <option value="1">赠余额</option>
+                                    <option value="2">赠积分</option>
+                                    <option value="3">赠优惠券</option>
+                                </select>
+                            </div>
+                            <div class="layui-input-inline margin-top">
+                                <select name="searchFirstFlag" id="searchFirstFlag" lay-search="">
+                                    <option value="">推荐标识</option>
+                                    <option value="0">否</option>
+                                    <option value="1">是</option>
+                                </select>
+                            </div>
+                            <div class="layui-input-inline margin-top">
+                                <select name="searchStatus" id="searchStatus" lay-search="">
+                                    <option value="">状态</option>
+                                    <option value="0">暂停营业</option>
+                                    <option value="1">正常营业</option>
+                                </select>
+                            </div>
+
+                            <div class="layui-input-inline margin-top">
+                                <button id="search" class="layui-btn" data-type="reload">搜索</button>
+                            </div>
+                        </div>
+                    </div>
+                   </form>
+                </div>
+                <div class="layui-row">
+                    <div class="layuiAdmin-btns" style="margin-bottom: 10px;">
+                        <a class="layui-btn" data-type="all" data-events="create">新增规则</a>
+                    </div>
+                </div>
+                <table id="storeList" lay-filter="storeList"></table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+     //标题内容模板
+     var tplTitle = function(d){
+         return '<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a> ' +
+                '<a class="layui-btn layui-btn-xs" lay-event="edit" >修改</a> '
+     };
+
+     var tplStatus = function(d){
+         if(d.status == 0) {
+             return '<span class="layui-badge layui-bg-red">暂停使用</span>';
+         }else if(d.status == 1) {
+             return '<span class="layui-badge layui-bg-green">正常使用</span>';
+         }
+     };
+
+     var ruleType = function(d){
+         if(d.ruleType == 1) {
+             return '赠余额';
+         }else if(d.ruleType == 2) {
+             return '赠积分';
+         }else if(d.ruleType == 3) {
+             return '赠优惠券';
+         }
+     };
+
+     var givePoints = function(d){
+         if(d.ruleType == 1) {
+             return d.givePoints/100;
+         }else if(d.ruleType == 2) {
+             return d.givePoints;
+         }else if(d.ruleType == 3) {
+             return '';
+         }
+     };
+
+     var firstFlag = function(d){
+         if(d.firstFlag == 0) {
+             return '<div>否</div>';
+         }else if(d.firstFlag == 1) {
+             return '<div>是</div>';
+         }
+     };
+
+	 layui.config({
+	    base: '/x_mch/src/lib/extend/',
+	 });
+     layui.use(['table','util','admin'], function(){
+        var table = layui.table
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,element = layui.element
+        ,view = layui.view
+        ,form = layui.form;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        table.render({
+            elem: '#storeList'
+            ,id: "tableReload"
+            ,url: layui.setter.baseUrl + '/member_recharge_rule/list'
+            ,cols: [[
+                {field: 'ruleId', title: '规则ID'}
+                ,{field: 'rechargeAmount', title: '充值金额', templet: '<div>{{ (d.rechargeAmount)/100 }}</div>'}
+                ,{field: 'ruleType',title: '赠送规则', templet: ruleType}
+                ,{field: 'givePoints', title: '赠送返点', templet: givePoints}
+                ,{field: 'giveCouponId', title: '赠送优惠券ID'}
+                ,{field: 'firstFlag', title: '推荐标识', templet: firstFlag}
+                ,{field: 'status',title: '状态',templet: tplStatus}
+                ,{field: 'createTime',  title: '时间', width: 180, templet: '<div>{{ layui.util.toDateString(d.createTime) }}</div>' }
+                ,{field: 'edit', title: '操作', width: 320, templet: tplTitle }
+            ]]
+            ,page: true
+            ,skin: 'line'
+        });
+
+         // 搜索
+         var $ = layui.$, active = {
+             reload: function(){
+                 var giveCouponId = $('#searchGiveCouponId').val();
+                 var ruleType = $('#searchRuleType').val();
+                 var firstFlag = $('#searchFirstFlag').val();
+                 var status = $("#searchStatus").val();
+                 //执行重载
+                 table.reload('tableReload', {
+                     page: {
+                         curr: 1 //重新从第 1 页开始
+                     }
+                     ,where: {
+                         giveCouponId: giveCouponId,
+                         firstFlag: firstFlag,
+                         status : status,
+                         ruleType : ruleType
+                     }
+                 });
+             }
+         };
+         $('#search').on('click', function() {
+             var type = $(this).data('type');
+             active[type] ? active[type].call(this) : '';
+             return false;
+         });
+
+         //监听工具条
+         table.on('tool(storeList)', function(obj){
+             var data = obj.data;
+             var layEvent = obj.event;
+
+             if(layEvent === 'edit'){ //编辑
+                 view.xxpayPopup("编辑充值规则", "account/rule/update", {ruleId: data.ruleId});
+             } else if(obj.event === 'detail'){
+                 view.xxpayPopup("充值规则详情", "account/rule/detail", {ruleId: data.ruleId}, {btn:false});
+             }
+         });
+
+         // 事件处理
+         var events = {
+             create: function(othis, type){
+                 view.xxpayPopup("新增规则", "account/rule/create");
+             }
+         };
+
+         $('.layuiAdmin-btns .layui-btn').on('click', function(){
+             var othis = $(this)
+                 ,thisEvent = othis.data('events')
+                 ,type = othis.data('type');
+             events[thisEvent] && events[thisEvent].call(this, othis, type);
+         });
+
+         // 渲染表单
+         form.render();
+        
+     })
+</script>

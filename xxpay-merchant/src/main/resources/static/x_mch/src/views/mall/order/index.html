@@ -1,0 +1,228 @@
+<style>
+  .layui-input-inline{margin-top:10px;}
+</style>
+<div class="layui-card layadmin-header">
+  <div class="layui-breadcrumb" lay-filter="breadcrumb">
+    <a lay-href="">主页</a>
+    <a><cite>订单管理</cite></a>
+  </div>
+</div>
+
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-tab layui-tab-brief">
+      <ul class="layui-tab-title">
+        <li class="layui-this">订单管理</li>
+      </ul>
+      <div class="layui-tab-content">
+        <div class="layui-tab-item layui-show">
+          <div class="layui-row">
+            <div class="layui-form" style="float:right; margin-bottom: 10px;">
+              <div id="timeDiv" class="layui-form-item" style="margin:0;">
+                <div class="layui-input-inline">
+                  <input type="text" name="searchTradeOrderId" id="searchTradeOrderId" placeholder="交易单号" autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-input-inline">
+                  <input type="text" name="searchReceiveName" id="searchReceiveName" placeholder="收货人姓名" autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-input-inline">
+                  <input type="text" name="searchReceiveTel" id="searchReceiveTel" placeholder="收货人手机号" autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-input-inline">
+                  <select name="searchPostStatus" id="searchPostStatus" lay-search="">
+                    <option value="">发货状态</option>
+                    <option value="0">待发货</option>
+                    <option value="1">已发货</option>
+                    <option value="2">已收货</option>
+                    <option value="3">评价完成</option>
+                    <option value="4">退款审核</option>
+                    <option value="5">已退款</option>
+                    <option value="6">退款拒绝</option>
+                    <option value="7">退货审核</option>
+                    <option value="8">已退货 </option>
+                    <option value="9">退货拒绝 </option>
+                  </select>
+                </div>
+                <div class="layui-input-inline">
+                  <button id="search" class="layui-btn" data-type="reload">搜索</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <table id="XxPay_Mgr_Notify_dataAll" lay-filter="XxPay_Mgr_Notify_dataAll"></table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/html" id="xxpayBar">
+
+</script>
+
+<script>
+layui.use(['admin', 'table', 'util', 'timePick'], function(){
+  var $ = layui.$
+  ,admin = layui.admin
+  ,table = layui.table
+  ,element = layui.element
+  ,timePick = layui.timePick
+  ,view = layui.view
+  ,form = layui.form;
+
+  element.render('breadcrumb', 'breadcrumb');
+  timePick.init();  //第一个参数表示开始时间   第二个表示结束时间   0,0今天   -1,-1昨天   -7,0近一周   以此类推
+
+  var tplPost = function(d){
+
+    var postDetail;
+
+    if (d.postStatus == 0){
+      postDetail = '<a class="layui-btn layui-btn-xs" lay-event="postStart">订单发货</a>'
+    }else if(d.postStatus == 1) {
+      postDetail = '<a class="layui-btn layui-btn-xs" lay-event="postConfirm">强制确认收货</a>'
+    }else {
+      postDetail = ''
+    }
+
+      return '<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">详情</a>' + postDetail;
+  };
+
+  var tplStatus = function(d){
+    if(d.postStatus == 0) {
+      return "<span style='color: blue'>待发货</span>";
+    }else if(d.postStatus == 1) {
+      return "<span style='color: orange'>配送中</span>";
+    }else if(d.postStatus == 2) {
+      return "<span style='color: green'>已收货</span>";
+    }else if(d.postStatus == 3) {
+      return "<span style='color: green'>评价完成</span>";
+    }else if(d.postStatus == 4) {
+      return "<span style='color: orange'>退款审核</span>";
+    }else if(d.postStatus == 5) {
+      return "<span style='color: red'>已退款</span>";
+    }else if(d.postStatus == 6) {
+      return "<span style='color: red'>退款拒绝</span>";
+    }else if(d.postStatus == 7) {
+      return "<span style='color: orange'>退货审核</span>";
+    }else if(d.postStatus == 8) {
+      return "<span style='color: red'>已退货</span>";
+    }else if(d.postStatus == 9) {
+      return "<span style='color: red'>退货拒绝</span>";
+    }else {
+      return "<span>未支付</span>";
+    }
+  };
+
+  var tplProductType = function(d){
+    if(d.productType == 1) {
+      return "<span style='color: orange'>现金收款</span>";
+    }else if(d.productType == 2) {
+      return "<span style='color: green'>会员卡支付</span>";
+    }else if(d.productType == 3) {
+      return "<span style='color: green'>微信支付</span>";
+    }else if(d.productType == 4) {
+      return "<span style='color: blue'>支付宝支付</span>";
+    }else if(d.productType == 5) {
+      return "<span style='color: red'>云闪付支付</span>";
+    }else if(d.productType == 6) {
+      return "<span style='color: orange'>货到付款</span>";
+    }else {
+      return "<span>其他</span>";
+    }
+  };
+
+  var createTimeStart = $('#createTimeStart').val();
+  var createTimeEnd = $('#createTimeEnd').val();
+  //列表
+  table.render({
+    elem: '#XxPay_Mgr_Notify_dataAll'
+    ,url: layui.setter.baseUrl + '/trade_order/mall_list' //列表接口
+    ,where: {
+        queryStartDateTime:createTimeStart,
+        queryEndDateTime:createTimeEnd
+    }
+    ,id: 'tableReload'
+    ,page: true
+    ,cols: [[
+      {type: 'checkbox', fixed: 'left'}
+      ,{field: 'tradeOrderId', title: '交易单号', width: 230}
+      ,{field: 'memberId', title: '会员ID'}
+      ,{field: 'amount', title: '交易金额', templet: '<div>{{ d.amount/100 }}</div>'}
+      ,{field: 'receiveName', title: '收货人姓名'}
+      ,{field: 'receiveTel', title: '收货人手机'}
+      ,{field: 'productType', title: '支付方式', templet: tplProductType}
+      ,{field: 'status', title: '发货状态', templet: tplStatus}
+      ,{field: 'createTime', title: '创建时间', templet: '<div>{{ layui.util.toDateString(d.createTime, "yyyy-MM-dd HH:mm:ss") }}</div>'}
+      ,{field: 'edit', title: '操作', templet: tplPost }
+    ]]
+    ,skin: 'line'
+  });
+
+  //监听工具条
+  table.on('tool(XxPay_Mgr_Notify_dataAll)', function(obj){
+    var data = obj.data;
+    if(obj.event === 'detail'){
+      view.xxpayPopup("订单详情", "mall/order/view", {tradeOrderId: data.tradeOrderId}, {btn:false});
+    }else if(obj.event === 'postStart'){
+      view.xxpayPopup("订单发货", "mall/order/postStart", {tradeOrderId: data.tradeOrderId}, {area:["30%", "40%"]});
+
+     /* layer.confirm('确定发货吗', function(index){
+
+      });*/
+    }else if(obj.event === 'postConfirm'){
+      layer.confirm('确认收货?', function(index){
+        admin.req({
+          type: 'get',
+          url: layui.setter.baseUrl + '/trade_order/post_confirm',
+          data: {
+            tradeOrderId: data.tradeOrderId,
+          },
+          success: function(res){
+            if(res.code == 0) {
+              layer.msg('已确认收货', {
+                icon: 1
+              });
+              table.reload("tableReload");
+            }
+          }
+        });
+      });
+    }
+  });
+
+  // 搜索
+  var $ = layui.$, active = {
+    reload: function(){
+      var createTimeStart = $('#createTimeStart').val();
+      var createTimeEnd = $('#createTimeEnd').val();
+      var tradeOrderId = $('#searchTradeOrderId').val();
+      var receiveTel = $("#searchReceiveTel").val();
+      var receiveName = $("#searchReceiveName").val();
+      var postStatus = $("#searchPostStatus").val();
+      //执行重载
+      table.reload('tableReload', {
+        page: {
+          curr: 1 //重新从第 1 页开始
+        }
+        ,where: {
+          tradeOrderId: tradeOrderId,
+          receiveTel: receiveTel,
+          receiveName: receiveName,
+          postStatus : postStatus,
+          queryStartDateTime : createTimeStart,
+          queryEndDateTime : createTimeEnd
+        }
+      });
+    }
+  };
+  $('#search').on('click', function() {
+    var type = $(this).data('type');
+    active[type] ? active[type].call(this) : '';
+  });
+
+  // 渲染表单
+  form.render();
+});
+</script>

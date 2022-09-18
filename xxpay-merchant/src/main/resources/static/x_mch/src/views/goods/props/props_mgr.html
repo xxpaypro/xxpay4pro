@@ -1,0 +1,116 @@
+<style>
+    .margin-top{margin-top:10px;}
+</style>
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>商品管理</cite></a>
+        <a><cite>属性管理</cite></a>
+    </span>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">商品属性列表</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-row">
+                    <div class="layuiAdmin-btns" style="margin-bottom: 10px;">
+                        <a class="layui-btn" data-type="all" data-events="create">新增属性</a>
+                    </div>
+                </div>
+                <table id="propsList" lay-filter="propsList"></table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+     //标题内容模板
+     var tplTitle = function(d){
+         return '<a class="layui-btn layui-btn-xs" lay-event="edit" >修改</a>  ' +
+                '<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>'
+     };
+
+
+	 layui.config({
+	    base: '/x_mch/src/lib/extend/',
+	 });
+     layui.use(['table', 'view', 'admin', 'form'], function(){
+        var table = layui.table
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,element = layui.element
+        ,view = layui.view
+        ,form = layui.form;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+         var propsCategoryId = layui.router().search.propsCategoryId;
+
+        table.render({
+            elem: '#propsList'
+            ,id: "tableReload"
+            ,url: layui.setter.baseUrl + '/mchGoodsProps/list'
+            ,where: {
+                propsCategoryId: propsCategoryId
+            }
+            ,cols: [[
+                {field: 'propsId', title: '属性ID'}
+                ,{field: 'propsName',title: '属性名称'}
+                ,{field: 'propsValue',title: '属性值'}
+                ,{field: 'createTime',  title: '时间', minWidth: 180, templet: '<div>{{ layui.util.toDateString(d.createTime) }}</div>' }
+                ,{field: 'edit', title: '操作', width: 400, templet: tplTitle }
+            ]]
+            ,page: true
+            ,skin: 'line'
+        });
+
+         //监听工具条
+         table.on('tool(propsList)', function(obj){
+             var data = obj.data;
+             var layEvent = obj.event;
+
+             if(layEvent === 'edit'){ //编辑
+                 view.xxpayPopup("编辑分类", "goods/props/props_update", {propsId: data.propsId, propsCategoryId: propsCategoryId}, {area:["30%", "40%"]});
+             } else if(obj.event === 'del'){
+                 layer.confirm('确认删除么', function(index){
+                     admin.req({
+                         type: 'get',
+                         url: layui.setter.baseUrl + '/mchGoodsProps/delete',
+                         data: {
+                             propsId: data.propsId,
+                         },
+                         success: function(res){
+                             if(res.code == 0) {
+                                 layer.msg('删除成功', {
+                                     icon: 1
+                                 });
+                                 table.reload("tableReload");
+                             }
+                         }
+                     });
+                 });
+             }
+         });
+
+         // 事件处理
+         var events = {
+             create: function(othis, type){
+                 view.xxpayPopup("新增分类", "goods/props/props_create", {propsCategoryId: propsCategoryId}, {area:["30%", "40%"]});
+             }
+         };
+
+         $('.layuiAdmin-btns .layui-btn').on('click', function(){
+             var othis = $(this)
+                 ,thisEvent = othis.data('events')
+                 ,type = othis.data('type');
+             events[thisEvent] && events[thisEvent].call(this, othis, type);
+         });
+
+
+         // 渲染表单
+         form.render();
+        
+     })
+</script>

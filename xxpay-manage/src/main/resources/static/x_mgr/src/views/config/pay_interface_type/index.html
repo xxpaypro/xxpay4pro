@@ -1,0 +1,112 @@
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a><cite>支付配置</cite></a>
+    </span>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">支付接口类型</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-row">
+                    <div class="layuiAdmin-btns" style="margin-bottom: 10px;">
+                        <a class="layui-btn" data-type="all" data-events="create">新增接口类型</a>
+                    </div>
+                </div>
+                <table class="layui-hide center" id="cList" lay-filter="cList"></table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['table','util', 'form','view'], function(){
+        var table = layui.table
+        ,$ = layui.$
+        ,form = layui.form
+        ,element = layui.element
+        ,view = layui.view
+        ,admin = layui.admin;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        //标题内容模板
+        var tplTitle = function(d){
+            return '<a class="layui-btn layui-btn-sm" lay-event="edit">编辑</a>';
+            // + '<a class="layui-btn layui-btn-sm" lay-href="config/pay_interface_type/template//ifTypeCode='+ d.ifTypeCode +'">参数模板</a>';
+        };
+
+        var tplStatus = function(d){
+
+            var checkedHtml = " recordId='"+d.ifTypeCode+"' ";
+            if(d.status == 1) {
+                checkedHtml += " checked";
+            }
+            return '<input type="checkbox" lay-filter="statusSwitch" lay-skin="switch" '+checkedHtml+' lay-text="启用|停用">';
+        };
+
+        table.render({
+            elem: '#cList'
+            ,url: layui.setter.baseUrl + '/config/pay_interface_type/list'
+            
+            ,id: 'tableReload'
+            ,cols: [[
+                {field:'ifTypeCode', title: '接口类型代码'}
+                ,{field:'ifTypeName',  title: '接口类型名称'}
+                ,{field:'status', title: '状态',templet: tplStatus }
+                ,{field:'edite', width: 200, title: '操作', templet: tplTitle }
+            ]]
+            ,page: true
+            ,skin: 'line'
+        });
+
+        form.on('switch(statusSwitch)', function(data){
+
+            var updateRecordId = $(data.elem).attr('recordId');
+            var updateState = data.elem.checked ? "1" : "0";
+            var loadingIndex = layer.load();
+            admin.req({
+                type: "POST",
+                url: layui.setter.baseUrl + '/config/pay_interface_type/update',
+                data: {ifTypeCode: updateRecordId, status: updateState},
+                success: function(res){
+                    if(res.code == 0) {
+                        table.reload('tableReload');
+                    }
+                },
+                complete:function(){
+                    layer.close(loadingIndex);
+                }
+            });
+        });
+
+        //监听工具条
+        table.on('tool(cList)', function(obj){
+            var data = obj.data;
+            if(obj.event === 'edit'){
+                view.xxpayPopup("编辑", "config/pay_interface_type/update", {ifTypeCode: data.ifTypeCode});
+            }
+        });
+
+        // 事件处理
+        var events = {
+            create: function () {
+                view.xxpayPopup("新增接口类型", "config/pay_interface_type/create");
+            }
+        };
+
+        $('.layuiAdmin-btns .layui-btn').on('click', function(){
+            var othis = $(this)
+                ,thisEvent = othis.data('events')
+                ,type = othis.data('type');
+            events[thisEvent] && events[thisEvent].call(this, othis, type);
+        });
+
+        // 渲染表单
+        form.render();
+
+    });
+    
+</script>

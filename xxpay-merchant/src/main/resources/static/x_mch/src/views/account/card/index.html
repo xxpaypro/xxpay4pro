@@ -1,0 +1,327 @@
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>会员卡设置</cite></a>
+    </span>
+</div>
+<style>
+    .layui-form-label {
+        width:15% !important;
+        margin-left:1%;
+    }
+    .layui-input-inline {
+        width: 33% !important;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <form class="layui-form layui-form-pane">
+            <div class="layui-tab layui-tab-brief"  lay-filter="memberCard">
+                <ul class="layui-tab-title">
+                    <li class="layui-this" lay-id="card">会员卡设置</li>
+                    <li>会员入口</li>
+                </ul>
+                <div class="layui-tab-content">
+                    <div class="layui-tab-item layui-show">
+                        <input type="hidden" id="mchId" name="mchId" />
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">消费金额</label>
+                            <div class="layui-input-inline">
+                                <input type="text" required id="consumeAmount" lay-verify="number" name="consumeAmount" placeholder="输入消费金额" autocomplete="off" class="layui-input">
+                            </div>
+                            <label class="layui-form-label">消费金额满足时赠送积分</label>
+                            <div class="layui-input-inline">
+                                <input type="text" required id="consumeGivePoints" name="consumeGivePoints" lay-verify="number" placeholder="输入满足时金额" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label" id="previewColor">会员卡封面背景颜色</label>
+                            <div class="layui-input-inline">
+                            <select name="memberCardColor" id="memberCardColor" lay-search="" lay-verify="required" lay-filter="color">
+                                <option value="">请选择</option>
+                                <option type="select" value="#63b359">浅绿色</option>
+                                <option type="select" value="#2c9f67">深绿色</option>
+                                <option type="select" value="#509fc9">浅蓝色</option>
+                                <option type="select" value="#5885cf">深蓝色</option>
+                                <option type="select" value="#9062c0">紫色</option>
+                                <option type="select" value="#d09a45">褐色</option>
+                                <option type="select" value="#e4b138">黄色</option>
+                                <option type="select" value="#ee903c">橘黄色</option>
+                                <option type="select" value="#f08500">深橘色</option>
+                                <option type="select" value="#a9d92d">淡绿色</option>
+                                <option type="select" value="#dd6549">深橘色</option>
+                                <option type="select" value="#cc463d">红色</option>
+                                <option type="select" value="#cf3e36">深红色</option>
+                                <option type="select" value="#5E6671">灰色</option>
+                            </select>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">是否设置会员卡期限</label>
+                            <div class="layui-input-inline">
+                                <input type="radio" name="cardTime" value="1" title="是" checked="checked" lay-filter="balancePointsType">
+                                <input type="radio" name="cardTime" value="0" title="否" lay-filter="balancePointsType">
+                            </div>
+                            <label class="layui-form-label memberCardValidTime">会员卡期限</label>
+                            <div class="layui-input-inline memberCardValidTime">
+                                <input type="text" required readonly id="memberCardValidTime" name="memberCardValidTime" lay-verify="request" placeholder="输入会员卡期限" autocomplete="off" class="layui-input memberCardValidTime">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">会员卡名称</label>
+                            <div class="layui-input-inline">
+                                <input type="text" required id="memberCardName" name="memberCardName" lay-verify="request" placeholder="输入会员卡名称" autocomplete="off" class="layui-input">
+                            </div>
+                            <label class="layui-form-label">会员卡使用须知</label>
+                            <div class="layui-input-inline">
+                                <input type="text" required id="memberCardUseDesc" name="memberCardUseDesc" lay-verify="request" placeholder="输入使用须知" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">会员卡联系电话</label>
+                            <div class="layui-input-inline">
+                                <input type="tel" required id="memberCardTel" name="memberCardTel" lay-verify="phone" placeholder="输入联系电话" autocomplete="off" class="layui-input">
+                            </div>
+                            <label class="layui-form-label">会员卡特权说明</label>
+                            <div class="layui-input-inline">
+                                <input type="text" required id="memberCardRoleDesc" name="memberCardRoleDesc" lay-verify="request" placeholder="输入特权说明" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">储值消费是否可积分</label>
+                            <div class="layui-input-inline">
+                                <input type="radio" name="balancePointsType" value="0" title="否">
+                                <input type="radio" name="balancePointsType" value="1" title="是" checked="checked">
+                            </div>
+                            <label class="layui-form-label">会员卡领取方式</label>
+                            <div class="layui-input-inline">
+                                <input type="radio" name="newMemberType" value="1" title="免激活领取" checked="checked">
+                                <input type="radio" name="newMemberType" value="2" title="人工录入">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">首次领取赠送规则</label>
+                            <div class="layui-input-inline">
+                                <input type="radio" name="newMemberRule" value="0" title="无优惠">
+                                <input type="radio" name="newMemberRule" value="1" title="赠余额">
+                                <input type="radio" name="newMemberRule" value="2" title="赠积分" checked="checked">
+                            </div>
+                            <label class="layui-form-label">首次领取返点,余额/积分</label>
+                            <div class="layui-input-inline">
+                                <input type="text" required id="newMemberGivePoints" name="newMemberGivePoints" lay-verify="number" placeholder="输入首次领取返点" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">备注信息</label>
+                            <div class="layui-input-inline">
+                                <input type="text" required id="remark" name="remark" placeholder="请输入备注信息" autocomplete="off" class="layui-input allAccInput">
+                            </div>
+                        </div>
+                        <div class="layui-form-item ">
+                            <div class="layui-input-block" style="margin-left: 50%">
+                                <button type="button" lay-submit lay-filter="btnUP" class="layui-btn">保存</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-tab-item">
+                        <fieldset class="layui-elem-field">
+                            <legend style="margin: 20px 0">
+                                <button class="layui-btn layui-btn-xs layui-btn-danger">微信会员[仅适用于微信端]</button>
+                            </legend>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">会员链接</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" disabled="disabled" id="mbrUrl" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">会员二维码</label>
+                                <div class="layui-input-inline" style="margin-left: 10px">
+                                    <a id="downloadImg" href=""><img id="mbrImgUrl"  src=""></a>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    layui.use(['form','util','admin','laydate'], function(){
+        var form = layui.form
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,laydate = layui.laydate
+        ,element = layui.element;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        element.on('tab(memberCard)', function(data){
+            if(data.index == 1) {
+                admin.req({
+                    type: 'get',
+                    url: layui.setter.baseUrl + '/member_config/get',
+                    error: function (err) {
+                        layer.alert(err);
+                    },
+                    success: function (res) {
+                        if (res.code == 0) {
+                            if(!res.data) {
+                                layer.msg("请先设置会员卡", {time: 1000}, function (index) {
+                                    element.tabChange('memberCard', 'card');
+                                });
+                            }else {
+                                getMbrEntrance();
+                            }
+                        }
+                    }
+                })
+            }
+        });
+
+        //获取会员入口地址和二维码
+        function getMbrEntrance() {
+            admin.req({
+                type: 'get',
+                url: layui.setter.baseUrl + '/member_config/getMbrEntrance',
+                error: function (err) {
+                    layer.alert(err);
+                },
+                success: function (res) {
+                    if (res.code == 0) {
+                        $('#mbrUrl').val(res.data.codeUrl);
+                        $('#mbrImgUrl').attr("src", res.data.codeImgUrl);
+                        $('#downloadImg').attr("href", res.data.codeImgUrl);
+                    }
+                }
+            })
+        }
+
+        //首先让页面中获取到原来的数据
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/member_config/get',
+            error: function(err){
+                layer.alert(err);
+            },
+            success: function(res){
+                if(res.code == 0){
+                    if(res.data){
+                        $('#mchId').val(res.data.mchId);
+
+                        $('#consumeAmount').val(res.data.consumeAmount/100);
+                        $('#consumeGivePoints').val(res.data.consumeGivePoints);
+                        $('#newMemberGivePoints').val(res.data.newMemberGivePoints);
+                        $("#previewColor").css("backgroundColor", res.data.memberCardColor);
+                        $('#memberCardColor').val(res.data.memberCardColor);
+                        $('#memberCardName').val(res.data.memberCardName);
+                        $('#memberCardValidTime').val(res.data.memberCardValidTime);
+                        $('#memberCardTel').val(res.data.memberCardTel);
+                        $('#memberCardRoleDesc').val(res.data.memberCardRoleDesc);
+                        $('#memberCardUseDesc').val(res.data.memberCardUseDesc);
+                        if (res.data.memberCardValidTime == -1) {
+                            $(".memberCardValidTime").css("display","none");
+                            $("input[name='cardTime'][value='0']").attr("checked",true);
+                        } else {
+                            $("input[name='cardTime'][value='1']").attr("checked",true);
+                        }
+                        if(res.data.balancePointsType == 0) {
+                            $("input[name='balancePointsType'][value='0']").attr("checked",true);
+                        }else if(res.data.balancePointsType == 1) {
+                            $("input[name='balancePointsType'][value='1']").attr("checked",true);
+                        }
+
+                        if (res.data.newMemberType == 1){
+                            $("input[name='newMemberType'][value='1']").attr("checked",true);
+                        } else if (res.data.newMemberType == 2){
+                            $("input[name='newMemberType'][value='2']").attr("checked",true);
+                        }
+
+                        if (res.data.newMemberRule == 0){
+                            $("input[name='newMemberRule'][value='0']").attr("checked",true);
+                        } else if (res.data.newMemberRule == 1){
+                            $("input[name='newMemberRule'][value='1']").attr("checked",true);
+                        } else if (res.data.newMemberRule == 2){
+                            $("input[name='newMemberRule'][value='2']").attr("checked",true);
+                        }
+                        $('#remark').val(res.data.remark);
+                    }
+                }else {
+                    layer.alert(res.msg,{title: '请求失败'})
+                }
+                form.render();
+            }
+
+        });
+
+        //提交修改后的数据
+        //监听提交
+        form.on('submit(btnUP)', function(data){
+            data.field.consumeAmount = data.field.consumeAmount * 100;
+
+            if(data.field.consumeGivePoints){  //当填入了积分， 判断积分规则
+                if(isNaN(data.field.consumeGivePoints)){
+                    layer.alert("赠送金额请填入整数！");
+                    return false;
+                }
+                if( (data.field.consumeGivePoints + "" ).indexOf("\.") >= 0  ) {
+                    layer.alert("赠送金额请填入整数！");
+                    return false;
+                }
+            }
+
+            if(data.field.newMemberGivePoints){  //当填入首次领取返点
+                if(isNaN(data.field.newMemberGivePoints)){
+                    layer.alert("首次领取返点请填入整数！");
+                    return false;
+                }
+                if( (data.field.newMemberGivePoints + "" ).indexOf("\.") >= 0  ) {
+                    layer.alert("首次领取返点请填入整数！");
+                    return false;
+                }
+            }
+
+            // 在这个回调函数里面写ajax提交
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/member_config/update',
+                data: data.field,
+                success: function(res){
+                    if(res.code == 0){
+                        layer.alert(res.msg, function(index){
+                            layer.closeAll(); //关闭所有弹层
+                            layui.table.reload('tableReload', {page: {curr: 1}}); //调用业务弹层外表格重新加载
+                        })
+                    }
+                }
+            });
+            return false;//阻止跳转
+        });
+
+        form.on('select(color)', function(data){
+            $("#previewColor").css("backgroundColor", data.value);
+        });
+
+        form.on('radio(balancePointsType)', function(data){
+            if (data.value == 0) {
+                $("#memberCardValidTime").val(-1);
+                $(".memberCardValidTime").css("display","none");
+            }else {
+                $("#memberCardValidTime").val("");
+                $(".memberCardValidTime").show();
+            }
+        });
+
+        //时间选择
+        laydate.render({
+            elem: '#memberCardValidTime'
+            ,type: 'datetime'
+            ,trigger: 'click'
+        });
+
+        form.render();
+
+    })
+</script>

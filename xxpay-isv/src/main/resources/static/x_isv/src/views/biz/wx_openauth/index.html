@@ -1,0 +1,249 @@
+<style>
+    body .layui-card{border-radius:10px;background: #F7FAFC}
+    open-row {width: 100%; display: flex; flex-direction: row; flex-wrap: wrap;justify-content: flex-start;align-items: center}
+    .open{width: 30%; display: flex; flex-direction: column;background: #FFFFFF;color: #000000;border-radius: 10px;cursor:pointer;margin: 15px 1%;}
+    .open .open-body{display: flex;flex-direction: row;justify-content: space-between;align-items: center;padding: 20px;height: 36px}
+    .open .open-body-center{display: flex;flex-direction: row;justify-content: center;align-items: center;padding: 14px;color: #ffffff;border-radius: 0 0 10px 10px;position: relative;height: 30px}
+    .open-body .open-body-top{font-size: 18px;text-align: center;font-family: 'PingFang SC';font-weight: bold}
+    .open-body .layuiadmin-big-font{font-size:15px}
+    .p-gray{color: #666666}
+    .b-gray{background: #f2f2f2}
+    .b-orange{background: #FF5722}
+    .auth-btn{position: absolute;right: 20px;display:inline-block;border:none;border-radius:2px;font-size: 12px;padding: 5px 9px;background: #ffffff;cursor: pointer}
+    .auth-btn:hover{background: #f2f2f2}
+    .auth-create-btn{border:none;border-radius:3px;margin-left:5px;padding: 4px 9px;background: #FF5722;color: #ffffff;cursor: pointer}
+    .auth-create-btn:hover{background: #E73700;}
+</style>
+<div class="layui-fluid layui-row layui-col-space15">
+
+    <!-- 数据统计卡片 -->
+    <div class="layui-card">
+        <div class="layui-row layui-card-header" style="padding-bottom: 20px; padding-top:10px">
+            <div class="layui-col-md3" style="font-size: 24px;">微信开放平台管理</div>
+        </div>
+
+        <div class="open-row layui-row">
+            <!-- 点餐小程序 -->
+            <div class="layui-col-md3 open">
+                <div class="open-body">
+                    <div class="open-body-top">点餐外卖小程序<span class="layui-badge " style="font-weight: normal;margin-left: 10px;">小程序</span></div>
+                    <i class="layui-icon" style="color: #000000;">&#xe602;</i>
+                </div>
+                <div class="open-body b-gray layui-hide" id="auth_appid_0">
+                    <div class="layuiadmin-big-font p-gray">APPID: </div>
+                    <div class="layuiadmin-big-font" id="appId_0"></div>
+                </div>
+                <div class="open-body b-gray" id="auth_noAppid_0" style="justify-content: space-around;">
+                    <div class="p-gray">已有小程序<button class="auth-create-btn mini-auth" data-authType="2" data-authFrom="1">请授权</button></div>
+                    <div style="border-right: 1px solid #000000;height: 20px"></div>
+                    <div class="p-gray noMini_0">没有小程序<button class="auth-create-btn mini-create" data-authType="2" data-authFrom="1">请创建</button></div>
+                    <div class="p-gray registerMini_0 layui-hide"><button class="auth-create-btn mini-search" data-authType="2" data-authFrom="1">查询小程序注册状态</button></div>
+                </div>
+                <div class="open-body-center b-orange" id="auth_bg_0">
+                    <div class="layuiadmin-big-font authStatus-desc" id="authStatus_0">未授权</div>
+                    <button id="authBtn_0" class="auth-btn layui-hide mini-auth" data-authType="2" data-authFrom="1">重新授权</button>
+                </div>
+            </div>
+
+            <!-- 商城小程序 -->
+            <div class="layui-col-md3 open">
+                <div class="open-body">
+                    <div class="open-body-top">商城小程序<span class="layui-badge " style="font-weight: normal;margin-left: 10px;">小程序</span></div>
+                    <i class="layui-icon" style="color: #000000;">&#xe602;</i>
+                </div>
+                <div class="open-body b-gray layui-hide" id="auth_appid_1">
+                    <div class="layuiadmin-big-font p-gray">APPID: </div>
+                    <div class="layuiadmin-big-font" id="appId_1"></div>
+                </div>
+                <div class="open-body b-gray" id="auth_noAppid_1" style="justify-content: space-around;">
+                    <div class="p-gray">已有小程序<button class="auth-create-btn mini-auth" data-authType="2" data-authFrom="2">请授权</button></div>
+                    <div style="border-right: 1px solid #000000;height: 20px"></div>
+                    <div class="p-gray noMini_1">没有小程序<button class="auth-create-btn mini-create" data-authType="2" data-authFrom="2">请创建</button></div>
+                    <div class="p-gray registerMini_1 layui-hide"><button class="auth-create-btn mini-search" data-authType="2" data-authFrom="2">查询小程序注册状态</button></div>
+                </div>
+                <div class="open-body-center b-orange" id="auth_bg_1">
+                    <div class="layuiadmin-big-font authStatus-desc" id="authStatus_1">未授权</div>
+                    <button id="authBtn_1" class="auth-btn layui-hide mini-auth" data-authType="2" data-authFrom="2">重新授权</button>
+                </div>
+            </div>
+
+            <!-- 支付功能小程序(小程序直播功能需有支付行为) -->
+            <div class="layui-col-md3 open">
+                <div class="open-body">
+                    <div class="open-body-top">支付功能小程序
+                        <span class="layui-badge " style="font-weight: normal;margin-left: 10px;">小程序</span>
+                        <span style="font-size: 12px;font-weight: normal;"> 包含直播功能的小程序授权时需有支付行为</span>
+                    </div>
+                    <i class="layui-icon" style="color: #000000;">&#xe602;</i>
+                </div>
+                <div class="open-body b-gray layui-hide" id="auth_appid_2">
+                    <div class="layuiadmin-big-font p-gray">APPID: </div>
+                    <div class="layuiadmin-big-font" id="appId_2"></div>
+                </div>
+                <div class="open-body b-gray" id="auth_noAppid_2" style="justify-content: space-around;">
+                    <div class="p-gray">已有小程序<button class="auth-create-btn mini-auth" data-authType="2" data-authFrom="3">请授权</button></div>
+                    <div style="border-right: 1px solid #000000;height: 20px"></div>
+                    <div class="p-gray noMini_2">没有小程序<button class="auth-create-btn mini-create" data-authType="2" data-authFrom="3">请创建</button></div>
+                    <div class="p-gray registerMini_2 layui-hide"><button class="auth-create-btn mini-search" data-authType="2" data-authFrom="3">查询小程序注册状态</button></div>
+                </div>
+                <div class="open-body-center b-orange" id="auth_bg_2">
+                    <div class="layuiadmin-big-font authStatus-desc" id="authStatus_2">未授权</div>
+                    <button id="authBtn_2" class="auth-btn layui-hide mini-auth" data-authType="2" data-authFrom="3">重新授权</button>
+                </div>
+            </div>
+
+            <button class="getAuth layui-hide"></button>
+        </div>
+    </div>
+</div>
+
+<script>
+    layui.use(['admin', 'element', 'form', 'view'], function(){
+        var $ = layui.$
+            ,admin = layui.admin
+            ,form = layui.form
+            ,view = layui.view
+            ,element = layui.element;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        var mchId = layui.router().search.mchId;
+        getWxAuth();//获取微信授权
+
+        $('.open').on('click', function(){
+            console.log(authStatus)
+            var authStatus = $(this).find(".authStatus-desc").text();
+            var authFrom = $(this).find(".auth-btn").attr("data-authFrom");//授权来源，1-点餐小程序  2-商城小程序  3-支付功能小程序
+            if (authStatus == "已授权"){
+                location.href = layui.setter.baseLocal + "biz/wx_openauth/template/mchId=" + mchId + "/authFrom=" + authFrom;
+            }
+        });
+
+        //小程序授权
+        $('.mini-auth').on('click', function () {
+            event.stopPropagation();
+            var authType = $(this).attr("data-authType");//授权账号类型：1-公众号  2-小程序
+            var authFrom = $(this).attr("data-authFrom");//授权来源，1-点餐小程序  2-商城小程序  3-支付功能小程序
+            wxAuth(authType, authFrom);
+        });
+
+        //小程序创建
+        $('.mini-create').on('click', function () {
+            event.stopPropagation();
+            var authType = $(this).attr("data-authType");//授权账号类型：1-公众号  2-小程序
+            var authFrom = $(this).attr("data-authFrom");//授权来源，1-点餐小程序  2-商城小程序  3-支付功能小程序
+            wxMiniCreate(authType, authFrom);
+        });
+
+        //小程序注册状态查询
+        $('.mini-search').on('click', function () {
+            event.stopPropagation();
+            var authType = $(this).attr("data-authType");//授权账号类型：1-公众号  2-小程序
+            var authFrom = $(this).attr("data-authFrom");//授权来源，1-点餐小程序  2-商城小程序  3-支付功能小程序
+            wxMiniSearch(authType, authFrom);
+        });
+
+        $('.getAuth').on('click', function () {
+            event.stopPropagation();
+            getWxAuth();//获取微信授权
+        })
+
+        function getWxAuth() {
+            //获取小程序授权
+            admin.req({
+                type: 'get',
+                url: layui.setter.baseUrl + '/wx_auth/list',
+                data: {
+                    mchId: mchId
+                },
+                error: function (err) {
+                    layer.alert(JSON.stringify(err.field), {title: '错误提示'})
+                },
+                success: function (res) {
+                    if (res.code == 0) {
+                        var item = res.data;
+                        if (res.data) {
+                            for (var i = 0; i < item.length; i++) {
+                                $("#appId_" + i).text(item[i].authAppId);
+                                if (item[i].authStatus == 1) {
+                                    $("#auth_bg_" + i).addClass("layui-bg-green");
+                                    $("#authStatus_" + i).text("已授权");
+                                    $("#authBtn_" + i).removeClass("layui-hide");
+                                    $("#auth_appid_" + i).removeClass("layui-hide");
+                                    $("#auth_noAppid_" + i).addClass("layui-hide");
+                                } else if (item[i].authStatus == 4) {
+                                    $("#authStatus_" + i).text("已申请注册");
+                                    $(".registerMini_" + i).removeClass("layui-hide");
+                                    $(".noMini_" + i).addClass("layui-hide");
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        //小程序授权
+        function wxAuth(authType ,authFrom) {
+            //请求后台， 发起获取二维码连接地址；
+            admin.req({
+                type: 'get',
+                url: layui.setter.baseUrl + '/wx_auth/wxAuth',
+                data: {
+                    mchId : mchId,
+                    authType: authType, //授权账号类型：1-公众号  2-小程序
+                    authFrom: authFrom //授权来源，1-点餐小程序  2-商城小程序  3-支付功能小程序
+                },
+                error: function(err){ layer.alert(JSON.stringify(err.field), { title: '错误提示' }) },
+                success: function(res){
+                    if(res.code == 0){
+                        layer.open({
+                            type: 1,
+                            title: '商户小程序授权',
+                            scrollbar: false,//浏览器滚动条已锁
+                            closeBtn: 1, //不显示关闭按钮
+                            area: ['450px','450px'],
+                            content:
+                                `<div class="layui-wrap-content" style="text-align: center;">
+                                    <div>
+                                        <div style="margin-bottom:15px;">请商户扫描该二维码进行授权操作</div>
+                                        <img src="`+res.data+`" />
+                                    </div>
+                                   </div>`
+                            ,cancel: function(index, layero){
+                                getWxAuth();
+                            }
+                        });
+                        form.render();
+                    }
+                }
+            });
+        }
+
+        //小程序创建
+        function wxMiniCreate(authType ,authFrom) {
+            view.xxpayPopup("创建小程序", "biz/wx_openauth/mini_register", {mchId: mchId, authFrom: authFrom, authType:authType}, {area: ["60%", "75%"]});
+        }
+
+        //小程序注册状态查询
+        function wxMiniSearch(authType ,authFrom) {
+            //请求后台， 发起获取二维码连接地址；
+            admin.req({
+                type: 'get',
+                url: layui.setter.baseUrl + '/wx_mini/fast_register_weapp_search',
+                data: {
+                    mchId : mchId,
+                    authFrom: authFrom //授权来源，1-点餐小程序  2-商城小程序  3-支付功能小程序
+                },
+                error: function(err){ layer.alert(JSON.stringify(err.field), { title: '错误提示' });getWxAuth(); },
+                success: function(res){
+                    if(res.code == 0){
+                        getWxAuth();
+                        form.render();
+                    }
+                }
+            });
+        }
+
+    });
+</script>

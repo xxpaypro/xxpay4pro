@@ -1,0 +1,72 @@
+server:
+  port: 8206
+  servlet:
+    context-path: /
+
+# 服务节点,要求分布式下每个节点不同
+node: 01
+
+dubbo:
+  registry:
+    address: @zookeeper.url@
+    file: ${user.home}/dubbo-cache/${spring.application.name}/dubbo.cache
+
+spring:
+  application:
+    name: xxpay-isv
+  cache:
+    type: redis
+  redis:
+    host: @redis.ip@
+    port: @redis.port@
+    timeout: 1000
+    database: 1
+    password: @redis.pass@
+    jedis:
+      pool:
+        max-active: 1000
+        max-wait: -1ms
+        max-idle: 100
+        min-idle: 1
+  freemarker:
+    cache: false
+    charset: UTF-8
+    check-template-location: true
+    content-type: text/html
+    expose-request-attributes: true
+    expose-session-attributes: true
+    request-context-attribute: request
+    suffix: .ftl
+    templateEncoding: UTF-8
+    templateLoaderPath: classpath:/templates/
+    settings:
+      number_format: 0.##
+
+  jackson:
+    serialization:
+      INDENT_OUTPUT: true
+  servlet:
+    multipart:
+      max-file-size: 50MB
+  profiles:
+     active: prod
+
+# JWT
+jwt:
+  cookie: XxPay_Isv_Token
+  secret: XxpPayGood
+  expiration: 604800 # 7天 token串内记录的过期时间，目前修改为redis认证方式，此值无需验证.
+
+config:
+  payUrl: @pay.site.url@/api
+  mchRegUrl: @mch.site.url@/x_mch/start/index.html#/user/reg
+  isvApiUrl: @isv.site.url@/api
+  mbrUrl: @mbr.site.url@
+  uploadMchStaticDir: @upload.mch.static.dir@
+  uploadMchStaticViewUrl: @upload.mch.static.view.url@
+  uploadIsvCertRootDir: @upload.isv.cert.root.dir@
+  miniExperienceQrcodeDir: @mini.experience.qrcode.dir@
+
+sqlit:
+  file:
+    path: jdbc:sqlite:@sqlit.file.path@

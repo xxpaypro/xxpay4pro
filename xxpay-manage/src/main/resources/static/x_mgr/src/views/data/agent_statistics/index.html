@@ -1,0 +1,173 @@
+
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+      <a lay-href="">主页</a>
+      <a><cite>数据分析</cite></a>
+    </div>
+  </div>
+  
+  <div class="layui-fluid">
+    <div class="layui-card">
+      <div class="layui-tab layui-tab-brief">
+        <ul class="layui-tab-title">
+          <li class="layui-this">代理商统计</li>
+        </ul>
+        <div class="layui-tab-content">
+          <div class="layui-tab-item layui-show">
+            <div class="layui-row">
+              <div class="layui-form" style="float:right;">
+                <div id="timeDiv" class="layui-form-item" style="margin:0;">
+                  <!--<div class="layui-input-inline">
+                    <input type="text" name="createTimeStart" id="createTimeStart" autocomplete="off" placeholder="开始时间" class="layui-input">
+                  </div>
+                  <div class="layui-input-inline">
+                    <input type="text" name="createTimeEnd" id="createTimeEnd" autocomplete="off" placeholder="结束时间" class="layui-input">
+                  </div>-->
+                  <div class="layui-input-inline">
+                    <input type="text" name="agentId" id="agentId" placeholder="代理商ID" autocomplete="off" class="layui-input">
+                  </div>
+                  <div class="layui-input-inline">
+                    <select name="bizType" id="bizType" lay-search="">
+                      <option value="">业务类型</option>
+                      <option value="1">支付</option>
+                      <option value="2">提现</option>
+                      <option value="3">调账</option>
+                      <option value="4">充值</option>
+                      <option value="5">差错处理</option>
+                      <option value="6">代付</option>
+                    </select>
+                  </div>
+                  <button id="search" class="layui-btn" data-type="reload">搜索</button>
+                </div>
+              </div>
+            <div class="layui-form-item" style="padding-top: 15px;">
+              <blockquote class="layui-elem-quote" id="amountTip">
+                 代理商总利润:<span id="totalAgentProfit" style="color: green; margin-right: 10px;"></span>
+              </blockquote>
+            </div>
+            </div>
+            <div class="layui-row">
+              <div class="layuiAdmin-btns" style="margin-bottom: 10px;">
+              </div>
+            </div>
+            <table id="zjdataAll" lay-filter="zjdataAll"></table>
+          </div>
+  
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script type="text/html" id="xxpayBa">
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+  </script>
+  
+  <script>
+  	layui.config({
+	    base: '/x_mgr/src/lib/extend/',
+	});
+    layui.use(['admin', 'table', 'util', 'laydate', 'timePick'], function(){
+      var $ = layui.$
+        ,admin = layui.admin
+        ,table = layui.table
+        ,element = layui.element
+        ,laydate = layui.laydate
+        ,timePick = layui.timePick
+        ,form = layui.form;
+        
+        timePick.init();  //第一个参数表示开始时间   第二个表示结束时间   0,0今天   -1,-1昨天   -7,0近一周   以此类推
+      element.render('breadcrumb', 'breadcrumb');
+      $.setCountResult = function(agentId, bizType, createTimeStart, createTimeEnd) {
+	    admin.req({
+	      type: 'get',
+	      url: layui.setter.baseUrl + '/data/countAgentStatistics',
+	      data: {
+	        agentId : agentId,
+	        bizType : bizType,
+	        createTimeStart : createTimeStart,
+	        createTimeEnd : createTimeEnd
+	      },
+	      error: function(err){
+	        layer.alert(JSON.stringify(err.field), {
+	          title: '错误提示'
+	        })
+	      },
+	      success: function(res){
+	        if(res.code == 0){
+	        	if(res.data[0] == null || res.data == ""){
+	          		$('#totalAgentProfit').html("￥" + 0);
+	            }else{
+	            	$('#totalAgentProfit').html("￥" + res.data[0].totalAgentProfit/100);
+	            }
+	        }
+	      }
+	    });
+	  };
+
+      // 初始化统计结果
+  	  var createTimeStart = $('#createTimeStart').val();
+      var createTimeEnd = $('#createTimeEnd').val();
+      var agentId = $('#agentId').val();
+      var bizType = $("#bizType").val();
+      
+      $.setCountResult(agentId, bizType, createTimeStart, createTimeEnd);
+  
+      //代理商统计列表
+      table.render({
+        elem: '#zjdataAll'
+        ,url: layui.setter.baseUrl + '/data/agentStatistics' //列表接口
+        ,where: {
+            createTimeStart : createTimeStart,
+            createTimeEnd : createTimeEnd
+        }
+        ,id: 'tableReload'
+        ,page: true
+        ,cols: [[
+          {type: 'checkbox', fixed: 'left'}
+          ,{field: 'agentId', title: '代理商ID'}
+          ,{field: 'agentName', title: '代理商名称'}
+          ,{field: 'totalAgentProfit',title: '代理商利润',templet: '<div>{{d.totalAgentProfit/100}}</div>'}
+        ]]
+        ,skin: 'line'
+      });
+  
+      //监听工具条
+      table.on('tool(zjdataAll)', function(obj){
+        var data = obj.data;
+        if(obj.event === 'detail'){
+          location.href = layui.setter.baseLocal + "merchant/history/detail/id=" + data.id;
+        } 
+      });
+  
+      // 搜索
+      var $ = layui.$, active = {
+        reload: function(){
+          var createTimeStart = $('#createTimeStart').val();
+          var createTimeEnd = $('#createTimeEnd').val();
+          var agentId = $('#agentId').val();
+          var bizType = $("#bizType").val();
+          
+          $.setCountResult(agentId, bizType, createTimeStart, createTimeEnd);
+          //执行重载
+          table.reload('tableReload', {
+            page: {
+              curr: 1 //重新从第 1 页开始
+            }
+            ,where: {
+              agentId: agentId,
+              createTimeStart : createTimeStart,
+              createTimeEnd : createTimeEnd,
+              bizType : bizType
+            }
+          });
+        }
+      };
+      $('#search').on('click', function() {
+        var type = $(this).data('type');
+        active[type] ? active[type].call(this) : '';
+      });
+  
+      // 渲染表单
+      form.render();
+    });
+  </script>

@@ -1,0 +1,319 @@
+<style>
+    .xxpayPopupDiv .layui-form-label {
+        width:15% !important;
+        margin-left:1%;
+    }
+    .xxpayPopupDiv .layui-input-inline {
+        width: 75% !important;
+    }
+    .xxpayPopupDiv .layui-input{
+        width: 220px; display: inline;
+    }
+</style>
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-tab layui-tab-brief">
+      <div class="layui-tab-content layui-form center">
+          <div class="layui-form-item">
+              <label class="layui-form-label">商户ID : </label>
+              <div id="mchIdDiv" class="layui-form-mid layui-word-aux"></div>
+              <label class="layui-form-label">商户名称 : </label>
+              <div id="mchNameDiv" class="layui-form-mid layui-word-aux"></div>
+          </div>
+
+          <div class="layui-form-item">
+              <label class="layui-form-label">商户已关联的开放平台OpenAppId:</label>
+              <div class="layui-input-inline">
+                  <div id="mainOpenAppIdDiv" class="layui-form-mid layui-word-aux"></div>
+              </div>
+          </div>
+
+
+          <div class="layui-row">
+              <div style="width:50%; float: left;" class="accountItemDiv" accountType="mp">
+                  <fieldset class="layui-elem-field">
+                      <legend><button class='layui-btn layui-btn-xs layui-btn-danger'>公众号</button></legend>
+
+                      <div class="layui-form-item">
+                          <label class="layui-form-label">授权AppID:</label>
+                          <div class="layui-input-inline">
+                              <div class="authAppIdDiv layui-form-mid layui-word-aux"></div>
+                          </div>
+                      </div>
+
+                      <div class="layui-form-item">
+                          <label class="layui-form-label">开放平台绑定状态: </label>
+                          <div class="statusDiv layui-form-mid layui-word-aux">待查询</div>
+                      </div>
+
+
+
+                      <div class="layui-form-item">
+                          <label class="layui-form-label">开放平台OpenID:</label>
+                          <div class="layui-input-inline">
+                              <div class="openAppIdDiv layui-form-mid layui-word-aux">待查询</div>
+                          </div>
+                      </div>
+
+                      <div class="layui-form-item">
+                          <label class="layui-form-label">操作:</label>
+                          <div class="layui-input-inline" style="padding-top: 6px;">
+                              <button class="queryBtn btnGroup layui-btn layui-btn-xs layui-btn-primary">查询最新信息</button>
+                              <button class="setMainBtn btnGroup layui-btn layui-btn-xs layui-hide">设置为主开放平台</button>
+                              <button class="createBtn btnGroup layui-btn layui-btn-xs layui-hide">创建开放平台</button>
+                              <button class="bindBtn btnGroup layui-btn layui-btn-xs layui-hide">绑定到当前主开放平台</button>
+                              <button class="unbindBtn btnGroup layui-btn layui-btn-xs layui-hide">解绑</button>
+                          </div>
+                      </div>
+
+                  </fieldset>
+              </div>
+
+              <div style="width:50%; float: left;" class="accountItemDiv" accountType="mini">
+                  <fieldset class="layui-elem-field">
+                      <legend><button class='layui-btn layui-btn-xs layui-btn-danger'>小程序</button></legend>
+
+                      <div class="layui-form-item">
+                          <label class="layui-form-label">授权AppID:</label>
+                          <div class="layui-input-inline">
+                              <div class="authAppIdDiv layui-form-mid layui-word-aux"></div>
+                          </div>
+                      </div>
+
+                      <div class="layui-form-item">
+                          <label class="layui-form-label">开放平台绑定状态: </label>
+                          <div class="statusDiv layui-form-mid layui-word-aux">待查询</div>
+                      </div>
+
+
+
+                      <div class="layui-form-item">
+                          <label class="layui-form-label">开放平台OpenID:</label>
+                          <div class="layui-input-inline">
+                              <div class="openAppIdDiv layui-form-mid layui-word-aux">待查询</div>
+                          </div>
+                      </div>
+
+                      <div class="layui-form-item">
+                          <label class="layui-form-label">操作:</label>
+                          <div class="layui-input-inline" style="padding-top: 6px;">
+                              <button class="queryBtn btnGroup layui-btn layui-btn-xs layui-btn-primary">查询最新信息</button>
+                              <button class="setMainBtn btnGroup layui-btn layui-btn-xs layui-hide">设置为主开放平台</button>
+                              <button class="createBtn btnGroup layui-btn layui-btn-xs layui-hide">创建开放平台</button>
+                              <button class="bindBtn btnGroup layui-btn layui-btn-xs layui-hide">绑定到当前主开放平台</button>
+                              <button class="unbindBtn btnGroup layui-btn layui-btn-xs layui-hide">解绑</button>
+                          </div>
+                      </div>
+
+                  </fieldset>
+              </div>
+          </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    layui.use(['admin', 'form','view'],function(){
+        var form = layui.form
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,view = layui.view
+        ,layer = layui.layer;
+        // 导航
+
+        var mchId = view.getOpenParams('mchId');
+
+        //查询商户的基本信息
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/mch_info/get',
+            data: { mchId : mchId },
+            error: function(err){
+                layer.alert(JSON.stringify(err.field));
+            },
+            success: function(res){
+                if(res.code == 0){
+                    $('#mchIdDiv').text(res.data.mchId);
+                    $('#mchNameDiv').text(res.data.mchName);
+                    form.render();
+                }
+            }
+        });
+
+        //查询商户授权信息
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/wx_auth/getMchWxAuthInfo',
+            data: { mchId : mchId },
+            error: function(err){
+                layer.alert(JSON.stringify(err.field));
+            },
+            success: function(res){
+                if(res.code == 0 && res.data){
+                    $('#mainOpenAppIdDiv').text(res.data.openAppId || "");
+                    $(".accountItemDiv[accountType='mp'] .authAppIdDiv").text(res.data.mpAuthAppId);
+                    $(".accountItemDiv[accountType='mini'] .authAppIdDiv").text(res.data.miniAuthAppId);
+                    form.render();
+                }
+            }
+        });
+
+
+        /** 查询最新状态 & 变更按钮  **/
+        var queryNewStatus = function(accountType){
+
+            var accountItemDiv = $(".accountItemDiv[accountType='"+accountType+"']");
+            var authAppId = accountItemDiv.find(".authAppIdDiv").text();
+            if(!authAppId){
+                return layer.msg("当前账号未授权， 请先进行商户授权操作！", {icon : 2});
+            }
+
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/wx_auth/wx/queryOpenAppId',
+                data: { mchId : mchId, authAppId: authAppId, wxAccountType: accountType},
+                error: function(err){layer.alert(JSON.stringify(err.field));},
+                success: function(res){
+                    if(res.code == 0){
+
+                        accountItemDiv.find('.btnGroup').addClass("layui-hide");  //所有 按钮 隐藏
+
+                        var bindOpenAppId = res.data;  //当前账号已绑定的开放平台Id
+                        accountItemDiv.find(".queryBtn").addClass("layui-hide");  //[查询最新信息] 按钮隐藏
+                        if(bindOpenAppId){ //已绑定
+                            accountItemDiv.find(".statusDiv").text("已绑定到["+bindOpenAppId+"]");
+                            accountItemDiv.find(".openAppIdDiv").text(bindOpenAppId);
+
+                            // 显示 [解绑] [设置为主开放平台]
+                            accountItemDiv.find(".unbindBtn").removeClass("layui-hide");
+                            accountItemDiv.find(".setMainBtn").removeClass("layui-hide");
+                        }else{
+                            accountItemDiv.find(".statusDiv").text("未绑定任何开放平台");
+                            accountItemDiv.find(".openAppIdDiv").text("");
+                            // 显示 [创建] [绑定到当前开放平台]
+                            accountItemDiv.find(".createBtn").removeClass("layui-hide");
+                            accountItemDiv.find(".bindBtn").removeClass("layui-hide");
+                        }
+                    }
+                }
+            });
+        }
+
+        //查询该商户的开放平台绑定信息
+        $(".queryBtn").click(function(){
+            var accountType = $(this).parents(".accountItemDiv").attr("accountType");
+            queryNewStatus(accountType);
+        });
+
+
+        //[创建开放平台] 按钮
+        $(".createBtn").click(function(){
+
+            var accountItemDiv = $(this).parents(".accountItemDiv");
+            var accountType = accountItemDiv.attr("accountType");
+            var authAppId = accountItemDiv.find(".authAppIdDiv").text();
+
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/wx_auth/wx/createOpenApp',
+                data: {mchId: mchId, authAppId: authAppId, wxAccountType: accountType},
+                error: function (err) {
+                    layer.alert(JSON.stringify(err.field));
+                },
+                success: function (res) {
+                    if (res.code == 0) {
+                        queryNewStatus(accountType);  //重新渲染页面
+                    }
+                }
+            });
+        });
+
+
+        //[绑定到当前开放平台] 按钮
+        $(".bindBtn").click(function(){
+
+            var accountItemDiv = $(this).parents(".accountItemDiv");
+            var accountType = accountItemDiv.attr("accountType");
+            var mainOpenAppId = $("#mainOpenAppIdDiv").text();
+
+            if(!mainOpenAppId){
+                return layer.msg("请先设置商户关联的主openId!", {icon:2 });
+            }
+
+            var authAppId = accountItemDiv.find(".authAppIdDiv").text();
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/wx_auth/wx/bind2OpenApp',
+                data: { mchId : mchId, authAppId: authAppId, openAppId: mainOpenAppId, wxAccountType: accountType},
+                error: function(err){layer.alert(JSON.stringify(err.field));},
+                success: function(res){
+                    if(res.code == 0){
+                        queryNewStatus(accountType);  //重新渲染页面
+                    }
+                }
+            });
+
+
+            if(true){  //绑定
+                queryNewStatus(accountType);  //重新渲染页面
+            }
+        });
+
+
+        //[设置为主开放平台] 按钮
+        $(".setMainBtn").click(function(){
+
+            var accountItemDiv = $(this).parents(".accountItemDiv");
+            var accountType = accountItemDiv.attr("accountType");
+
+            var thisOpenAppId = accountItemDiv.find(".openAppIdDiv").text();
+            if(!thisOpenAppId){
+                return layer.msg("当前账号的openAppId为空， 无法设置！", {icon: 2});
+            }
+
+            //更新操作
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/wx_auth/updateOpenAppId',
+                data: { mchId : mchId, openAppId: thisOpenAppId },
+                error: function(err){layer.alert(JSON.stringify(err.field));},
+                success: function(res){
+                    if(res.code == 0){
+                        queryNewStatus(accountType);  //重新渲染页面
+                        $('#mainOpenAppIdDiv').text(thisOpenAppId);
+                        layer.msg("设置成功！", {icon: 1});
+                        form.render();
+                    }
+                }
+            });
+        });
+
+        //[解绑] 按钮
+        $(".unbindBtn").click(function(){
+
+            var accountItemDiv = $(this).parents(".accountItemDiv");
+            var accountType = accountItemDiv.attr("accountType");
+            var thisOpenAppId = accountItemDiv.find(".openAppIdDiv").text();
+            var authAppId = accountItemDiv.find(".authAppIdDiv").text();
+            layer.confirm("确认解除该开放平台？ <br/>解绑后存量用户将无法关联！<br/> 请与商户确认后点击[确认]按钮！", function(cIndex){
+
+
+                admin.req({
+                    type: 'post',
+                    url: layui.setter.baseUrl + '/wx_auth/wx/unbind',
+                    data: { mchId : mchId, authAppId: authAppId, openAppId: thisOpenAppId, wxAccountType: accountType },
+                    error: function(err){layer.alert(JSON.stringify(err.field));},
+                    success: function(res){
+                        if(res.code == 0){
+                            layer.close(cIndex);
+                            queryNewStatus(accountType);  //重新渲染页面
+                        }
+                    }
+                });
+            });
+        });
+
+    })
+</script>

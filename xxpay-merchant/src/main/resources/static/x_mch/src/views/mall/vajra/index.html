@@ -1,0 +1,155 @@
+<style>
+    .margin-top{margin-top:10px;}
+</style>
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>会员管理</cite></a>
+    </span>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">金刚区列表</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-row">
+                   <form action="" id="exportForm" method="post">
+                    <div class="layui-form" style="float:right; margin-bottom: 10px;">
+                        <div id="timeDiv" class="layui-form-item" style="margin:0;">
+                            <div class="layui-input-inline margin-top">
+                                <select name="searchAuthFrom" id="searchAuthFrom" lay-search="">
+                                    <option value="">显示位置</option>
+                                    <option value="1">餐饮小程序</option>
+                                    <option value="2">商城小程序</option>
+                                </select>
+                            </div>
+                            <div class="layui-input-inline margin-top">
+                                <select name="searchStatus" id="searchStatus" lay-search="">
+                                    <option value="">状态</option>
+                                    <option value="0">关闭</option>
+                                    <option value="1">启用</option>
+                                </select>
+                            </div>
+                            <div class="layui-input-inline margin-top">
+                                <button id="search" class="layui-btn" data-type="reload">搜索</button>
+                            </div>
+                        </div>
+                    </div>
+                   </form>
+                </div>
+                <div class="layui-row">
+                    <div class="layuiAdmin-btns" style="margin-bottom: 10px;">
+                        <a lay-href="mall/vajra/create" class="layui-btn" data-type="all" data-events="create">新增金刚区</a>
+                    </div>
+                </div>
+                <table id="vajraList" lay-filter="vajraList"></table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+     //标题内容模板
+     var tplTitle = function(d){
+         return '<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a> ' +
+                '<a class="layui-btn layui-btn-xs" lay-event="edit" >修改</a> ' +
+                '<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>'
+     };
+
+     var tplStatus = function(d){
+         if(d.status == 0) {
+             return '<span class="layui-badge layui-bg-red">关闭</span>';
+         }else if(d.status == 1) {
+             return '<span class="layui-badge layui-bg-green">启用</span>';
+         }
+     };
+
+     layui.use(['table','util','admin'], function(){
+        var table = layui.table
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,element = layui.element
+        ,view = layui.view
+        ,form = layui.form;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        table.render({
+            elem: '#vajraList'
+            ,id: "tableReload"
+            ,url: layui.setter.baseUrl + '/mini_vajra/list'
+            ,cols: [[
+                {field: 'vajraId', title: '金刚区ID'}
+                ,{field: 'vajraName',title: '金刚区名称'}
+                ,{field: 'authFrom',title: '显示位置', templet: '<div>{{ d.authFrom == 1?"点餐小程序":"商城小程序首页" }}</div>' }
+                ,{field: 'status',title: '状态', templet: tplStatus}
+                ,{field: 'sortNum',title: '排序值'}
+                //,{field: 'jumpUrlType',title: '跳转类型', templet: '<div>{{ d.jumpUrlType == 1?"内部链接":"外部链接" }}</div>' }
+                ,{field: 'jumpUrl',title: '跳转地址', width: 350}
+                ,{field: 'createTime',  title: '时间', width: 180 }
+                ,{field: 'edit', title: '操作', width: 200, templet: tplTitle }
+            ]]
+            ,page: true
+            ,skin: 'line'
+        });
+
+         // 搜索
+         var $ = layui.$, active = {
+             reload: function(){
+                 var authFrom = $('#searchAuthFrom').val();
+                 var status = $("#searchStatus").val();
+                 //执行重载
+                 table.reload('tableReload', {
+                     page: {
+                         curr: 1 //重新从第 1 页开始
+                     }
+                     ,where: {
+                         authFrom : authFrom,
+                         status : status
+                     }
+                 });
+             }
+         };
+
+         $('#search').on('click', function() {
+             var type = $(this).data('type');
+             active[type] ? active[type].call(this) : '';
+             return false;
+         });
+
+         //监听工具条
+         table.on('tool(vajraList)', function(obj){
+             var data = obj.data;
+             var layEvent = obj.event;
+
+             if(layEvent === 'edit'){ //编辑
+                 location.hash="/mall/vajra/update/vajraId=" + data.vajraId;
+             } else if(obj.event === 'detail'){
+                 view.xxpayPopup("金刚区详情", "mall/vajra/detail", {vajraId: data.vajraId}, {btn:false});
+             } else if(obj.event === 'del'){
+                 layer.confirm('确认删除么', function(index){
+                     admin.req({
+                         type: 'get',
+                         url: layui.setter.baseUrl + '/mini_vajra/delete',
+                         data: {
+                             vajraId: data.vajraId,
+                         },
+                         success: function(res){
+                             if(res.code == 0) {
+                                 layer.msg('删除成功', {
+                                     icon: 1
+                                 });
+                                 table.reload("tableReload");
+                             }
+                         }
+                     });
+                 });
+             }
+         });
+
+         // 渲染表单
+         form.render();
+        
+     })
+</script>

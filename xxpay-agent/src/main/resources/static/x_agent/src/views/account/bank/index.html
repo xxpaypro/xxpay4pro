@@ -1,0 +1,138 @@
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a><cite>结算账号</cite></a>
+    </span>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">账号记录</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-tab-item layui-show" style="margin-bottom:1%;">
+                    <div class="layui-row">
+                        <div class="layui-form" style="float:right;">
+                            <div class="layui-form-item" style="margin:0;">
+                                <div class="layui-input-inline">
+                                    <input type="text" name="accountNo" id="accountNo" placeholder="账号" autocomplete="off" class="layui-input">
+                                </div>
+                                <div class="layui-input-inline">
+                                    <select name="accountType" id="accountType" lay-search="">
+                                        <option value="-99">账号类型</option>
+                                        <option value="1">银行账号</option>
+                                        <option value="2">微信账号</option>
+                                        <option value="3">支付宝账号</option>
+
+                                    </select>
+                                </div>
+                                <button id="search" class="layui-btn" data-type="reload">搜索</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-row">
+                    <div class="layuiAdmin-btns" style="margin-bottom: 10px;">
+                        <a lay-href="account/bank/create" class="layui-btn" data-type="all" data-events="create">新建账号</a>
+                    </div>
+                </div>
+                <table id="bankList" lay-filter="bankList"></table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['table','util','admin'], function(){
+        var table = layui.table
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,element = layui.element
+        ,form = layui.form;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        //监听工具条
+        table.on('tool(bankList)', function(obj){ 
+            var data = obj.data; 
+            var layEvent = obj.event; 
+        
+            if(layEvent === 'edit'){ //编辑
+                location.hash="/account/bank/update/id=" + data.id + "/accountNo=" + data.accountNo;
+            } else if(obj.event === 'del'){
+                layer.confirm('确认删除么', function(index){
+                    admin.req({
+                        type: 'get',
+                        url: layui.setter.baseUrl + '/bank_account/delete',
+                        data: {
+                            id: data.id,
+                        },
+                        success: function(res){
+                            if(res.code == 0) {
+                                layer.msg('删除成功', {
+                                    icon: 1
+                                });
+                                table.reload("tableReload");
+                            }
+                        }
+                    });
+                });
+            }
+        });
+
+        var tplTitle = function(d){
+            return '<a class="layui-btn layui-btn-xs" lay-event="edit" >修改</a><a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>'
+        };
+
+        var tplIsDefault = function(d){
+            if(d.isDefault == 1) {
+                return '<span class="layui-badge">是</span>';
+            }else if(d.isDefault == 0) {
+                return '<span class="layui-badge layui-bg-gray">否</span>';
+            }
+        };
+
+        table.render({
+            elem: '#bankList'
+            ,id : 'tableReload'
+            ,url: layui.setter.baseUrl + '/bank_account/list'
+            ,cols: [[
+                {field: 'accountType',title: '账号类型', templet: '<div>{{ d.accountType == 1?"银行账号":d.accountType == 2?"微信账号":"支付宝账号" }}</div>'}
+                ,{field: 'bankName',title: '银行名称'}
+                ,{field: 'accountName',title: '账号名称'}
+                ,{field: 'accountNo', width: 200, title: '账号'}
+                ,{field: 'isDefault', width: 200, title: '默认',templet: tplIsDefault}
+                ,{field:'createTime', title: '创建时间', templet: '<div>{{ layui.util.toDateString(d.createTime) }}</div>' }
+                ,{field:'edite',width: 180, title: '操作', templet: tplTitle }
+            ]]
+            ,page: true
+            ,skin: 'line'
+        });
+
+        // 搜索
+        var $ = layui.$, active = {
+            reload: function(){
+                var accountNo = $('#accountNo').val();
+                var accountType = $("#accountType").val();
+                //执行重载
+                table.reload('tableReload', {
+                    page: {
+                        curr: 1 //重新从第 1 页开始
+                    }
+                    ,where: {
+                        accountNo: accountNo,
+                        accountType : accountType
+                    }
+                });
+            }
+        };
+        $('#search').on('click', function() {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+        form.render();
+    })
+
+
+    
+</script>

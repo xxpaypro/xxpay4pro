@@ -1,0 +1,110 @@
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a><cite>代理商信息</cite></a>
+    </span>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">基本信息</li>
+            </ul>
+            <div class="layui-tab-content">
+                <style>
+                    .leftT {
+                        text-align: left;
+                    }
+                    table tbody tr:nth-child(even){
+                        background-color: #FBFBFB;
+                    }
+                </style>
+                <table  class="layui-table" id="BasicView" style="text-align:center"></table>
+                <!-- 模板 -->
+                <script type="text/html" id="BasicInfo">
+                    <table>
+                        <colgroup>
+                            <col width="25%">
+                            <col>
+                            <col width="25%">
+                            <col>
+                            <col width="25%">
+                            <col>
+                        </colgroup>
+                        <tbody>
+                            <tr>
+                                <td>代理商ID</td>
+                                <td class="leftT">{{d.agentId == null ? "" : d.agentId}}</td>
+                                <td>代理商名称</td>
+                                <td class="leftT">{{d.agentName == null ? "" : d.agentName}}</td>
+                            </tr>
+                            <tr>
+                                <td>用户登录名</td>
+                                <td class="leftT">{{d.loginUserName == null ? "" : d.loginUserName}}</td>
+                                <td>状态</td>
+                                <td class="leftT">{{(d.status == -1)?"待审核":(d.status == 0)?"关闭":(d.status == 1)?"开启":"非法状态"}}</td>
+                            </tr>
+                            <tr>
+                                <td>真实姓名</td>
+                                <td class="leftT">{{d.realName == null ? "" : d.realName}}</td>
+                                <td>身份证号</td>
+                                <td class="leftT">{{d.idCard == null ? "" : d.idCard}}</td>
+                            </tr>
+                            <tr>
+                                <td>手机号</td>
+                                <td class="leftT">{{d.mobile == null ? "" : d.mobile}}</td>
+                                <td>邮箱地址</td>
+                                <td class="leftT">{{d.email == null ? "" : d.email}}</td>
+                            </tr>
+                            <tr>
+                                <td>QQ</td>
+                                <td class="leftT">{{d.qq == null ? "" : d.qq}}</td>
+                                <td>通讯地址</td>
+                                <td class="leftT" colspan="3">{{d.address == null ? "" : d.address}}</td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                    <br/>
+
+                </script>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+   layui.use(['table','laytpl','admin',], function(){
+        var form = layui.form
+            ,laytpl = layui.laytpl
+            ,table = layui.table
+            ,$ = layui.$
+            ,admin = layui.admin
+            ,element = layui.element;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        admin.req({
+           type: 'get',
+           url:  layui.setter.baseUrl + '/agent/get' //模拟基本信息接口,
+           ,error: function(err){
+               console.log(err)
+           },
+           success: function(res){
+               if(res.code == 0){
+                   var getTpl = BasicInfo.innerHTML
+                           ,view = document.getElementById('BasicView');
+                   laytpl(getTpl).render(res.data, function(html){
+                       view.innerHTML = html;
+                   });
+                   table.render();
+
+                   $('.privateKey').val(res.data.privateKey);
+               }
+           }
+        });
+    });
+
+</script>

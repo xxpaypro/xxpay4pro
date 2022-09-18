@@ -1,0 +1,121 @@
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a><cite>支付接口类型</cite></a>
+        <a><cite>支付接口参数模板配置</cite></a>
+    </span>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">支付接口类型</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-row">
+                    <div class="layuiAdmin-btns" style="margin-bottom: 10px;">
+                        <a id="tempAddBtn" class="layui-btn" data-type="all" data-events="create">新增参数模板</a>
+                    </div>
+                </div>
+                <table class="layui-hide center" id="cList" lay-filter='cList'></table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['table','util', 'form'], function(){
+        var table = layui.table
+        ,$ = layui.$
+        ,form = layui.form
+        ,element = layui.element
+        ,admin = layui.admin;
+        var ifTypeCode = layui.router().search.ifTypeCode;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        $('#tempAddBtn').on('click', function() {
+            location.hash = '/config/pay_interface_type/template/create/ifTypeCode=' + ifTypeCode;
+        });
+
+        //标题内容模板
+        var tplTitle = function(d){
+            return '<a class="layui-btn layui-btn-sm" lay-href="config/pay_interface_type/template/update/tid='+d.id+'/ifTypeCode='+ d.ifTypeCode +'">编辑</a>'
+            + '<a class="layui-btn layui-btn-sm" lay-event="syncAccountParam" >同步配置</a>';
+        };
+
+        var tplStatus = function(d){
+
+            var checkedHtml = " recordId='"+d.id+"' ";
+            if(d.status == 1) {
+                checkedHtml += " checked";
+            }
+            return '<input type="checkbox" lay-filter="statusSwitch" lay-skin="switch" '+checkedHtml+' lay-text="启用|停用">';
+        };
+
+        table.render({
+            elem: '#cList'
+            ,url: layui.setter.baseUrl + '/config/pay_interface_type/template/list'
+            ,where : {ifTypeCode : ifTypeCode}
+            ,id: 'tableReload'
+            ,cols: [[
+                {field:'ifTypeCode', title: '接口类型代码'}
+                ,{field:'templateName',  title: '接口类型名称'}
+                ,{field:'status', title: '状态',templet: tplStatus }
+                ,{width: 200, title: '操作', templet: tplTitle }
+            ]]
+            ,page: true
+            ,skin: 'line'
+        });
+        
+        //监听工具条
+        table.on('tool(cList)', function(obj){
+          var data = obj.data;
+          if(obj.event === 'syncAccountParam'){
+        	  layer.confirm('确定将模板配置信息同步到设置该支付类型的所有通道子账户？',function(index){
+        		  
+        		  admin.req({
+			            type: 'post',
+			            url: layui.setter.baseUrl + '/config/pay_interface_type/template/syncAccountParam',
+			            data: {id: data.id},
+			            error: function(err){layer.alert(err.msg,{title:"请求失败"})},
+			            success: function(res){
+			                if(res.code == 0){
+			                    layer.alert('共更新'+res.data+'条记录', {title: '同步成功'},function(index){
+			                    	layer.close(index);
+			                    });
+			                }
+			            }
+			        });
+        	  });
+          }
+        });
+
+
+        form.on('switch(statusSwitch)', function(data){
+
+            var updateRecordId = $(data.elem).attr('recordId');
+            var updateState = data.elem.checked ? "1" : "0";
+            var loadingIndex = layer.load();
+            admin.req({
+                type: "POST",
+                url: layui.setter.baseUrl + '/config/pay_interface_type/template/update',
+                data: {id: updateRecordId, status: updateState},
+                success: function(res){
+                    if(res.code == 0) {
+                        table.reload('tableReload');
+                    }
+                },
+                complete:function(){
+                    layer.close(loadingIndex);
+                }
+            });
+        });
+
+
+        
+        // 渲染表单
+        form.render();
+
+    });
+    
+</script>

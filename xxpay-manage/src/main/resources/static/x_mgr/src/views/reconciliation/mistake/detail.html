@@ -1,0 +1,209 @@
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a>差错列表</a>
+        <a><cite>消息详情</cite></a>
+    </span>
+</div>
+<style>
+    .layui-form-label {
+        width:15% !important;
+        margin-left:1%;
+    }
+    .layui-input-inline, .layui-input-block {
+        width: 33% !important;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">差错消息详情</li>
+            </ul>
+            <div class="layui-tab-content">
+                <form class="layui-form layui-form-pane" >
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">ID</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="id" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">对账批次号</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="batchNo" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">账单时间</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="billDate" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">账单类型</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="billType" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">状态类型</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="handleStatus" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">银行类型</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="billType" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">渠道商户ID</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="channelMchId" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">所有差错总单数</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="mistakeCount" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">待处理的差错总单数</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="unhandleMistakeCount" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">平台总交易单数</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="tradeCount" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">银行总交易单数</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="bankTradeCount" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">平台交易总金额</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="tradeAmount" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">银行交易总金额</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="bankTradeAmount" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">平台退款总金额</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="refundAmount" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">银行退款总金额</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="bankRefundAmount" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">平台总手续费</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="fee" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">银行总手续费</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="bankFee" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">原始对账文件存放地址</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="orgCheckFilePath" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">解析状态</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="releaseStatus" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">解析检查失败的描述信息</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="checkFailMsg" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">解析后文件存放地址</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="releaseCheckFilePath" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">原始对账文件存放地址</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="orgCheckFilePath" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">银行返回的错误信息</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="bankErrMsg" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">创建时间</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="createTime" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">更新时间</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="updateTime" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <a class="layui-btn" lay-href="reconciliation/mistake/">返回</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['form','table', 'admin', 'util',], function(){
+        var form = layui.form
+        ,table = layui.table
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,element = layui.element;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/bill/check_mistake/get',
+            data: {id: layui.router().search.id},
+            success: function(res){
+                if(res.code == 0){
+                    $('#id').val(res.data.id);
+                    $('#batchNo').val(res.data.batchNo);
+                    $('#billDate').val( layui.util.toDateString(res.data.billDate, "yyyy-MM-dd"));
+                    $('#billType').val(res.data.billType);
+                    $('#handleStatus').val(res.data.handleStatus==0?"未处理":"已处理");
+                    $('#bankType').val(res.data.bankType == "wxpay"?"微信":"支付宝");
+                    $('#channelMchId').val(res.data.channelMchId);
+                    $('#mistakeCount').val(res.data.mistakeCount);
+                    $('#unhandleMistakeCount').val(res.data.unhandleMistakeCount);
+                    $('#tradeCount').val(res.data.tradeCount);
+                    $('#bankTradeCount').val(res.data.bankTradeCount);
+                    $('#tradeAmount').val(res.data.tradeAmount);
+                    $('#bankTradeAmount').val(res.data.bankTradeAmount);
+                    $('#refundAmount').val(res.data.refundAmount);
+                    $('#bankRefundAmount').val(res.data.bankRefundAmount);
+                    $('#fee').val(res.data.fee);
+                    $('#bankFee').val(res.data.bankFee);
+                    $('#orgCheckFilePath').val(res.data.orgCheckFilePath);
+                    $('#releaseCheckFilePath').val(res.data.releaseCheckFilePath);
+                    $('#releaseStatus').val(res.data.releaseStatus ==0?"失败":"成功");
+                    $('#checkFailMsg').val(res.data.checkFailMsg);
+                    $('#bankErrMsg').val(res.data.bankErrMsg);
+                    $('#createTime').val( layui.util.toDateString(res.data.createTime));
+                    $('#updateTime').val( layui.util.toDateString(res.data.updateTime));
+                }else {
+                    layer.alert(res.msg,{
+                        title: '请求成功，但是状态不对'
+                    })
+                }
+            }
+        })
+    })
+</script>

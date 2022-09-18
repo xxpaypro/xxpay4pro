@@ -1,0 +1,105 @@
+
+<div class=" layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a>支付配置</a>
+        <a><cite>修改支付通道</cite></a>
+    </div>
+</div>
+
+<style>
+    .layui-form-label {
+        width:120px !important;
+        margin-left:1%;
+    }
+    .layui-input-inline {
+        width: 80% !important;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">费率设置</li>
+            </ul>
+            <div class="layui-tab-content">
+                <form class="layui-form center">
+                    <input type="hidden" name="id" id="id">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">通道名称</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="passageName" id="passageName"  autocomplete="off" class="layui-input" readonly="readonly">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">通道费率(%)</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="passageRate" name="passageRate"  placeholder="请输入通道费率" lay-verify="required" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-inline">
+                            <button type="button" class="layui-btn" lay-submit="" lay-filter="update">保存</button>
+                            <a lay-href = "config/pay_passage/"  class="layui-btn ">返回</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    layui.use(['form','table','util','admin',],function(){
+        var form = layui.form
+                , $ = layui.$
+                , admin = layui.admin
+                , layer = layui.layer
+                , element = layui.element
+                , table = layui.table;
+
+        element.render('breadcrumb', 'breadcrumb'); //渲染导航信息
+
+        var router = layui.router();
+        var id = router.search.id;
+
+        admin.req({
+            type: 'post',
+            url: layui.setter.baseUrl + '/config/pay_passage/get',
+            data: {
+                id:id,
+            },
+            error: function(err){
+                layer.alert(err);
+            },
+            success: function(res){
+                if(res.code == 0){
+                    $('#id').val(res.data.id);
+                    $('#passageName').val(res.data.passageName);
+                    $('#passageRate').val(res.data.passageRate);
+                    form.render();
+                }
+            }
+        })
+
+        form.on('submit(update)', function(data){
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/config/pay_passage/rate_update', //,
+                data: data.field,
+                error: function(err){layer.alert(err.msg,{title:"请求失败"})},
+                success: function(res){
+                    if(res.code == 0){
+                        layer.alert(res.msg, {title: '保存成功'},function(index){
+                            layer.close(index);
+                            location.hash = '/config/pay_passage/';
+                        });
+                    }
+                }
+            })
+            return false;
+        });
+
+    });
+
+</script>

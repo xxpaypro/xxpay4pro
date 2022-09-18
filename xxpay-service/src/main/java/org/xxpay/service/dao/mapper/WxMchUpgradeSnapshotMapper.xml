@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.xxpay.service.dao.mapper.WxMchUpgradeSnapshotMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="org.xxpay.core.entity.WxMchUpgradeSnapshot">
+        <id column="ApplyNo" property="ApplyNo" />
+        <result column="MchId" property="mchId" />
+        <result column="IsvId" property="isvId" />
+        <result column="ApplyStatus" property="applyStatus" />
+        <result column="AuditInfo" property="auditInfo" />
+        <result column="SubMchId" property="subMchId" />
+        <result column="OrganizationType" property="organizationType" />
+        <result column="BusinessLicenseCopy" property="businessLicenseCopy" />
+        <result column="BusinessLicenseNumber" property="businessLicenseNumber" />
+        <result column="MerchantName" property="merchantName" />
+        <result column="CompanyAddress" property="companyAddress" />
+        <result column="LegalPerson" property="legalPerson" />
+        <result column="BusinessTime" property="businessTime" />
+        <result column="BusinessLicenceType" property="businessLicenceType" />
+        <result column="OrganizationCopy" property="organizationCopy" />
+        <result column="OrganizationNumber" property="organizationNumber" />
+        <result column="OrganizationTime" property="organizationTime" />
+        <result column="AccountName" property="accountName" />
+        <result column="AccountBank" property="accountBank" />
+        <result column="BankAddressCode" property="bankAddressCode" />
+        <result column="BankName" property="bankName" />
+        <result column="AccountNumber" property="accountNumber" />
+        <result column="MerchantShortname" property="merchantShortname" />
+        <result column="Business" property="business" />
+        <result column="Qualifications" property="qualifications" />
+        <result column="BusinessScene" property="businessScene" />
+        <result column="BusinessAdditionDesc" property="businessAdditionDesc" />
+        <result column="BusinessAdditionPics" property="businessAdditionPics" />
+        <result column="ContactEmail" property="contactEmail" />
+        <result column="MpAppid" property="mpAppid" />
+        <result column="MpAppScreenShots" property="mpAppScreenShots" />
+        <result column="MiniprogramAppid" property="miniprogramAppid" />
+        <result column="MiniprogramScreenShots" property="miniprogramScreenShots" />
+        <result column="AppAppid" property="appAppid" />
+        <result column="AppScreenShots" property="appScreenShots" />
+        <result column="AppDownloadUrl" property="appDownloadUrl" />
+        <result column="WebUrl" property="webUrl" />
+        <result column="WebAuthoriationLetter" property="webAuthoriationLetter" />
+        <result column="WebAppid" property="webAppid" />
+        <result column="WxApplymentMchQrImg" property="wxApplymentMchQrImg" />
+        <result column="AccountVerifyInfo" property="accountVerifyInfo" />
+        <result column="WxMchId" property="wxMchId" />
+    </resultMap>
+
+</mapper>

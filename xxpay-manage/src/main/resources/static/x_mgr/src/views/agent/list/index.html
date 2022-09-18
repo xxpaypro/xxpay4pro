@@ -1,0 +1,185 @@
+
+<div class="layui-card layadmin-header">
+  <div class="layui-breadcrumb" lay-filter="breadcrumb">
+    <a lay-href="">主页</a>
+    <a><cite>代理商管理</cite></a>
+    <a><cite>所有代理商</cite></a>
+  </div>
+</div>
+
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-tab layui-tab-brief">
+      <ul class="layui-tab-title">
+        <li class="layui-this">代理商列表</li>
+      </ul>
+      <div class="layui-tab-content">
+        <div class="layui-tab-item layui-show">
+          <div class="layui-row">
+            <div class="layui-form" style="float:right;">
+              <div class="layui-form-item" style="margin:0;">
+                <div class="layui-input-inline">
+                  <input type="text" name="agentId" id="agentId" placeholder="代理商ID" autocomplete="off" class="layui-input">
+                </div>
+                <button id="search" class="layui-btn" data-type="reload">搜索</button>
+              </div>
+            </div>
+          </div>
+          <table id="XxPay_Mgr_Agent_dataAll" lay-filter="XxPay_Mgr_Agent_dataAll"></table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  layui.use(['admin', 'table', 'util'], function(){
+    var $ = layui.$
+            ,admin = layui.admin
+            ,table = layui.table
+            ,element = layui.element
+            ,form = layui.form;
+
+    element.render('breadcrumb', 'breadcrumb');
+
+    var tplStatus = function(d){
+
+        var checkedHtml = " recordId='"+d.agentId+"' ";
+        if(d.status == 1) {
+            checkedHtml += " checked";
+        }
+        return '<input type="checkbox" lay-filter="statusSwitch" lay-skin="switch" '+checkedHtml+' lay-text="启用|停用">';
+    };
+
+    $('body').off('click', '.agentBalanceTip').on('click', '.agentBalanceTip', function(){
+	
+        layer.tips($(this).attr('tipStr'), '.'+$(this).attr('tipClass'), {
+            tips: [1, '#3595CC'],
+            time: 3000
+        });
+    });
+
+
+    var tplEdit = function(d){
+    	
+      return "<a class='layui-btn layui-btn-primary layui-btn-xs' lay-event='loginSystem'>登录系统</a>" +
+              "<a class='layui-btn layui-btn-primary layui-btn-xs' lay-event='infoDetail'>查看信息</a>"
+    };
+
+    //商户列表
+    table.render({
+      elem: '#XxPay_Mgr_Agent_dataAll'
+      ,url: layui.setter.baseUrl + '/agent_info/list' //列表接口
+      ,id: 'tableReload'
+      ,page: true
+      ,cols: [[
+        {type: 'checkbox', fixed: 'left'}
+        ,{field: 'agentId', title: '代理商ID'}
+        ,{field: 'agentName', title: '代理商名称'}
+        ,{field: 'agentLevel', title: '代理商等级'}
+        ,{field: 'pid', title: '上级代理商ID'}
+        ,{field: 'isvId', title: '服务商ID'}
+        ,{field: 'status', title: '状态', templet: tplStatus}
+        ,{field: 'createTime', title: '创建时间', width: 200, templet: '<div>{{ layui.util.toDateString(d.createTime, "yyyy-MM-dd HH:mm:ss") }}</div>'}
+        ,{field: 'edit', title: '操作', width: 200, templet: tplEdit }
+      ]]
+      ,skin: 'line'
+    });
+
+    //监听工具条
+    table.on('tool(XxPay_Mgr_Agent_dataAll)', function(obj){
+      var data = obj.data;
+      if(obj.event === 'infoDetail'){
+        location.href = layui.setter.baseLocal + "agent/list/agent_view/agentId=" + data.agentId;
+      } else if(obj.event === 'pwdReset'){
+        layer.prompt({
+          formType: 1,
+          title: '请输入新密码'
+        }, function(value, index, elem){
+          admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/agent_info/pwd_reset',
+            data: {
+              agentId : data.agentId,
+              password : value
+            },
+            error: function(err){
+              layer.alert(JSON.stringify(err.field), {
+                title: '错误提示'
+              })
+            },
+            success: function(res){
+              if(res.code == 0){
+                layer.msg('修改成功', {icon: 1});
+              }
+            }
+          });
+          layer.close(index);
+        });
+
+      }else if(obj.event === 'edit'){
+        location.href = layui.setter.baseLocal + "agent/list/agent_edit/agentId=" + data.agentId;
+      }else if(obj.event === 'loginSystem'){
+    	  
+    	     admin.req({
+    			type: 'post',
+    			url: layui.setter.baseUrl + '/agent_info/genLoginUrl',
+    			data: {agentId : data.agentId},
+    			success: function(resData){
+  					layer.alert("请点击登录按钮（有效期1分钟）：", {btn:['登录']}
+  					,function(aid){
+  						window.open(resData.data.loginUrl);
+  						layer.close(aid);
+  					});
+  			     }
+			});
+      }
+    });
+
+    form.on('switch(statusSwitch)', function(data){
+
+        var updateRecordId = $(data.elem).attr('recordId');
+        var updateState = data.elem.checked ? "1" : "0";
+        var loadingIndex = layer.load();
+        admin.req({
+            type: "POST",
+            url: layui.setter.baseUrl + '/agent_info/update',
+            data: {agentId: updateRecordId, status: updateState},
+            success: function(res){
+                if(res.code == 0) {
+                    table.reload('tableReload');
+                }
+            },
+            complete:function(){
+                layer.close(loadingIndex);
+            }
+        });
+    });
+
+
+
+    // 搜索
+    var $ = layui.$, active = {
+      reload: function(){
+        var agentId = $('#agentId').val();
+        //执行重载
+        table.reload('tableReload', {
+          page: {
+            curr: 1 //重新从第 1 页开始
+          }
+          ,where: {
+            agentId: agentId
+          }
+        });
+      }
+    };
+    $('#search').on('click', function() {
+      var type = $(this).data('type');
+      active[type] ? active[type].call(this) : '';
+    });
+
+    // 渲染表单
+    form.render();
+  });
+</script>

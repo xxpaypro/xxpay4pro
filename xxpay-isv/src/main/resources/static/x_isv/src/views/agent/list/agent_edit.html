@@ -1,0 +1,182 @@
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>下级代理商</cite></a>
+        <a><cite>编辑代理商</cite></a>
+    </div>
+</div>
+
+<style>
+    .xxpayPopupDiv .layui-form-label {
+        width:15% !important;
+        margin-left:1%;
+    }
+    .xxpayPopupDiv .layui-input-inline {
+        width: 33% !important;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <form class="layui-form layui-form-pane">
+            <input type="hidden" name="agentId">
+            <div class="layui-tab layui-tab-brief">
+                <ul class="layui-tab-title">
+                    <li class="layui-this">基本信息</li>
+                </ul>
+                <div class="layui-tab-content">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">代理商名称</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="agentName" name="agentName" lay-verify="required" placeholder="输入代理商名称" autocomplete="off" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">用户登录名</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="loginUserName" name="loginUserName" lay-verify="required" placeholder="输入用户登录名" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">登录手机号（联系人手机号）</label>
+                        <div class="layui-input-inline">
+                            <input type="tel" id="mobile" maxlength='11' name="mobile" lay-verify="phone" placeholder="输入手机号" autocomplete="off" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">登录邮箱（联系人邮箱）</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="email" name="email" lay-verify="email" placeholder="输入邮箱" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">联系人真实姓名</label>
+                        <div class="layui-input-inline">
+                            <input type="tel" id="realName" name="realName" lay-verify="required" placeholder="输入真实姓名" autocomplete="off" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">联系人身份证号</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="idCard" name="idCard" lay-verify="required" placeholder="输入身份证号" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">QQ号</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="qq" name="qq" lay-verify="number" placeholder="输入QQ号" autocomplete="off" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">通讯地址</label>
+                        <div class="layui-input-inline">
+                            <input type="tel" id="address" name="address" placeholder="输入通讯地址" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+
+                        <label class="layui-form-label">状态</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="status" value="1" title="启用" checked="checked">
+                            <input type="radio" name="status" value="0" title="停止">
+                        </div>
+                        <label class="layui-form-label">设置</label>
+                        <input type="checkbox" lay-filter='allowAddMchUpdateCheckbox' title="发展商户" />
+                        <input type="checkbox" lay-filter='allowAddSubAgentUpdateCheckbox' title="发展子代理商" />
+                        <input type='hidden' id='allowAddMchUpdate' name='allowAddMch' value=''/>
+                        <input type='hidden' id='allowAddSubAgentUpdate' name='allowAddSubAgent' value=''/>
+                    </div>
+
+                </div>
+
+                <button type="button" class="layui-hide xxpayYesBtn" lay-submit="" lay-filter="agentEdit">保存</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    layui.use(['admin', 'form'],function(){
+        var form = layui.form
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,element = layui.element
+        ,layer = layui.layer
+            ,view = layui.view;
+
+        element.render('breadcrumb', 'breadcrumb');
+
+        var agentId = view.getOpenParams('agentId');
+
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/agent/get',
+            data: { agentId : agentId },
+            error: function(err){
+                layer.alert(JSON.stringify(err.field));
+            },
+            success: function(res){
+
+                if(res.code == 0){
+                    $('input[name="agentId"]').val(res.data.agentId);
+                    $('#agentName').val(res.data.agentName);
+                    $('#loginUserName').val(res.data.loginUserName);
+                    $('#email').val(res.data.email);
+                    $('#mobile').val(res.data.mobile);
+                    $("input[name='status'][value='"+res.data.status+"']").attr("checked", true);
+                    $('#realName').val(res.data.realName);
+                    $('#idCard').val(res.data.idCard);
+                    $('#qq').val(res.data.qq);
+                    $('#address').val(res.data.address);
+                    if(res.data.createTime != "" && res.data.createTime != null) {
+                        $('#createTime').val(layui.util.toDateString(res.data.createTime));
+                    }
+
+                    $('#allowAddSubAgentUpdate').val(res.data.allowAddSubAgent);
+                    $('#allowAddMchUpdate').val(res.data.allowAddMch);
+
+                    if(res.data.allowAddSubAgent){
+                        $("input[lay-filter='allowAddSubAgentUpdateCheckbox']").attr('checked', 'checked');
+                    }
+                    if(res.data.allowAddMch){
+                        $("input[lay-filter='allowAddMchUpdateCheckbox']").attr('checked', 'checked');
+                    }
+
+                    form.render();
+                }
+            }
+        });
+
+        
+        form.on('submit(agentEdit)', function(data) {
+
+            if(/^\d*$/.test(data.field.loginUserName)){  //登录名不允许全部是数字
+                layer.alert('用户登录名不允许全部是数字');
+                return false;
+            }
+
+            //这里可以写ajax方法提交表单
+            admin.req({
+                type: "POST",
+                url: layui.setter.baseUrl + '/agent/update',
+                data: data.field,
+                success: function(res){
+                    if(res.code == 0) {
+                        layer.alert(res.msg, {title: "提示"}, function(index){
+                            layer.closeAll(); //关闭所有弹层
+                            layui.table.reload('tableReload', {page: {curr: 1}}); //调用业务弹层外表格重新加载
+                        });
+                    }
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+        
+        form.on('checkbox(allowAddSubAgentUpdateCheckbox)', function(data){
+      	  var value = data.elem.checked ? 1 : 0;
+      	  $("#allowAddSubAgentUpdate").val(value);
+        });
+      
+        form.on('checkbox(allowAddMchUpdateCheckbox)', function(data){
+    	  var value = data.elem.checked ? 1 : 0;
+    	  $("#allowAddMchUpdate").val(value);
+    	});
+
+        form.render();
+    })
+</script>

@@ -1,0 +1,3 @@
+com\nc\platform\sqlit\demo\controller\TestController.class
+com\nc\platform\sqlit\demo\SqlitDemoApplication.class
+com\nc\platform\sqlit\demo\config\JpaConfig.class

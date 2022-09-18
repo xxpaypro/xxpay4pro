@@ -1,0 +1,608 @@
+<style>
+  .layuiadmin-card-list p.layuiadmin-big-font{font-size:16px}
+  .dataCard{    background: aliceblue;}
+  body .layui-card{border-radius:10px;}
+</style>
+<div class="layui-fluid layui-row layui-col-space15">
+
+  <!-- 数据统计卡片 -->
+  <div class="layui-col-md8">
+    <div class="layui-card">
+      <div class="layui-row layui-card-header" style="padding-bottom: 20px; padding-top:10px">
+        <div class="layui-col-md3" style="font-size: 24px;">数据统计</div>
+      </div>
+
+      <div class="layui-row layui-col-space15" style="padding:20px;" >
+
+        <div class="layui-col-sm6 layui-col-md2">
+          <div class="layui-card dataCard">
+            <div class="layui-card-header">全部服务商</div>
+            <div class="layui-card-body layuiadmin-card-list">
+              <p class="layuiadmin-big-font" id="countAllIsv">-</p>
+              <p></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="layui-col-sm6 layui-col-md2">
+          <div class="layui-card dataCard">
+            <div class="layui-card-header">全部一级代理</div>
+            <div class="layui-card-body layuiadmin-card-list">
+              <p class="layuiadmin-big-font" id="countAllAgent1">-</p>
+              <p></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="layui-col-sm6 layui-col-md2">
+          <div class="layui-card dataCard">
+            <div class="layui-card-header">全部二级代理</div>
+            <div class="layui-card-body layuiadmin-card-list">
+              <p class="layuiadmin-big-font" id="countAllAgent2">-</p>
+              <p></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="layui-col-sm6 layui-col-md2">
+          <div class="layui-card dataCard">
+            <div class="layui-card-header">全部三级代理</div>
+            <div class="layui-card-body layuiadmin-card-list">
+              <p class="layuiadmin-big-font" id="countAllAgent3">-</p>
+              <p></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="layui-col-sm6 layui-col-md2">
+          <div class="layui-card dataCard">
+            <div class="layui-card-header">全部商户</div>
+            <div class="layui-card-body layuiadmin-card-list">
+              <p class="layuiadmin-big-font" id="countAllMch">-</p>
+              <p></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="layui-col-sm6 layui-col-md2">
+          <div class="layui-card dataCard">
+            <div class="layui-card-header">全部会员</div>
+            <div class="layui-card-body layuiadmin-card-list">
+              <p class="layuiadmin-big-font" id="countAllMember">-</p>
+              <p></p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 最新公告 -->
+  <div class="layui-col-md4">
+    <div class="layui-card">
+
+      <div class="layui-row layui-card-header" style="padding-bottom: 20px; padding-top:10px">
+        <div class="layui-col-md4" style="font-size: 24px;">消息通知</div>
+      </div>
+
+      <div style="height: 172px;">
+        <ul class="layuiadmin-card-status layuiadmin-home2-usernote" id="messagePageUL"></ul>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 增长趋势 折线图 -->
+  <div class="layui-col-md7">
+    <div class="layui-card">
+      <div class="layui-row layui-card-header" style="padding-bottom: 20px; padding-top:10px">
+        <div class="layui-col-md4" style="font-size: 24px;">增长趋势</div>
+        <div class="layui-col-md3">
+          <input type="text" class="layui-input" id="selectDateInputByAllUser" placeholder="选择时间范围" readonly/>
+        </div>
+        <div class="layui-col-md5" style="padding-left:20px">
+          <div class="layui-btn-group">
+            <button type="button" dataType="allUser" class="layui-btn layui-btn-sm selectDateBtn" queryDateRange="yesterday">昨天</button>
+            <button type="button" dataType="allUser" class="layui-btn layui-btn-sm layui-btn-primary selectDateBtn" queryDateRange="near2yesterday_3">近3天</button>
+            <button type="button" dataType="allUser" class="layui-btn layui-btn-sm layui-btn-primary selectDateBtn" queryDateRange="near2yesterday_7">近7天</button>
+            <button type="button" dataType="allUser" class="layui-btn layui-btn-sm layui-btn-primary selectDateBtn" queryDateRange="near2yesterday_30">近30天</button>
+          </div>
+        </div>
+      </div>
+
+      <div style="height:450px">
+        <div id="chartsByAllUser" style="width: 100%;height:450px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 支付方式 -->
+  <div class="layui-col-md5">
+    <div class="layui-card">
+      <div class="layui-row layui-card-header" style="padding-bottom: 20px; padding-top:10px">
+        <div class="layui-col-md6" style="font-size: 24px;">支付方式</div>
+        <div class="layui-col-md6">
+          <input type="text" class="layui-input" id="selectDateInputByProductType" placeholder="选择时间范围" readonly/>
+        </div>
+      </div>
+
+      <div style="height:450px">
+        <div id="chartsByProductType" style="width: 100%;height:450px;"></div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- 交易统计 -->
+  <div class="layui-col-md12">
+    <div class="layui-card">
+
+      <div class="layui-row layui-card-header" style="padding-bottom: 20px; padding-top:10px">
+        <div class="layui-col-md4" style="font-size: 24px;">交易统计</div>
+        <div class="layui-col-md2 layui-col-md-offset3">
+          <input type="text" class="layui-input" id="selectDateInputByData" placeholder="选择时间范围" readonly/>
+        </div>
+        <div class="layui-col-md3" style="padding-left:20px">
+          <div class="layui-btn-group">
+            <button type="button" dataType="data" class="layui-btn layui-btn-sm selectDateBtn" queryDateRange="yesterday">昨天</button>
+            <button type="button" dataType="data" class="layui-btn layui-btn-sm layui-btn-primary selectDateBtn" queryDateRange="near2yesterday_3">近3天</button>
+            <button type="button" dataType="data" class="layui-btn layui-btn-sm layui-btn-primary selectDateBtn" queryDateRange="near2yesterday_7">近7天</button>
+            <button type="button" dataType="data" class="layui-btn layui-btn-sm layui-btn-primary selectDateBtn" queryDateRange="near2yesterday_30">近30天</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="layui-row layui-col-space15" style="padding:20px">
+
+        <div class="layui-col-md2">
+          <div class="layui-card dataCard">
+            <div class="layui-card-header" style="font-size: 24px;text-align: center;">订单金额</div>
+            <div class="layui-card-body layuiadmin-card-list">
+              <p class="layuiadmin-big-font" style="font-size: 20px;text-align: center;" id="sumTradeAmount">-</p>
+              <p></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="layui-col-md2">
+          <div class="layui-card dataCard">
+            <div class="layui-card-header" style="font-size: 24px;text-align: center;">订单笔数</div>
+            <div class="layui-card-body layuiadmin-card-list">
+              <p class="layuiadmin-big-font" style="font-size: 20px;text-align: center;" id="countTrade">-</p>
+              <p></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="layui-col-md2">
+          <div class="layui-card dataCard">
+            <div class="layui-card-header" style="font-size: 24px;text-align: center;">退款金额</div>
+            <div class="layui-card-body layuiadmin-card-list">
+              <p class="layuiadmin-big-font" style="font-size: 20px;text-align: center;" id="sumRefundAmount">-</p>
+              <p></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="layui-col-md2">
+          <div class="layui-card dataCard">
+            <div class="layui-card-header" style="font-size: 24px;text-align: center;">退款笔数</div>
+            <div class="layui-card-body layuiadmin-card-list">
+              <p class="layuiadmin-big-font" style="font-size: 20px;text-align: center;" id="countRefund">-</p>
+              <p></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="layui-col-md2">
+          <div class="layui-card dataCard">
+            <div class="layui-card-header" style="font-size: 24px;text-align: center;">优惠金额</div>
+            <div class="layui-card-body layuiadmin-card-list">
+              <p class="layuiadmin-big-font" style="font-size: 20px;text-align: center;" id="sumDiscountAmount">-</p>
+              <p></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="layui-col-md2">
+          <div class="layui-card dataCard">
+            <div class="layui-card-header" style="font-size: 24px;text-align: center;">实收金额</div>
+            <div class="layui-card-body layuiadmin-card-list">
+              <p class="layuiadmin-big-font" style="font-size: 20px;text-align: center;" id="sumRealAmount">-</p>
+              <p></p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- 订单趋势 -->
+  <div class="layui-col-md12">
+    <div class="layui-card">
+      <div class="layui-row layui-card-header" style="padding-bottom: 20px; padding-top:10px">
+        <div class="layui-col-md4" style="font-size: 24px;">订单趋势</div>
+        <div class="layui-col-md2 layui-col-md-offset3">
+          <input type="text" class="layui-input" id="selectDateInputByOrderCount" placeholder="选择时间范围" readonly/>
+        </div>
+        <div class="layui-col-md3" style="padding-left:20px">
+          <div class="layui-btn-group">
+            <button type="button" dataType="orderCount" class="layui-btn layui-btn-sm selectDateBtn" queryDateRange="yesterday">昨天</button>
+            <button type="button" dataType="orderCount" class="layui-btn layui-btn-sm layui-btn-primary selectDateBtn" queryDateRange="near2yesterday_3">近3天</button>
+            <button type="button" dataType="orderCount" class="layui-btn layui-btn-sm layui-btn-primary selectDateBtn" queryDateRange="near2yesterday_7">近7天</button>
+            <button type="button" dataType="orderCount" class="layui-btn layui-btn-sm layui-btn-primary selectDateBtn" queryDateRange="near2yesterday_30">近30天</button>
+          </div>
+        </div>
+      </div>
+
+      <div style="height:450px">
+        <div id="chartsByOrderCount" style="width: 100%;height:450px;"></div>
+      </div>
+    </div>
+  </div>
+
+
+</div>
+
+
+<script>
+    layui.use(['admin', 'view', 'echarts', 'laydate', 'util'], function(){
+        var $ = layui.$
+            ,admin = layui.admin
+            ,element = layui.element
+            ,laydate = layui.laydate
+            ,util = layui.util
+            ,echarts = layui.echarts
+            ,view = layui.view;
+
+        //两个时间相差天数 兼容firefox chrome
+        var dateDifference = function(sDate1, sDate2) {    //sDate1和sDate2是2006-12-18格式
+            var dateSpan, tempDate, iDays;
+            sDate1 = Date.parse(sDate1);
+            sDate2 = Date.parse(sDate2);
+            dateSpan = sDate2 - sDate1;
+            dateSpan = Math.abs(dateSpan);
+            iDays = Math.floor(dateSpan / (24 * 3600 * 1000));
+            return iDays;
+        };
+
+        //【增长趋势】 折线图
+        var chartsByAllUser = echarts.init($('#chartsByAllUser')[0],layui.echartsTheme);
+
+        //【支付方式】 饼状图
+        var chartsByProductType = echarts.init($('#chartsByProductType')[0],layui.echartsTheme);
+
+        //【订单趋势】 折线图
+        var chartsByOrderCount = echarts.init($('#chartsByOrderCount')[0],layui.echartsTheme);
+
+        //刷新 [增长趋势] 卡片
+        var refreshChartsByAllUser = function(queryData){
+            admin.req({
+                type: 'get',
+                url: layui.setter.baseUrl + '/data/statisticsByAllUserCharts',
+                data: queryData,
+                error: function (err) {
+                    layer.alert(JSON.stringify(err.field), {title: '错误提示'})
+                },
+                success: function (res) {
+                    if(res.code == 0){
+
+                        chartsByAllUser.setOption({
+                            title : {text: '用户新增数量', subtext: ''},  //设置标题
+                            tooltip : {show: true},  //当触发树状图时， 显示标题
+                            legend: {data:['服务商','一级代理商','二级代理商','三级代理商','商户','会员']},  //图例组件
+                            calculable : false,  //是否可拖拽
+                            xAxis: {
+                                type: 'category',
+                                boundaryGap: false,
+                                data: res.data.xTitleArray
+                            },
+                            yAxis: {type: 'value'},
+                            series: [{name:"服务商", data:res.data.countIsvArray, type: 'line'},
+                                {name:"一级代理商", data:res.data.countAgent1Array, type: 'line'},
+                                {name:"二级代理商", data:res.data.countAgent2Array, type: 'line'},
+                                {name:"三级代理商", data:res.data.countAgent3Array, type: 'line'},
+                                {name:"商户", data:res.data.countMchArray, type: 'line'},
+                                {name:"会员", data:res.data.countMemberArray, type: 'line'},]
+                        }, true);  //第二个参数，true表示重新渲染
+                    }
+                }
+            });
+        };
+
+        //刷新 [交易类型饼状图] 卡片
+        var refreshChartsByProductType = function(queryData){
+
+            admin.req({
+                type: 'get',
+                url: layui.setter.baseUrl + '/data/statisticsByProductType',
+                data: queryData,
+                error: function (err) {
+                    layer.alert(JSON.stringify(err.field), {title: '错误提示'})
+                },
+                success: function (res) {
+                    if(res.code == 0){
+
+                        var wxCount = 0;
+                        var alipayCount = 0;
+                        var memberCount = 0;
+                        var cashCount = 0;
+
+                        $.each(res.data, function(){
+                            if(this.productType == '1'){  //现金
+                                cashCount = this.totalCount;
+                            }else if(this.productType == '2'){ //会员卡支付
+                                memberCount = this.totalCount;
+                            }else if(this.productType == '3'){ //微信
+                                wxCount = this.totalCount;
+                            }else if(this.productType == '4'){ //支付宝
+                                alipayCount = this.totalCount;
+                            }
+                        });
+
+                        chartsByProductType.setOption({
+                            title : {text: '', subtext: ''},  //设置标题
+                            tooltip : {show: true},  //当触发树状图时， 显示标题
+                            legend: {data:['微信','支付宝','会员卡', '现金']},  //图例组件
+                            calculable : false,  //是否可拖拽
+                            series : [  //数据信息
+                                { center: ['60%', '60%'], radius: '60%', name:'交易金额', type:'pie'
+                                    , data: [
+                                        {value: wxCount, name: '微信'},
+                                        {value: alipayCount, name: '支付宝'},
+                                        {value: memberCount, name: '会员卡'},
+                                        {value: cashCount, name: '现金'}
+                                    ]
+                                }
+                            ]
+                        }, true);  //第二个参数，true表示重新渲染
+                    }
+                }
+            });
+        };
+
+        //刷新 [交易统计] 卡片
+        var refreshDataStatistics = function(queryData){
+            admin.req({
+                type: 'get',
+                url: layui.setter.baseUrl + '/data/dataStatistics',
+                data: queryData,
+                error: function (err) {
+                    layer.alert(JSON.stringify(err.field), {title: '错误提示'})
+                },
+                success: function (res) {
+                    if(res.code == 0){
+
+                        $("#sumTradeAmount").text("￥" + res.data.sumTradeAmount / 100);   //订单金额
+                        $("#sumRealAmount").text("￥" + res.data.sumRealAmount / 100);   //实际收款
+                        $("#sumRefundAmount").text("￥" + res.data.sumRefundAmount / 100);   //退款金额
+                        $("#countTrade").text(res.data.countTrade);   //订单笔数
+                        $("#countRefund").text(res.data.countRefund);   //退款笔数
+                        $("#sumDiscountAmount").text("￥" + res.data.sumDiscountAmount / 100);   //优惠金额
+                    }
+                }
+            });
+        };
+
+        //刷新 [订单趋势] 卡片
+        var refreshChartsByOrderCount = function(queryData){
+            admin.req({
+                type: 'get',
+                url: layui.setter.baseUrl + '/data/statisticsByOrderCountAndAmountCharts',
+                data: queryData,
+                error: function (err) {
+                    layer.alert(JSON.stringify(err.field), {title: '错误提示'})
+                },
+                success: function (res) {
+                    if(res.code == 0){
+
+                        chartsByOrderCount.setOption({
+                            title : {text: '订单趋势', subtext: ''},  //设置标题
+                            tooltip : {show: true},  //当触发树状图时， 显示标题
+                            legend: {data:['订单数量','订单金额']},  //图例组件
+                            calculable : false,  //是否可拖拽
+                            xAxis: {
+                                type: 'category',
+                                boundaryGap: false,
+                                data: res.data.xTitleArray
+                            },
+                            yAxis: {type: 'value'},
+                            series: [{name:"订单数量", data:res.data.orderCountArray, type: 'line'},
+                                {name:"订单金额", data:res.data.orderAmountArray, type: 'line'},]
+                        }, true);  //第二个参数，true表示重新渲染
+                    }
+                }
+            });
+        };
+
+
+        //【所有卡片】时间按钮点击事件
+        $(".selectDateBtn").click(function(){
+
+            $(this).parent().find('.selectDateBtn').removeClass("layui-btn-primary").addClass("layui-btn-primary");
+            $(this).removeClass("layui-btn-primary");
+
+            var queryDateRange = $(this).attr("queryDateRange");  //查询时间范围
+
+            var dataType = $(this).attr('dataType');
+            if(dataType == 'data'){ //交易统计
+                $("#selectDateInputByData").val("");   //清除时间选择框的内容
+                refreshDataStatistics({queryDateRange: queryDateRange});
+            }else if(dataType == 'allUser'){ //增长趋势
+                $("#selectDateInputByAllUser").val("");   //清除时间选择框的内容
+                refreshChartsByAllUser({queryDateRange: queryDateRange});
+            }else if(dataType == 'orderCount'){ //订单趋势
+                $("#selectDateInputByOrderCount").val("");   //清除时间选择框的内容
+                refreshChartsByOrderCount({queryDateRange: queryDateRange});
+            }
+        });
+
+
+        //【增长趋势】 的选择时间控件绑定事件
+        var layDateByAllUser = laydate.render({
+            elem: '#selectDateInputByAllUser' //指定元素
+            ,range: "~"   //时间选择范围, ~分割
+            ,max: util.toDateString(new Date(), 'yyyy-MM-dd')  //不能超过今天
+            ,change: function(value, date, endDate){
+                var startTime = value.split("~")[0].trim();
+                var endTime = value.split("~")[1].trim();
+
+                if(dateDifference(endTime, startTime) >= 31){
+                    layDateByAllUser.hint("时间范围不得超过31天！");
+                }
+
+            }
+            ,done: function(value, date, endDate){
+                //清空 / 未选择
+                if(!value){ return false; }
+                var startTime = value.split("~")[0].trim();
+                var endTime = value.split("~")[1].trim();
+
+                if(dateDifference(endTime, startTime) >= 31){   //时间超过31天
+                    return;
+                }
+                $(".selectDateBtn[dataType='allUser']").removeClass("layui-btn-primary").addClass("layui-btn-primary");  //全部未选择
+                refreshChartsByAllUser({"queryStartDate": startTime, "queryEndDate": endTime});
+            }
+        });
+
+        //【交易类型饼状图】 的选择时间控件绑定事件
+        var layDateByProductType = laydate.render({
+            elem: '#selectDateInputByProductType' //指定元素
+            ,range: "~"   //时间选择范围, ~分割
+            ,max: util.toDateString(new Date(), 'yyyy-MM-dd')  //不能超过今天
+            ,change: function(value, date, endDate){
+                var startTime = value.split("~")[0].trim();
+                var endTime = value.split("~")[1].trim();
+
+                if(dateDifference(endTime, startTime) >= 31){
+                    layDateByProductType.hint("时间范围不得超过31天！");
+                }
+
+            }
+            ,done: function(value, date, endDate){
+                //清空 / 未选择
+                if(!value){ return false; }
+                var startTime = value.split("~")[0].trim();
+                var endTime = value.split("~")[1].trim();
+
+                if(dateDifference(endTime, startTime) >= 31){   //时间超过31天
+                    return;
+                }
+                refreshChartsByProductType({"queryStartDate": startTime, "queryEndDate": endTime});
+            }
+        });
+
+        //【交易统计】 的选择时间控件绑定事件
+        laydate.render({
+            elem: '#selectDateInputByData' //指定元素
+            ,range: "~"   //时间选择范围, ~分割
+            ,max: util.toDateString(new Date(), 'yyyy-MM-dd')  //不能超过今天
+            ,done: function(value, date, endDate){
+                //清空 / 未选择
+                if(!value){ return false; }
+                $(".selectDateBtn").removeClass("layui-btn-primary").addClass("layui-btn-primary");  //全部未选择
+                var startTime = value.split("~")[0].trim();
+                var endTime = value.split("~")[1].trim();
+                $(".selectDateBtn[dataType='data']").removeClass("layui-btn-primary").addClass("layui-btn-primary");  //全部未选择
+                refreshDataStatistics({"queryStartDate": startTime, "queryEndDate": endTime});
+            }
+        });
+
+        //【订单趋势】 的选择时间控件绑定事件
+        var layDateByOrderCount = laydate.render({
+            elem: '#selectDateInputByOrderCount' //指定元素
+            ,range: "~"   //时间选择范围, ~分割
+            ,max: util.toDateString(new Date(), 'yyyy-MM-dd')  //不能超过今天
+            ,change: function(value, date, endDate){
+                var startTime = value.split("~")[0].trim();
+                var endTime = value.split("~")[1].trim();
+
+                if(dateDifference(endTime, startTime) >= 31){
+                    layDateByOrderCount.hint("时间范围不得超过31天！");
+                }
+
+            }
+            ,done: function(value, date, endDate){
+                //清空 / 未选择
+                if(!value){ return false; }
+                var startTime = value.split("~")[0].trim();
+                var endTime = value.split("~")[1].trim();
+
+                if(dateDifference(endTime, startTime) >= 31){   //时间超过31天
+                    return;
+                }
+                $(".selectDateBtn[dataType='orderCount']").removeClass("layui-btn-primary").addClass("layui-btn-primary");  //全部未选择
+                refreshChartsByOrderCount({"queryStartDate": startTime, "queryEndDate": endTime});
+            }
+        });
+
+        // 重新加载 [最新公告] 卡片
+        var reloadMessage = function(){
+            admin.req({
+                type: 'get',
+                url: layui.setter.baseUrl + '/sys/message/list',
+                data: {limit: 2 },
+                error: function (err) {
+                    layer.alert(JSON.stringify(err.field), {title: '错误提示'})
+                },
+                success: function (res) {
+                    $("#messagePageUL").empty();
+                    $.each(res.data, function(){
+                        $("#messagePageUL").append(
+                            `
+                            <li>
+                              <p>`+this.title+`</p>
+                              <span>`+layui.util.timeAgo(this.createTime, true)+`</span>
+                              <a href="javascript:;" messageId = "` + this.id + `" class="layui-btn layui-btn-xs layuiadmin-reply messageDetailBtn">查看详情</a>
+                            </li>
+                            `
+                        );
+                    });
+                }
+            });
+        };
+
+        //绑定 [查询详情] 按钮
+        $('#messagePageUL').off('click', ".messageDetailBtn").on('click', '.messageDetailBtn', function(){
+            view.xxpayPopup("消息详情", "sys/message/detail", {id: $(this).attr('messageId')}, {btn:false});
+        });
+
+        //根据窗口的大小变动图表
+        window.onresize = function(){
+            chartsByAllUser.resize();
+            chartsByProductType.resize();
+            chartsByOrderCount.resize();
+        };
+
+        //默认显示【昨天】 数据
+        refreshChartsByAllUser({queryDateRange: "yesterday"});
+        refreshChartsByProductType({queryDateRange: "yesterday"});
+        refreshDataStatistics({queryDateRange: "yesterday"});
+        refreshChartsByOrderCount({queryDateRange: "yesterday"});
+        reloadMessage();  //查询最新公告消息
+
+        //初始化统计数据卡片的数据
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/data/statisticsByAllUserCharts',
+            error: function (err) {
+                layer.alert(JSON.stringify(err.field), {title: '错误提示'})
+            },
+            success: function (res) {
+                if(res.code == 0){
+                    $("#countAllIsv").text(res.data.countIsvArray[0]);
+                    $("#countAllAgent1").text(res.data.countAgent1Array[0]);
+                    $("#countAllAgent2").text(res.data.countAgent2Array[0]);
+                    $("#countAllAgent3").text(res.data.countAgent3Array[0]);
+                    $("#countAllMch").text(res.data.countMchArray[0]);
+                    $("#countAllMember").text(res.data.countMemberArray[0]);
+                }
+            }
+        });
+
+    });
+</script>

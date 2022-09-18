@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.xxpay.service.dao.mapper.MemberMapper">
+
+
+
+    <!-- 查询会员所有信息, 包含会员注册信息, 会员余额， 会员积分数据 （一般用于会员支付时显示） -->
+    <select id="selectMemberAllInfo" resultType="Map" parameterType="Map">
+        select m.MemberId as memberId, m.MemberNo as memberNo, m.MemberName as memberName,
+        m.Tel as tel, m.Sex as sex, m.Birthday as birthday,
+        b.Balance as balance, p.Points as points
+        from t_member m
+        INNER JOIN t_member_balance b on m.MemberId = b.MemberId
+        INNER JOIN t_member_points p on m.MemberId = p.MemberId
+        where m.MchId = #{mchId}
+        <if test="memberId != null">
+            and m.MemberId = #{memberId}
+        </if>
+        <if test="wxOpenId != null">
+            and m.WxOpenId = #{wxOpenId}
+        </if>
+    </select>
+
+</mapper>

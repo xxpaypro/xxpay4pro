@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.xxpay.service.dao.mapper.SysAlipayIndustryCodeMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="org.xxpay.core.entity.SysAlipayIndustryCode">
+        <id column="Id" property="Id" />
+        <result column="IndustryName" property="industryName" />
+        <result column="IndustryDesc" property="industryDesc" />
+        <result column="ParentCode" property="parentCode" />
+        <result column="MccCode" property="mccCode" />
+    </resultMap>
+
+</mapper>

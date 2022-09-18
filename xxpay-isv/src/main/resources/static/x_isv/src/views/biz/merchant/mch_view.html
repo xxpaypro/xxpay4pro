@@ -1,0 +1,502 @@
+<style>
+    .xxpayPopupDiv .layui-form-label {
+        width:15% !important;
+        margin-left:1%;
+    }
+    .xxpayPopupDiv .layui-input-inline {
+        width: 33% !important;
+    }
+</style>
+<div class="layui-fluid">
+  <div class="layui-card">
+      <form class="layui-form layui-form-pane">
+
+          <div class="layui-tab layui-tab-brief">
+              <ul class="layui-tab-title">
+                  <li class="layui-this">商户基本信息</li>
+              </ul>
+              <div class="layui-tab-content">
+                  <div class="layui-form-item">
+                      <label class="layui-form-label">商户ID</label>
+                      <div class="layui-input-inline">
+                          <input readonly autocomplete="off" id="mchId" class="layui-input layui-bg-gray">
+                      </div>
+                      <label class="layui-form-label">代理商ID</label>
+                      <div class="layui-input-inline">
+                          <input readonly id="agentId" class="layui-input">
+                      </div>
+                  </div>
+                  <div class="layui-form-item">
+                      <label class="layui-form-label">状态</label>
+                      <div class="layui-input-inline">
+                          <input type="radio" name="status" value="-2" title="审核不通过" disabled="disabled" />
+                          <input type="radio" name="status" value="-1" title="审核中" disabled="disabled" />
+                          <input type="radio" name="status" value="1" title="启用" disabled="disabled" />
+                          <input type="radio" name="status" value="0" title="停止" disabled="disabled" />
+                      </div>
+                      <label class="layui-form-label">商户登录名</label>
+                      <div class="layui-input-inline">
+                          <input readonly id="loginUserName" class="layui-input">
+                      </div>
+                  </div>
+
+                  <div class="layui-form-item">
+                      <label class="layui-form-label">商户名称全称</label>
+                      <div class="layui-input-inline">
+                          <input readonly id="mchName" class="layui-input">
+                      </div>
+                      <label class="layui-form-label">商户名称简称</label>
+                      <div class="layui-input-inline">
+                          <input readonly id="mchShortName" class="layui-input">
+                      </div>
+                  </div>
+
+                  <div class="layui-form-item">
+                      <label class="layui-form-label">联系人真实姓名</label>
+                      <div class="layui-input-inline">
+                          <input readonly id="contactRealName" autocomplete="off" class="layui-input">
+                      </div>
+                      <label class="layui-form-label">联系人手机号（登录手机号）</label>
+                      <div class="layui-input-inline">
+                          <input readonly id="loginMobile" class="layui-input">
+                      </div>
+                  </div>
+
+                  <div class="layui-form-item">
+
+                      <label class="layui-form-label">联系人邮箱（登录邮箱）</label>
+                      <div class="layui-input-inline">
+                          <input readonly id="loginEmail" class="layui-input">
+                      </div>
+                      <label class="layui-form-label">商户位置详细地址</label>
+                      <div class="layui-input-inline">
+                          <input readonly id="address" class="layui-input">
+                      </div>
+                  </div>
+                  <div class="layui-form-item">
+                      <label class="layui-form-label">是否允许押金模式</label>
+                      <div class="layui-input-inline">
+                          <input readonly id="depositModeStatus" class="layui-input">
+                      </div>
+                  </div>
+                  <div class="layui-form-item">
+                      <label class="layui-form-label">创建时间</label>
+                      <div class="layui-input-inline">
+                          <input id="createTime" readonly autocomplete="off" class="layui-input">
+                      </div>
+                      <label class="layui-form-label">修改时间</label>
+                      <div class="layui-input-inline">
+                          <input id="updateTime" readonly autocomplete="off" class="layui-input">
+                      </div>
+                  </div>
+                  <div class="layui-form-item" style="text-align: center;">
+                      <button class="layui-btn layui-btn-primary showExtInfo" onclick="return false;">查看进件信息</button>
+                  </div>
+              </div>
+          </div>
+
+          <div class="layui-tab layui-tab-brief extInfoDiv">
+              <ul class="layui-tab-title">
+                  <li class="layui-this">商户经营信息</li>
+              </ul>
+              <div class="layui-tab-content">
+
+                  <div class="layui-form-item">
+                      <label class="layui-form-label">客服电话</label>
+                      <div class="layui-input-inline">
+                          <input readonly id="servicePhone" autocomplete="off" class="layui-input">
+                      </div>
+                  </div>
+
+                  <div class="layui-form-item">
+                      <label class="layui-form-label">商户经营行业</label>
+                      <div class="layui-input-inline">
+                          <input readonly id="industryDetail" autocomplete="off" class="layui-input">
+                      </div>
+                  </div>
+
+                  <div class="layui-form-item">
+                      <label class="layui-form-label">门头照</label>
+                      <div class="layui-input-inline">
+                          <img id="storeOuterImg" class="uploadImg layui-hide" style="height:38px; margin-left:30px;cursor: pointer;" title="点击放大" />
+                      </div>
+                  </div>
+
+                  <div class="layui-form-item">
+                      <label class="layui-form-label">经营场所照</label>
+                      <div class="layui-input-inline">
+                          <img id="storeInnerImg" class="uploadImg layui-hide" style="height:38px; margin-left:30px;cursor: pointer;" title="点击放大" />
+                      </div>
+                  </div>
+
+                  <div class="layui-form-item">
+                      <label class="layui-form-label">收银台照</label>
+                      <div class="layui-input-inline">
+                          <img id="cashierImg" class="uploadImg layui-hide" style="height:38px; margin-left:30px;cursor: pointer;" title="点击放大" />
+                      </div>
+                  </div>
+
+              </div>
+          </div>
+
+          <div class="layui-tab layui-tab-brief extInfoDiv">
+              <ul class="layui-tab-title">
+                  <li class="layui-this">商户证件信息</li>
+              </ul>
+              <div class="layui-tab-content">
+                  <div class="layui-form-item">
+                      <label class="layui-form-label">法人姓名</label>
+                      <div class="layui-input-inline">
+                          <input readonly id="legalPersonName" autocomplete="off" class="layui-input">
+                      </div>
+                      <label class="layui-form-label">法人电话</label>
+                      <div class="layui-input-inline">
+                          <input type="tel" id="legalPersonPhone"readonly autocomplete="off" class="layui-input">
+                      </div>
+                  </div>
+                  <div class="layui-form-item">
+                      <label class="layui-form-label">法人身份证</label>
+                      <div class="layui-input-inline">
+                          <input readonly id="legalPersonIdCardNo" autocomplete="off" class="layui-input">
+                      </div>
+                      <label class="layui-form-label">法人身份证有效期</label>
+                      <div class="layui-input-inline">
+                          <input readonly id="legalPersonIdCardDate" autocomplete="off" class="layui-input">
+                      </div>
+                  </div>
+                  <div class="layui-form-item">
+                      <label class="layui-form-label">营业执照编号</label>
+                      <div class="layui-input-inline">
+                          <input readonly id="businessLicenseNo"autocomplete="off" class="layui-input">
+                      </div>
+                      <label class="layui-form-label">营业执照有效期</label>
+                      <div class="layui-input-inline">
+                          <input readonly id="businessLicenseDate" autocomplete="off" class="layui-input">
+                      </div>
+                  </div>
+                  <div class="layui-form-item">
+                      <label class="layui-form-label">法人身份证正面</label>
+                      <div class="layui-input-inline">
+                          <img id="legalIdCard1Img" class="uploadImg layui-hide" style="height:38px; margin-left:30px;cursor: pointer;" title="点击放大" />
+                      </div>
+                  </div>
+
+                  <div class="layui-form-item">
+                      <label class="layui-form-label">法人身份证反面</label>
+                      <div class="layui-input-inline">
+                          <img id="legalIdCard2Img" class="uploadImg layui-hide" style="height:38px; margin-left:30px;cursor: pointer;" title="点击放大" />
+                      </div>
+                  </div>
+
+                  <div class="layui-form-item">
+                      <label class="layui-form-label">营业执照</label>
+                      <div class="layui-input-inline">
+                          <img id="businessLicenseImg" class="uploadImg layui-hide" style="height:38px; margin-left:30px;cursor: pointer;" title="点击放大" />
+                      </div>
+                  </div>
+                  <div class="layui-form-item">
+                      <label class="layui-form-label">开户许可证照</label>
+                      <div class="layui-input-inline">
+                          <img id="openAccountImg" class="uploadImg layui-hide" style="height:38px; margin-left:30px;cursor: pointer;" title="点击放大" />
+                      </div>
+                  </div>
+              </div>
+          </div>
+
+          <div class="layui-tab layui-tab-brief extInfoDiv">
+              <ul class="layui-tab-title">
+                  <li class="layui-this">结算账号及其他</li>
+              </ul>
+              <div class="layui-tab-content">
+                  <div class="layui-form-item">
+                      <label class="layui-form-label">开户名称(持卡人姓名)</label>
+                      <div class="layui-input-inline">
+                          <input readonly id="settAccName" autocomplete="off" class="layui-input">
+                      </div>
+                      <label class="layui-form-label">结算账号</label>
+                      <div class="layui-input-inline">
+                          <input readonly id="settAccNo" autocomplete="off" class="layui-input">
+                      </div>
+                  </div>
+
+                  <div class="layui-form-item">
+                      <label class="layui-form-label">开户银行</label>
+                      <div class="layui-input-inline">
+                          <input readonly id="settBankName" autocomplete="off" class="layui-input">
+                      </div>
+                      <label class="layui-form-label">账号类型</label>
+                      <div class="layui-input-inline">
+                          <input type="radio" name="settAccAttr" value="0" title="对私" checked disabled="disabled">
+                          <input type="radio" name="settAccAttr" value="1" title="对公" disabled="disabled">
+                      </div>
+                  </div>
+
+                  <div class="layui-form-item">
+                      <label class="layui-form-label">开户行位置</label>
+                      <div class="layui-input-inline">
+                          <input readonly id="settBankAreaInfo" autocomplete="off" class="layui-input">
+                      </div>
+                  </div>
+
+                  <div class="layui-form-item">
+                      <label class="layui-form-label">开户银行支行</label>
+                      <div class="layui-input-inline">
+                          <input readonly id="settBankNetName" autocomplete="off" class="layui-input">
+                      </div>
+                  </div>
+                  <div class="layui-form-item">
+                      <label class="layui-form-label">费率描述</label>
+                      <div class="layui-input-inline">
+                          <textarea readonly name="applyRateInfo" id="applyRateInfo" class="layui-textarea" autocomplete="off"></textarea>
+                      </div>
+                  </div>
+
+                  <div class="layui-form-item">
+                      <label class="layui-form-label">结算人身份证正面</label>
+                      <div class="layui-input-inline">
+                          <img id="settIdCard1Img" class="uploadImg layui-hide" style="height:38px; margin-left:30px;cursor: pointer;" title="点击放大" />
+                      </div>
+                  </div>
+                  <div class="layui-form-item">
+                      <label class="layui-form-label">结算人身份证反面</label>
+                      <div class="layui-input-inline">
+                          <img id="settIdCard2Img" class="uploadImg layui-hide" style="height:38px; margin-left:30px;cursor: pointer;" title="点击放大" />
+                      </div>
+                  </div>
+
+                  <div class="layui-form-item">
+                      <label class="layui-form-label">结算人手持身份证照片</label>
+                      <div class="layui-input-inline">
+                          <img id="settIdCard3Img" class="uploadImg layui-hide" style="height:38px; margin-left:30px;cursor: pointer;" title="点击放大" />
+                      </div>
+                  </div>
+                  <div class="layui-form-item">
+                      <label class="layui-form-label">银行卡照</label>
+                      <div class="layui-input-inline">
+                          <img id="bankCardImg" class="uploadImg layui-hide" style="height:38px; margin-left:30px;cursor: pointer;" title="点击放大" />
+                      </div>
+                  </div>
+                  <div class="layui-form-item">
+                      <label class="layui-form-label">非法人对私授权函</label>
+                      <div class="layui-input-inline">
+                          <img id="authorizeImg" class="uploadImg layui-hide" style="height:38px; margin-left:30px;cursor: pointer;" title="点击放大" />
+                      </div>
+                  </div>
+                  <div class="layui-form-item">
+                      <label class="layui-form-label">租房合同</label>
+                      <div class="layui-input-inline">
+                          <img id="leaseImg" class="uploadImg layui-hide" style="height:38px; margin-left:30px;cursor: pointer;" title="点击放大" />
+                      </div>
+                  </div>
+
+                  <div class="layui-form-item">
+                      <label class="layui-form-label">其他资料-1</label>
+                      <div class="layui-input-inline">
+                          <img id="other1Img" class="uploadImg layui-hide" style="height:38px; margin-left:30px;cursor: pointer;" title="点击放大" />
+                      </div>
+                  </div>
+                  <div class="layui-form-item">
+                      <label class="layui-form-label">其他资料-2</label>
+                      <div class="layui-input-inline">
+                          <img id="other2Img" class="uploadImg layui-hide" style="height:38px; margin-left:30px;cursor: pointer;" title="点击放大" />
+                      </div>
+                  </div>
+
+              </div>
+          </div>
+
+      </form>
+  </div>
+</div>
+
+<script>
+    layui.use(['admin', 'form','view'],function(){
+        var form = layui.form
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,element = layui.element
+        ,view = layui.view
+        ,layer = layui.layer ;
+
+        element.render('breadcrumb', 'breadcrumb');
+        var mchId = view.getOpenParams('mchId');
+        $("#mchId").val(mchId);
+        $(".extInfoDiv").hide();
+
+        //查询商户信息
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/mch_info/get',
+            data: { mchId : mchId },
+            error: function(err){ layer.alert(JSON.stringify(err.field), { title: '错误提示' }) },
+            success: function(res){
+                if(res.code == 0){
+
+                    $('#agentId').val(res.data.agentId);
+                    $('#mchName').val(res.data.mchName);
+                    $('#mchShortName').val(res.data.mchShortName);
+                    $('#address').val(res.data.areaInfo + " " + res.data.address);  // 商户位置信息
+                    $('#loginUserName').val(res.data.loginUserName);
+                    $('#loginEmail').val(res.data.loginEmail);
+                    $('#loginMobile').val(res.data.loginMobile);
+                    $('#contactRealName').val(res.data.contactRealName);
+
+                    if(res.data.createTime != "" && res.data.createTime != null) {
+                        $('#createTime').val(layui.util.toDateString(res.data.createTime));
+                    }
+                    if(res.data.updateTime != "" && res.data.updateTime != null) {
+                        $('#updateTime').val(layui.util.toDateString(res.data.updateTime));
+                    }
+
+                    $("input[name='status'][value='"+res.data.status+"']").attr("checked", true);
+                    $('#depositModeStatus').val(res.data.depositModeStatus == 1 ? '允许' : '禁用' );
+
+                    form.render();
+                }
+            }
+        });
+
+
+        $(".showExtInfo").click(function(){
+
+            var layerShadeId = layer.msg('请稍后...',{time: 0, shade: 0.1});
+            //查询商户信息
+            admin.req({
+                type: 'get',
+                url: layui.setter.baseUrl + '/mch_info_ext/get',
+                data: { mchId : mchId },
+                error: function(err){ layer.alert(JSON.stringify(err.field), { title: '错误提示' }) },
+                success: function(res){
+
+                    if(res.code == 0){
+
+                        if(!res.data){
+                            return layer.msg("暂无进件信息");
+                        }
+
+                        $('#industryDetail').val(res.data.ps.industryDetail);   //商户行业信息
+                        $('#servicePhone').val(res.data.servicePhone);
+
+                        $('#legalPersonName').val(res.data.legalPersonName);
+                        $('#legalPersonPhone').val(res.data.legalPersonPhone);
+                        $('#legalPersonIdCardNo').val(res.data.legalPersonIdCardNo);
+
+                        //商户法人身份证有效期
+                        if(res.data.legalPersonIdCardDate){
+                            $('#legalPersonIdCardDate').val(res.data.legalPersonIdCardDate == '0_0' ? '长期有效': res.data.legalPersonIdCardDate);
+                        }
+
+                        $('#businessLicenseNo').val(res.data.businessLicenseNo);
+
+                        //商户营业执照有效期
+                        if(res.data.businessLicenseDate){
+                            $('#businessLicenseDate').val(res.data.businessLicenseDate == '0_0' ? '长期有效': res.data.businessLicenseDate);
+                        }
+
+
+                        //4. 结算账号及其他
+                        if(res.data.settAccAttr){
+                            $('input[name="settAccAttr"][value="'+res.data.settAccAttr+'"]').prop('checked', true);
+                        }
+                        $('#settAccNo').val(res.data.settAccNo);
+                        $('#settAccName').val(res.data.settAccName);
+                        $('#settBankName').val(res.data.settBankName);
+                        $('#settBankNetName').val(res.data.settBankNetName);
+                        if(res.data.applyRateInfo){
+                            $("#applyRateInfo").text(res.data.applyRateInfo);
+                        }
+                        $('#settBankAreaInfo').val(res.data.settBankAreaInfo);
+
+
+                        if(res.data.storeOuterImg){
+                            $('#storeOuterImg').attr('src', res.data.storeOuterImg).removeClass('layui-hide');
+                        }
+
+                        if(res.data.storeInnerImg){
+                            $('#storeInnerImg').attr('src', res.data.storeInnerImg).removeClass('layui-hide');
+                        }
+
+                        if(res.data.cashierImg){
+                            $('#cashierImg').attr('src', res.data.cashierImg).removeClass('layui-hide');
+                        }
+
+                        if(res.data.legalIdCard1Img){
+                            $('#legalIdCard1Img').attr('src', res.data.legalIdCard1Img).removeClass('layui-hide');
+                        }
+
+                        if(res.data.legalIdCard2Img){
+                            $('#legalIdCard2Img').attr('src', res.data.legalIdCard2Img).removeClass('layui-hide');
+                        }
+
+                        if(res.data.businessLicenseImg){
+                            $('#businessLicenseImg').attr('src', res.data.businessLicenseImg).removeClass('layui-hide');
+                        }
+
+                        if(res.data.openAccountImg){
+                            $('#openAccountImg').attr('src', res.data.openAccountImg).removeClass('layui-hide');
+                        }
+
+                        if(res.data.settIdCard1Img){
+                            $('#settIdCard1Img').attr('src', res.data.settIdCard1Img).removeClass('layui-hide');
+                        }
+
+                        if(res.data.settIdCard2Img){
+                            $('#settIdCard2Img').attr('src', res.data.settIdCard2Img).removeClass('layui-hide');
+                        }
+
+                        if(res.data.settIdCard3Img){
+                            $('#settIdCard3Img').attr('src', res.data.settIdCard3Img).removeClass('layui-hide');
+                        }
+
+                        if(res.data.bankCardImg){
+                            $('#bankCardImg').attr('src', res.data.bankCardImg).removeClass('layui-hide');
+                        }
+
+                        if(res.data.authorizeImg){
+                            $('#authorizeImg').attr('src', res.data.authorizeImg).removeClass('layui-hide');
+                        }
+
+                        if(res.data.leaseImg){
+                            $('#leaseImg').attr('src', res.data.leaseImg).removeClass('layui-hide');
+                        }
+
+                        if(res.data.other1Img){
+                            $('#other1Img').attr('src', res.data.other1Img).removeClass('layui-hide');
+                        }
+
+                        if(res.data.other2Img){
+                            $('#other2Img').attr('src', res.data.other2Img).removeClass('layui-hide');
+                        }
+
+                        $(".extInfoDiv").show(200);
+                        $(".showExtInfo").hide();
+                        form.render();
+                    }
+                    layer.close(layerShadeId);
+                }
+                ,error:function(){
+                    layer.close(layerShadeId);
+                }
+            });
+            return false;
+        });
+
+        //点击[图片] 按钮， 事件
+        $('.uploadImg').click(function(){
+            var imgSrc = $(this).attr('src');
+            layer.photos({photos: {
+                    "title": "查看上传图片", //相册标题
+                    "id": 1, //相册id
+                    "start": 0, //初始显示的图片序号，默认0
+                    "data": [   //相册包含的图片，数组格式
+                        {
+                            "alt": "图片",
+                            "pid": 1, //图片id
+                            "src": imgSrc, //原图地址
+                            "thumb": "" //缩略图地址
+                        }
+                    ]
+                } ,anim: 5});
+        });
+    })
+</script>

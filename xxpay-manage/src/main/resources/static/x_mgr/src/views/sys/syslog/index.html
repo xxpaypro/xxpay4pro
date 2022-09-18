@@ -1,0 +1,100 @@
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a><cite>操作日志</cite></a>
+    </span>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">操作日志</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-tab-item layui-show">
+                    <div class="layui-row">
+                        <div class="layui-form" style="float:right; margin-bottom: 10px;">
+                            <div class="layui-form-item" style="margin:0;">
+                                <div class="layui-input-inline">
+                                    <input type="text" id="userId" placeholder="用户ID" autocomplete="off" class="layui-input">
+                                </div>
+                                <div class="layui-input-inline">
+                                    <select id="system" lay-search="">
+                                        <option value="">选择系统</option>
+                                        <option value="1">商户</option>
+                                        <option value="2">代理商</option>
+                                        <option value="3">运营平台</option>
+                                        <option value="4">服务商</option>
+                                    </select>
+                                </div>
+                                <button id="search" class="layui-btn" data-type="reload">搜索</button>
+                            </div>
+                        </div>
+                    </div>
+                    <table id="cList" lay-filter="cList"></table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+
+    layui.use(['table','util','admin', 'form'], function(){
+        var table = layui.table
+        ,$ = layui.$
+        ,form = layui.form
+        ,admin = layui.admin
+        ,element = layui.element;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+
+        table.render({
+            elem: '#cList'
+            ,url: layui.setter.baseUrl + '/sys/syslog/list'
+            ,id: 'tableReload'
+            ,cols: [[
+                {field: 'userId',title: '用户ID'}
+                ,{field: 'userName',title: '用户名'}
+                ,{field: 'userIp',title: '用户IP'}
+                ,{title: '系统', templet: '<span>{{ d.system == 1?"商户系统":d.system == 2?"代理商系统":"运营平台" }}</span>'}
+                ,{field: 'methodRemark',title: '业务描述'}
+                ,{field: 'methodName',title: '方法'}
+                ,{field: 'optReqParam',title: '请求参数'}
+                ,{field: 'optResInfo',title: '响应结果'}
+                ,{field:'createTime',  title: '创建时间', templet: '<div>{{ layui.util.toDateString(d.createTime) }}</div>' }
+            ]]
+            ,page: true
+            ,skin: 'line'
+        });
+         // 搜索
+        var $ = layui.$, active = {
+            reload: function(){
+                var userId = $('#userId').val();
+                var system = $('#system').val();
+                //执行重载
+                table.reload('tableReload', {
+                    page: {
+                        curr: 1 //重新从第 1 页开始
+                    }
+                    ,where: {
+                        userId: userId,
+                        system: system
+                    }
+                });
+            }
+        };
+        $('#search').on('click', function() {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+
+        // 渲染表单
+        form.render();
+
+
+    })
+</script>

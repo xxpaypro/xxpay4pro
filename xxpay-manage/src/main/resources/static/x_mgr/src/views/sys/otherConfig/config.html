@@ -1,0 +1,363 @@
+<div class=" layui-card layadmin-header">
+	<div class="layui-breadcrumb" lay-filter="breadcrumb">
+		<a lay-href="">首页</a>
+		<a>系统管理</a>
+		<a>系统设置</a>
+		<a><cite>其他设置</cite></a>
+	</div>
+</div>
+
+<style>.layui-form-label {
+	width: 120px !important;
+	margin-left: 1%;
+}
+
+.layui-input-inline {
+	width: 80% !important;
+}</style>
+<div class="layui-fluid">
+	<div class="layui-card">
+		<div class="layui-tab layui-tab-brief">
+			<ul class="layui-tab-title">
+				<li class="layui-this tabLi" showDiv="agentConfigDiv">代理商设置</li>
+				<li class="tabLi" showDiv="uploadConfigDiv">上传设置</li>
+				<li class="tabLi" showDiv="baiduOcrConfigDiv">图片识别设置</li>
+				<li class="tabLi" showDiv="baiduBceConfigDiv">百度语音设置</li>
+				<li class="tabLi" showDiv="uniPushConfigDiv">app推送设置</li>
+			</ul>
+			<div class="layui-tab-content configDiv" id="agentConfigDiv">
+	            <form class="layui-form">
+	              <div class="layui-form-item">
+	                <label class="layui-form-label">代理商支持等级</label>
+	                <div class="layui-input-inline">
+	                  <select id="agentMaxlevel" name="agentMaxlevel" style="width: 200px;">
+	                  	<option value="1">1</option>
+	                  	<option value="2">2</option>
+	                  	<option value="3">3</option>
+	                  </select>
+	                </div>
+	              </div>
+	              <div class="layui-form-item">
+	                <div class="layui-input-inline">
+	                  <button type="button" class="layui-btn" lay-submit="" lay-filter="updateAgentConfigFilter" style="margin-left: 60px;">确认保存</button>
+	                </div>
+	              </div>
+	            </form>
+            </div>
+
+			<div class="layui-tab-content configDiv layui-hide" id="uploadConfigDiv">
+				<form class="layui-form">
+					<div class="layui-form-item">
+						<label class="layui-form-label">存储位置</label>
+						<div class="layui-input-inline">
+							<input name="uploadFileSaveType" lay-filter="uploadFileSaveTypeFilter" value='1' type="radio" title="本地服务器" checked />
+							<input name="uploadFileSaveType" lay-filter="uploadFileSaveTypeFilter" value='2' type="radio" title="阿里云OSS存储" />
+						</div>
+					</div>
+					<div class="aliyunOssDiv layui-hide">
+						<div class="layui-form-item">
+							<label class="layui-form-label">EndPoint地域节点</label>
+							<div class="layui-input-inline">
+								<input class="layui-input" id="ossEndpoint" name="ossEndpoint" placeholder="请输入阿里云EndPoint地域节点（不包含http://和https://）"/>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">bucketName</label>
+							<div class="layui-input-inline">
+								<input class="layui-input" id="ossBucketName" name="ossBucketName" placeholder="请输入您创建的阿里云bucketName"/>
+							</div>
+						</div>
+
+						<div class="layui-form-item">
+							<label class="layui-form-label">accessKeyId</label>
+							<div class="layui-input-inline">
+								<input class="layui-input" id="ossAccessKeyId" name="ossAccessKeyId" placeholder="请输入您的阿里云accessKeyId"/>
+							</div>
+						</div>
+
+						<div class="layui-form-item">
+							<label class="layui-form-label">accessKeySecret</label>
+							<div class="layui-input-inline">
+								<input class="layui-input" id="ossAccessKeySecret" name="ossAccessKeySecret" placeholder="请输入您的阿里云accessKeySecret"/>
+							</div>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<div class="layui-input-inline">
+							<button type="button" class="layui-btn" lay-submit="" lay-filter="updateUploadConfigFilter" style="margin-left: 60px;">确认保存</button>
+						</div>
+					</div>
+				</form>
+			</div>
+
+			<div class="layui-tab-content configDiv layui-hide" id="baiduOcrConfigDiv">
+				<form class="layui-form">
+					<div class="layui-form-item">
+						<label class="layui-form-label">接口类型</label>
+						<div class="layui-input-inline">
+							<input name="baiduOcrType" value='1' type="radio" title="普通接口" checked />
+							<input name="baiduOcrType" value='2' type="radio" title="高清接口" />
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">百度OCR clientId</label>
+						<div class="layui-input-inline">
+							<input class="layui-input" id="baiduOcrClientId" name="baiduOcrClientId" lay-verify="required" placeholder="请输入百度OCR clientId"/>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">百度OCR clientSecret</label>
+						<div class="layui-input-inline">
+							<input class="layui-input" id="baiduOcrClientSecret" name="baiduOcrClientSecret" lay-verify="required" placeholder="请输入百度OCR clientSecret"/>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<div class="layui-input-inline">
+							<button type="button" class="layui-btn" lay-submit="" lay-filter="updateBaiduOcrConfigFilter" style="margin-left: 60px;">确认保存</button>
+						</div>
+					</div>
+				</form>
+			</div>
+
+			<div class="layui-tab-content configDiv layui-hide" id="baiduBceConfigDiv">
+				<form class="layui-form">
+
+					<fieldset class="layui-elem-field">
+						<legend><button class='layui-btn layui-btn-xs layui-btn-danger'>商户APP</button></legend>
+						<div class="layui-form-item">
+							<label class="layui-form-label">百度语音AppId</label>
+							<div class="layui-input-inline">
+								<input class="layui-input" id="baiduBceAppId2Mch" name="baiduBceAppId2Mch" lay-verify="required" placeholder="请输入百度语音AppId"/>
+							</div>
+						</div>
+
+						<div class="layui-form-item">
+							<label class="layui-form-label">百度语音AppKey</label>
+							<div class="layui-input-inline">
+								<input class="layui-input" id="baiduBceAppKey2Mch" name="baiduBceAppKey2Mch" lay-verify="required" placeholder="请输入百度语音AppKey"/>
+							</div>
+						</div>
+
+						<div class="layui-form-item">
+							<label class="layui-form-label">百度语音AppSecret</label>
+							<div class="layui-input-inline">
+								<input class="layui-input" id="baiduBceAppSecret2Mch" name="baiduBceAppSecret2Mch" lay-verify="required" placeholder="请输入百度语音AppSecret"/>
+							</div>
+						</div>
+					</fieldset>
+
+					<fieldset class="layui-elem-field">
+						<legend><button class='layui-btn layui-btn-xs layui-btn-danger'>商户刷脸APP</button></legend>
+						<div class="layui-form-item">
+							<label class="layui-form-label">百度语音AppId</label>
+							<div class="layui-input-inline">
+								<input class="layui-input" id="baiduBceAppId2Face" name="baiduBceAppId2Face" lay-verify="required" placeholder="请输入百度语音AppId"/>
+							</div>
+						</div>
+
+						<div class="layui-form-item">
+							<label class="layui-form-label">百度语音AppKey</label>
+							<div class="layui-input-inline">
+								<input class="layui-input" id="baiduBceAppKey2Face" name="baiduBceAppKey2Face" lay-verify="required" placeholder="请输入百度语音AppKey"/>
+							</div>
+						</div>
+
+						<div class="layui-form-item">
+							<label class="layui-form-label">百度语音AppSecret</label>
+							<div class="layui-input-inline">
+								<input class="layui-input" id="baiduBceAppSecret2Face" name="baiduBceAppSecret2Face" lay-verify="required" placeholder="请输入百度语音AppSecret"/>
+							</div>
+						</div>
+					</fieldset>
+
+
+
+					<div class="layui-form-item">
+						<div class="layui-input-inline">
+							<button type="button" class="layui-btn" lay-submit="" lay-filter="updateBaiduBceConfigFilter" style="margin-left: 60px;">确认保存</button>
+						</div>
+					</div>
+				</form>
+			</div>
+
+			<div class="layui-tab-content configDiv layui-hide" id="uniPushConfigDiv">
+				<form class="layui-form">
+					<div class="layui-form-item">
+						<label class="layui-form-label">uniPush appId</label>
+						<div class="layui-input-inline">
+							<input class="layui-input" id="uniPushAppId" name="uniPushAppId" lay-verify="required" placeholder="请输入uniPush appId"/>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">uniPush appKey</label>
+						<div class="layui-input-inline">
+							<input class="layui-input" id="uniPushAppKey" name="uniPushAppKey" lay-verify="required" placeholder="请输入uniPush appKey"/>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">uniPush masterSecret</label>
+						<div class="layui-input-inline">
+							<input class="layui-input" id="uniPushMasterSecret" name="uniPushMasterSecret" lay-verify="required" placeholder="请输入uniPush masterSecret"/>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<div class="layui-input-inline">
+							<button type="button" class="layui-btn" lay-submit="" lay-filter="updateUniPushConfigFilter" style="margin-left: 60px;">确认保存</button>
+						</div>
+					</div>
+				</form>
+			</div>
+
+        </div>
+    </div>
+
+
+</div>
+<script>
+	layui.use(['form', 'table', 'util', 'admin', ], function() {
+		var form = layui.form,
+			$ = layui.$,
+			admin = layui.admin,
+			layer = layui.layer,
+			element = layui.element;
+
+	element.render('breadcrumb', 'breadcrumb'); //渲染导航信息
+
+
+		//获取本页面 所有设置信息
+        admin.req({
+            type: 'post',
+            url: layui.setter.baseUrl + '/sys/config/getSystemConfig',
+            error: function(err) {
+                layer.alert(err);
+            },
+            success: function(res) {
+                if(res.code == 0) {
+
+                    //【代理商设置】
+                    $("#agentMaxlevel").val(res.data.agentMaxlevel);
+
+                    //【上传文件设置】
+                    $("input[name='uploadFileSaveType'][value='"+res.data.uploadFileSaveType+"']").prop('checked', true);
+                    if(res.data.uploadFileSaveType == 2){ //阿里云oss
+                        $(".aliyunOssDiv").removeClass("layui-hide");
+                    }
+                    $("#ossEndpoint").val(res.data.ossEndpoint);
+                    $("#ossBucketName").val(res.data.ossBucketName);
+                    $("#ossAccessKeyId").val(res.data.ossAccessKeyId);
+                    $("#ossAccessKeySecret").val(res.data.ossAccessKeySecret);
+
+                    //【百度OCR设置】
+                    $("input[name='baiduOcrType'][value='"+res.data.baiduOcrType+"']").prop('checked', true);
+                    $("#baiduOcrClientId").val(res.data.baiduOcrClientId);
+                    $("#baiduOcrClientSecret").val(res.data.baiduOcrClientSecret);
+
+                    //【百度BCE设置】
+                    $("#baiduBceAppId2Mch").val(res.data.baiduBceAppId2Mch);
+                    $("#baiduBceAppKey2Mch").val(res.data.baiduBceAppKey2Mch);
+                    $("#baiduBceAppSecret2Mch").val(res.data.baiduBceAppSecret2Mch);
+                    $("#baiduBceAppId2Face").val(res.data.baiduBceAppId2Face);
+                    $("#baiduBceAppKey2Face").val(res.data.baiduBceAppKey2Face);
+                    $("#baiduBceAppSecret2Face").val(res.data.baiduBceAppSecret2Face);
+
+                    //【UNIPUSH设置】
+                    $("#uniPushAppId").val(res.data.uniPushAppId);
+                    $("#uniPushAppKey").val(res.data.uniPushAppKey);
+                    $("#uniPushMasterSecret").val(res.data.uniPushMasterSecret);
+
+                    form.render();
+                }
+            }
+        });
+
+
+
+
+		//通用更新函数
+		var commonUpdateFunc = function(data){
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/sys/config/update',
+                data: data,
+                error: function(err) {layer.alert(err.msg, {title: "请求失败"})},
+                success: function(res) {
+                    if(res.code == 0) {
+                        layer.alert(res.msg, {title: '保存成功'});
+                    }
+                    form.render();
+                }
+            })
+		};
+
+
+		// 【代理商设置】
+        form.on('submit(updateAgentConfigFilter)', function(data) {
+            commonUpdateFunc(data.field);
+            return false;
+        });
+
+        form.on('submit(updateUploadConfigFilter)', function(data) {
+
+            if(data.field.uploadFileSaveType == 2){ //阿里云oss存储
+
+                if(!data.field.ossEndpoint){ return layer.msg("请输入EndPoint地域节点!", {icon: 2}); }
+                if(!data.field.ossBucketName){ return layer.msg("请输入bucketName!", {icon: 2}); }
+                if(!data.field.ossAccessKeyId){ return layer.msg("请输入accessKeyId!", {icon: 2}); }
+                if(!data.field.ossAccessKeySecret){ return layer.msg("请输入accessKeySecret!", {icon: 2}); }
+                if(data.field.ossEndpoint.startsWith("http://") || data.field.ossEndpoint.startsWith("https://")){ return layer.msg("EndPoint输入有误！", {icon: 2}); }
+			}
+
+            commonUpdateFunc(data.field);
+            return false;
+        });
+
+        //百度【OCR】设置
+        form.on('submit(updateBaiduOcrConfigFilter)', function(data) {
+
+            data.field["type"] = "baiduOCR";
+            commonUpdateFunc(data.field);
+            return false;
+        });
+
+        //百度【BCE】设置
+        form.on('submit(updateBaiduBceConfigFilter)', function(data) {
+
+            data.field["type"] = "baiduBCE";
+            commonUpdateFunc(data.field);
+            return false;
+        });
+
+        //UNIPUSH设置
+        form.on('submit(updateUniPushConfigFilter)', function(data) {
+            commonUpdateFunc(data.field);
+            return false;
+        });
+
+
+	$(".tabLi").click(function(){
+
+	    var showDiv = $(this).attr('showDiv');
+
+        $('.configDiv').addClass('layui-hide');
+	    $('#' + showDiv).removeClass('layui-hide');
+
+
+	});
+
+	form.on("radio(uploadFileSaveTypeFilter)", function(data){
+
+	    if(data.value == 1){ //本地存储
+
+	        $(".aliyunOssDiv").addClass("layui-hide");
+		}else{ //阿里云oss
+            $(".aliyunOssDiv").removeClass("layui-hide");
+		}
+	});
+
+
+
+
+
+
+
+})</script>

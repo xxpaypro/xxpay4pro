@@ -1,0 +1,108 @@
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a>支付配置</a>
+        <a><cite>新增卡Bin</cite></a>
+    </span>
+</div>
+
+<style>
+    .layui-form-label {
+        width:120px !important;
+        margin-left:1%;
+    }
+    .layui-input-inline {
+        width: 80% !important;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">卡Bin信息</li>
+            </ul>
+            <div class="layui-tab-content">
+                <form class="layui-form center">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">卡bin</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="cardBin" id="cardBin" placeholder="请输入卡Bin" required lay-verify="required"  autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">银行名称</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="bankName" id="bankName" placeholder="请输入银行名称" required lay-verify="required"  autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">银行编码</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="bankCode" id="bankCode" placeholder="请输入银行编码" required lay-verify="required"  autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">卡名</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="cardName" id="cardName" placeholder="请输入卡名"  autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">银行卡类型</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="cardType" id="cardType" placeholder="请输入银行卡类型" required lay-verify="required"  autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">卡号长度</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="cardLength" id="cardLength" placeholder="请输入卡号长度" required lay-verify="required|muber"  autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-inline">
+                            <button type="button" class="layui-btn" lay-submit="" lay-filter="add">保存</button>
+                            <a lay-href = "config/card_bin/"  class="layui-btn ">返回</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['form','table','util','admin',],function(){
+        var form = layui.form
+        , $ = layui.$
+        , admin = layui.admin
+        , layer = layui.layer 
+        , element = layui.element
+        , table = layui.table;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        form.render();
+
+        // 当点击微信渠道配置按钮保存的时候
+        form.on('submit(add)', function(data){
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/config/card_bin/add',
+                data: data.field,
+                error: function(err){
+                    layer.alert(err.msg,{title:"请求失败"})
+                },
+                success: function(res){
+                    if(res.code == 0){
+                        layer.alert(res.msg, {title: '保存成功'},function(index){
+                            layer.close(index);
+                            location.hash = '/config/card_bin/';
+                        });
+                    }
+                }
+            })
+        })
+
+
+    })
+</script>

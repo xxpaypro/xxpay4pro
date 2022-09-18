@@ -1,0 +1,167 @@
+<div class="layui-card layadmin-header">
+  <div class="layui-breadcrumb" lay-filter="breadcrumb">
+    <a lay-href="">主页</a>
+    <a><cite>下级代理商</cite></a>
+    <a><cite>所有下级代理商</cite></a>
+  </div>
+</div>
+
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-tab layui-tab-brief">
+      <ul class="layui-tab-title">
+        <li class="layui-this">代理商列表</li>
+      </ul>
+      <div class="layui-tab-content">
+        <div class="layui-tab-item layui-show">
+          <div class="layui-row">
+            <div class="layui-form" style="float:right;">
+              <div class="layui-form-item" style="margin:0;">
+                <div class="layui-input-inline">
+                  <input type="text" id="searchAgentName" placeholder="代理商名称" autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-input-inline">
+                  <select name="searchStatus" id="searchStatus" lay-search="">
+                    <option value="-99">状态</option>
+                    <option value="0">暂停使用</option>
+                    <option value="1">正常</option>
+                    <option value="-1">待审核</option>
+                    <option value="-2">审核不通过</option>
+                  </select>
+                </div>
+                <div class="layui-input-inline">
+                  <select name="searchAgentLevel" id="searchAgentLevel" lay-search="">
+                    <option value="-99">代理等级</option>
+                    <option value="1">一级代理</option>
+                    <option value="2">二级代理</option>
+                    <option value="3">三级代理</option>
+                  </select>
+                </div>
+                <div class="layui-input-inline">
+                  <input type="text" id="searchPid" placeholder="上级代理ID " autocomplete="off" class="layui-input">
+                </div>
+
+                <button id="search" class="layui-btn" data-type="reload">搜索</button>
+              </div>
+            </div>
+          </div>
+          <div class="layui-row">
+            <div class="layuiAdmin-btns" style="margin-bottom: 10px;">
+               <a class="layui-btn" id='addSubAgentA' >新增</a>
+            </div>
+          </div>
+          <table id="XxPay_Mgr_Agent_dataAll" lay-filter="XxPay_Mgr_Agent_dataAll"></table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  layui.use(['admin', 'table', 'util'], function(){
+    var $ = layui.$
+            ,admin = layui.admin
+            ,table = layui.table
+            ,element = layui.element
+            ,form = layui.form
+            ,view = layui.view;
+
+    element.render('breadcrumb', 'breadcrumb');
+
+    var tplStatus = function(d){
+      if(d.status == 1) {
+        return "<span style='color: green'>启用</span>";
+      }else if(d.status == -1) {
+        return "<span style='color: orange'>审核中</span>";
+      }else if(d.status == -2) {
+        return "<span style='color: red'>审核不通过</span>";
+      }
+      return "<span style='color: red'>停止</span>";
+    };
+
+    var tplEdit = function(d){
+    	var thisHtml = "<a class='layui-btn layui-btn-primary layui-btn-xs' lay-event='infoDetail'>详情</a>"
+        + "<a class='layui-btn layui-btn-xs' lay-event='edit'>编辑</a>"
+        + "<a class='layui-btn layui-btn-xs' lay-event='resetLoginPwd'>重置密码</a>"
+        return  thisHtml;
+
+    };
+
+    //商户列表
+    table.render({
+      elem: '#XxPay_Mgr_Agent_dataAll'
+      ,url: layui.setter.baseUrl + '/agent/list' //列表接口
+      ,id: 'tableReload'
+      ,page: true
+      ,cols: [[
+        {type: 'checkbox', fixed: 'left'}
+        ,{field: 'agentId', title: '代理商ID'}
+        ,{field: 'agentName', title: '代理商名称'}
+        ,{field: 'pid', title: '上级代理商ID'}
+        ,{field: 'agentLevel', title: '代理商等级'}
+        ,{field: 'status', title: '状态', templet: tplStatus}
+        ,{field: 'edit', title: '操作', width: 480, templet: tplEdit }
+      ]]
+      ,skin: 'line'
+    });
+
+    //监听工具条
+    table.on('tool(XxPay_Mgr_Agent_dataAll)', function(obj){
+      var data = obj.data;
+      if(obj.event === 'infoDetail'){
+          view.xxpayPopup("查看代理商", "agent/list/agent_view", {agentId: data.agentId}, {btn: false});
+      }else if(obj.event === 'edit'){
+          view.xxpayPopup("编辑代理商", "agent/list/agent_edit", {agentId: data.agentId});
+      }else if(obj.event === "resetLoginPwd"){ //重置密码
+
+          layer.confirm("确认重置代理商登录密码？ ", function(index){
+
+              admin.req({
+                  type: 'post',
+                  url: layui.setter.baseUrl + '/agent/resetLoginPwd',
+                  data: {agentId : data.agentId},
+                  success: function(resData){
+                      layer.msg("重置成功", {icon: 1});
+                      layer.close(index);
+                  }
+              });
+          });
+      }
+    });
+
+    $('#addSubAgentA').on('click', function(){
+        view.xxpayPopup("新增商户", "agent/list/agent_add");
+    });
+
+    // 搜索
+    var $ = layui.$, active = {
+      reload: function(){
+        var agentLevel = $('#searchAgentLevel').val();
+        var pid = $('#searchPid').val();
+        var status = $('#searchStatus').val();
+        var agentName = $('#searchAgentName').val();
+        //执行重载
+        table.reload('tableReload', {
+          page: {
+            curr: 1 //重新从第 1 页开始
+          }
+          ,where: {
+              agentName: agentName,
+              agentLevel: agentLevel,
+              pid: pid,
+              status: status,
+          }
+        });
+      }
+    };
+    $('#search').on('click', function() {
+      var type = $(this).data('type');
+      active[type] ? active[type].call(this) : '';
+    });
+
+
+    // 渲染表单
+    form.render();
+  });
+</script>

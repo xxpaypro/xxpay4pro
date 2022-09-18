@@ -1,0 +1,72 @@
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a><cite>代理商支付通道管理</cite></a>
+    </span>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">支付通道</li>
+            </ul>
+            <div class="layui-tab-content">
+                <style>
+                    .center {
+                        width: 80%;
+                    }
+                </style>
+                <table class="layui-hide center" id="cList"></table>
+            </div>
+        </div>
+    </div>
+</div>
+    <script>
+        layui.use(['table','util'], function(){
+            var $ = layui.$
+            ,admin = layui.admin
+            ,table = layui.table
+            ,element = layui.element
+            ,form = layui.form;
+
+            element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+            var router = layui.router();
+            var agentId = router.search.agentId;
+            
+             //标题内容模板
+            var tplTitle = function(d){
+                return '<a class="layui-btn layui-btn-sm" lay-href="agent/passage/config/agentId='+ agentId +'/productId='+ d.ps.productId +'">配置</a>'
+            };
+
+            var tplStatus = function(d){
+                if(d.status == 0) {
+                    return '<span class="layui-badge layui-bg-gray">关闭</span>';
+                }else if(d.status == 1) {
+                    return '<span class="layui-badge">开启</span>';
+                }
+                return "未设置";
+            };
+
+            var tplRate = function(d){
+                if(d.fee == null) {  return "-"; }
+                return "<span style='color: blue'>"+ d.fee+"%<span>";
+            };
+
+            table.render({
+                elem: '#cList'
+                ,url: layui.setter.baseUrl + '/agent_passage/list'
+                ,where: {agentId: agentId }
+                ,cols: [[
+                    {width: 120, title: '产品ID', templet : "<span>{{ d.ps.productId }}</span>"}
+                    ,{width: 250, title: '产品名称', templet: "<span>{{ d.ps.productName }}</span>"}
+                    ,{width: 150, title: '代理商费率',templet: tplRate}
+                    ,{width: 120, title: '状态',templet: tplStatus }
+                    ,{width: 100, title: '操作', templet: tplTitle }
+                ]]
+                ,page: false
+                ,skin: 'line'
+            });
+        });
+      
+    </script>

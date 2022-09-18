@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.xxpay.service.dao.mapper.IsvDeviceMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="org.xxpay.core.entity.IsvDevice">
+        <id column="id" property="id" />
+        <result column="DeviceName" property="deviceName" />
+        <result column="DeviceNo" property="deviceNo" />
+        <result column="DeviceType" property="deviceType" />
+        <result column="MchId" property="mchId" />
+        <result column="MchName" property="mchName" />
+        <result column="StoreId" property="storeId" />
+        <result column="StoreName" property="storeName" />
+        <result column="IsvId" property="isvId" />
+        <result column="Status" property="status" />
+        <result column="Remark" property="remark" />
+        <result column="CreateTime" property="createTime" />
+        <result column="UpdateTime" property="updateTime" />
+    </resultMap>
+
+</mapper>

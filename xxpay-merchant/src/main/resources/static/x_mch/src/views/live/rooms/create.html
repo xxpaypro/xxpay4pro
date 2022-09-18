@@ -1,0 +1,300 @@
+<div class="layui-card-header layui-card" style="margin-bottom: 0">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>直播间管理</cite></a>
+        <a><cite>创建直播间</cite></a>
+    </span>
+</div>
+<style>
+    .layui-form-label {
+        width:25% !important;
+        margin-left:1%;
+    }
+    .layui-input-inline {
+        width: 65% !important;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">创建直播间</li>
+            </ul>
+            <div class="layui-tab-content layui-row">
+                <div class="layui-col-md7">
+                    <form class="layui-form layui-form-pane" action="">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label"><span style="color: red;">*&nbsp;</span>直播间名称</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="name" name="name" lay-verify="required" placeholder="请输入直播间名称" class="layui-input" autocomplete="off">
+                                <div style="color: red;margin-top: 5px;">最短3个汉字，最长17个汉字，1个汉字相当于2个字符</div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label"><span style="color: red;">*&nbsp;</span>直播间背景图</label>
+                            <div class="layui-input-inline">
+                                <input type="hidden" name="coverImg" id="coverImg" class="layui-hide">
+                                <img class="uploadImg upload-coverImg layui-hide" style="height:38px; margin-left:30px;cursor: pointer;" title="点击放大" />
+                                <button class="coverImg layui-btn layui-btn-sm" type="button" style="margin-left: 20px;margin-top: 5px;">上传图片</button>
+                                <button class="delImgBtn layui-btn layui-btn-sm layui-btn-danger layui-hide" style="margin-top: 5px;" type="button">删除图片</button>
+                                <div style="color: red;margin-top: 5px;">建议像素800*640，大小不超过1M</div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label"><span style="color: red;">*&nbsp;</span>直播计划开始时间</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="startTime" name="startTime" lay-verify="required" placeholder="直播计划开始时间" readonly autocomplete="off" class="layui-input">
+                                <div style="color: red;margin-top: 5px;">1.开播时间需要在当前时间的10分钟后；2.开始时间不能在 6 个月后</div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label"><span style="color: red;">*&nbsp;</span>直播计划结束时间</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="endTime" name="endTime" lay-verify="required" placeholder="直播计划结束时间" readonly autocomplete="off" class="layui-input">
+                                <div style="color: red;margin-top: 5px;">1.开播时间和结束时间间隔不得短于30分钟，不得超过24小时</div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label"><span style="color: red;">*&nbsp;</span>主播昵称</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="anchorName" name="anchorName" lay-verify="required" placeholder="请输入主播昵称" class="layui-input" autocomplete="off">
+                                <div style="color: red;margin-top: 5px;">最短2个汉字，最长15个汉字，1个汉字相当于2个字符</div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label"><span style="color: red;">*&nbsp;</span>主播微信号</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="anchorWechat" name="anchorWechat" lay-verify="required" placeholder="请输入主播微信号" class="layui-input" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label"><span style="color: red;">*&nbsp;</span>直播间分享图</label>
+                            <div class="layui-input-inline">
+                                <input type="hidden" name="anchorImg" id="anchorImg" class="layui-hide">
+                                <img class="uploadImg upload-anchorImg layui-hide" style="height:38px; margin-left:30px;cursor: pointer;" title="点击放大" />
+                                <button class="anchorImg layui-btn layui-btn-sm" type="button" style="margin-left: 20px;margin-top: 5px;">上传图片</button>
+                                <button class="delImgBtn layui-btn layui-btn-sm layui-btn-danger layui-hide" style="margin-top: 5px;" type="button">删除图片</button>
+                                <div style="color: red;margin-top: 5px;">建议像素1080*1920，大小不超过2M</div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label"><span style="color: red;">*&nbsp;</span>直播间类型</label>
+                            <div class="layui-input-inline">
+                                <input type="radio" name="type" value="0" title="手机直播" checked="checked">
+                                <input type="radio" name="type" value="1" title="推流">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label"><span style="color: red;">*&nbsp;</span>横屏、竖屏</label>
+                            <div class="layui-input-inline">
+                                <input type="radio" name="screenType" value="0" title="竖屏" checked="checked">
+                                <input type="radio" name="screenType" value="1" title="横屏">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label"><span style="color: red;">*&nbsp;</span>是否关闭点赞</label>
+                            <div class="layui-input-inline">
+                                <input type="radio" name="closeLike" value="0" title="开启" checked="checked">
+                                <input type="radio" name="closeLike" value="1" title="关闭">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label"><span style="color: red;">*&nbsp;</span>是否关闭货架</label>
+                            <div class="layui-input-inline">
+                                <input type="radio" name="closeGoods" value="0" title="开启" checked="checked">
+                                <input type="radio" name="closeGoods" value="1" title="关闭">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label"><span style="color: red;">*&nbsp;</span>是否关闭评论</label>
+                            <div class="layui-input-inline">
+                                <input type="radio" name="closeComment" value="0" title="开启" checked="checked">
+                                <input type="radio" name="closeComment" value="1" title="关闭">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label"><span style="color: red;">*&nbsp;</span>所属小程序</label>
+                            <div class="layui-input-inline">
+                                <input type="radio" name="authFrom" value="2" title="商城" checked="checked">
+                                <input type="radio" name="authFrom" value="1" title="点餐">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-input-block" style="padding-bottom: 20px;">
+                                <button type="button" class="layui-btn" lay-submit="" lay-filter="goodsAdd">保存</button>
+                                <a class="layui-btn" lay-href="/live/rooms/">返回</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-col-md5">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['admin', 'form', 'view', 'laydate', 'upload', 'setter', 'layedit'],function(){
+        var form = layui.form
+            ,$ = layui.$
+            ,admin = layui.admin
+            ,element = layui.element
+            ,view = layui.view
+            ,laydate = layui.laydate
+            ,upload = layui.upload
+            ,setter = layui.setter
+            ,layer = layui.layer ;
+        // 导航
+        element.render('breadcrumb', 'breadcrumb');
+
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/mchGoods/category/list',
+            error: function(err){
+                layer.alert(err);
+            },
+            success: function(res){
+                if(res.code == 0){
+                    $.each(res.data, function(key) {
+                        $('#categoryId').append('<option value="' + this.categoryId +'">' + this.categoryName + '</option>');
+                        form.render();
+                    })
+                }
+            }
+        });
+
+        //监听提交
+        form.on('submit(goodsAdd)', function(data){
+
+            var reqdata = data.field;
+            reqdata.startTime = new Date(reqdata.startTime).getTime()/1000;
+            reqdata.endTime = new Date(reqdata.endTime).getTime()/1000;
+
+            if (!reqdata.coverImg) {
+                return layer.msg("请上传直播间背景图！");
+            }
+            if (!reqdata.anchorImg) {
+                return layer.msg("请上传直播间分享图！");
+            }
+
+            // 在这个回调函数里面写ajax提交
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/wx_mini/create_room',
+                data: reqdata,
+                success: function(res){
+                    if(res.code == 0){
+                        layer.msg("保存成功");
+                        setTimeout(function () {
+                            location.hash = '/live/rooms/';
+                        },1500)
+                    }
+                }
+            });
+            return false;//阻止跳转
+        });
+
+        var headers = {};
+        headers[setter.request.tokenName] = layui.data(setter.tableName)[setter.request.tokenName];
+        var uploadInst = upload.render({
+            elem: '.coverImg'
+            , url: layui.setter.baseUrl + '/wx_mini/upload'
+            , headers: headers
+            , data: {
+                authFrom: function () {
+                    return $('input[name="authFrom"]:checked').val();
+                }
+            }
+            , size: 1024  //仅支持1M图片上传
+            ,before: function (obj) {
+                obj.preview(function(index, file, result) {
+                    $('.upload-coverImg').attr('src', result);
+                })
+            },done: function(res){
+                //如果上传失败
+                if(res.code != 0){
+                    return layer.msg('上传失败['+res.msg+']', {icon: 2});
+                }
+                //上传成功
+                $("#coverImg").val(res.data.media_id);
+                var divElem = $(this.item).parent();
+                divElem.find('.delImgBtn').removeClass('layui-hide');
+                divElem.find('.uploadImg').removeClass('layui-hide');
+                divElem.find('.coverImg').text('重新上传');
+            }
+        });
+
+        var uploadInst2 = upload.render({
+            elem: '.anchorImg'
+            , url: layui.setter.baseUrl + '/wx_mini/upload'
+            , headers: headers
+            , data: {
+                authFrom: function () {
+                    return $('input[name="authFrom"]:checked').val();
+                }
+            }
+            , size: 2048  //仅支持2M图片上传
+            ,before: function (obj) {
+                obj.preview(function(index, file, result) {
+                    $('.upload-anchorImg').attr('src', result);
+                })
+            },done: function(res){
+                //如果上传失败
+                if(res.code != 0){
+                    return layer.msg('上传失败['+res.msg+']', {icon: 2});
+                }
+                //上传成功
+                $("#anchorImg").val(res.data.media_id);
+                var divElem = $(this.item).parent();
+                divElem.find('.uploadImg').removeClass('layui-hide');
+                divElem.find('.delImgBtn').removeClass('layui-hide');
+                divElem.find('.anchorImg').text('重新上传');
+            }
+        });
+
+        //点击[图片] 按钮， 事件
+        $('.uploadImg').click(function(){
+            var imgSrc = $(this).attr('src');
+            layer.photos({photos: {
+                    "title": "查看上传图片", //相册标题
+                    "id": 1, //相册id
+                    "start": 0, //初始显示的图片序号，默认0
+                    "data": [   //相册包含的图片，数组格式
+                        {
+                            "alt": "图片",
+                            "pid": 1, //图片id
+                            "src": imgSrc, //原图地址
+                            "thumb": "" //缩略图地址
+                        }
+                    ]
+                } ,anim: 5});
+        });
+
+        //点击[删除图片] 按钮， 事件
+        $('.delImgBtn').click(function(){
+            var divElem = $(this).parent();
+            divElem.find('.imgVal').val(""); //清空图片真实路径
+            divElem.find('.coverImg').text("上传图片");
+            divElem.find('.anchorImg').text("上传图片");
+            divElem.find('.uploadImg').attr("src", "").addClass('layui-hide');
+            divElem.find('.delImgBtn').addClass('layui-hide');
+            form.render();
+        });
+
+        laydate.render({
+            elem: '#startTime'
+            ,type: 'datetime'
+            ,trigger: 'click'
+        });
+        laydate.render({
+            elem: '#endTime'
+            ,type: 'datetime'
+            ,trigger: 'click'
+        });
+
+
+        form.render();
+
+    })
+</script>

@@ -1,0 +1,144 @@
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>交班详情</cite></a>
+    </div>
+</div>
+<style>
+    .xxpayPopupDiv .layui-form-label {
+        width:15% !important;
+        margin-left:1%;
+    }
+    .xxpayPopupDiv .layui-input-inline {
+        width: 33% !important;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <form class="layui-form layui-form-pane">
+            <div class="layui-tab layui-tab-brief">
+                <div class="layui-tab-content">
+                  <div class="layui-form-item">
+                      <label class="layui-form-label">记录ID</label>
+                      <div class="layui-input-inline">
+                          <input type="text" id="id" disabled="disabled" class="layui-input">
+                      </div>
+                  </div>
+                  <div class="layui-form-item">
+                      <label class="layui-form-label">操作员ID</label>
+                      <div class="layui-input-inline">
+                          <input type="text" id="userId" disabled="disabled" class="layui-input">
+                      </div>
+                      <label class="layui-form-label">操作员名称</label>
+                      <div class="layui-input-inline">
+                          <input type="text" id="userName" disabled="disabled" class="layui-input">
+                      </div>
+                  </div>
+                  <div class="layui-form-item">
+                      <label class="layui-form-label">商户ID</label>
+                      <div class="layui-input-inline">
+                          <input type="text" id="mchId" disabled="disabled" class="layui-input">
+                      </div>
+                      <label class="layui-form-label">门店ID</label>
+                      <div class="layui-input-inline">
+                          <input type="text" id="storeId" disabled="disabled" class="layui-input">
+                      </div>
+                  </div>
+                  <div class="layui-form-item">
+                      <label class="layui-form-label">上班时间</label>
+                      <div class="layui-input-inline">
+                          <input type="text" id="workStartTime" disabled="disabled" class="layui-input">
+                      </div>
+                      <label class="layui-form-label">交班时间</label>
+                      <div class="layui-input-inline">
+                          <input type="text" id="workEndTime" disabled="disabled" class="layui-input">
+                      </div>
+                  </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">订单总数量</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="countTotalOrder" disabled="disabled" class="layui-input">
+                    </div>
+                    <label class="layui-form-label">充值金额</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="sumRechargeAmount" disabled="disabled" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">优惠金额</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="sumDiscountAmount" disabled="disabled" class="layui-input">
+                    </div>
+                    <label class="layui-form-label">实收现金</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="sumCashAmount" disabled="disabled" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">退款金额</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="sumRefundAmount" disabled="disabled" class="layui-input">
+                    </div>
+                    <label class="layui-form-label">实际收款</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="sumRealAmount" disabled="disabled" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">备注</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="remark" disabled="disabled" class="layui-input">
+                    </div>
+                </div>
+
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    layui.use(['form','admin'],function(){
+        var form = layui.form
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,element = layui.element
+        ,layer = layui.layer
+        ,view = layui.view;
+        // 导航
+        element.render('breadcrumb', 'breadcrumb');
+        var id = view.getOpenParams('id');
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/handover_history/get',
+            data: {id : id },
+            error: function(err){
+                layer.alert(JSON.stringify(err.field), {title: '错误提示'});
+            },
+            success: function(res){
+                if(res.code == 0){
+                    $('#id').val(res.data.id);
+                    $('#userId').val(res.data.userId);
+                    $('#userName').val(res.data.userName);
+                    $('#storeId').val(res.data.storeId);
+                    $('#mchId').val(res.data.mchId);
+                    $('#workStartTime').val(layui.util.toDateString(res.data.workStartTime, "yyyy-MM-dd HH:mm:ss"));
+                    $('#workEndTime').val(layui.util.toDateString(res.data.workEndTime, "yyyy-MM-dd HH:mm:ss"));
+                    $('#countTotalOrder').val(res.data.countTotalOrder);
+                    $('#sumRechargeAmount').val(res.data.sumRechargeAmount / 100);
+                    $('#sumDiscountAmount').val(res.data.sumDiscountAmount / 100);
+                    $('#sumCashAmount').val(res.data.sumCashAmount / 100);
+                    $('#sumRefundAmount').val(res.data.sumRefundAmount / 100);
+                    $('#sumRealAmount').val(res.data.sumRealAmount / 100);
+                    $('#remark').val(res.data.remark);
+
+                    form.render();
+                }
+            }
+        })
+    })
+</script>

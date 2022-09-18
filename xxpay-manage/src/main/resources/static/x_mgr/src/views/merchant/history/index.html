@@ -1,0 +1,186 @@
+<style>
+  .layui-input-inline{margin-top:10px;}
+</style>
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+      <a lay-href="">主页</a>
+      <a><cite>资金账户流水</cite></a>
+    </div>
+  </div>
+  
+  <div class="layui-fluid">
+    <div class="layui-card">
+      <div class="layui-tab layui-tab-brief">
+        <ul class="layui-tab-title">
+          <li class="layui-this">资金账户流水</li>
+        </ul>
+        <div class="layui-tab-content">
+          <div class="layui-tab-item layui-show">
+            <div class="layui-row">
+             <form action="" id="exportForm" method="post">
+              <input name="Authorization" id='exportHiddenInput' type="hidden"/>
+              <div class="layui-form" style="float:right;">
+                <div id="timeDiv" class="layui-form-item" style="margin:0;">
+                  <!--<div class="layui-input-inline">
+                    <input type="text" name="createTimeStart" id="createTimeStart" autocomplete="off" placeholder="开始时间" class="layui-input">
+                  </div>
+                  <div class="layui-input-inline">
+                    <input type="text" name="createTimeEnd" id="createTimeEnd" autocomplete="off" placeholder="结束时间" class="layui-input">
+                  </div>-->
+                  <div class="layui-input-inline">
+                    <input type="text" name="mchId" id="mchId" placeholder="商户ID" autocomplete="off" class="layui-input">
+                  </div>
+                  <div class="layui-input-inline">
+                    <input type="text" name="agentId" id="agentId" placeholder="代理商ID" autocomplete="off" class="layui-input">
+                  </div>
+                  <div class="layui-input-inline">
+                    <input type="text" name="orderId" id="orderId" placeholder="业务单号" autocomplete="off" class="layui-input">
+                  </div>
+                  <div class="layui-input-inline">
+                    <select name="fundDirection" id="fundDirection" lay-search="">
+                      <option value="">资金变动方向</option>
+                      <option value="1">加款</option>
+                      <option value="2">减款</option>
+                    </select>
+                  </div>
+                  <div class="layui-input-inline">
+                    <select name="bizType" id="bizType" lay-search="">
+                      <option value="">业务类型</option>
+                      <option value="1">支付</option>
+                      <option value="2">提现</option>
+                      <option value="3">调账</option>
+                      <option value="4">充值</option>
+                      <option value="5">差错处理</option>
+                      <option value="6">代付</option>
+                    </select>
+                  </div>
+                  <div class="layui-input-inline">
+                    <button id="search" class="layui-btn" data-type="reload">搜索</button>
+                    <button type="submit" class="layui-btn">导出</button>
+                  </div>
+                </div>
+              </div>
+             </form>
+            </div>
+            <div class="layui-row">
+              <div class="layuiAdmin-btns" style="margin-bottom: 10px;">
+              </div>
+            </div>
+            <table id="zjdataAll" lay-filter="zjdataAll"></table>
+          </div>
+  
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script type="text/html" id="xxpayBa">
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+  </script>
+  
+  <script>
+  	layui.config({
+	    base: '/x_mgr/src/lib/extend/',
+	});
+    layui.use(['admin', 'table', 'util', 'laydate', 'timePick'], function(){
+      var $ = layui.$
+        ,admin = layui.admin
+        ,table = layui.table
+        ,element = layui.element
+        ,laydate = layui.laydate
+        ,timePick = layui.timePick
+        ,form = layui.form;
+        
+        timePick.init();  //第一个参数表示开始时间   第二个表示结束时间   0,0今天   -1,-1昨天   -7,0近一周   以此类推
+  
+      element.render('breadcrumb', 'breadcrumb');
+
+        //导出参数初始化
+        var tokenParamsName = layui.setter.request.tokenName;
+        $('#exportHiddenInput').attr('name', tokenParamsName).val(layui.data(layui.setter.tableName)[tokenParamsName]);
+        $('#exportForm').attr('action' , layui.setter.baseUrl+'/account/exportExcel');
+
+      var tplAmount = function(d){
+        if(d.fundDirection == 1) {
+          return "<span style='color: darkgreen'>+ " + d.changeAmount/100 + "</span>";
+        }else if(d.fundDirection == 2) {
+          return "<span style='color: orangered'>- " +  d.changeAmount/100 + "</span>";
+        }
+      };
+      
+  	  var createTimeStart = $('#createTimeStart').val();
+      var createTimeEnd = $('#createTimeEnd').val();
+  
+      //商户列表
+      table.render({
+        elem: '#zjdataAll'
+        ,url: layui.setter.baseUrl + '/account/history_list' //列表接口
+        ,where: {
+            
+            createTimeStart : createTimeStart,
+            createTimeEnd : createTimeEnd
+        }
+        ,id: 'tableReload'
+        ,page: true
+        ,cols: [[
+          {type: 'checkbox', fixed: 'left'}
+          ,{field: 'infoId', title: '商户ID'}
+          ,{field: 'balance',title: '变更前余额(元)',templet: '<div>{{d.balance/100}}</div>'}
+          ,{field: 'changeAmount',title: '变更金额(元)',templet: tplAmount}
+          ,{field: 'balance',title: '变更后余额(元)',templet: '<div>{{d.afterBalance/100}}</div>'}
+          ,{field: 'bizType',title: '业务类型',templet: '<div>{{d.bizType == 1?"支付":d.bizType == 2?"提现":d.bizType == 3?"调账":d.bizType == 4?"充值":d.bizType == 5?"差错处理":d.bizType == 6?"代付":""}}</div>'}
+          ,{field: 'bizOrderId',title: '业务订单' ,width: 270}
+          ,{field: 'orderAmount',title: '订单金额(元)',templet: '<div>{{d.bizOrderAmount/100}}</div>'}
+          ,{field: 'fee',title: '手续费(元)',templet: '<div>{{d.bizOrderFee/100}}</div>'}
+          ,{field: 'createTime', title: '时间', width: 200, templet: '<div>{{ layui.util.toDateString(d.createTime, "yyyy-MM-dd HH:mm:ss") }}</div>'}
+          ,{field: 'edit', title: '操作', toolbar: '#xxpayBa' }
+        ]]
+        ,skin: 'line'
+      });
+  
+      //监听工具条
+      table.on('tool(zjdataAll)', function(obj){
+        var data = obj.data;
+        if(obj.event === 'detail'){
+          location.href = layui.setter.baseLocal + "merchant/history/detail/id=" + data.id;
+        } 
+      });
+  
+      // 搜索
+      var $ = layui.$, active = {
+        reload: function(){
+          var createTimeStart = $('#createTimeStart').val();
+          var createTimeEnd = $('#createTimeEnd').val();
+          var orderId = $('#orderId').val();
+          var mchId = $('#mchId').val();
+          var agentId = $('#agentId').val();
+          var fundDirection = $("#fundDirection").val();
+          var bizType = $("#bizType").val();
+          
+          //执行重载
+          table.reload('tableReload', {
+            page: {
+              curr: 1 //重新从第 1 页开始
+            }
+            ,where: {
+              mchId: mchId,
+              agentId: agentId,
+              orderId: orderId,
+              fundDirection: fundDirection,
+              createTimeStart : createTimeStart,
+              createTimeEnd : createTimeEnd,
+              bizType : bizType
+            }
+          });
+        }
+      };
+      $('#search').on('click', function() {
+        var type = $(this).data('type');
+        active[type] ? active[type].call(this) : '';
+        return false;
+      });
+  
+      // 渲染表单
+      form.render();
+    });
+  </script>

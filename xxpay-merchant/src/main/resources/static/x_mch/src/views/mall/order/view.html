@@ -1,0 +1,189 @@
+<style>
+    .xxpayPopupDiv .layui-form-label {
+        width:15% !important;
+        margin-left:1%;
+    }
+    .xxpayPopupDiv .layui-input-inline {
+        width: 33% !important;
+        margin-top:0;
+    }
+</style>
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-tab layui-tab-brief">
+        <ul class="layui-tab-title">
+            <li class="layui-this">基本信息</li>
+        </ul>
+        <div class="layui-tab-content">
+          <table id="order_basic_info" lay-filter="order_basic_info"></table>
+        </div>
+    </div>
+
+      <div class="layui-tab layui-tab-brief">
+          <ul class="layui-tab-title">
+              <li class="layui-this">商品信息</li>
+          </ul>
+          <div class="layui-tab-content">
+              <table id="order_goods_info" lay-filter="order_goods_info"></table>
+          </div>
+      </div>
+
+      <div class="layui-tab layui-tab-brief">
+          <ul class="layui-tab-title">
+              <li class="layui-this">费用信息</li>
+          </ul>
+          <div class="layui-tab-content">
+              <table id="order_fee_info" lay-filter="order_fee_info"></table>
+          </div>
+      </div>
+
+      <div class="layui-tab layui-tab-brief">
+          <ul class="layui-tab-title">
+              <li class="layui-this">收货信息</li>
+          </ul>
+          <div class="layui-tab-content">
+          <table id="order_post_info" lay-filter="order_post_info"></table>
+          </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+    layui.use(['admin','table'],function(){
+        var form = layui.form
+        ,$ = layui.$
+        ,element = layui.element
+        ,view = layui.view
+        ,table = layui.table ;
+        // 导航
+        element.render('breadcrumb', 'breadcrumb');
+
+        var tplStatus = function(d){
+            if(d.postStatus == 0) {
+                return "<span style='color: blue'>待发货</span>";
+            }else if(d.postStatus == 1) {
+                return "<span style='color: orange'>配送中</span>";
+            }else if(d.postStatus == 2) {
+                return "<span style='color: green'>已收货</span>";
+            }else if(d.postStatus == 3) {
+                return "<span style='color: green'>评价完成</span>";
+            }else if(d.postStatus == 4) {
+                return "<span style='color: orange'>退款审核</span>";
+            }else if(d.postStatus == 5) {
+                return "<span style='color: red'>已退款</span>";
+            }else if(d.postStatus == 6) {
+                return "<span style='color: red'>退款拒绝</span>";
+            }else if(d.postStatus == 7) {
+                return "<span style='color: orange'>退货审核</span>";
+            }else if(d.postStatus == 8) {
+                return "<span style='color: red'>已退货</span>";
+            }else if(d.postStatus == 9) {
+                return "<span style='color: red'>退货拒绝</span>";
+            }else {
+                return "<span>未支付</span>";
+            }
+        };
+
+        var tplProductType = function(d){
+            if(d.productType == 1) {
+                return "<span style='color: orange'>现金收款</span>";
+            }else if(d.productType == 2) {
+                return "<span style='color: green'>会员卡支付</span>";
+            }else if(d.productType == 3) {
+                return "<span style='color: green'>微信支付</span>";
+            }else if(d.productType == 4) {
+                return "<span style='color: blue'>支付宝支付</span>";
+            }else if(d.productType == 5) {
+                return "<span style='color: red'>云闪付支付</span>";
+            }else if(d.productType == 6) {
+                return "<span style='color: orange'>货到付款</span>";
+            }else {
+                return "<span>其他</span>";
+            }
+        };
+
+        var tradeOrderId = view.getOpenParams('tradeOrderId');
+
+        //基本信息
+        table.render({
+            elem: '#order_basic_info'
+            ,url: layui.setter.baseUrl + '/trade_order/mall_get' //列表接口
+            ,where: {
+                tradeOrderId: tradeOrderId
+            }
+            ,id: 'tableReload'
+            ,page: false
+            ,cols: [[
+                {field: 'tradeOrderId', title: '交易单号', width: 230}
+                ,{field: 'transportNo', title: '发货单号'}
+                ,{field: 'storeId', title: '门店ID'}
+                ,{field: 'storeName', title: '门店名称'}
+                ,{field: 'amount', title: '交易金额', templet: '<div>{{ d.amount/100 }}</div>'}
+                ,{field: 'productType', title: '支付产品', templet: tplProductType}
+                ,{field: 'status', title: '发货状态', templet: tplStatus}
+                ,{field: 'createTime', title: '创建时间', templet: '<div>{{ layui.util.toDateString(d.createTime, "yyyy-MM-dd HH:mm:ss") }}</div>'}
+            ]]
+            ,skin: 'line'
+        });
+
+        //商品信息
+        table.render({
+            elem: '#order_goods_info'
+            ,url: layui.setter.baseUrl + '/trade_order/getGoods' //列表接口
+            ,where: {
+                tradeOrderId: tradeOrderId
+            }
+            ,id: 'tableReload'
+            ,page: false
+            ,cols: [[
+                {field: 'goodsName', title: '商品名称'}
+                ,{field: 'cellingPrice', title: '商品价格', templet: '<div>{{ d.cellingPrice/100 }}</div>'}
+                ,{field: 'goodsNum', title: '商品数量'}
+                ,{field: 'goodsPropsValue', title: '属性',}
+                ,{field: 'price', title: '小计', templet: '<div>{{ (d.cellingPrice * d.goodsNum)/100 }}</div>'}
+            ]]
+            ,skin: 'line'
+        });
+
+        //收货信息
+        table.render({
+            elem: '#order_post_info'
+            ,url: layui.setter.baseUrl + '/trade_order/mall_get' //列表接口
+            ,where: {
+                tradeOrderId: tradeOrderId
+            }
+            ,id: 'tableReload'
+            ,page: false
+            ,cols: [[
+                {field: 'memberId', title: '会员ID'}
+                ,{field: 'memberName', title: '会员名称'}
+                ,{field: 'receiveName', title: '收货人名称'}
+                ,{field: 'receiveTel', title: '收货人手机号'}
+                ,{field: 'receiveAddress', title: '收货地址', templet: '<div>{{ d.areaInfo + d.address }}</div>'}
+            ]]
+            ,skin: 'line'
+        });
+
+        //费用信息
+        table.render({
+            elem: '#order_fee_info'
+            ,url: layui.setter.baseUrl + '/trade_order/mall_get' //列表接口
+            ,where: {
+                tradeOrderId: tradeOrderId
+            }
+            ,id: 'tableReload'
+            ,page: false
+            ,cols: [[
+                {field: 'goodsPrice', title: '商品价格', templet: '<div>{{ (d.amount - d.postPrice)/100 }}</div>'}
+                ,{field: 'postPrice', title: '运费', templet: '<div>{{ d.postPrice/100 }}</div>'}
+                ,{field: 'mchCouponId', title: '优惠券'}
+                ,{field: 'amount', title: '总计', templet: '<div>{{ d.amount/100 }}</div>'}
+            ]]
+            ,skin: 'line'
+        });
+
+
+    })
+</script>

@@ -1,0 +1,159 @@
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a><cite>系统管理</cite></a>
+        <a><cite>文章列表</cite></a>
+    </span>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">文章列表</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-row">
+                    <div class="layui-form" style="float:right;">
+                        <div class="layui-form-item" style="margin:0;">
+                            <div class="layui-input-inline">
+                                <input type="text" name="title" id="searchTitle" placeholder="文章标题" autocomplete="off" class="layui-input">
+                            </div>
+                            <a id="search" class="layui-btn" data-type="reload"><i class="layui-icon layui-icon-search"></i>搜索</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-row">
+                    <div class="layuiAdmin-btns" style="margin-bottom: 10px;">
+                        <a class="layui-btn create"><i class="layui-icon layui-icon-add-1"></i>新建</a>
+                        <a class="layui-btn layui-btn-danger dele" data-type="all" data-events="del"><i class="layui-icon layui-icon-delete"></i>删除</a>
+                    </div>
+                </div>
+                <table id="articleList" lay-filter="articleList"></table>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/html" id="xxpayBar">
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail"><i class='layui-icon layui-icon-about'></i>查看</a>
+    <a class="layui-btn layui-btn-xs" lay-event="edit"><i class='layui-icon layui-icon-edit'></i>编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon layui-icon-delete"></i>删除</a>
+</script>
+  
+<script>
+    layui.use(['table','util','admin', 'form'], function(){
+        var table = layui.table
+        ,$ = layui.$
+        ,form = layui.form
+        ,admin = layui.admin
+        ,view = layui.view
+        ,element = layui.element;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+
+        table.render({
+            elem: '#articleList'
+            ,url: layui.setter.baseUrl + '/sys/article/list'
+            ,where: {
+                access_token: layui.data(layui.setter.tableName).access_token
+            }
+            ,id: 'tableReload'
+            ,cols: [[
+            {type: 'checkbox', fixed: 'left'}
+                ,{field: 'title',title: '文章标题'}
+                ,{field: 'articleType',title: '文章栏目', templet: '<div>{{ d.articleType == 1?"服务政策&隐私协议": d.articleType == 2 ? "支付安全" : "" }}</div>'}
+                ,{field: 'createTime', width:200,  title: '创建时间', templet: '<div>{{ layui.util.toDateString(d.createTime) }}</div>' }
+                ,{field: 'edite', width:250, title: '操作', fixed: "right", toolbar: '#xxpayBar'  }
+            ]]
+            ,page: true
+            ,skin: 'line'
+        });
+
+         //监听工具条
+         table.on('tool(articleList)', function(obj){
+            var data = obj.data;
+            if(obj.event === 'detail'){
+                view.xxpayPopup("查看", "article/list/detail", {id: data.id}, {btn: false});
+            } else if(obj.event === 'del'){
+                layer.confirm('确认删除么', function(index){
+                    admin.req({
+                        url:layui.setter.baseUrl + '/sys/article/delete',
+                        data:{ids: data.id}, 
+                        success: function(){
+                            layer.msg('删除成功', {
+                                icon: 1
+                            });
+                            table.reload("tableReload");
+                        }
+                    });
+                });
+            } else if(obj.event === 'edit'){
+                view.xxpayPopup("编辑", "article/list/update", {id: data.id});
+            }
+        });
+
+        // 事件处理
+        var events = {
+            del: function(othis, type){
+                var checkStatus = table.checkStatus("tableReload")
+                ,data = checkStatus.data; //获得选中的数据
+                if(data.length === 0) return layer.msg('请选择数据');
+                layer.confirm('确定删除选中的数据吗？', function(){
+                    var userIds = "";
+                    $.each(data, function(i, n){
+                        userIds = userIds + "," + n.id;
+                    });
+                    console.log("userIds");
+                    if(userIds != "") {
+                        userIds = userIds.substring(1);
+                    }
+                    admin.req({
+                        url: layui.setter.baseUrl + '/sys/article/delete',
+                        data: {ids: userIds}, 
+                        success: function(){
+                            layer.msg('删除成功', {
+                                icon: 1
+                            });
+                            table.reload("tableReload"); //刷新表格
+                        }
+                    });
+                });
+            }
+        };
+         // 搜索
+        var $ = layui.$, active = {
+            reload: function(){
+                var title = $('#searchTitle').val();
+                //执行重载
+                table.reload('tableReload', {
+                    page: {
+                        curr: 1 //重新从第 1 页开始
+                    }
+                    ,where: {
+                        title: title,
+                    }
+                });
+            }
+        };
+        $('#search').on('click', function() {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+
+
+        $('.dele').on('click', function(){
+            var othis = $(this)
+                    ,thisEvent = othis.data('events')
+                    ,type = othis.data('type');
+            events[thisEvent] && events[thisEvent].call(this, othis, type);
+        });
+
+        $('.create').click(function(){
+            view.xxpayPopup("新建", "article/list/create");
+        });
+        // 渲染表单
+        form.render();
+
+
+    })
+</script>

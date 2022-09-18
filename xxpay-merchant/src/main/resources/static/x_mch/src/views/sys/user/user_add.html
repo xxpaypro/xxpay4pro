@@ -1,0 +1,132 @@
+<style>
+    .xxpayPopupDiv .layui-form-label {
+        width:15% !important;
+        margin-left:1%;
+    }
+    .xxpayPopupDiv .layui-input-inline {
+        width: 33% !important;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <form class="layui-form layui-form-pane">
+            <div class="layui-tab layui-tab-brief">
+                <div class="layui-tab-content">
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">所属门店</label>
+                        <div class="layui-input-inline">
+                            <select name="storeId" id="storeId" lay-search="" lay-verify="required">
+                                <option value="">请选择</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">用户名</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="loginUserName" name="loginUserName" lay-verify="required" placeholder="输入用户名" autocomplete="off" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">用户昵称</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="nickName" name="nickName" lay-verify="required" placeholder="输入用户昵称" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">密码</label>
+                        <div class="layui-input-inline">
+                            <input type="passWord" id="loginPassword" name="loginPassword" lay-verify="pass" placeholder="输入6到12位密码" autocomplete="off" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">手机号</label>
+                        <div class="layui-input-inline">
+                            <input type="tel" id="mobile" name="mobile" lay-verify="phone" placeholder="输入手机号" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">邮箱</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="email" name="email" lay-verify="email" placeholder="输入邮箱" autocomplete="off" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">状态</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="status" value="1" title="启用" checked="checked">
+                            <input type="radio" name="status" value="0" title="停止">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">头像路径</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="avatar" name="avatar" autocomplete="off" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">性别</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="sex" value="1" title="男" checked="checked">
+                            <input type="radio" name="sex" value="0" title="女">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">备注</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="remark" name="remark" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="layui-hide xxpayYesBtn" lay-submit lay-filter="userAdd">保存</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    layui.use(['form','admin'],function(){
+        var form = layui.form
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,element = layui.element
+        ,layer = layui.layer ;
+
+        element.render('breadcrumb', 'breadcrumb');
+
+        admin.req({
+            type: "POST",
+            url: layui.setter.baseUrl + '/store/storeList',
+            success: function(res){
+                if(res.code == 0) {
+                    var storeList = res.data;
+                    //遍历赋值
+                    for(var i in storeList){
+                        if(storeList[i].status == 1){
+                            $("#storeId").append('<option value= '+storeList[i].storeId+'>'+ storeList[i].storeName+'</option>');
+                        }
+                    }
+                    form.render('select');
+                }
+            }
+        });
+
+        /* 自定义验证规则 */
+        form.verify({
+            pass: [/(.+){6,12}$/, '密码必须6到12位']
+        });
+
+        form.on('submit(userAdd)', function(data) {
+            //这里可以写ajax方法提交表单
+            admin.req({
+                type: "POST",
+                url: layui.setter.baseUrl + '/subuser/add',
+                data: "params=" + JSON.stringify(data.field),
+                success: function(res){
+                    if(res.code == 0) {
+                        layer.closeAll(); //关闭所有弹层
+                        layer.msg("保存成功");
+                        layui.table.reload('tableReload', {page: {curr: 1}}); //调用业务弹层外表格重新加载
+                    }else {
+                        layer.alert(res.msg, {
+                            title: '保存失败'
+                        }); 
+                    }
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+        form.render();
+    })
+</script>

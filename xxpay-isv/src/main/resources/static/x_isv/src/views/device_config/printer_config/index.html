@@ -1,0 +1,112 @@
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a><cite>设备配置</cite></a>
+    </span>
+</div>
+<style>
+    .layui-form-item {
+        margin-left: 30%;
+    }
+    .layui-form-item-btn {
+        margin-left: 44%;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <form class="layui-form layui-form-pane">
+            <div class="layui-tab layui-tab-brief">
+                <ul class="layui-tab-title">
+                    <li class="layui-this">打印机配置</li>
+                </ul>
+                <div class="layui-tab-content">
+                    <input type="hidden" id="isvId" name="isvId" />
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">打印机key</label>
+                        <div class="layui-input-inline">
+                            <input type="text" required id="accessKey" name="accessKey" placeholder="输入打印机key" autocomplete="off" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">打印机秘钥</label>
+                        <div class="layui-input-inline">
+                            <input type="text" required id="accessSecret" name="accessSecret" placeholder="输入打印机秘钥" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">厂商</label>
+                        <div class="layui-input-inline">
+                            <input type="text" required id="manufacturer" name="manufacturer" placeholder="输入厂商" autocomplete="off" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">状态</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="status" value="1" title="开启" checked="checked">
+                            <input type="radio" name="status" value="0" title="关闭">
+                        </div>
+                    </div>
+                    <div class="layui-form-item-btn">
+                        <div class="layui-input-inline">
+                            <button type="button" class="layui-btn" lay-submit="" lay-filter="saveConfig">保存设置</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    layui.use(['form','util','admin'], function(){
+       var form = layui.form
+       ,$ = layui.$
+       ,admin = layui.admin
+       ,element = layui.element;
+
+       element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/printer_config/get',
+            error: function(err){
+                layer.alert(err);
+            },
+            success: function(res){
+                if(res.code == 0 ){
+                    $('#isvId').val(res.data.isvId);
+
+                    $("input[name='status'][value='"+res.data.status+"']").attr("checked",true);
+
+                    $('#accessKey').val(res.data.accessKey);
+                    $('#accessSecret').val(res.data.accessSecret);
+                    $('#manufacturer').val(res.data.manufacturer);
+
+                }else {
+                    layer.alert(res.msg,{title: '请求失败'})
+                }
+                form.render();
+            }
+
+        });
+
+
+        // 当点击微信渠道配置按钮保存的时候
+        form.on('submit(saveConfig)', function(data){
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/printer_config/add', //模拟接口
+                data: data.field,
+                error: function(err){
+                    layer.alert(err.msg,{title:"请求失败"})
+                },
+                success: function(res){
+                    if(res.code == 0){
+                        layer.alert(res.msg, {title: '保存成功'},function(index){
+                            layer.close(index);
+                            location.hash = '/device_config/printer_config/';
+                        });
+                    }
+                }
+            })
+        });
+
+       form.render();
+       
+    })
+</script>

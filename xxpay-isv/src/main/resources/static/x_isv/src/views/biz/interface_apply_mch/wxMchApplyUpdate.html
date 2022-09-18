@@ -1,0 +1,1215 @@
+<style>
+    .xxpayPopupDiv .layui-form-label {
+        width:15% !important;
+        margin-left:1%;
+    }
+    .xxpayPopupDiv .layui-input-inline {
+        width: 33% !important;
+        min-height: 1px;  /** 避免没有内容时无法占位的问题 **/
+    }
+    .requiredSpan{color:red}
+
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <div class="layui-tab-content">
+
+                <form class="layui-form layui-form-pane">
+                    <input id="mchId" name="mchId" type="hidden" />
+                    <input id="applyNo" name="applyNo" type="hidden" />
+                    <div class="layui-tab layui-tab-brief">
+                        <div class="layui-tab-content">
+
+                            <div class="layui-form-item">
+                                <span>当前商户微信升级状态：</span><span class="statusSpan">未升级</span>
+                                <button class="layui-btn layui-btn-xs layui-btn refreshBtn layui-hide" onclick="return false;">
+                                    <i class="layui-icon">&#xe669;</i> 查询微信审核状态
+                                </button>
+                            </div>
+
+                            <div class="layui-form-item mchQrDiv layui-hide">
+                                <span>请商户扫码二维码进行签约操作：</span>
+                                 <img class="uploadImg mchQrImg" style="height:38px; margin-left:30px;cursor: pointer;" title="点击放大" />
+                            </div>
+
+                            <div class="layui-form-item layui-hide auditInfoDiv">
+                                <span>错误信息：</span><span class="auditInfoSpan requiredSpan">未入驻</span>
+                            </div>
+                            <div class="layui-form-item layui-hide accountInfoDiv">
+                                <span>账号验证信息：</span><span class="accountInfoSpan requiredSpan"> - </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-tab layui-tab-brief">
+                        <ul class="layui-tab-title">
+                            <li class="layui-this">商户信息</li>
+                            <li class="">
+                                <button class="layui-btn layui-btn-xs layui-btn-normal autoFillInfoBtn" onclick="return false;">
+                                    <i class="layui-icon">&#xe601;</i> 根据 &nbsp;[进件资料]&nbsp; 自动填入信息
+                                </button>
+                            </li>
+                        </ul>
+
+                        <div class="layui-tab-content">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label"><span class="requiredSpan">* </span>微信子商户号</label>
+                                <div class="layui-input-inline">
+                                    <input readonly name="subMchId" lay-verify="required" class="layui-input layui-bg-gray">
+                                </div>
+                                <label class="layui-form-label"><span class="requiredSpan">* </span>联系邮箱</label>
+                                <div class="layui-input-inline">
+                                    <input name="contactEmail" lay-verify="email" class="layui-input">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label"><span class="requiredSpan">* </span>商户简称</label>
+                                <div class="layui-input-inline">
+                                    <input name="merchantShortname" lay-verify="required" class="layui-input">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label"><span class="requiredSpan">* </span>主体类型</label>
+                                <div class="layui-input-inline">
+                                    <select name="organizationType" lay-verify="required" lay-filter="organizationTypeFilter">
+                                        <option value=""> -- </option>
+                                        <option value="2">企业</option>
+                                        <option value="4">个体工商户</option>
+                                        <option value="3">党政、机关及事业单位</option>
+                                        <option value="1708">其他组织</option>
+                                    </select>
+                                </div>
+                                <label class="layui-form-label"><span class="requiredSpan">* </span>营业执照号码</label>
+                                <div class="layui-input-inline">
+                                    <input name="businessLicenseNumber" lay-verify="required" class="layui-input">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label"><span class="requiredSpan">* </span>营业执照图片</label>
+                                <div class="layui-input-inline">
+                                    <input class="imgVal" type="hidden" name="businessLicenseCopy" />
+                                    <img class="uploadImg layui-hide" style="height:38px; margin-left:30px;cursor: pointer;" title="点击放大" />
+                                    <button class="uploadImgBtn layui-btn layui-btn-sm" type="button" style="margin-left: 20px;">上传图片</button>
+                                    <button class="delImgBtn layui-btn layui-btn-sm layui-btn-danger layui-hide" type="button">删除图片</button>
+                                </div>
+                                <label class="layui-form-label"><span class="requiredSpan">* </span>商户名称（营业执照名称）</label>
+                                <div class="layui-input-inline">
+                                    <input name="merchantName" lay-verify="required" class="layui-input">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label"><span class="requiredSpan">* </span>营业执照注册地址</label>
+                                <div class="layui-input-inline">
+                                    <input name="companyAddress" class="layui-input" lay-verify="required">
+                                </div>
+                                <label class="layui-form-label"><span class="requiredSpan">* </span>营业执照法人代表</label>
+                                <div class="layui-input-inline">
+                                    <input name="legalPerson" class="layui-input" lay-verify="required">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label"><span class="requiredSpan">* </span>营业执照有效期</label>
+                                <div class="layui-input-inline">
+                                    <input readonly type="text" class="layui-input" style="width:140px; display: inline-block;" id="licenseDateStart"> ~
+                                    <input readonly type="text" class="layui-input" style="width:140px; display: inline-block;" id="licenseDateEnd">
+                                    <input type="checkbox" id="licenseForeverCheckbox" lay-filter="licenseForeverCheckboxFilter" title="长期有效" >
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item" >
+
+                                <label class="layui-form-label"><span class="requiredSpan">* </span>营业执照类型：</label>
+                                <div class="layui-input-inline">
+                                    <input type="radio" name="businessLicenceType" checked lay-filter="businessLicenceTypeFilter" title="三证合一" value="1762" />
+                                    <input type="radio" name="businessLicenceType" lay-filter="businessLicenceTypeFilter" title="未三证合一" value="1763" />
+                                </div>
+                                <div class="div1763 layui-hide">
+                                    <label class="layui-form-label"><span class="requiredSpan">* </span>组织机构代码：</label>
+                                    <div class="layui-input-inline">
+                                        <input name="organizationNumber" class="layui-input">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item div1763 layui-hide">
+                                <label class="layui-form-label"><span class="requiredSpan">* </span>组织机构代码证照片</label>
+                                <div class="layui-input-inline">
+                                    <input class="imgVal" type="hidden" name="organizationCopy" />
+                                    <img class="uploadImg layui-hide" style="height:38px; margin-left:30px;cursor: pointer;" title="点击放大" />
+                                    <button class="uploadImgBtn layui-btn layui-btn-sm" type="button" style="margin-left: 20px;">上传图片</button>
+                                    <button class="delImgBtn layui-btn layui-btn-sm layui-btn-danger layui-hide" type="button">删除图片</button>
+                                </div>
+                                <label class="layui-form-label"><span class="requiredSpan">* </span>组织机构代码有效期限</label>
+                                <div class="layui-input-inline">
+                                    <input readonly type="text" class="layui-input" style="width:140px; display: inline-block;" id="orgDateStart"> ~
+                                    <input readonly type="text" class="layui-input" style="width:140px; display: inline-block;" id="orgDateEnd">
+                                    <input type="checkbox" id="orgForeverCheckbox" lay-filter="orgForeverCheckboxFilter" title="长期有效" >
+                                </div>
+                            </div>
+
+                            <br/>
+                            <div class="layui-form-item accountDiv layui-hide">
+                                <label class="layui-form-label"><span class="requiredSpan">* </span>开户名称（对公）</label>
+                                <div class="layui-input-inline">
+                                    <input name="accountName" class="layui-input">
+                                </div>
+                                <label class="layui-form-label"><span class="requiredSpan">* </span>开户银行</label>
+                                <div class="layui-input-inline">
+                                    <select name="accountBank" lay-filter="accountBankSelectFilter">
+                                        <option value="">-- 请选择开户银行 --</option>
+                                        <option value="工商银行">工商银行</option>
+                                        <option value="交通银行">交通银行</option>
+                                        <option value="招商银行">招商银行</option>
+                                        <option value="民生银行">民生银行</option>
+                                        <option value="中信银行">中信银行</option>
+                                        <option value="浦发银行">浦发银行</option>
+                                        <option value="兴业银行">兴业银行</option>
+                                        <option value="光大银行">光大银行</option>
+                                        <option value="广发银行">广发银行</option>
+                                        <option value="平安银行">平安银行</option>
+                                        <option value="北京银行">北京银行</option>
+                                        <option value="华夏银行">华夏银行</option>
+                                        <option value="农业银行">农业银行</option>
+                                        <option value="建设银行">建设银行</option>
+                                        <option value="邮政储蓄银行">邮政储蓄银行</option>
+                                        <option value="中国银行">中国银行</option>
+                                        <option value="宁波银行">宁波银行</option>
+                                        <option value="其他银行">其他银行</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item accountDiv layui-hide">
+                                <label class="layui-form-label"><span class="requiredSpan">* </span>银行卡号</label>
+                                <div class="layui-input-inline">
+                                    <input name="accountNumber" class="layui-input">
+                                </div>
+                                <label class="layui-form-label"><span class="requiredSpan">* </span>开户银行全称（含支行）</label>
+                                <div class="layui-input-inline">
+                                    <input name="bankName" class="layui-input">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item accountDiv layui-hide">
+                                <label class="layui-form-label"><span class="requiredSpan">* </span>开户地选择省、市、县</label>
+                                <div style="width: 297px; display: inline-block;">
+                                    <select lay-search id="provinceSelect" lay-filter="provinceSelectFilter">
+                                        <option value="">-- 省 --</option>
+                                    </select>
+                                </div>
+                                <div style="width: 297px; display: inline-block;">
+                                    <select lay-search id="citySelect" lay-filter="citySelectFilter">
+                                        <option value="">-- 市 --</option>
+                                    </select>
+                                </div>
+                                <div style="width: 297px; display: inline-block;">
+                                    <select name="bankAddressCode" lay-search id="areaSelect" lay-filter="areaSelectFilter">
+                                        <option value="">-- 区 / 县 --</option>
+                                    </select>
+                                </div>
+                            </div>
+
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label"><span class="requiredSpan">* </span>费率结算规则ID</label>
+                                <div class="layui-input-inline">
+                                    <select name="business" lay-verify="required">
+                                        <option value="">-- 请选择 --</option>
+                                        <option value="719">个体户：[719]</option>
+                                        <option value="720">个体户：[720]</option>
+                                        <option value="721">个体户：[721]</option>
+                                        <option value="716">企业：[716]</option>
+                                        <option value="715">企业：[715]</option>
+                                        <option value="714">企业：[714]</option>
+                                        <option value="713">企业：[713]</option>
+                                        <option value="728">企业：[728]</option>
+                                        <option value="711">企业：[711]</option>
+                                        <option value="717">企业：[717]</option>
+                                        <option value="730">企业：[730]</option>
+                                        <option value="718">企业：[718]</option>
+                                        <option value="739">企业：[739]</option>
+                                        <option value="725">党政、机关及事业单位：[725]</option>
+                                        <option value="722">党政、机关及事业单位：[722]</option>
+                                        <option value="723">党政、机关及事业单位：[723]</option>
+                                        <option value="724">党政、机关及事业单位：[724]</option>
+                                        <option value="727">其他组织：[727]</option>
+                                        <option value="738">其他组织：[738]</option>
+                                        <option value="726">其他组织：[726]</option>
+                                    </select>
+                                </div>
+                                <div class="layui-input-inline" style="padding-top:12px">
+                                    <a style="color:blue;text-decoration: underline; " href="https://pay.weixin.qq.com/wiki/doc/api/xiaowei.php?chapter=22_1" target="_blank">查看微信文档</a>
+                                </div>
+
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">特殊资质</label>
+                                <div class="layui-input-inline">
+                                    <input class="imgVal" type="hidden" name="qualifications" />
+                                    <img class="uploadImg layui-hide" style="height:38px; margin-left:30px;cursor: pointer;" title="点击放大" />
+                                    <button class="uploadImgBtn layui-btn layui-btn-sm" type="button" style="margin-left: 20px;">上传图片</button>
+                                    <button class="delImgBtn layui-btn layui-btn-sm layui-btn-danger layui-hide" type="button">删除图片</button>
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">补充说明</label>
+                                <div class="layui-input-inline">
+                                    <input name="businessAdditionDesc" class="layui-input">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">补充材料</label>
+                                <div class="layui-input-inline">
+                                    <input class="imgVal" type="hidden" name="businessAdditionPics" />
+                                    <img class="uploadImg layui-hide" style="height:38px; margin-left:30px;cursor: pointer;" title="点击放大" />
+                                    <button class="uploadImgBtn layui-btn layui-btn-sm" type="button" style="margin-left: 20px;">上传图片</button>
+                                    <button class="delImgBtn layui-btn layui-btn-sm layui-btn-danger layui-hide" type="button">删除图片</button>
+                                </div>
+                            </div>
+
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label"><span class="requiredSpan">* </span>选择经营场景</label>
+                                <div class="layui-input-inline">
+                                    <input type="checkbox" title="线下" lay-filter="businessSceneFilter" value="1721" />
+                                    <input type="checkbox" title="公众号" lay-filter="businessSceneFilter" value="1837" />
+                                    <input type="checkbox" title="小程序" lay-filter="businessSceneFilter" value="1838" />
+                                    <input type="checkbox" title="APP" lay-filter="businessSceneFilter" value="1724" />
+                                    <input type="checkbox" title="PC网站" lay-filter="businessSceneFilter" value="1840" />
+                                </div>
+                            </div>
+
+
+
+                            <!-- 公众号 -->
+                            <div class="layui-form-item bizDiv1837 layui-hide">
+                                <label class="layui-form-label"><span class="requiredSpan">* </span>公众号APPID</label>
+                                <div class="layui-input-inline">
+                                    <input name="mpAppid" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item bizDiv1837 layui-hide">
+                                <label class="layui-form-label"><span class="requiredSpan">* </span>公众号页面截图</label>
+                                <div class="layui-input-inline">
+                                    <input class="imgVal" type="hidden" name="mpAppScreenShots" />
+                                    <img class="uploadImg layui-hide" style="height:38px; margin-left:30px;cursor: pointer;" title="点击放大" />
+                                    <button class="uploadImgBtn layui-btn layui-btn-sm" type="button" style="margin-left: 20px;">上传图片</button>
+                                    <button class="delImgBtn layui-btn layui-btn-sm layui-btn-danger layui-hide" type="button">删除图片</button>
+                                </div>
+                            </div>
+
+                            <!-- 小程序 -->
+                            <div class="layui-form-item bizDiv1838 layui-hide">
+                                <label class="layui-form-label"><span class="requiredSpan">* </span>小程序APPID</label>
+                                <div class="layui-input-inline">
+                                    <input name="miniprogramAppid" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item bizDiv1838 layui-hide">
+                                <label class="layui-form-label"><span class="requiredSpan">* </span>小程序页面截图</label>
+                                <div class="layui-input-inline">
+                                    <input class="imgVal" type="hidden" name="miniprogramScreenShots" />
+                                    <img class="uploadImg layui-hide" style="height:38px; margin-left:30px;cursor: pointer;" title="点击放大" />
+                                    <button class="uploadImgBtn layui-btn layui-btn-sm" type="button" style="margin-left: 20px;">上传图片</button>
+                                    <button class="delImgBtn layui-btn layui-btn-sm layui-btn-danger layui-hide" type="button">删除图片</button>
+                                </div>
+                            </div>
+
+                            <!-- APP -->
+                            <div class="layui-form-item bizDiv1724 layui-hide">
+                                <label class="layui-form-label"><span class="requiredSpan">* </span>应用APPID</label>
+                                <div class="layui-input-inline">
+                                    <input name="appAppid" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item bizDiv1724 layui-hide">
+                                <label class="layui-form-label"><span class="requiredSpan">* </span>APP截图</label>
+                                <div class="layui-input-inline">
+                                    <input class="imgVal" type="hidden" name="appScreenShots" />
+                                    <img class="uploadImg layui-hide" style="height:38px; margin-left:30px;cursor: pointer;" title="点击放大" />
+                                    <button class="uploadImgBtn layui-btn layui-btn-sm" type="button" style="margin-left: 20px;">上传图片</button>
+                                    <button class="delImgBtn layui-btn layui-btn-sm layui-btn-danger layui-hide" type="button">删除图片</button>
+                                </div>
+                            </div>
+                            <div class="layui-form-item bizDiv1724 layui-hide">
+                                <label class="layui-form-label"><span class="requiredSpan">* </span>APP下载链接</label>
+                                <div class="layui-input-inline">
+                                    <input name="appDownloadUrl" class="layui-input">
+                                </div>
+                            </div>
+
+                            <!-- PC网站 -->
+                            <div class="layui-form-item bizDiv1840 layui-hide">
+                                <label class="layui-form-label"><span class="requiredSpan">* </span>PC网站域名</label>
+                                <div class="layui-input-inline">
+                                    <input name="webUrl" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item bizDiv1840 layui-hide">
+                                <label class="layui-form-label"><span class="requiredSpan">* </span>网站授权函 图片</label>
+                                <div class="layui-input-inline">
+                                    <input class="imgVal" type="hidden" name="webAuthoriationLetter" />
+                                    <img class="uploadImg layui-hide" style="height:38px; margin-left:30px;cursor: pointer;" title="点击放大" />
+                                    <button class="uploadImgBtn layui-btn layui-btn-sm" type="button" style="margin-left: 20px;">上传图片</button>
+                                    <button class="delImgBtn layui-btn layui-btn-sm layui-btn-danger layui-hide" type="button">删除图片</button>
+                                </div>
+                            </div>
+                            <div class="layui-form-item bizDiv1840 layui-hide">
+                                <label class="layui-form-label"><span class="requiredSpan">* </span>PC网站对应的公众号APPID</label>
+                                <div class="layui-input-inline">
+                                    <input name="webAppid" class="layui-input">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="button" class="layui-hide xxpayYesBtn" lay-submit="" lay-filter="apply"></button>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    layui.use(['form','table','util','admin','view',  'upload', 'setter', 'laydate'],function(){
+        var form = layui.form
+            , $ = layui.$
+            , admin = layui.admin
+            , layer = layui.layer
+            , element = layui.element
+            , view = layui.view
+            , table = layui.table
+            , upload = layui.upload
+            , setter = layui.setter
+            , laydate = layui.laydate;
+
+        element.render('breadcrumb', 'breadcrumb'); //渲染导航信息
+
+        var mchId = view.getOpenParams('mchId');  //商户ID
+        $("#mchId").val(mchId);
+
+        var wxMchSnapshot = null;
+        var wxMchUpgradeSnapshot = null;
+
+        //初始化信息
+        var initWxInfo = function(){
+
+            $(".refreshBtn").addClass("layui-hide");
+            $(".auditInfoDiv").addClass("layui-hide");
+            $(".mchQrDiv").addClass("layui-hide");
+
+
+            //1、 查询小微申请信息
+            admin.req({
+                type: 'get',
+                url: layui.setter.baseUrl + '/wx_mch_applyment/get',
+                data: { mchId : mchId },
+                error: function(err){ layer.alert(JSON.stringify(err.field), { title: '错误提示' }) },
+                success: function(res){
+                    if(!res.data){
+                        return layer.alert("请先发起小微商户的申请！");
+                    }
+                    wxMchSnapshot = res.data;
+                    $("input[name='subMchId']").val(res.data.wxMchId);
+                    form.render();
+                }
+            });
+
+            //2、 查询升级的信息
+            admin.req({
+                type: 'get',
+                url: layui.setter.baseUrl + '/wx_mch_applyment/getUpgrade',
+                data: { mchId : mchId },
+                error: function(err){ layer.alert(JSON.stringify(err.field), { title: '错误提示' }) },
+                success: function(res){
+
+                    wxMchUpgradeSnapshot = res.data;
+
+                    if(res.data){  //已经发起过升级的信息
+
+
+                        var applyStatus = wxMchUpgradeSnapshot.applyStatus;  //普通商户状态：0-未升级, 1-微信审核中, 2-普通商户升级完成, 3-待签约, 4-待账户验证, 5-请求异常/微信驳回
+
+                        if(applyStatus == '0'){
+
+                        }else if(applyStatus == '1'){  //1-微信审核中
+                            $(".statusSpan").text("审核中");
+                            $(".refreshBtn").removeClass("layui-hide");
+
+                        }else if(applyStatus == '2'){  //2-普通商户升级完成
+                            $(".statusSpan").text("审核通过");
+
+                        }else if(applyStatus == '3'){  //3-待签约
+
+                            $(".refreshBtn").removeClass("layui-hide");
+                            $(".statusSpan").text("待商户签约");
+                            $(".mchQrDiv").removeClass("layui-hide");
+                            $(".mchQrImg").attr("src", wxMchUpgradeSnapshot.wxApplymentMchQrImg);
+
+
+                        }else if(applyStatus == '4'){  // 4- 待账户验证
+
+                            $(".refreshBtn").removeClass("layui-hide");
+                            $(".statusSpan").text("待账户验证");
+                            $(".accountInfoDiv").removeClass('layui-hide');
+                            $(".accountInfoSpan").text(wxMchUpgradeSnapshot.accountVerifyInfo);
+
+                        }else if(applyStatus == '5'){  //5-异常/驳回
+                            $(".statusSpan").text("请求异常/微信驳回");
+                            $(".auditInfoDiv").removeClass('layui-hide');
+                            $(".auditInfoSpan").text(wxMchUpgradeSnapshot.auditInfo);
+                        }
+
+                        $("#applyNo").val(res.data.applyNo);
+
+                        //营业期限
+                        if(res.data.businessTime){
+                            var dateArr = JSON.parse(res.data.businessTime);
+                            $('#licenseDateStart').val(dateArr[0]);
+                            if(dateArr[1] == '长期'){ //长期
+                                $('#licenseDateEnd').val("").attr('disabled', true).addClass('layui-bg-gray');
+                                $("#licenseForeverCheckbox").prop("checked", true); //勾选长期有效
+                            }else{
+                                $('#licenseDateEnd').val(dateArr[1]);
+                            }
+                        }
+
+                        $('input[name="applyStatus"]').val(res.data.applyStatus);    //普通商户状态：0-未升级 1-微信审核中 2-普通商户升级完成 3-待签约 4-待账户验证 5-请求异常/微信驳回
+
+                        $('input[name="subMchId"]').val(res.data.subMchId);    //小微商户号
+
+                        $('input[name="businessLicenseNumber"]').val(res.data.businessLicenseNumber);    //营业执照注册号
+                        $('input[name="merchantName"]').val(res.data.merchantName);    //商户名称
+                        $('input[name="companyAddress"]').val(res.data.companyAddress);    //注册地址
+                        $('input[name="legalPerson"]').val(res.data.legalPerson);    //经营者姓名/法定代表人
+
+
+                        var businessLicenceType = res.data.businessLicenceType;    //营业执照类型 1762-已三证合一 1763-未三证合一
+                        $("input[name='businessLicenceType'][value='"+businessLicenceType+"']").prop('checked', true);
+                        if(businessLicenceType == '1762'){ //三证合一
+                            $(".div1763").addClass('layui-hide');
+                        }else if(businessLicenceType == '1763'){ //未三证合一
+                            $(".div1763").removeClass('layui-hide');
+                            $('input[name="organizationNumber"]').val(res.data.organizationNumber);    //组织机构代码（未三证合一必填）
+                            $('input[name="organizationTime"]').val(res.data.organizationTime);    //组织机构代码有效期限（未三证合一必填）
+                            setImgValFunc("organizationCopy", res.data.organizationCopy, true); //组织机构代码证照片（未三证合一必填）
+                            //组织结构代码有效期
+                            if(res.data.organizationTime){
+                                var dateArr = JSON.parse(res.data.organizationTime);
+                                $('#orgDateStart').val(dateArr[0]);
+                                if(dateArr[1] == '长期'){ //长期
+                                    $('#orgDateEnd').val("").attr('disabled', true).addClass('layui-bg-gray');
+                                    $("#orgForeverCheckbox").prop("checked", true); //勾选长期有效
+                                }else{
+                                    $('#orgDateEnd').val(dateArr[1]);
+                                }
+                            }
+                        }
+
+
+                        var organizationType = res.data.organizationType;    //主体类型 2-企业 4-个体工商户 3-党政、机关及事业单位  1708-其他组织
+                        $("select[name='organizationType'] option[value='"+organizationType+"']").prop('selected', true);
+                        if(organizationType != '4'){
+                            $('input[name="accountName"]').val(res.data.accountName);    //对公账户开户名称
+                             //对公账户开户银行
+                            $("select[name='accountBank'] option[value='"+res.data.accountBank+"']").prop('selected', true);
+                            $('input[name="bankName"]').val(res.data.bankName);    //开户银行全称 （含支行）
+                            $('input[name="accountNumber"]').val(res.data.accountNumber);    //银行卡号
+                            $(".accountDiv").removeClass("layui-hide");
+
+                            if(res.data.bankAddressCode){
+
+                                //查询地址信息
+                                admin.req({
+                                    type: 'get',
+                                    url: layui.setter.baseUrl + '/area_code/get',
+                                    data: { areaCode : res.data.bankAddressCode },
+                                    error: function(err){ layer.alert(JSON.stringify(err.field), { title: '错误提示' }) },
+                                    success: function(areaRes){
+                                        if(areaRes.data){
+
+                                            //回选 开户省市县
+                                            resetProvinceSelect(areaRes.data.provinceCode);
+                                            resetCitySelect(areaRes.data.provinceCode, areaRes.data.cityCode);
+                                            resetAreaSelect(areaRes.data.cityCode, areaRes.data.areaCode);
+                                            form.render();
+                                        }
+
+                                    }
+                                });
+                            }
+                        }
+
+                        $('input[name="merchantShortname"]').val(res.data.merchantShortname);    //商户简称
+
+                        //费率结算规则ID  select
+                        $("select[name='business'] option[value='"+res.data.business+"']").prop('selected', true);
+
+                        var businessSceneArr = JSON.parse(res.data.businessScene);    //经营场景 1721-线下  1837-公众号  1838-小程序  1724-APP  1840-PC网站
+                        $.each(businessSceneArr, function(){
+
+                            if(this == '1721'){  //线下
+                                $('input[lay-filter="businessSceneFilter"][value="1721"]').prop('checked', true);
+
+                            }else if(this == '1837'){ // 1837-公众号
+
+                                $('input[lay-filter="businessSceneFilter"][value="1837"]').prop('checked', true);
+                                $('input[name="mpAppid"]').val(res.data.mpAppid);    //公众号APPID
+                                if(res.data.mpAppScreenShots){
+                                    var imgArr = JSON.parse(res.data.mpAppScreenShots);
+                                    setImgValFunc("mpAppScreenShots", imgArr[0], true); //公众号页面截图 图片集合 []
+                                }
+                                $(".bizDiv1837").removeClass('layui-hide');
+
+                            }if(this == '1838'){  //1838-小程序
+
+                                $('input[lay-filter="businessSceneFilter"][value="1838"]').prop('checked', true);
+                                $('input[name="miniprogramAppid"]').val(res.data.miniprogramAppid);    //小程序APPID
+                                if(res.data.miniprogramScreenShots){
+                                    var imgArr = JSON.parse(res.data.miniprogramScreenShots);
+                                    setImgValFunc("miniprogramScreenShots", imgArr[0], true); //小程序页面截图 图片集合 []
+                                }
+                                $(".bizDiv1838").removeClass('layui-hide');
+
+                            }if(this == '1724'){ // 1724-APP
+
+                                $('input[lay-filter="businessSceneFilter"][value="1724"]').prop('checked', true);
+                                $('input[name="appAppid"]').val(res.data.appAppid);    //应用APPID
+                                $('input[name="appDownloadUrl"]').val(res.data.appDownloadUrl);    //APP下载链接
+                                if(res.data.appScreenShots){
+                                    var imgArr = JSON.parse(res.data.appScreenShots);
+                                    setImgValFunc("appScreenShots", imgArr[0], true); //APP截图 图片集合 []
+                                }
+                                $(".bizDiv1724").removeClass('layui-hide');
+
+                            }if(this == '1840'){  //1840-PC网站
+
+                                $('input[lay-filter="businessSceneFilter"][value="1840"]').prop('checked', true);
+                                $('input[name="webUrl"]').val(res.data.webUrl);    //PC网站域名
+                                $('input[name="webAppid"]').val(res.data.webAppid);    //PC网站对应的公众号APPID
+                                setImgValFunc("webAuthoriationLetter", res.data.webAuthoriationLetter, true); //网站授权函 图片
+
+                                $(".bizDiv1840").removeClass('layui-hide');
+
+                            }
+                        });
+
+                        $('input[name="businessAdditionDesc"]').val(res.data.businessAdditionDesc);    //补充说明
+                        $('input[name="contactEmail"]').val(res.data.contactEmail);    //联系邮箱
+
+                        setImgValFunc("businessLicenseCopy", res.data.businessLicenseCopy, true); //营业执照扫描件图片
+                        if(res.data.businessAdditionPics){
+                            var imgArr = JSON.parse(res.data.businessAdditionPics);
+                            setImgValFunc("businessAdditionPics", imgArr[0], true); //补充材料 图片集合 []
+                        }
+                        if(res.data.qualifications){
+                            var imgArr = JSON.parse(res.data.qualifications);
+                            setImgValFunc("qualifications", imgArr[0], true); //特殊资质， 图片集合 []
+                        }
+
+                    }
+
+                    form.render();
+                }
+            });
+
+        }
+
+        initWxInfo();
+
+
+        $(".autoFillInfoBtn").click(function(){
+
+            var layerShadeId = layer.msg('请稍后...',{time: 0, shade: 0.1});
+
+            //查询商户信息- 基本信息
+            admin.req({
+                type: 'get',
+                url: layui.setter.baseUrl + '/mch_info/get',
+                data: { mchId : mchId },
+                error: function(err){ layer.alert(JSON.stringify(err.field), { title: '错误提示' }) },
+                success: function(res){
+                    if(res.code == 0){
+                        $('input[name="contactEmail"]').val(res.data.loginEmail);    //联系邮箱
+                        $("input[name='merchantName']").val(res.data.mchName); //商户名称
+                        $("input[name='merchantShortname']").val(res.data.mchShortName);  //商户简称
+
+                        //查询商户进件信息
+                        admin.req({
+                            type: 'get',
+                            url: layui.setter.baseUrl + '/mch_info_ext/get',
+                            data: { mchId : mchId },
+                            error: function(err){ layer.alert(JSON.stringify(err.field), { title: '错误提示' }) },
+                            success: function(res2){
+                                if(res2.code == 0 && res2.data){
+                                    $('input[name="servicePhone"]').val(res2.data.servicePhone);    //客服电话
+
+                                    //主体类型
+                                    var industryIds = res2.data.ps ? res2.data.ps.industryIds : '';
+
+                                    if(industryIds){
+                                        var industryId = industryIds.split(",")[0];  //801其他组织， 802政府及事业单位 803个体工商户 804企业
+                                        $('.accountDiv').addClass("layui-hide");
+                                        if(industryId == '801'){
+                                            $('select[name="organizationType"] option[value="1708"]').prop('selected', true);
+                                            $('.accountDiv').removeClass("layui-hide");
+                                        }else if(industryId == '802'){
+                                            $('select[name="organizationType"] option[value="3"]').prop('selected', true);
+                                            $('.accountDiv').removeClass("layui-hide");
+                                        }else if(industryId == '803'){
+                                            $('select[name="organizationType"] option[value="4"]').prop('selected', true);
+                                        }else if(industryId == '804'){
+                                            $('select[name="organizationType"] option[value="2"]').prop('selected', true);
+                                            $('.accountDiv').removeClass("layui-hide");
+                                        }
+                                    }
+
+                                    $("input[name='businessLicenseNumber']").val(res2.data.businessLicenseNo);  //营业执照号码
+                                    $("input[name='legalPerson']").val(res2.data.legalPersonName);    //法人代表
+                                    setImgValFunc("businessLicenseCopy", res2.data.businessLicenseImg, true);  //营业执照图片
+
+                                    //商户营业执照有效期
+                                    if(res2.data.businessLicenseDate){
+                                        var dateArr = res2.data.businessLicenseDate.split("_");
+                                        $('#licenseDateStart').val(dateArr[0]);
+                                        if(dateArr[1] == '0'){ //长期
+                                            $('#licenseDateEnd').val("").attr('disabled', true).addClass('layui-bg-gray');
+                                            $("#licenseForeverCheckbox").prop("checked", true); //勾选长期有效
+                                        }else{
+                                            $('#licenseDateEnd').val(dateArr[1]);
+                                        }
+                                    }
+
+                                    form.render();
+                                }
+                                layer.close(layerShadeId);
+                            }
+                            ,error:function(){
+                                layer.close(layerShadeId);
+                            }
+                        });
+                    }
+                }
+            });
+
+            return false;
+        });
+
+
+        form.on('submit(apply)', function(data){
+
+            if(!wxMchSnapshot || wxMchSnapshot.applyStatus != 2){
+                layer.alert('请先提交小微商户的申请， 并且微信已完成审核！');
+                return false;
+            }
+
+            if(wxMchUpgradeSnapshot){
+                if(wxMchUpgradeSnapshot.applyStatus == 1){
+                    layer.alert('当前状态为[升级审核中]， 无需再次发起！');
+                    return false;
+                }
+                if(wxMchUpgradeSnapshot.applyStatus == 3){
+                    layer.alert('当前状态为[待签约]， 无需再次发起！');
+                    return false;
+                }
+                if(wxMchUpgradeSnapshot.applyStatus == 4){
+                    layer.alert('当前状态为[待账户验证]， 无需再次发起！');
+                    return false;
+                }
+                if(wxMchUpgradeSnapshot.applyStatus == 2){
+                    layer.alert('当前状态为[完成]， 无需再次发起！');
+                    return false;
+                }
+            }
+
+
+
+            var fields = data.field;
+
+            if(!fields.businessLicenseCopy){
+                layer.alert("请上传[营业执照]图片！");
+                return false;
+            }
+
+            var businessTimeArr = [];
+
+            var licenseDateStart = $("#licenseDateStart").val();
+            if(!licenseDateStart){
+                layer.alert('请选择营业执照有效期限开始时间！');
+                return false;
+            }
+            businessTimeArr.push(licenseDateStart);
+
+            if($('#licenseForeverCheckbox').is(':checked')){ //营业执照有效期 长期有效
+                businessTimeArr.push("长期");
+            }else{
+                if(!$('#licenseDateEnd').val()){layer.alert('请选择营业执照有效期限结束时间！'); return false; }
+                businessTimeArr.push($('#licenseDateEnd').val());
+            }
+
+            fields.businessTime = JSON.stringify(businessTimeArr);
+
+            //当选择的 非[个体工商户] 对公账户必填！
+            if(fields.organizationType != '4'){
+
+                if(!fields.accountName){
+                    layer.alert('请填写开户名称！');
+                    return false;
+                }
+                if(!fields.accountBank){
+                    layer.alert('请选择开户银行！');
+                    return false;
+                }
+                if(!fields.accountNumber){
+                    layer.alert('请填写银行卡号！');
+                    return false;
+                }
+                if(!fields.bankName){
+                    layer.alert('请填写开户银行全称！');
+                    return false;
+                }
+                if(!fields.bankAddressCode){
+                    layer.alert('请选择开户地！');
+                    return false;
+                }
+            }
+
+
+            var businessSceneArr = [];
+
+            //选择了线下
+            if($("input[lay-filter='businessSceneFilter'][value='1721']").is(":checked")){
+                businessSceneArr.push(1721);
+            }
+
+            //选择了公众号
+            if($("input[lay-filter='businessSceneFilter'][value='1837']").is(":checked")){
+                if(!fields.mpAppid){
+                    layer.alert('请填写公众号APPID！');
+                    return false;
+                }
+                businessSceneArr.push(1837);
+            }
+
+            //选择了小程序
+            if($("input[lay-filter='businessSceneFilter'][value='1838']").is(":checked")){
+                if(!fields.miniprogramAppid){
+                    layer.alert('请填写小程序APPID！');
+                    return false;
+                }
+                businessSceneArr.push(1838);
+            }
+
+            //选择了APP
+            if($("input[lay-filter='businessSceneFilter'][value='1724']").is(":checked")){
+                if(!fields.appAppid){
+                    layer.alert('请填写应用APPID！');
+                    return false;
+                }
+                if(!fields.appScreenShots){
+                    layer.alert('请上传APP截图！');
+                    return false;
+                }
+                businessSceneArr.push(1724);
+            }
+
+            //选择了PC网站
+            if($("input[lay-filter='businessSceneFilter'][value='1840']").is(":checked")){
+                if(!fields.bankName){
+                    layer.alert('请填写开户银行全称！');
+                    return false;
+                }
+                if(!fields.bankAddressCode){
+                    layer.alert('请选择开户地！');
+                    return false;
+                }
+                businessSceneArr.push(1840);
+            }
+
+
+            if(businessSceneArr.length <= 0){
+                layer.alert('经营场景至少选择1个！');
+                return false;
+            }
+            fields.businessScene = JSON.stringify(businessSceneArr);
+
+
+            if(fields.businessLicenceType == '1763'){ //非三证合一
+                if(!fields.organizationCopy){
+                    layer.alert('请上传组织机构代码证照片！');
+                    return false;
+                }
+                if(!fields.organizationNumber){
+                    layer.alert('请填写组织机构代码！');
+                    return false;
+                }
+
+                var organizationTimeArr = [];
+
+                var orgDateStart = $("#orgDateStart").val();
+                if(!orgDateStart){
+                    layer.alert('请选择组织机构代码有效期限开始时间！');
+                    return false;
+                }
+                organizationTimeArr.push(orgDateStart);
+
+                if($('#orgForeverCheckbox').is(':checked')){ //营业执照有效期 长期有效
+                    organizationTimeArr.push("长期");
+                }else{
+                    if(!$('#orgDateEnd').val()){layer.alert('请选择组织机构代码有效期限结束时间！'); return false; }
+                    organizationTimeArr.push($('#orgDateEnd').val());
+                }
+
+                fields.organizationTime = JSON.stringify(organizationTimeArr);
+            }
+
+
+            //将数组格式的图片进行转换
+            if(fields.qualifications){
+                fields.qualifications = JSON.stringify([fields.qualifications]);
+            }
+            if(fields.businessAdditionPics){
+                fields.businessAdditionPics = JSON.stringify([fields.businessAdditionPics]);
+            }
+            if(fields.mpAppScreenShots){
+                fields.mpAppScreenShots = JSON.stringify([fields.mpAppScreenShots]);
+            }
+            if(fields.miniprogramScreenShots){
+                fields.miniprogramScreenShots = JSON.stringify([fields.miniprogramScreenShots]);
+            }
+            if(fields.appScreenShots){
+                fields.appScreenShots = JSON.stringify([fields.appScreenShots]);
+            }
+
+            layer.confirm("确认发起微信小微商户的升级请求？", function(){
+
+                var layerShadeId = layer.msg('请稍后...',{time: 0, shade: 0.1});
+
+                admin.req({
+                    type: 'post',
+                    url: layui.setter.baseUrl + '/wx_mch_applyment/microApplyUpgrade',
+                    data: fields,
+                    error: function(err){layer.alert(err.msg,{title:"请求失败"})},
+                    success: function(res){
+                        if(res.code == 0){
+
+                            //更新当前页面
+                            // initWxInfo();
+
+                            //关闭当前弹层 & 调用外层的刷新事件
+                            layer.closeAll();
+                            admin.events.refresh();
+                        }
+                    },complete:function(){
+                        layer.close(layerShadeId);
+                    }
+                });
+            });
+            return false;
+        });
+
+
+        //上传图片接口
+        var headers = {};
+        headers[setter.request.tokenName] = layui.data(setter.tableName)[setter.request.tokenName];
+        upload.render({
+            url: layui.setter.baseUrl + '/upload/mch_apply'
+            ,elem: '.uploadImgBtn'
+            , headers: headers
+            , size: 2048  //仅支持2M图片上传
+            ,done: function(res, index, upload){
+
+                //如果上传失败
+                if(res.code != 0){
+                    return layer.msg('上传失败['+res.msg+']', {icon: 2});
+                }
+
+                var divElem = $(this.item).parent();
+                divElem.find('.imgVal').val(res.data); //图片真实路径
+                divElem.find('.uploadImg').attr("src", res.data).removeClass('layui-hide');
+                divElem.find('.delImgBtn').removeClass('layui-hide');
+                divElem.find('.uploadImgBtn').text('重新上传');
+                form.render();
+            }
+        });
+
+        //点击[删除图片] 按钮， 事件
+        $('.delImgBtn').click(function(){
+
+            var divElem = $(this).parent();
+            divElem.find('.imgVal').val(""); //清空图片真实路径
+            divElem.find('.uploadImgBtn').text("上传图片");
+            divElem.find('.uploadImg').attr("src", "").addClass('layui-hide');
+            divElem.find('.delImgBtn').addClass('layui-hide');
+            form.render();
+        });
+
+        //点击[图片] 按钮， 事件
+        $('.uploadImg').click(function(){
+            var imgSrc = $(this).attr('src');
+            layer.photos({photos: {
+                    "title": "查看上传图片", //相册标题
+                    "id": 1, //相册id
+                    "start": 0, //初始显示的图片序号，默认0
+                    "data": [   //相册包含的图片，数组格式
+                        {
+                            "alt": "图片",
+                            "pid": 1, //图片id
+                            "src": imgSrc, //原图地址
+                            "thumb": "" //缩略图地址
+                        }
+                    ]
+                } ,anim: 5});
+        });
+
+
+        var setImgValFunc = function(inputName, src, allowReload){
+
+            if(!src) {return false;}
+            var divElem = $("input[name='"+inputName+"']").parent();
+            divElem.find('.imgVal').val(src); //图片真实路径
+            divElem.find('.uploadImg').attr("src", src).removeClass('layui-hide');
+            if(allowReload){
+                divElem.find('.delImgBtn').removeClass('layui-hide');
+                divElem.find('.uploadImgBtn').text('重新上传');
+            }
+        }
+
+
+        //点击 【查询微信审核状态】 按钮
+        $(".refreshBtn").click(function(){
+
+            if(!wxMchUpgradeSnapshot){
+                layer.alert("请稍后再试！");
+                return false;
+            }
+
+            if(wxMchUpgradeSnapshot.applyStatus != '1' && wxMchUpgradeSnapshot.applyStatus != '3' && wxMchUpgradeSnapshot.applyStatus != '4'){
+                layer.alert("当前状态无需查询！");
+                return false;
+            }
+
+            var layerShadeId = layer.msg('请稍后...',{time: 0, shade: 0.1});
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/wx_mch_applyment/queryMicroApplyStatusUpgrade',
+                data: {applyNo: wxMchUpgradeSnapshot.applyNo},
+                error: function(err){layer.alert(err.msg,{title:"请求失败"})},
+                success: function(res){
+                    if(res.code == 0){
+                        layer.msg("查询成功！");
+                        initWxInfo();
+                    }
+                },complete:function(){
+                    layer.close(layerShadeId);
+                }
+            });
+
+        });
+
+
+        form.on("radio(businessLicenceTypeFilter)", function(data){
+
+            var checkVal = data.value;
+            if(checkVal == '1762'){ //三证合一
+
+                $(".div1763").addClass('layui-hide');
+
+            }else if(checkVal == '1763'){ //未三证合一
+
+                $(".div1763").removeClass('layui-hide');
+
+
+            }
+
+        });
+
+        form.on("checkbox(businessSceneFilter)", function(data){
+
+            var bizDiv = $("." + "bizDiv" + data.value);
+
+                if(data.elem.checked){
+                    bizDiv.removeClass('layui-hide');
+
+                }else{
+                    bizDiv.addClass('layui-hide');
+
+                }
+        });
+
+
+        laydate.render({elem: '#licenseDateStart'});
+        laydate.render({elem: '#licenseDateEnd'});
+        laydate.render({elem: '#orgDateStart'});
+        laydate.render({elem: '#orgDateEnd'});
+
+        //监听 [营业执照有效期] 长期有效 checkbox
+        form.on('checkbox(licenseForeverCheckboxFilter)', function(data){
+            if(data.elem.checked){  //选中： 清空时间框 & 禁用
+                $('#licenseDateEnd').val("").attr('disabled', true).addClass('layui-bg-gray');
+            }else{  //恢复使用
+                $('#licenseDateEnd').removeAttr('disabled').removeClass('layui-bg-gray');
+            }
+        });
+
+        //监听 [组织机构代码] 长期有效 checkbox
+        form.on('checkbox(orgForeverCheckboxFilter)', function(data){
+            if(data.elem.checked){  //选中： 清空时间框 & 禁用
+                $('#orgDateEnd').val("").attr('disabled', true).addClass('layui-bg-gray');
+            }else{  //恢复使用
+                $('#orgDateEnd').removeAttr('disabled').removeClass('layui-bg-gray');
+            }
+        });
+
+
+
+        // 重置 [省] 下拉框
+        var resetProvinceSelect = function(selectedCode){
+
+            if($("#provinceSelect option").length <= 1){  //没有任何数据
+                admin.req({
+                    type: 'get',
+                    url: layui.setter.baseUrl + '/area_code/provinces',
+                    async: false, //同步请求
+                    error: function(err){
+                        layer.alert(JSON.stringify(err.field), {title: '错误提示'})
+                    },
+                    success: function(res){
+                        if(res.code == 0){
+                            $.each(res.data, function(){
+                                var selectHtml = this.provinceCode == selectedCode ? "selected" : "";
+                                $("#provinceSelect").append("<option "+selectHtml+" item value='"+this.provinceCode+"'>"+this.provinceName+"</option>");
+                            });
+                            form.render();
+                        }
+                    }
+                });
+            }else{ //已经存在数据
+
+                if(selectedCode){
+                    $("#provinceSelect option[value='"+selectedCode+"']").prop('selected', true);
+                    form.render();
+                }
+            }
+        };
+
+        // 重置 [市] 下拉框
+        var resetCitySelect = function(provinceCode, selectedCode){
+
+            if($("#citySelect option").length <= 1) {  //没有任何数据
+                admin.req({
+                    type: 'get',
+                    async: false, //同步请求
+                    url: layui.setter.baseUrl + '/area_code/cities?provinceCode=' + provinceCode,
+                    error: function(err){
+                        layer.alert(JSON.stringify(err.field), {title: '错误提示'})
+                    },
+                    success: function(res){
+                        if(res.code == 0){
+                            $.each(res.data, function(){
+                                var selectHtml = this.cityCode == selectedCode ? "selected" : "";
+                                $("#citySelect").append("<option "+selectHtml+" item value='"+this.cityCode+"'>"+this.cityName+"</option>");
+                            });
+                            form.render();
+                        }
+                    }
+                });
+
+            }else{
+                if(selectedCode){
+                    $("#citySelect option[value='"+selectedCode+"']").prop('selected', true);
+                    form.render();
+                }
+            }
+
+        };
+
+        // 重置 [县] 下拉框
+        var resetAreaSelect = function(cityCode, selectedCode){
+
+            if($("#areaSelect option").length <= 1) {  //没有任何数据
+                admin.req({
+                    type: 'get',
+                    async: false, //同步请求
+                    url: layui.setter.baseUrl + '/area_code/areas?cityCode=' + cityCode,
+                    error: function(err){
+                        layer.alert(JSON.stringify(err.field), {title: '错误提示'})
+                    },
+                    success: function(res){
+                        if(res.code == 0){
+                            $.each(res.data, function(){
+                                var selectHtml = this.areaCode == selectedCode ? "selected" : "";
+                                $("#areaSelect").append("<option "+selectHtml+" item value='"+this.areaCode+"'>"+this.areaName+"</option>");
+                            });
+                            form.render();
+                        }
+                    }
+                });
+            }else{
+                if(selectedCode){
+                    $("#areaSelect option[value='"+selectedCode+"']").prop('selected', true);
+                    form.render();
+                }
+            }
+        };
+
+
+        //监听 [省] 下拉框
+        form.on('select(provinceSelectFilter)', function(data){
+
+            //清空， 市， 区 下拉框
+            $("#citySelect option[item]").remove();
+            $("#areaSelect option[item]").remove();
+
+            var provinceCode = data.value; //省级编码
+            if(!provinceCode){
+                form.render();
+                return false; //未选择
+            }
+            resetCitySelect(provinceCode, "");
+        });
+
+        //监听 [市] 下拉框
+        form.on('select(citySelectFilter)', function(data){
+
+            //清空 区 下拉框
+            $("#areaSelect option[item]").remove();
+
+            var cityCode = data.value; //市级编码
+            if(!cityCode){
+                form.render();
+                return false; //未选择
+            }
+
+            resetAreaSelect(cityCode, "");
+
+        });
+
+
+        resetProvinceSelect(-1);  //初始化 省
+
+        form.on("select(organizationTypeFilter)", function(data){
+
+            if(data.value == '4'){  //个体工商户， 无需填写对公账号信息
+                $(".accountDiv").addClass('layui-hide');
+            }else{
+                $(".accountDiv").removeClass('layui-hide');
+            }
+
+        });
+
+
+
+        form.render();
+
+    });
+</script>

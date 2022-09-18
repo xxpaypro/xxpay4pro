@@ -1,0 +1,182 @@
+
+<div class=" layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a>商户管理</a>
+        <a><cite>代付通道</cite></a>
+    </div>
+</div>
+
+<style>
+    .layui-form-label {
+        width:180px !important;
+        margin-left:1%;
+    }
+    .layui-input-inline {
+        width: 80% !important;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">通道配置</li>
+            </ul>
+            <div class="layui-tab-content">
+                <form class="layui-form center">
+                    <input type="hidden" id="id" name="id">
+                    <input type="hidden" id="mchId" name="mchId">
+                    <input type="hidden" id="agentFeeEvery" name="agentFeeEvery">
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">代付通道</label>
+                        <div class="layui-input-inline" >
+                            <input id='agpayInfo' class='layui-input' readonly/>
+                            <input id='agentpayPassageId' name='agentpayPassageId' type='hidden'/>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">通道子账户</label>
+                        <div class="layui-input-inline" >
+                            <select name="agentpayPassageAccountId" id="agentpayPassageAccountId" lay-filter="agentpayPassageAccountFilter">
+                                <option value="">选择通道子账户</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">代理商费率</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="agentRateTip" id="agentRateTip" style="border-width: 0px;" required lay-verify="required" autocomplete="off" class="layui-input" readonly="readonly" disabled="disabled">
+                        </div>
+                    </div>
+                    
+                    <div class="layui-form-item" id="mchFeeEveryId">
+                        <label class="layui-form-label">代付手续费(元/笔)</label>
+                        <div class="layui-input-inline">
+                            <input type="tel" id="mchFeeEvery" name="mchFeeEvery" lay-verify="required|number" placeholder="输入代付每笔手续费" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">代付单笔限额(元)</label>
+                        <div class="layui-input-inline">
+                            <input type="tel" id="maxEveryAmount" name="maxEveryAmount" lay-verify="required|number" placeholder="输入代付单笔限额" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    
+                    
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">状态</label>
+                        <div class="layui-input-inline" >
+                            <input type="radio" name="status" title="开启" value="1" />
+                            <input type="radio" name="status" title="关闭" value="0" />
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">默认</label>
+                        <div class="layui-input-inline" >
+                            <input type="radio" name="isDefault" title="是" value="1" />
+                            <input type="radio" name="isDefault" title="否" value="0" checked="checked"/>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-inline">
+                            <button type="button" class="layui-btn" lay-submit="" lay-filter="update">保存</button>
+                            <button type="button" id="btnBack" class="layui-btn">返回</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    layui.use(['form','table','util','admin',],function(){
+        var form = layui.form
+                , $ = layui.$
+                , admin = layui.admin
+                , layer = layui.layer
+                , element = layui.element
+                , table = layui.table;
+
+        element.render('breadcrumb', 'breadcrumb'); //渲染导航信息
+
+        var router = layui.router();
+        var mchId = router.search.mchId;
+        var agentpayPassageId = router.search.agentpayPassageId;
+		$('#agentpayPassageId').val(agentpayPassageId);
+		$('#mchId').val(mchId);
+		
+        admin.req({
+            type: 'post',
+            url: layui.setter.baseUrl + '/mch_agpay_passage/get',
+            data: {
+                mchId: mchId,
+                agentpayPassageId: agentpayPassageId
+            },
+            error: function(err){
+                layer.alert(err);
+            },
+            success: function(res){
+                if(res.code == 0){
+                    $('#id').val(res.data.id);
+                    $('#agpayInfo').val(res.data.ps.passageName);
+                    $('#agentRateTip').val(res.data.ps.agentFeeEvery/100+"元/笔");
+                    $('#agentFeeEvery').val(res.data.ps.agentFeeEvery == null ? "" : res.data.ps.agentFeeEvery/100);
+
+                    $('#mchFeeEvery').val(res.data.mchFeeEvery == null ? "" : res.data.mchFeeEvery/100);
+                    $('#maxEveryAmount').val(res.data.maxEveryAmount == null ? "" :res.data.maxEveryAmount/100);
+                   
+                    $("input[name='status'][value='"+res.data.status+"']").attr("checked",true);
+                    $("input[name='isDefault'][value='"+res.data.isDefault+"']").attr("checked",true);
+                    
+                    $.each(res.data.ps.accountSelectData, function(){
+                    	var selectedStr = this.selected ? " selected " : "";
+                    	$('#agentpayPassageAccountId').append("<option value='"+this.id + "' " + selectedStr + ">" + this.accountName + "</option>");
+                    });
+
+                    form.render();
+                }
+            }
+        });
+
+        form.on('submit(update)', function(data){
+            var agentpayPassageId = $.trim($('#agentpayPassageId').val());
+            if(agentpayPassageId == '') {
+                layer.alert("请选择代付通道",{title: '提示'});
+                return false;
+            }
+
+            var agentFeeEvery = $.trim($('#agentFeeEvery').val());
+
+            if(agentFeeEvery/1 > data.field.mchFeeEvery/1) {
+                layer.alert("代理商代付手续费["+agentFeeEvery/1+"元/笔]不能大于商户[" + data.field.mchFeeEvery/1 + "元/笔]",{title: '提示'});
+                return false;
+            }
+
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/mch_agpay_passage/update',
+                data: data.field,
+                error: function(err){layer.alert(err.msg,{title:"请求失败"})},
+                success: function(res){
+                    if(res.code == 0){
+                        layer.alert(res.msg, {title: '保存成功'},function(index){
+                            layer.close(index);
+                            location.hash = '/biz/agpay_passage//mchId=' + mchId;
+                        });
+                    }
+                }
+            })
+            return false;
+        });
+
+        $('#btnBack').on('click', function() {
+            location.hash = '/biz/agpay_passage//mchId=' + mchId;
+        });
+
+
+    });
+
+</script>

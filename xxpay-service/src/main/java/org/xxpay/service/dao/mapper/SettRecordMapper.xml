@@ -1,0 +1,612 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.xxpay.service.dao.mapper.SettRecordMapper" >
+  <resultMap id="BaseResultMap" type="org.xxpay.core.entity.SettRecord" >
+    <id column="Id" property="id" jdbcType="BIGINT" />
+    <result column="InfoId" property="infoId" jdbcType="BIGINT" />
+    <result column="InfoType" property="infoType" jdbcType="TINYINT" />
+    <result column="SettType" property="settType" jdbcType="TINYINT" />
+    <result column="SettDate" property="settDate" jdbcType="DATE" />
+    <result column="SettAmount" property="settAmount" jdbcType="BIGINT" />
+    <result column="SettFee" property="settFee" jdbcType="BIGINT" />
+    <result column="RemitAmount" property="remitAmount" jdbcType="BIGINT" />
+    <result column="AccountAttr" property="accountAttr" jdbcType="TINYINT" />
+    <result column="AccountType" property="accountType" jdbcType="TINYINT" />
+    <result column="BankName" property="bankName" jdbcType="VARCHAR" />
+    <result column="BankNetName" property="bankNetName" jdbcType="VARCHAR" />
+    <result column="AccountName" property="accountName" jdbcType="VARCHAR" />
+    <result column="AccountNo" property="accountNo" jdbcType="VARCHAR" />
+    <result column="Province" property="province" jdbcType="VARCHAR" />
+    <result column="City" property="city" jdbcType="VARCHAR" />
+    <result column="SettStatus" property="settStatus" jdbcType="TINYINT" />
+    <result column="Remark" property="remark" jdbcType="VARCHAR" />
+    <result column="RemitRemark" property="remitRemark" jdbcType="VARCHAR" />
+    <result column="OperatorId" property="operatorId" jdbcType="BIGINT" />
+    <result column="CreateTime" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="UpdateTime" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="SettOrderId" property="settOrderId" jdbcType="VARCHAR" />
+    <result column="TransOrderId" property="transOrderId" jdbcType="VARCHAR" />
+    <result column="TransMsg" property="transMsg" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    Id, InfoId, InfoType, SettType, SettDate, SettAmount, SettFee, RemitAmount, AccountAttr, 
+    AccountType, BankName, BankNetName, AccountName, AccountNo, Province, City, SettStatus, 
+    Remark, RemitRemark, OperatorId, CreateTime, UpdateTime, SettOrderId, TransOrderId,
+    TransMsg
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="org.xxpay.core.entity.SettRecordExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from t_sett_record
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+    <if test="limit != null" >
+      <if test="offset != null" >
+        limit ${offset}, ${limit}
+      </if>
+      <if test="offset == null" >
+        limit ${limit}
+      </if>
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_sett_record
+    where Id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from t_sett_record
+    where Id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="org.xxpay.core.entity.SettRecordExample" >
+    delete from t_sett_record
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="org.xxpay.core.entity.SettRecord" >
+    insert into t_sett_record (Id, InfoId, InfoType, 
+      SettType, SettDate, SettAmount, 
+      SettFee, RemitAmount, AccountAttr, 
+      AccountType, BankName, BankNetName, 
+      AccountName, AccountNo, Province, 
+      City, SettStatus, Remark, 
+      RemitRemark, OperatorId, CreateTime, 
+      UpdateTime, SettOrderId, TransOrderId,
+      TransMsg)
+    values (#{id,jdbcType=BIGINT}, #{infoId,jdbcType=BIGINT}, #{infoType,jdbcType=TINYINT}, 
+      #{settType,jdbcType=TINYINT}, #{settDate,jdbcType=DATE}, #{settAmount,jdbcType=BIGINT}, 
+      #{settFee,jdbcType=BIGINT}, #{remitAmount,jdbcType=BIGINT}, #{accountAttr,jdbcType=TINYINT}, 
+      #{accountType,jdbcType=TINYINT}, #{bankName,jdbcType=VARCHAR}, #{bankNetName,jdbcType=VARCHAR}, 
+      #{accountName,jdbcType=VARCHAR}, #{accountNo,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, 
+      #{city,jdbcType=VARCHAR}, #{settStatus,jdbcType=TINYINT}, #{remark,jdbcType=VARCHAR}, 
+      #{remitRemark,jdbcType=VARCHAR}, #{operatorId,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{settOrderId,jdbcType=VARCHAR}, #{transOrderId,jdbcType=VARCHAR},
+      #{transMsg,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="org.xxpay.core.entity.SettRecord" >
+    insert into t_sett_record
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        Id,
+      </if>
+      <if test="infoId != null" >
+        InfoId,
+      </if>
+      <if test="infoType != null" >
+        InfoType,
+      </if>
+      <if test="settType != null" >
+        SettType,
+      </if>
+      <if test="settDate != null" >
+        SettDate,
+      </if>
+      <if test="settAmount != null" >
+        SettAmount,
+      </if>
+      <if test="settFee != null" >
+        SettFee,
+      </if>
+      <if test="remitAmount != null" >
+        RemitAmount,
+      </if>
+      <if test="accountAttr != null" >
+        AccountAttr,
+      </if>
+      <if test="accountType != null" >
+        AccountType,
+      </if>
+      <if test="bankName != null" >
+        BankName,
+      </if>
+      <if test="bankNetName != null" >
+        BankNetName,
+      </if>
+      <if test="accountName != null" >
+        AccountName,
+      </if>
+      <if test="accountNo != null" >
+        AccountNo,
+      </if>
+      <if test="province != null" >
+        Province,
+      </if>
+      <if test="city != null" >
+        City,
+      </if>
+      <if test="settStatus != null" >
+        SettStatus,
+      </if>
+      <if test="remark != null" >
+        Remark,
+      </if>
+      <if test="remitRemark != null" >
+        RemitRemark,
+      </if>
+      <if test="operatorId != null" >
+        OperatorId,
+      </if>
+      <if test="createTime != null" >
+        CreateTime,
+      </if>
+      <if test="updateTime != null" >
+        UpdateTime,
+      </if>
+      <if test="settOrderId != null" >
+        SettOrderId,
+      </if>
+      <if test="transOrderId != null" >
+        TransOrderId,
+      </if>
+      <if test="transMsg != null" >
+        TransMsg,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="infoId != null" >
+        #{infoId,jdbcType=BIGINT},
+      </if>
+      <if test="infoType != null" >
+        #{infoType,jdbcType=TINYINT},
+      </if>
+      <if test="settType != null" >
+        #{settType,jdbcType=TINYINT},
+      </if>
+      <if test="settDate != null" >
+        #{settDate,jdbcType=DATE},
+      </if>
+      <if test="settAmount != null" >
+        #{settAmount,jdbcType=BIGINT},
+      </if>
+      <if test="settFee != null" >
+        #{settFee,jdbcType=BIGINT},
+      </if>
+      <if test="remitAmount != null" >
+        #{remitAmount,jdbcType=BIGINT},
+      </if>
+      <if test="accountAttr != null" >
+        #{accountAttr,jdbcType=TINYINT},
+      </if>
+      <if test="accountType != null" >
+        #{accountType,jdbcType=TINYINT},
+      </if>
+      <if test="bankName != null" >
+        #{bankName,jdbcType=VARCHAR},
+      </if>
+      <if test="bankNetName != null" >
+        #{bankNetName,jdbcType=VARCHAR},
+      </if>
+      <if test="accountName != null" >
+        #{accountName,jdbcType=VARCHAR},
+      </if>
+      <if test="accountNo != null" >
+        #{accountNo,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null" >
+        #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null" >
+        #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="settStatus != null" >
+        #{settStatus,jdbcType=TINYINT},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="remitRemark != null" >
+        #{remitRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="operatorId != null" >
+        #{operatorId,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="settOrderId != null" >
+        #{settOrderId,jdbcType=VARCHAR},
+      </if>
+      <if test="transOrderId != null" >
+        #{transOrderId,jdbcType=VARCHAR},
+      </if>
+      <if test="transMsg != null" >
+        #{transMsg,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="org.xxpay.core.entity.SettRecordExample" resultType="java.lang.Integer" >
+    select count(*) from t_sett_record
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update t_sett_record
+    <set >
+      <if test="record.id != null" >
+        Id = #{record.id,jdbcType=BIGINT},
+      </if>
+      <if test="record.infoId != null" >
+        InfoId = #{record.infoId,jdbcType=BIGINT},
+      </if>
+      <if test="record.infoType != null" >
+        InfoType = #{record.infoType,jdbcType=TINYINT},
+      </if>
+      <if test="record.settType != null" >
+        SettType = #{record.settType,jdbcType=TINYINT},
+      </if>
+      <if test="record.settDate != null" >
+        SettDate = #{record.settDate,jdbcType=DATE},
+      </if>
+      <if test="record.settAmount != null" >
+        SettAmount = #{record.settAmount,jdbcType=BIGINT},
+      </if>
+      <if test="record.settFee != null" >
+        SettFee = #{record.settFee,jdbcType=BIGINT},
+      </if>
+      <if test="record.remitAmount != null" >
+        RemitAmount = #{record.remitAmount,jdbcType=BIGINT},
+      </if>
+      <if test="record.accountAttr != null" >
+        AccountAttr = #{record.accountAttr,jdbcType=TINYINT},
+      </if>
+      <if test="record.accountType != null" >
+        AccountType = #{record.accountType,jdbcType=TINYINT},
+      </if>
+      <if test="record.bankName != null" >
+        BankName = #{record.bankName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.bankNetName != null" >
+        BankNetName = #{record.bankNetName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.accountName != null" >
+        AccountName = #{record.accountName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.accountNo != null" >
+        AccountNo = #{record.accountNo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.province != null" >
+        Province = #{record.province,jdbcType=VARCHAR},
+      </if>
+      <if test="record.city != null" >
+        City = #{record.city,jdbcType=VARCHAR},
+      </if>
+      <if test="record.settStatus != null" >
+        SettStatus = #{record.settStatus,jdbcType=TINYINT},
+      </if>
+      <if test="record.remark != null" >
+        Remark = #{record.remark,jdbcType=VARCHAR},
+      </if>
+      <if test="record.remitRemark != null" >
+        RemitRemark = #{record.remitRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="record.operatorId != null" >
+        OperatorId = #{record.operatorId,jdbcType=BIGINT},
+      </if>
+      <if test="record.createTime != null" >
+        CreateTime = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateTime != null" >
+        UpdateTime = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.settOrderId != null" >
+        SettOrderId = #{record.settOrderId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.transOrderId != null" >
+        TransOrderId = #{record.transOrderId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.transMsg != null" >
+        TransMsg = #{record.transMsg,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update t_sett_record
+    set Id = #{record.id,jdbcType=BIGINT},
+      InfoId = #{record.infoId,jdbcType=BIGINT},
+      InfoType = #{record.infoType,jdbcType=TINYINT},
+      SettType = #{record.settType,jdbcType=TINYINT},
+      SettDate = #{record.settDate,jdbcType=DATE},
+      SettAmount = #{record.settAmount,jdbcType=BIGINT},
+      SettFee = #{record.settFee,jdbcType=BIGINT},
+      RemitAmount = #{record.remitAmount,jdbcType=BIGINT},
+      AccountAttr = #{record.accountAttr,jdbcType=TINYINT},
+      AccountType = #{record.accountType,jdbcType=TINYINT},
+      BankName = #{record.bankName,jdbcType=VARCHAR},
+      BankNetName = #{record.bankNetName,jdbcType=VARCHAR},
+      AccountName = #{record.accountName,jdbcType=VARCHAR},
+      AccountNo = #{record.accountNo,jdbcType=VARCHAR},
+      Province = #{record.province,jdbcType=VARCHAR},
+      City = #{record.city,jdbcType=VARCHAR},
+      SettStatus = #{record.settStatus,jdbcType=TINYINT},
+      Remark = #{record.remark,jdbcType=VARCHAR},
+      RemitRemark = #{record.remitRemark,jdbcType=VARCHAR},
+      OperatorId = #{record.operatorId,jdbcType=BIGINT},
+      CreateTime = #{record.createTime,jdbcType=TIMESTAMP},
+      UpdateTime = #{record.updateTime,jdbcType=TIMESTAMP},
+      SettOrderId = #{record.settOrderId,jdbcType=VARCHAR},
+      TransOrderId = #{record.transOrderId,jdbcType=VARCHAR},
+      TransMsg = #{record.transMsg,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="org.xxpay.core.entity.SettRecord" >
+    update t_sett_record
+    <set >
+      <if test="infoId != null" >
+        InfoId = #{infoId,jdbcType=BIGINT},
+      </if>
+      <if test="infoType != null" >
+        InfoType = #{infoType,jdbcType=TINYINT},
+      </if>
+      <if test="settType != null" >
+        SettType = #{settType,jdbcType=TINYINT},
+      </if>
+      <if test="settDate != null" >
+        SettDate = #{settDate,jdbcType=DATE},
+      </if>
+      <if test="settAmount != null" >
+        SettAmount = #{settAmount,jdbcType=BIGINT},
+      </if>
+      <if test="settFee != null" >
+        SettFee = #{settFee,jdbcType=BIGINT},
+      </if>
+      <if test="remitAmount != null" >
+        RemitAmount = #{remitAmount,jdbcType=BIGINT},
+      </if>
+      <if test="accountAttr != null" >
+        AccountAttr = #{accountAttr,jdbcType=TINYINT},
+      </if>
+      <if test="accountType != null" >
+        AccountType = #{accountType,jdbcType=TINYINT},
+      </if>
+      <if test="bankName != null" >
+        BankName = #{bankName,jdbcType=VARCHAR},
+      </if>
+      <if test="bankNetName != null" >
+        BankNetName = #{bankNetName,jdbcType=VARCHAR},
+      </if>
+      <if test="accountName != null" >
+        AccountName = #{accountName,jdbcType=VARCHAR},
+      </if>
+      <if test="accountNo != null" >
+        AccountNo = #{accountNo,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null" >
+        Province = #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null" >
+        City = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="settStatus != null" >
+        SettStatus = #{settStatus,jdbcType=TINYINT},
+      </if>
+      <if test="remark != null" >
+        Remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="remitRemark != null" >
+        RemitRemark = #{remitRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="operatorId != null" >
+        OperatorId = #{operatorId,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null" >
+        CreateTime = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        UpdateTime = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="settOrderId != null" >
+        SettOrderId = #{settOrderId,jdbcType=VARCHAR},
+      </if>
+      <if test="transOrderId != null" >
+        TransOrderId = #{transOrderId,jdbcType=VARCHAR},
+      </if>
+      <if test="transMsg != null" >
+        TransMsg = #{transMsg,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where Id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.xxpay.core.entity.SettRecord" >
+    update t_sett_record
+    set InfoId = #{infoId,jdbcType=BIGINT},
+      InfoType = #{infoType,jdbcType=TINYINT},
+      SettType = #{settType,jdbcType=TINYINT},
+      SettDate = #{settDate,jdbcType=DATE},
+      SettAmount = #{settAmount,jdbcType=BIGINT},
+      SettFee = #{settFee,jdbcType=BIGINT},
+      RemitAmount = #{remitAmount,jdbcType=BIGINT},
+      AccountAttr = #{accountAttr,jdbcType=TINYINT},
+      AccountType = #{accountType,jdbcType=TINYINT},
+      BankName = #{bankName,jdbcType=VARCHAR},
+      BankNetName = #{bankNetName,jdbcType=VARCHAR},
+      AccountName = #{accountName,jdbcType=VARCHAR},
+      AccountNo = #{accountNo,jdbcType=VARCHAR},
+      Province = #{province,jdbcType=VARCHAR},
+      City = #{city,jdbcType=VARCHAR},
+      SettStatus = #{settStatus,jdbcType=TINYINT},
+      Remark = #{remark,jdbcType=VARCHAR},
+      RemitRemark = #{remitRemark,jdbcType=VARCHAR},
+      OperatorId = #{operatorId,jdbcType=BIGINT},
+      CreateTime = #{createTime,jdbcType=TIMESTAMP},
+      UpdateTime = #{updateTime,jdbcType=TIMESTAMP},
+      SettOrderId = #{settOrderId,jdbcType=VARCHAR},
+      TransOrderId = #{transOrderId,jdbcType=VARCHAR},
+      TransMsg = #{transMsg,jdbcType=VARCHAR}
+    where Id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <!-- 统计结算情况 -->
+  <select id="count4Sett" resultType="java.util.Map" parameterType="java.util.Map" >
+    SELECT SUM(SettAmount) AS totalSettAmount,
+    SUM(SettFee) AS totalSettFee,
+    COUNT(1) AS totalCount
+    FROM t_sett_record
+    WHERE SettStatus IN (5)
+    <if test="createTimeStart != null"> AND CreateTime &gt;= #{createTimeStart} </if>
+    <if test="createTimeEnd != null"> AND CreateTime &lt;= #{createTimeEnd} </if>
+    ;
+  </select>
+  <!-- 统计结算金额总和 -->
+  <select id="sumSettAmountByExample" parameterType="org.xxpay.core.entity.SettRecordExample" resultType="java.lang.Long" >
+    select ifnull(sum(settAmount), 0) from t_sett_record
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+
+  <!-- 统计所有订单 -->
+  <select id="count4All" resultType="java.util.Map" parameterType="java.util.Map" >
+    SELECT
+    SUM(SettAmount) AS totalAmount,
+    SUM(SettFee) AS totalFee,
+    COUNT(1) AS totalCount
+    FROM t_sett_record
+    WHERE 1 = 1
+    <if test="infoId != null"> AND InfoId = #{infoId} </if>
+    <if test="settOrderId != null"> AND SettOrderId = #{settOrderId} </if>
+    <if test="accountName != null"> AND AccountName like #{accountName} </if>
+    <if test="settStatus != null"> AND SettStatus = #{settStatus} </if>
+    <if test="createTimeStart != null"> AND CreateTime &gt;= #{createTimeStart} </if>
+    <if test="createTimeEnd != null"> AND CreateTime &lt;= #{createTimeEnd} </if>;
+  </select>
+
+  <!--结算统计-->
+  <select id="settStatistics" resultType="java.util.Map" parameterType="java.util.Map" >
+    SELECT tsr.infoId AS mchId,
+    tmi.Name AS mchName,
+    SUM(tsr.SettAmount) AS totalAmount,
+    SUM(tsr.RemitAmount) AS totalRemitAmount,
+    COUNT(1) AS totalCount
+    FROM `t_sett_record` tsr
+    INNER JOIN t_mch_info tmi ON tsr.infoId = tmi.MchId
+    WHERE tsr.SettStatus = 5
+    AND tsr.InfoType = 2
+    <if test="mchId != null"> AND tsr.infoId = #{mchId} </if>
+    <if test="createTimeStart != null"> AND tsr.CreateTime &gt;= #{createTimeStart} </if>
+    <if test="createTimeEnd != null"> AND tsr.CreateTime &lt;= #{createTimeEnd} </if>
+    GROUP BY tsr.infoId ORDER BY totalAmount DESC
+    <if test="limit != null" >
+      <if test="offset != null" >
+        limit ${offset}, ${limit}
+      </if>
+      <if test="offset == null" >
+        limit ${limit}
+      </if>
+    </if>;
+  </select>
+
+  <select id="countSettStatistics" resultType="java.util.Map" parameterType="java.util.Map" >
+    SELECT
+    SUM(SettAmount) AS totalAmount,
+    SUM(RemitAmount) AS totalRemitAmount,
+    COUNT(1) AS totalCount,
+    COUNT(distinct infoId) AS totalMchCount
+    FROM `t_sett_record`
+    WHERE `SettStatus` = 5
+    AND InfoType = 2
+    <if test="mchId != null"> AND infoId = #{mchId} </if>
+    <if test="createTimeStart != null"> AND CreateTime &gt;= #{createTimeStart} </if>
+    <if test="createTimeEnd != null"> AND CreateTime &lt;= #{createTimeEnd} </if>
+    ORDER BY totalAmount DESC;
+  </select>
+
+</mapper>

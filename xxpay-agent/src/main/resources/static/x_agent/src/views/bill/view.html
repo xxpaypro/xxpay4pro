@@ -1,0 +1,144 @@
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a>下载对账</a>
+        <a>
+            <cite>查看详情</cite>
+        </a>
+    </div>
+</div>
+
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">查看详情</li>
+            </ul>
+            <div class="layui-tab-content">
+                <form class="layui-form layui-form-pane" action="">
+                    <div class="layui-row">
+                        <div class="layui-col-xs6">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">id</label>
+                                <div class="layui-input-block">
+                                    <input type="text" id="id" disabled="disabled" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">商户ID</label>
+                                <div class="layui-input-block">
+                                    <input type="text" id="mchId" disabled="disabled" class="layui-input">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">商户名称</label>
+                                <div class="layui-input-block">
+                                    <input type="text" id="mchName" disabled="disabled" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">商户类型</label>
+                                <div class="layui-input-block">
+                                    <input type="text" id="mchType" disabled="disabled" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">状态</label>
+                                <div class="layui-input-block">
+                                    <input type="text" id="status" disabled="disabled" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">对账日期</label>
+                                <div class="layui-input-block">
+                                    <input type="text" id="billDate" disabled="disabled" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">对账单类型</label>
+                                <div class="layui-input-block">
+                                    <input type="text" id="billType" disabled="disabled" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">对账文件下载地址</label>
+                                <div class="layui-input-block">
+                                    <input type="text" id="billPath" disabled="disabled" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">创建时间</label>
+                                <div class="layui-input-block">
+                                    <input type="text" id="createTime" disabled="disabled" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">更新时间</label>
+                                <div class="layui-input-block">
+                                    <input type="text" id="updateTime" disabled="disabled" class="layui-input">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <a class="layui-btn returnPrev" lay-href="">返回</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    layui.use(['admin', 'form'], function () {
+        var form = layui.form,
+            $ = layui.$,
+            admin = layui.admin,
+            element = layui.element,
+            layer = layui.layer;
+        // 导航
+        element.render('breadcrumb', 'breadcrumb');
+        var id = layui.router().search.id;
+
+        var returnType = layui.router().search.returnType; /// 1.返回我的对账单  2返回下级对账单
+
+        $(".returnPrev").attr('lay-href', returnType == 1 ? 'bill/' : 'biz/sub_bill/list');
+
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/bill/get',
+            data: {
+                id: id
+            },
+            error: function (err) {
+                layer.alert(JSON.stringify(err.field), {
+                    title: '错误提示'
+                })
+            },
+
+            success: function (res) {
+                if (res.code == 0) {
+                    $('#id').val(res.data.id);
+                    $('#mchId').val(res.data.mchId);
+                    $('#mchName').val(res.data.mchName);
+                    $('#mchType').val(res.data.mchType == 1?"平台账户":"私有账户");
+                    $('#billDate').val(layui.util.toDateString(res.data.billDate, "yyyy-MM-dd"));
+                    $('#billType').val(res.data.billType == 1?"支付对账单":"代付对账单");
+                    $('#billPath').val(res.data.billPath);
+                    $('#status').val(res.data.status == 0?"未生成":"已生成");
+                   
+                    if (res.data.createTime != "" && res.data.createTime != null) {
+                        $('#createTime').val(layui.util.toDateString(res.data.createTime));
+                    }
+                    if (res.data.updateTime != "" && res.data.updateTime != null) {
+                        $('#updateTime').val(layui.util.toDateString(res.data.updateTime));
+                    }
+                    form.render();
+                }
+            }
+        })
+    })
+</script>

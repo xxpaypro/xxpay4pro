@@ -1,0 +1,112 @@
+<style>
+    .layui-form-label {
+        width:120px !important;
+        margin-left:1%;
+        margin-top: 10px;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <div class="layui-tab-content">
+
+                <form class="layui-form center">
+                    <input type="hidden" name="id" id="id">
+                    <input type="hidden" name="infoId" id="infoId">
+                    <input type="hidden" name="refProductId" id="refProductId">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">支付产品</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="payProductInfo" readonly="readonly" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">配置商户费率(%)</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="fee" id="fee" placeholder="请输入商户费率" autocomplete="off" class="layui-input" lay-verify="required">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button type="button" class="layui-hide xxpayYesBtn" lay-submit="" lay-filter="saveConfig">保存</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    
+    layui.use(['form','table','util','admin','view'],function(){
+        var form = layui.form
+        , $ = layui.$
+        , admin = layui.admin
+        , layer = layui.layer
+        , view = layui.view
+        , element = layui.element;
+        
+        element.render('breadcrumb', 'breadcrumb'); //渲染导航信息
+        
+        var productId = view.getOpenParams('productId');  //产品ID
+        var mchId = view.getOpenParams('mchId');  //商户ID
+
+        $("#refProductId").val(productId);
+        $("#infoId").val(mchId);
+        /** 1. 查询服务商的配置信息，及相关产品信息 **/
+        admin.req({
+            type: 'post',
+            url: layui.setter.baseUrl + '/mch_pay_product/get',   //获取接口类型
+            data: {
+                productId: productId,
+                mchId: mchId
+
+            },
+            error: function(err){
+                layer.alert(err);
+            },
+            success: function(res){
+                if(res.code == 0){
+
+                    var payProductInfo = res.data.productName + " [" + res.data.id + "]";
+                    $('#payProductInfo').val(payProductInfo);
+                    console.log(res);
+                    var feeScale = res.data.ps.feeScale;
+                    if(feeScale){ //已配置
+                        $("#id").val(feeScale.id);
+                        $("input[name='fee']").val(feeScale.fee);
+                    }
+
+                    form.render();
+
+                }else{
+                    layer.alert(res.msg,{title:"请求失败"})
+                }
+            }
+        });
+
+        form.on('submit(saveConfig)', function(data){
+
+            if(!data.field.fee || isNaN(data.field.fee) || data.field.fee >= 100 ){
+                return layer.msg('费率设置有误请重新设置！', {icon: 5});
+            }
+
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/mch_pay_product/update',
+                data: data.field,
+                error: function(err){layer.alert(err.msg,{title:"请求失败"})},
+                success: function(res){
+                    if(res.code == 0){
+                        layer.closeAll(); //关闭所有弹层
+                        layer.msg("配置成功");
+                        layui.table.reload('tableReload', {page: {curr: 1}}); //调用业务弹层外表格重新加载
+                    }
+                }
+            });
+            return false;
+        });
+
+    });
+</script>

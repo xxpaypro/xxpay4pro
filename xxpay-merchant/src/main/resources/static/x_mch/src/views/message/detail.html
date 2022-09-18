@@ -1,0 +1,42 @@
+<div class="layui-fluid" id="LAY-app-message-detail">
+  <div class="layui-card layuiAdmin-msg-detail">
+  </div>
+</div>
+
+<script>
+layui.use(['admin', 'view'], function(){
+  var $ = layui.$
+  ,admin = layui.admin
+  ,layer = layui.layer
+  ,view = layui.view;
+
+  var messageId = view.getOpenParams("id");
+  admin.req({
+    url: layui.setter.baseUrl + '/message/get',
+    data:{id: messageId},
+    error: function(err){layer.alert(err,{title:"请求失败"})},
+    success: function(res){
+      if(res.code == 0){
+        $('.layuiAdmin-msg-detail').html(
+          `
+          <div class="layui-card-header">
+            <h1>${res.data.title}</h1>
+            <p>
+              <span>${layui.util.toDateString(res.data.createTime)}</span>
+            </p>
+          </div>
+          <div class="layui-card-body layui-text">
+            <div class="layadmin-text">
+              ${ res.data.message }
+            </div>
+          </div>
+          `
+        )
+      }else {
+        layer.alert({title:"请求成功，获取数据失败"})
+      }
+    }
+  })
+  
+});
+</script>

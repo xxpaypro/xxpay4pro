@@ -1,0 +1,153 @@
+<style>
+    .margin-top{margin-top:10px;}
+</style>
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>商品管理</cite></a>
+        <a><cite>属性分类管理</cite></a>
+    </span>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">商品属性分类列表</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-row">
+                   <form action="" id="exportForm" method="post">
+                    <div class="layui-form" style="float:right; margin-bottom: 10px;">
+                        <div id="timeDiv" class="layui-form-item" style="margin:0;">
+                            <div class="layui-input-inline margin-top">
+                                <input type="text" name="searchPropsCategoryId" id="searchPropsCategoryId" lay-verify="number" placeholder="商品属性分类ID" autocomplete="off" class="layui-input">
+                            </div>
+                            <div class="layui-input-inline margin-top">
+                                <input type="text" name="searchPropsCategoryName" id="searchPropsCategoryName" placeholder="分类名称" autocomplete="off" class="layui-input">
+                            </div>
+                            <div class="layui-input-inline margin-top">
+                                <button id="search" class="layui-btn" data-type="reload">搜索</button>
+                            </div>
+                        </div>
+                    </div>
+                   </form>
+                </div>
+                <div class="layui-row">
+                    <div class="layuiAdmin-btns" style="margin-bottom: 10px;">
+                        <a class="layui-btn" data-type="all" data-events="create">新增分类</a>
+                    </div>
+                </div>
+                <table id="propsCategoryList" lay-filter="propsCategoryList"></table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+     //标题内容模板
+     var tplTitle = function(d){
+         return '<a class="layui-btn layui-btn-xs" lay-event="propsMgr" >管理属性</a> ' +
+                '<a class="layui-btn layui-btn-xs" lay-event="edit" >修改</a> ' +
+                '<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>'
+     };
+
+
+	 layui.config({
+	    base: '/x_mch/src/lib/extend/',
+	 });
+     layui.use(['table', 'view', 'admin', 'form'], function(){
+        var table = layui.table
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,element = layui.element
+        ,view = layui.view
+        ,form = layui.form;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        table.render({
+            elem: '#propsCategoryList'
+            ,id: "tableReload"
+            ,url: layui.setter.baseUrl + '/mchGoodsProps/category/list'
+            ,cols: [[
+                {field: 'propsCategoryId', title: '商品属性分类ID'}
+                ,{field: 'propsCategoryName',title: '商品属性分类名称'}
+                ,{field: 'createTime',  title: '时间', minWidth: 180, templet: '<div>{{ layui.util.toDateString(d.createTime) }}</div>' }
+                ,{field: 'edit', title: '操作', width: 400, templet: tplTitle }
+            ]]
+            ,page: true
+            ,skin: 'line'
+        });
+
+         // 搜索
+         var $ = layui.$, active = {
+             reload: function(){
+                 var propsCategoryId = $('#searchPropsCategoryId').val();
+                 var propsCategoryName = $('#searchPropsCategoryName').val().trim();
+                 //执行重载
+                 table.reload('tableReload', {
+                     page: {
+                         curr: 1 //重新从第 1 页开始
+                     }
+                     ,where: {
+                         propsCategoryId: propsCategoryId,
+                         propsCategoryName: propsCategoryName
+                     }
+                 });
+             }
+         };
+         $('#search').on('click', function() {
+             var type = $(this).data('type');
+             active[type] ? active[type].call(this) : '';
+             return false;
+         });
+
+         //监听工具条
+         table.on('tool(propsCategoryList)', function(obj){
+             var data = obj.data;
+             var layEvent = obj.event;
+
+             if(layEvent === 'edit'){ //编辑
+                 view.xxpayPopup("编辑分类", "goods/props/update", {propsCategoryId: data.propsCategoryId}, {area:["30%", "40%"]});
+             } else if(obj.event === 'del'){
+                 layer.confirm('确认删除么', function(index){
+                     admin.req({
+                         type: 'get',
+                         url: layui.setter.baseUrl + '/mchGoodsProps/category/delete',
+                         data: {
+                             propsCategoryId: data.propsCategoryId,
+                         },
+                         success: function(res){
+                             if(res.code == 0) {
+                                 layer.msg('删除成功', {
+                                     icon: 1
+                                 });
+                                 table.reload("tableReload");
+                             }
+                         }
+                     });
+                 });
+             } else if(obj.event === 'propsMgr') {
+                 location.hash="/goods/props/props_mgr/propsCategoryId=" + data.propsCategoryId;
+             }
+         });
+
+         // 事件处理
+         var events = {
+             create: function(othis, type){
+                 view.xxpayPopup("新增分类", "goods/props/create", null, {area:["30%", "40%"]});
+             }
+         };
+
+         $('.layuiAdmin-btns .layui-btn').on('click', function(){
+             var othis = $(this)
+                 ,thisEvent = othis.data('events')
+                 ,type = othis.data('type');
+             events[thisEvent] && events[thisEvent].call(this, othis, type);
+         });
+
+
+         // 渲染表单
+         form.render();
+        
+     })
+</script>

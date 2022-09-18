@@ -1,0 +1,168 @@
+
+<div class="layui-card layadmin-header">
+  <div class="layui-breadcrumb" lay-filter="breadcrumb">
+    <a lay-href="">主页</a>
+    <a><cite>角色管理</cite></a>
+  </div>
+</div>
+
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-tab layui-tab-brief">
+      <ul class="layui-tab-title">
+        <li class="layui-this">角色列表</li>
+      </ul>
+      <div class="layui-tab-content">
+        <div class="layui-tab-item layui-show">
+          <div class="layui-row">
+            <div class="layui-form" style="float:right;">
+              <div class="layui-form-item" style="margin:0;">
+                <div class="layui-input-inline">
+                  <input type="text" name="searchRoleName" id="searchRoleName" autocomplete="off" placeholder="角色名称" class="layui-input">
+                </div>
+                <button id="search" class="layui-btn" data-type="reload">搜索</button>
+              </div>
+            </div>
+          </div>
+          <div class="layui-row">
+            <div class="layuiAdmin-btns" style="margin-bottom: 10px;">
+              <a class="layui-btn" data-events="create">新增</a>
+              <button class="layui-btn" data-type="all" data-events="del">删除</button>
+            </div>
+          </div>
+          <table id="XxPay_Mgr_Role_dataAll" lay-filter="XxPay_Mgr_Role_dataAll"></table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/html" id="xxpayBar">
+  <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="perm">分配权限</a>
+  <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
+<script>
+layui.use(['admin', 'table', 'util','view'], function(){
+  var $ = layui.$
+  ,admin = layui.admin
+  ,table = layui.table
+  ,element = layui.element
+  ,view = layui.view
+  ,form = layui.form;
+  
+  element.render('breadcrumb', 'breadcrumb');
+
+  //角色列表
+  table.render({
+    elem: '#XxPay_Mgr_Role_dataAll'
+    ,url: layui.setter.baseUrl + '/subuser/role/list' //列表接口
+    ,id: 'tableReload'
+    ,page: true
+    ,cols: [[
+      {type: 'checkbox', fixed: 'left'}
+      ,{field: 'roleId', title: '角色ID'}
+      ,{field: 'roleName', title: '角色名称'}
+      ,{field: 'edit', width:260, title: '操作', toolbar: '#xxpayBar' }
+    ]]
+    ,skin: 'line'
+  });
+
+  //监听工具条
+  table.on('tool(XxPay_Mgr_Role_dataAll)', function(obj){
+    var data = obj.data;
+    if(obj.event === 'perm'){
+      view.xxpayPopup("分配权限", "sub_user/role/perm_save", {roleId: data.roleId}, {area: ["50%", "80%"]});
+    } else if(obj.event === 'del'){
+      layer.confirm('确认删除么', function(index){
+        admin.req({
+          type: 'get',
+          url: layui.setter.baseUrl + '/subuser/role/delete',
+          data: {
+            roleIds: data.roleId,
+          },
+          success: function(res){
+            if(res.code == 0) {
+              layer.msg('删除成功', {
+                icon: 1
+              });
+              table.reload("tableReload");
+            }
+          }
+        });
+      });
+    } else if(obj.event === 'edit'){
+      view.xxpayPopup("编辑角色", "sub_user/role/role_edit", {roleId: data.roleId}, {area: ["35%", "40%"]});
+    }
+  });
+
+
+  // 搜索
+  var $ = layui.$, active = {
+    reload: function(){
+      var roleName = $("#searchRoleName").val();
+      //执行重载
+      table.reload('tableReload', {
+        page: {
+          curr: 1 //重新从第 1 页开始
+        }
+        ,where: {
+          roleName: roleName,
+        }
+      });
+    }
+  };
+  $('#search').on('click', function() {
+    var type = $(this).data('type');
+    active[type] ? active[type].call(this) : '';
+  });
+
+  // 事件处理
+  var events = {
+    del: function(othis, type){
+      var checkStatus = table.checkStatus("tableReload")
+      ,data = checkStatus.data; //获得选中的数据
+      if(data.length === 0) return layer.msg('请选择数据');
+      console.log(data);
+      layer.confirm('确定删除选中的数据吗？', function(){
+        var roleIds = "";
+        $.each(data, function(i, n){
+          roleIds = roleIds + "," + n.roleId;
+        });
+        if(roleIds != "") {
+          roleIds = roleIds.substring(1);
+        }
+
+        admin.req({
+          type: 'get',
+          url: layui.setter.baseUrl + '/subuser/role/delete',
+          data: {
+            roleIds: roleIds,
+          },
+          success: function(res){
+            if(res.code == 0) {
+              layer.msg('删除成功', {
+                icon: 1
+              });
+              table.reload("tableReload");
+            }
+          }
+        });
+      });
+    },
+    create: function () {
+        view.xxpayPopup("新增角色", "sub_user/role/role_add", null, {area: ["35%", "35%"]});
+    }
+  };
+  $('.layuiAdmin-btns .layui-btn').on('click', function(){
+    var othis = $(this)
+            ,thisEvent = othis.data('events')
+            ,type = othis.data('type');
+    events[thisEvent] && events[thisEvent].call(this, othis, type);
+  });
+  // 渲染表单
+  form.render();
+});
+</script>

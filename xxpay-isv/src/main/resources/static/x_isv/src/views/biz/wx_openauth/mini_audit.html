@@ -1,0 +1,271 @@
+<style>
+    .xxpayPopupDiv .layui-form-label {
+        width:15% !important;
+        margin-left:1%;
+    }
+    .xxpayPopupDiv .layui-input-inline {
+        width: 33% !important;
+        min-height: 1px;  /** 避免没有内容时无法占位的问题 **/
+    }
+    .xxpayPopupDiv .layui-card{margin-bottom: 0;background: #FFFFFF;}
+    .layui-card{margin-bottom: 0}
+
+    .xxpay-pic-list{display: flex;flex-direction: row;flex-wrap: wrap;align-items: center;justify-content: flex-start;padding: 10px;}
+</style>
+<div class="layui-fluid">
+  <div class="layui-card">
+    <form class="layui-form layui-form-pane">
+        <div class="layui-tab layui-tab-brief">
+            <div class="layui-tab-content">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">小程序内截图</label>
+                    <div class="layui-input-inline">
+                        <input type="hidden" name="picIdList" id="picIdList" value="">
+                        <blockquote class="layui-elem-quote layui-quote-nm" style="margin-left: 15px;font-size: xx-small">
+                            <div class="xxpay-pic-list" id="div-slide_show"></div>
+                        </blockquote>
+                        <button type="button" class="layui-btn layui-btn-sm" id="multiple_pic_upload" style="margin-left: 20px;">多图片上传</button>
+                        <button class="delImgsBtn layui-btn layui-btn-sm layui-btn-danger layui-hide" type="button">删除图片</button>
+                        &nbsp;&nbsp;<span style="font-size: 12px;color: #c0c0c0">选填，最多5张，每张不超过2M</span>
+                    </div>
+
+                    <label class="layui-form-label">小程序内录屏</label>
+                    <div class="layui-input-inline">
+                        <input type="hidden" name="videoIdList" id="videoIdList" value="">
+                        <blockquote class="layui-elem-quote layui-quote-nm" style="margin-left: 15px;font-size: xx-small">
+                            <div class="xxpay-pic-list" id="div-slide_show_video"></div>
+                        </blockquote>
+                        <button type="button" class="layui-btn layui-btn-sm" id="multiple_video_upload" style="margin-left: 20px;">点击上传</button>
+                        <button class="videodelImgsBtn layui-btn layui-btn-sm layui-btn-danger layui-hide" type="button">删除视频</button>
+                        &nbsp;&nbsp;<span style="font-size: 12px;color: #c0c0c0">选填，最多3个，每个不超过10M</span>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">小程序版本说明</label>
+                    <div class="layui-input-inline">
+                        <textarea name="versionDesc" placeholder="请输入小程序版本说明和功能解释" class="layui-textarea"></textarea>
+                    </div>
+                </div>
+                <div class="layui-form-item layui-hide" id="feedback">
+                    <label class="layui-form-label">提审反馈</label>
+                    <div class="layui-input-inline">
+                        <textarea name="feedbackInfo" placeholder="请输入小程序重新提交审核的反馈内容" class="layui-textarea"></textarea>
+                    </div>
+
+                    <label class="layui-form-label">反馈图片</label>
+                    <div class="layui-input-inline">
+                        <input type="hidden" name="feedbackStuff" id="feedbackStuff" value="">
+                        <blockquote class="layui-elem-quote layui-quote-nm" style="margin-left: 15px;font-size: xx-small">
+                            <div class="xxpay-pic-list" id="div-slide_show_feedbackStuff"></div>
+                        </blockquote>
+                        <button type="button" class="layui-btn layui-btn-sm" id="multiple_feedbackStuff_upload" style="margin-left: 20px;">多图片上传</button>
+                        <button class="feedbackdelImgsBtn layui-btn layui-btn-sm layui-btn-danger layui-hide" type="button">删除图片</button>
+                        &nbsp;&nbsp;<span style="font-size: 12px;color: #c0c0c0">选填，最多5张，每张不超过2M</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button type="button" class="layui-hide xxpayYesBtn" lay-submit="" lay-filter="audit"></button>
+    </form>
+  </div>
+</div>
+<script>
+  layui.use(['upload','util','view', 'form', 'admin', 'setter'], function(){
+    var $ = layui.$
+            ,admin = layui.admin
+            ,view = layui.view
+            ,upload = layui.upload
+            ,form = layui.form
+            ,setter = layui.setter
+            ,element = layui.element;
+
+    element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+    var picIdList = [];
+    var videoIdList = [];
+    var feedbackStuff = [];
+
+      var mchId = view.getOpenParams('mchId');  //商户ID
+      var authFrom = view.getOpenParams('authFrom');  //来源
+      var type = view.getOpenParams('type');  //提交类型：audit-提交  reAudit-重新提交
+      console.log(type)
+
+      if (type == 'reAudit') {
+        $("#feedback").removeClass("layui-hide");
+      }
+
+      var headers = {};
+      headers[setter.request.tokenName] = layui.data(setter.tableName)[setter.request.tokenName];
+      //多图片上传
+      upload.render({
+          elem: '#multiple_pic_upload'
+          ,url: layui.setter.baseUrl + '/wx_mini/mini_pic'
+          ,headers: headers
+          ,data: {
+              mchId: mchId,
+              authFrom: authFrom
+          }
+          ,size: 2048
+          ,acceptMime: 'image/jpg, image/png, image/jpeg, image/gif'
+          ,multiple: true
+          ,before: function(obj){
+              var count = 0;
+              // 预读本地文件示例，不支持ie8
+              obj.preview(
+                  function(index, file, result){
+                      count ++;
+                      // 判断当前多图个数是否高于5个
+                      if (count > 5) {
+                          layer.msg("超过小程序截图个数上限！");
+                          return false;
+                      }
+                      $('#div-slide_show').append('<img style="height:38px; margin-right:20px;cursor: pointer;" src="'+ result +'" alt="'+ file.name
+                          +'" title="" class="layui-upload-img uploadImg">')
+                  });
+          }
+          ,done: function(res){
+              $('.delImgsBtn').removeClass('layui-hide');
+              //如果上传成功
+              if (res.code == 0) {
+                  //追加图片成功追加文件名至图片容器
+                  picIdList.push(res.data);
+                  // 判断当前多图个数是否高于5个
+                  if (picIdList.length > 5) {
+                      layer.msg("超过小程序截图个数上限！");
+                      return false;
+                  }else{
+                      console.log(picIdList)
+                      $('#picIdList').val(picIdList);
+                  }
+              }
+          }
+      });
+
+      //反馈图上传
+      upload.render({
+          elem: '#multiple_feedbackStuff_upload'
+          ,url: layui.setter.baseUrl + '/wx_mini/mini_pic'
+          ,headers: headers
+          ,data: {
+              mchId: mchId,
+              authFrom: authFrom
+          }
+          ,size: 2048
+          ,acceptMime: 'image/jpg, image/png, image/jpeg, image/gif'
+          ,multiple: true
+          ,before: function(obj){
+              var count = 0;
+              // 预读本地文件示例，不支持ie8
+              obj.preview(
+                  function(index, file, result){
+                      count ++;
+                      // 判断当前多图个数是否高于5个
+                      if (count > 5) {
+                          layer.msg("超过小程序截图个数上限！");
+                          return false;
+                      }
+                      $('#div-slide_show_feedbackStuff').append('<img style="height:38px; margin-right:20px;cursor: pointer;" src="'+ result +'" alt="'+ file.name
+                          +'" title="" class="layui-upload-img uploadImg">')
+                  });
+          }
+          ,done: function(res){
+              $('.feedbackdelImgsBtn').removeClass('layui-hide');
+              //如果上传成功
+              if (res.code == 0) {
+                  //追加图片成功追加文件名至图片容器
+                  feedbackStuff.push(res.data);
+                  // 判断当前多图个数是否高于5个
+                  if (feedbackStuff.length > 5) {
+                      layer.msg("超过小程序截图个数上限！");
+                      return false;
+                  }else{
+                      console.log(feedbackStuff)
+                      $('#feedbackStuff').val(feedbackStuff);
+                  }
+              }
+          }
+      });
+
+      //视频上传
+      upload.render({
+          elem: '#multiple_video_upload'
+          ,url: layui.setter.baseUrl + '/wx_mini/mini_pic'
+          ,headers: headers
+          ,accept: 'video'
+          ,acceptMime: 'video/mp4'
+          ,size: 2048
+          ,data: {
+              mchId: mchId,
+              authFrom: authFrom
+          }
+          ,before: function(obj){
+              var count = 0;
+              // 预读本地文件示例，不支持ie8
+              obj.preview(
+                  function(index, file, result){
+                      count ++;
+                      // 判断当前多图个数是否高于3个
+                      if (count > 3) {
+                          layer.msg("超过小程序录屏个数上限！");
+                          return false;
+                      }
+                      $('#div-slide_show_video').append('<div style="margin-right: 20px"><video id="video" controls preload="auto" height="38px">'
+                            + '<source src="'+ result +'" type="video/mp4"></video></div>');
+                  });
+          }
+          ,done: function(res){
+              $('.videodelImgsBtn').removeClass('layui-hide');
+              //如果上传成功
+              if (res.code == 0) {
+                  //追加图片成功追加文件名至图片容器
+                  videoIdList.push(res.data);
+                  // 判断当前多图个数是否高于3个
+                  if (videoIdList.length > 3) {
+                      layer.msg("超过小程序录屏个数上限！");
+                      return false;
+                  }else{
+                      console.log(videoIdList)
+                      $('#videoIdList').val(videoIdList);
+                  }
+              }
+          }
+      });
+
+      form.render();
+
+      form.on('submit(audit)', function(data){
+
+          var layerShadeId = layer.msg('请稍后...',{time: 0, shade: 0.1});
+
+          data.field.mchId = mchId;
+          data.field.authFrom = authFrom;
+          data.field.type = type;
+
+          admin.req({
+              type: 'get',
+              url: layui.setter.baseUrl + '/wx_mini/submit_audit',
+              data:  data.field,
+              error: function(err){layer.alert(err.msg,{title:"请求失败"})},
+              success: function(res){
+                  if(res.code == 0) {
+                      //关闭当前弹层 & 调用外层的刷新事件
+                      layer.closeAll();
+                      admin.events.refresh();
+                  }
+              },complete:function(){
+                  layer.close(layerShadeId);
+              }
+          });
+          return false;
+      });
+
+      $('.layui-btn').on('click', function(){
+          var othis = $(this)
+              ,thisEvent = othis.data('events')
+              ,type = othis.data('type');
+          events[thisEvent] && events[thisEvent].call(this, othis, type);
+      });
+
+  });
+
+</script>

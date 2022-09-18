@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.xxpay.service.dao.mapper.MchStoreMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="org.xxpay.core.entity.MchStore">
+        <id column="StoreId" property="StoreId" />
+        <result column="StoreNo" property="storeNo" />
+        <result column="StoreName" property="storeName" />
+        <result column="RefundPassword" property="refundPassword" />
+        <result column="ProvinceCode" property="provinceCode" />
+        <result column="CityCode" property="cityCode" />
+        <result column="AreaCode" property="areaCode" />
+        <result column="AreaInfo" property="areaInfo" />
+        <result column="Address" property="address" />
+        <result column="Lot" property="lot" />
+        <result column="Lat" property="lat" />
+        <result column="Status" property="status" />
+        <result column="Tel" property="tel" />
+        <result column="MchId" property="mchId" />
+        <result column="Remark" property="remark" />
+        <result column="StoreImgPath" property="storeImgPath" />
+        <result column="CreateTime" property="createTime" />
+        <result column="UpdateTime" property="updateTime" />
+        <result column="MiniImgPath" property="miniImgPath" />
+    </resultMap>
+
+</mapper>

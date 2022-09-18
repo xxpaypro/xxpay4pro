@@ -1,0 +1,72 @@
+<assembly>
+    <id>bin</id>
+    <!-- 最终打包成一个用于发布的zip文件 -->
+    <formats>
+        <format>tar.gz</format>
+    </formats>
+
+    <!-- Adds dependencies to zip package under lib directory -->
+    <dependencySets>
+    
+    	<!-- 不使用项目的artifact，第三方jar不要解压，打包进zip文件的lib目录 -->
+        <dependencySet>
+            <useProjectArtifact>false</useProjectArtifact>
+            <outputDirectory>lib</outputDirectory>
+            <scope>runtime</scope>
+        </dependencySet>
+        
+        <!-- 将system scope 依赖打包进lib目录 -->
+        <dependencySet>
+        	<useProjectArtifact>false</useProjectArtifact>
+            <outputDirectory>lib</outputDirectory>
+            <scope>system</scope>
+        </dependencySet>
+        
+    </dependencySets>
+
+    <fileSets>
+        <!-- 把项目相关的说明文件，打包进zip文件的根目录 -->
+        <fileSet>
+            <directory>${project.basedir}</directory>
+            <outputDirectory>/</outputDirectory>
+            <includes>
+                <include>README*</include>
+                <include>LICENSE*</include>
+                <include>NOTICE*</include>
+            </includes>
+        </fileSet>
+
+        <!-- 把项目的脚本文件目录（ src/main/scripts ）中的启动脚本文件，打包进zip文件的跟目录 -->
+        <fileSet>
+            <directory>${project.build.scriptSourceDirectory}</directory>
+            <outputDirectory>bin</outputDirectory>
+            <includes>
+                <include>*.*</include>
+            </includes>
+        </fileSet>
+        
+        <!-- 将 _include_shell.sh / _include_cmd.bat  打包进bin目录 -->
+        <fileSet>
+            <directory>../assembly</directory>
+            <outputDirectory>bin</outputDirectory>
+            <includes>
+            	<include>_include_shell.sh</include>
+            	<include>_include_cmd.bat</include>
+            </includes>
+        </fileSet>
+
+        <fileSet>
+            <directory>${project.build.outputDirectory}</directory>
+            <outputDirectory>classes</outputDirectory>
+            <includes>
+                <include>**/*.class</include>
+                <include>**/*.xml</include>
+                <include>**/*.yml</include>
+                <include>**/*.properties</include>
+                <include>templates/**</include>
+                <include>static/**</include>
+            </includes>
+        </fileSet>
+
+    </fileSets>
+</assembly>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.xxpay.service.dao.mapper.MchGoodsMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="org.xxpay.core.entity.MchGoods">
+        <id column="GoodsId" property="GoodsId" />
+        <result column="GoodsName" property="goodsName" />
+        <result column="CategoryId" property="categoryId" />
+        <result column="CategoryName" property="categoryName" />
+        <result column="SubGoodsId" property="subGoodsId" />
+        <result column="IndustryType" property="industryType" />
+        <result column="GoodsType" property="goodsType" />
+        <result column="GoodsModule" property="goodsModule" />
+        <result column="GoodsDesc" property="goodsDesc" />
+        <result column="GraphicDesc" property="graphicDesc" />
+        <result column="CellingPrice" property="cellingPrice" />
+        <result column="BuyingPrice" property="buyingPrice" />
+        <result column="MemberPrice" property="memberPrice" />
+        <result column="Unit" property="unit" />
+        <result column="StockLimitType" property="stockLimitType" />
+        <result column="StockNum" property="stockNum" />
+        <result column="ActualSaleNum" property="actualSaleNum" />
+        <result column="VirtualSaleNum" property="virtualSaleNum" />
+        <result column="BrowseNumber" property="browseNumber" />
+        <result column="EvaluationNumber" property="evaluationNumber" />
+        <result column="ProducedBeginTime" property="producedBeginTime" />
+        <result column="Expiration" property="expiration" />
+        <result column="Supplier" property="supplier" />
+        <result column="ImgPathMain" property="imgPathMain" />
+        <result column="ImgPathMore" property="imgPathMore" />
+        <result column="Status" property="status" />
+        <result column="Brand" property="brand" />
+        <result column="GoodsTag" property="goodsTag" />
+        <result column="BarCode" property="barCode" />
+        <result column="IsRecommend" property="isRecommend" />
+        <result column="RecommendSort" property="recommendSort" />
+        <result column="GoodsPropsType" property="goodsPropsType" />
+        <result column="StoreLimitType" property="storeLimitType" />
+        <result column="MiniGoodsId" property="miniGoodsId" />
+        <result column="MiniAuditId" property="miniAuditId" />
+        <result column="MchId" property="mchId" />
+        <result column="IsvId" property="isvId" />
+        <result column="CreateTime" property="createTime" />
+        <result column="UpdateTime" property="updateTime" />
+    </resultMap>
+
+    <select id="storesList" parameterType="java.lang.Long" resultType="Map">
+        SELECT s.storeId, s.storeName FROM t_mch_store s INNER JOIN t_mch_goods_store_rela gsr
+        ON s.StoreId = gsr.StoreId
+        WHERE gsr.GoodsId = #{goodsId}
+    </select>
+
+    <select id="propsCategoryList" parameterType="java.lang.Long" resultType="Map">
+        SELECT c.propsCategoryId, c.propsCategoryName FROM t_mch_goods_props_category c INNER JOIN t_mch_goods_props_category_rela gsr
+        ON c.PropsCategoryId = gsr.PropsCategoryId
+        WHERE gsr.GoodsId = #{goodsId}
+    </select>
+
+</mapper>

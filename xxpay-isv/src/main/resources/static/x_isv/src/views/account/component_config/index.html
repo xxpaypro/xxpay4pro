@@ -1,0 +1,279 @@
+
+<div class=" layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a><cite>微信第三方平台配置</cite></a>
+    </div>
+</div>
+<style>
+    .layui-form-label {
+        width:120px !important;
+        margin-left:1%;
+    }
+    .layui-input-inline {
+        width: 80% !important;
+    }
+    .layui-input , .layui-textarea{
+        width: 80%;
+    }
+
+    .topDiv{ margin-bottom: 40px}
+    .topDiv .itemDiv{ border-radius:20px; height:60px; padding:10px;}
+    .topDiv .itemDiv span{height: 100%; padding-top:5px; display: block }
+
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">微信第三方平台配置</li>
+            </ul>
+
+
+            <div class="layui-tab-content">
+
+                <form class="layui-form center">
+
+                    <div class="layui-form-item topDiv">
+                        <div class="layui-row layui-col-space20">
+                            <div class="layui-col-md2">
+                                <div class="itemDiv layui-bg-cyan"><span>1、创建微信开放平台账号</span></div>
+                            </div>
+                            <div class="layui-col-md2">
+                                <div class="itemDiv layui-bg-cyan"><span>2、请在微信侧进行开发者资质认证</span></div>
+                            </div>
+                            <div class="layui-col-md2">
+                                <div class="itemDiv layui-bg-cyan"><span>3、创建第三方平台并将下述参数填对对应位置</span></div>
+                            </div>
+                            <div class="layui-col-md2">
+                                <div class="itemDiv layui-bg-cyan"><span>4、在本页面录入您刚刚申请的 [AppId] 和 [AppSecret] ,等待程序自动完成对接工作。</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="">当前微信 [第三方平台账号] 状态: </label>
+                        <span id="statusSpan" class=""> -- </span>
+                    </div>
+
+
+                    <fieldset class="layui-elem-field">
+                        <legend><button class='layui-btn layui-btn-xs layui-btn-danger'>申请参数</button></legend>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">授权发起页域名:</label>
+                            <div class="layui-input-inline">
+                                <input id="configAuthHost" type="text" readonly="readonly" autocomplete="off" class="layui-input" />
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">授权测试公众号列表:</label>
+                            <div class="layui-input-inline">
+                                <input id="configTestMpAccount" type="text" readonly="readonly" autocomplete="off" class="layui-input" />
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">授权事件接收URL:</label>
+                            <div class="layui-input-inline">
+                                <input id="configAuthMsgUrl" type="text" readonly="readonly" autocomplete="off" class="layui-input" />
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">消息校验Token:</label>
+                            <div class="layui-input-inline">
+                                <input id="configMsgToken" type="text" readonly="readonly" autocomplete="off" class="layui-input" />
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">消息加解密Key:</label>
+                            <div class="layui-input-inline">
+                                <input id="configAesKey" type="text" readonly="readonly" autocomplete="off" class="layui-input" />
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">消息与事件接收URL:</label>
+                            <div class="layui-input-inline">
+                                <input id="configNormalMsgUrl" type="text" readonly="readonly" autocomplete="off" class="layui-input" />
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">小程序服务器域名:</label>
+                            <div class="layui-input-inline">
+                                <input id="configMiniHost" type="text" readonly="readonly" autocomplete="off" class="layui-input" />
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">小程序业务域名:</label>
+                            <div class="layui-input-inline">
+                                <input id="configMiniBizHost" type="text" readonly="readonly" autocomplete="off" class="layui-input" />
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">白名单IP地址列表:</label>
+                            <div class="layui-input-inline">
+                                <input id="configWhiteIp" type="text" readonly="readonly" autocomplete="off" class="layui-input" />
+                            </div>
+                        </div>
+
+                    </fieldset>
+
+
+                    <fieldset class="layui-elem-field">
+                        <legend><button class='layui-btn layui-btn-xs layui-btn-danger'>微信[第三方平台]信息</button></legend>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">AppId:</label>
+                            <div class="layui-input-inline">
+                                <input id="componentAppId" type="text" autocomplete="off" class="layui-input" placeholder="请填入您创建的第三方平台AppId">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">AppSecret:</label>
+                            <div class="layui-input-inline">
+                                <input id="componentAppSecret" type="text" autocomplete="off" class="layui-input" placeholder="请填入您创建的第三方平台AppSecret">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">微信验证文件信息:</label>
+                            <div class="layui-input-inline">
+                                <span>文件名：</span>
+                                <input id="configWxCheckFileName" style="width:320px; display: inline-block;" type="text" autocomplete="off" class="layui-input" placeholder="请填入微信验证文件名" />
+                                <span>文件内容：</span>
+                                <input id="configWxCheckFileValue" style="width:320px; display: inline-block;" type="text" autocomplete="off" class="layui-input" placeholder="请填入微信验证文件内容" />
+                                <button class="uploadFileBtn layui-btn layui-btn-normal layui-btn-sm" type="button" style="margin-left: 20px;">上传文件自动解析</button>
+                            </div>
+                        </div>
+
+                    </fieldset>
+
+
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button type="button" id="saveBtn" class="layui-btn" lay-submit="" lay-filter="saveConfig">保存</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    layui.use(['form','table','util','admin', 'setter', 'upload'],function(){
+        var form = layui.form
+            , $ = layui.$
+            , admin = layui.admin
+            , layer = layui.layer
+            , element = layui.element
+            , table = layui.table
+            ,setter = layui.setter
+            ,upload = layui.upload;
+
+        element.render('breadcrumb', 'breadcrumb'); //渲染导航信息
+
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/wx3rd/get',
+            error: function(err){layer.alert(err.msg,{title:"请求失败"})},
+            success: function(res){
+                if(res.code == 0){
+
+                    if(!res.data){
+                        return layer.alert('查询失败，请联系系统管理员 配置相关参数！');
+                    }else{
+
+                        $('#configAuthHost').val(res.data.configAuthHost);
+                        $('#configTestMpAccount').val(res.data.configTestMpAccount);
+                        $('#configAuthMsgUrl').val(res.data.configAuthMsgUrl);
+                        $('#configMsgToken').val(res.data.configMsgToken);
+                        $('#configAesKey').val(res.data.configAesKey);
+                        $('#configNormalMsgUrl').val(res.data.configNormalMsgUrl);
+                        $('#configMiniHost').val(res.data.configMiniHost);
+                        $('#configMiniBizHost').val(res.data.configMiniBizHost);
+                        $('#configWhiteIp').val(res.data.configWhiteIp);
+
+                        $('#componentAppId').val(res.data.componentAppId);
+                        $('#componentAppSecret').val(res.data.componentAppSecret);
+
+                        $('#configWxCheckFileName').val(res.data.configWxCheckFileName);
+                        $('#configWxCheckFileValue').val(res.data.configWxCheckFileValue);
+
+                        if(res.data.status == '0'){
+                            $("#statusSpan").text('暂停使用').addClass("layui-bg-red");
+                            $("#saveBtn").hide();
+
+                        }else if(res.data.status == '1'){
+                            $("#statusSpan").text('待录入信息').addClass("layui-bg-blue");
+                        }else if(res.data.status == '2'){
+                            $("#statusSpan").text('账号信息待验证').addClass("layui-bg-orange");
+                        }else if(res.data.status == '3'){
+                            $("#statusSpan").text('验证通过').addClass("layui-bg-green");
+                        }else if(res.data.status == '4'){
+                            $("#statusSpan").text('验证错误, 请检查配置参数！').addClass("layui-bg-red");
+                        }
+                    }
+                }
+            }
+        });
+
+
+        //上传文件接口 [微信服务商 [第三方平台] 服务器验证文件 ]
+        var headers = {};
+        headers[setter.request.tokenName] = layui.data(setter.tableName)[setter.request.tokenName];
+        upload.render({
+            url: layui.setter.baseUrl + '/upload/wx3rdCheckFile'
+            ,elem: '.uploadFileBtn'
+            ,headers: headers
+            ,size: 10  //最大仅允许10KB
+            ,accept: 'file'
+            ,done: function(res, index, upload){
+
+                if(res.code != 0){ //上传失败
+                    return layer.msg('解析失败');
+                }
+                layer.msg('解析成功！');
+                $('#configWxCheckFileName').val(res.data.fileOriginName);
+                $('#configWxCheckFileValue').val(res.data.value);
+            }
+        });
+
+        form.on('submit(saveConfig)', function(data){
+
+            var componentAppId = $('#componentAppId').val();
+            var componentAppSecret = $('#componentAppSecret').val();
+            var configWxCheckFileName = $('#configWxCheckFileName').val();
+            var configWxCheckFileValue = $('#configWxCheckFileValue').val();
+
+            if(!componentAppId){return layer.alert('请填写开放平台[AppId] ！');}
+            if(!componentAppSecret){return layer.alert('请填写开放平台[AppSecret] ！');}
+            if(!configWxCheckFileName){return layer.alert('请填写微信校验文件名！');}
+            if(!configWxCheckFileValue){return layer.alert('请填写微信校验文件内容！');}
+
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/wx3rd/update',
+                data: {
+                    componentAppId: componentAppId, componentAppSecret: componentAppSecret,
+                    configWxCheckFileName: configWxCheckFileName, configWxCheckFileValue: configWxCheckFileValue}
+                    ,
+                error: function(err){layer.alert(err.msg,{title:"请求失败"})},
+                success: function(res){
+                    if(res.code == 0){
+                        layer.alert("账号信息提交成功，请等待微信推送消息验证! ", function(){
+                            admin.events.refresh();
+                        });
+                    }
+                }
+            })
+            return false;
+        });
+    });
+</script>

@@ -1,0 +1,73 @@
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <div class="layui-row">
+                <div class="layuiAdmin-btns" style="margin-bottom: 10px;">
+                    <a class="layui-btn" data-type="all" id="propsAdd" data-events="addProps">添加属性分类</a>
+                    <a class="layui-btn layui-hide" id="propsList" lay-href="/goods/props/">前往新增属性分类</a>
+                </div>
+            </div>
+                <table id="propsCategoryList" lay-filter="propsCategoryList"></table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+   
+    layui.use(['form','admin', 'table'], function(){
+        var form = layui.form
+        ,$ = layui.$
+        ,table = layui.table
+        ,element = layui.element;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        //属性分类列表
+        table.render({
+            elem: '#propsCategoryList'
+            ,url: layui.setter.baseUrl + '/mchGoodsProps/category/list'
+            ,id: 'tableReload'
+            ,page: true
+            ,cols: [[
+                {type: 'checkbox', fixed: 'left'}
+                ,{field: 'propsCategoryId', title: '属性分类ID'}
+                ,{field: 'propsCategoryName', title: '属性分类名称'}
+            ]]
+            ,skin: 'line'
+            ,done: function(res, curr, count){
+                if (count == 0) {
+                    $("#propsList").removeClass("layui-hide");
+                    $("#propsAdd").addClass("layui-hide");
+                }
+            }
+        });
+
+        // 事件处理
+        var events = {
+            addProps: function(othis, type){
+                var checkStatus = table.checkStatus("tableReload")
+                    ,data = checkStatus.data; //获得选中的数据
+                if(data.length === 0) return layer.msg('请选择数据');
+                var propsCategoryIds = "";
+                $.each(data, function(i, n){
+                    propsCategoryIds = propsCategoryIds + "," + n.propsCategoryId;
+                });
+                if(propsCategoryIds != "") {
+                    propsCategoryIds = propsCategoryIds.substring(1);
+                }
+                $("#propsCategoryIds").val(propsCategoryIds);
+                layer.closeAll(); //关闭所有弹层
+                layui.table.reload('tableReload'); //调用业务弹层外表格重新加载
+            }
+        };
+
+        $('.layuiAdmin-btns .layui-btn').on('click', function(){
+            var othis = $(this)
+                ,thisEvent = othis.data('events')
+                ,type = othis.data('type');
+            events[thisEvent] && events[thisEvent].call(this, othis, type);
+        });
+
+    });
+
+</script>

@@ -1,0 +1,160 @@
+<style>
+    .margin-top{margin-top:10px;}
+</style>
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>商户会员</cite></a>
+    </span>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">商户会员列表</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-row">
+                   <form action="" id="exportForm" method="post">
+                    <div class="layui-form" style="float:right; margin-bottom: 10px;">
+                        <div id="timeDiv" class="layui-form-item" style="margin:0;">
+                            <div class="layui-input-inline margin-top">
+                                <input type="text" name="searchMemberNo" id="searchMemberNo" placeholder="会员卡号" autocomplete="off" class="layui-input">
+                            </div>
+                            <div class="layui-input-inline margin-top">
+                                <button id="search" class="layui-btn" data-type="reload">搜索</button>
+                            </div>
+                        </div>
+                    </div>
+                   </form>
+                </div>
+                <div class="layui-row">
+                    <div class="layuiAdmin-btns" style="margin-bottom: 10px;">
+                        <a class="layui-btn" data-type="all" data-events="create">新建会员</a>
+                        <!--<a class="layui-btn" data-type="all" data-events="config">会员卡配置</a>-->
+                    </div>
+                </div>
+                <table id="memberList" lay-filter="memberList"></table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+     //标题内容模板
+     var tplTitle = function(d){
+         return '<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a> ' +
+                '<a class="layui-btn layui-btn-xs" lay-event="edit" >修改</a> ' +
+                '<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="balanceHistory">储值记录</a> ' +
+                '<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="pointsHistory">积分记录</a> '
+     };
+
+     var tplStatus = function(d){
+         if(d.status == 0) {
+             return '<span class="layui-badge layui-bg-red">停用</span>';
+         }else if(d.status == 1) {
+             return '<span class="layui-badge layui-bg-green">启用</span>';
+         }else if(d.status == 2) {
+             return '<span class="layui-badge layui-bg-orange">未绑定手机号</span>';
+         }
+     };
+
+     var tplSex = function(d){
+         if(d.sex == 1) {
+             return '男';
+         }else if(d.sex == 2) {
+             return '女';
+         }else {
+             return '未知';
+         }
+     };
+
+	 layui.config({
+	    base: '/x_mch/src/lib/extend/',
+	 });
+     layui.use(['table','util','admin'], function(){
+        var table = layui.table
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,view = layui.view
+        ,element = layui.element
+        ,form = layui.form;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        table.render({
+            elem: '#memberList'
+            ,id: "tableReload"
+            ,url: layui.setter.baseUrl + '/member/list'
+            ,cols: [[
+                {field: 'memberId', title: '会员ID', width:100}
+                ,{field: 'memberNo', title: '会员卡号', width:220}
+                ,{field: 'memberName',title: '会员名称'}
+                ,{field: 'tel', title: '手机号'}
+                ,{field: 'sex', title: '性别', templet: tplSex}
+                ,{field: 'status',title: '状态', templet: tplStatus}
+                ,{field: 'createTime',  title: '时间', width: 180, templet: '<div>{{ layui.util.toDateString(d.createTime) }}</div>' }
+                ,{field: 'edit', title: '操作', width: 320, templet: tplTitle }
+            ]]
+            ,page: true
+            ,skin: 'line'
+        });
+
+         // 搜索
+         var $ = layui.$, active = {
+             reload: function(){
+                 var memberNo = $('#searchMemberNo').val().trim();
+                 //执行重载
+                 table.reload('tableReload', {
+                     page: {
+                         curr: 1 //重新从第 1 页开始
+                     }
+                     ,where: {
+                         memberNo: memberNo
+                     }
+                 });
+             }
+         };
+         $('#search').on('click', function() {
+             var type = $(this).data('type');
+             active[type] ? active[type].call(this) : '';
+             return false;
+         });
+
+         //监听工具条
+         table.on('tool(memberList)', function(obj){
+             var data = obj.data;
+             var layEvent = obj.event;
+
+             if(layEvent === 'edit'){ //编辑
+                 view.xxpayPopup("编辑商户会员", "account/member/update", {memberId: data.memberId});
+             } else if(obj.event === 'detail'){
+                 view.xxpayPopup("查看会员信息", "account/member/detail", {memberId: data.memberId}, {btn:false});
+             } else if (obj.event === 'balanceHistory'){
+                 location.hash="/account/member/balance_history/memberId=" + data.memberId;
+             } else if (obj.event === 'pointsHistory'){
+                 location.hash="/account/member/points_history/memberId=" + data.memberId;
+             }
+         });
+
+         // 事件处理
+         var events = {
+             create: function(othis, type){
+                 view.xxpayPopup("新建商户会员", "account/member/create");
+             },
+             // config: function () {
+             //     view.xxpayPopup("会员卡配置", "account/member/member_config");
+             // }
+         };
+
+         $('.layuiAdmin-btns .layui-btn').on('click', function(){
+             var othis = $(this)
+                 ,thisEvent = othis.data('events')
+                 ,type = othis.data('type');
+             events[thisEvent] && events[thisEvent].call(this, othis, type);
+         });
+
+         // 渲染表单
+         form.render();
+        
+     })
+</script>

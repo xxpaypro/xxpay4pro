@@ -1,0 +1,157 @@
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <div class="layui-tab-content">
+                <form class="layui-form" style="width:100%">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">发布对象</label>
+                        <div class="layui-input-block">
+                            <input type="checkbox" name="chooseAll" id="chooseAll" title="全部" value="0" autocomplete="off" lay-skin="primary" lay-filter="chooseAll">
+                            <input type="checkbox" class="status" id="isvStatus" name="isvStatus" title="服务商" value="1" autocomplete="off" lay-skin="primary">
+                            <input type="checkbox" class="status" id="agentStatus" name="agentStatus" title="代理商" value="1" autocomplete="off" lay-skin="primary">
+                            <input type="checkbox" class="status" id="mchStatus" name="mchStatus" title="商户" value="1" autocomplete="off" lay-skin="primary">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">消息标题</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="title" name="title" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">状态</label>
+                            <div class="layui-input-block">
+                                <input type="radio" name="status" value="1" title="显示">
+                                <input type="radio" name="status" value="0" title="隐藏">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item layui-form-text">
+                        <label class="layui-form-label ">消息内容</label>
+                        <div class="layui-input-block">
+                            <textarea id="mesContent" name="message" placeholder="请输入内容" class="layui-textarea"></textarea>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button class="layui-hide xxpayYesBtn" lay-submit lay-filter="upBtn">保存</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['form','table', 'admin', 'util', 'layedit','view'], function(){
+        var form = layui.form
+        ,table = layui.table
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,layedit = layui.layedit
+        ,view = layui.view
+        ,element = layui.element;
+        var index;
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+        var id = view.getOpenParams('id');
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/sys/message/get',
+            data: {id: id},
+            success: function(res){
+                if(res.code == 0){
+                    $('#title').val(res.data.title);
+                    if(res.data.status == 1) {
+                        $("input[name='status'][value='1']").attr("checked", true);
+                    }else {
+                        $("input[name='status'][value='0']").attr("checked", true);
+                    }
+                    if (res.data.isvStatus == 1) {
+                        $("#isvStatus").prop("checked", true);
+                    }
+                    if (res.data.agentStatus == 1) {
+                        $("#agentStatus").prop("checked", true);
+                    }
+                    if (res.data.mchStatus == 1) {
+                        $("#mchStatus").prop("checked", true);
+                    }
+                    if (res.data.isvStatus == 1 && res.data.agentStatus == 1 && res.data.mchStatus) {
+                        $("#chooseAll").prop("checked", true);
+                    }
+                    $('#mesContent').val(res.data.message);
+                    index = layedit.build('mesContent'); //建立编辑器
+                }else {
+                    layer.alert(res.msg,{
+                        title: '请求成功，但是状态不对'
+                    })
+                }
+                form.render();
+            }
+        });
+
+        form.on('submit(upBtn)', function(data){
+            var isvStatus = "0";
+            var agentStatus = "0";
+            var mchStatus = "0";
+
+            var isvStatusValue = $("input[name='isvStatus']");
+            for(i = 0; i < isvStatusValue.length; i++){
+                if(isvStatusValue[i].checked){
+                    isvStatus = isvStatusValue[i].value;
+                    console.log(isvStatus);
+                    console.log(isvStatusValue[i].value);
+                }
+            }
+            var agentStatusValue = $("input[name='agentStatus']");
+            for(i = 0; i < agentStatusValue.length; i++){
+                if(agentStatusValue[i].checked){
+                    agentStatus = agentStatusValue[i].value;
+                }
+            }
+            var mchStatusValue = $("input[name='mchStatus']");
+            for(i = 0; i < mchStatusValue.length; i++){
+                if(mchStatusValue[i].checked){
+                    mchStatus = mchStatusValue[i].value;
+                }
+            }
+
+            console.log(isvStatus);
+            admin.req({
+                type: 'POST',
+                url: layui.setter.baseUrl + '/sys/message/update',
+                data: {
+                    id: id,
+                    title: data.field.title,
+                    status: data.field.status,
+                    isvStatus: isvStatus,
+                    agentStatus: agentStatus,
+                    mchStatus: mchStatus,
+                    message: layedit.getContent(index),
+                },
+                success: function(res){
+                    if(res.code == 0){
+                        layer.closeAll(); //关闭所有弹层
+                        layer.msg("更新成功");
+                        layui.table.reload('tableReload', {page: {curr: 1}}); //调用业务弹层外表格重新加载
+                    }else {
+                        layer.alert(res.msg,{
+                            title: '更新失败'
+                        })
+                    }
+                }
+            });
+            return false;
+        });
+
+        form.on('checkbox(chooseAll)',function(data){
+            var checkElem = $(".status");
+            checkElem.each(function (index, item) {
+                item.checked = data.elem.checked;
+            });
+            form.render('checkbox');
+        });
+
+        form.render();
+    })
+</script>

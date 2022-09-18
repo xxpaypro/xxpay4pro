@@ -1,0 +1,107 @@
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a><cite>支付配置</cite></a>
+    </span>
+</div>
+
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">卡Bin信息</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-row">
+                    <div class="layui-form" style="float:right;">
+                        <div class="layui-form-item" style="margin:0;">
+                            <div class="layui-input-inline">
+                                <input type="text" name="cardBin" id="cardBin" autocomplete="off" placeholder="卡Bin" class="layui-input">
+                            </div>
+                            <div class="layui-input-inline">
+                                <input type="text" name="bankName" id="bankName" autocomplete="off" placeholder="银行名称" class="layui-input">
+                            </div>
+                            <button id="search" class="layui-btn" data-type="reload">搜索</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-row">
+                    <div class="layuiAdmin-btns" style="margin-bottom: 10px;">
+                        <a lay-href="config/card_bin/create" class="layui-btn" data-type="all" data-events="create">新增卡bin</a>
+                        <a lay-href="config/card_bin/import" class="layui-btn" data-type="all" data-events="import">导入卡bin</a>
+                    </div>
+                </div>
+                <table class="layui-hide center" id="cList"></table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['table','util', 'form'], function(){
+        var table = layui.table
+        ,$ = layui.$
+        ,form = layui.form
+        ,element = layui.element;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        //标题内容模板
+        var tplTitle = function(d){
+            return '<a class="layui-btn layui-btn-sm" lay-href="config/card_bin/update/id='+ d.id +'">编辑</a>'
+        };
+
+        var tplStatus = function(d){
+            if(d.status == 0) {
+                return "关闭";
+            }else if(d.status == 1) {
+                return "<span style='color: red'>开启</span>";
+            }
+        };
+
+        table.render({
+            elem: '#cList'
+            ,url: layui.setter.baseUrl + '/config/card_bin/list'
+            
+            ,id: 'tableReload'
+            ,cols: [[
+                {field:'id', title: 'ID'}
+                ,{field:'cardBin', title: '卡bin'}
+                ,{field:'bankName',  title: '银行名称'}
+                ,{field:'bankCode',  title: '银行编码'}
+                ,{field:'cardName',  title: '卡名'}
+                ,{field:'cardType',  title: '银行卡类型'}
+                ,{field:'edite', width: 200, title: '操作', templet: tplTitle }
+            ]]
+            ,page: true
+            ,skin: 'line'
+        });
+
+        // 搜索
+        var $ = layui.$, active = {
+            reload: function(){
+                var cardBin = $("#cardBin").val();
+                var bankName = $("#bankName").val();
+                //执行重载
+                table.reload('tableReload', {
+                    page: {
+                        curr: 1 //重新从第 1 页开始
+                    }
+                    ,where: {
+                        cardBin: cardBin,
+                        bankName: bankName,
+                        status : status
+                    }
+                });
+            }
+        };
+        $('#search').on('click', function() {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+
+        // 渲染表单
+        form.render();
+
+    });
+    
+</script>

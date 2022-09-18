@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.xxpay.service.dao.mapper.MchMiniVajraMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="org.xxpay.core.entity.MchMiniVajra">
+        <id column="VajraId" property="VajraId" />
+        <result column="VajraName" property="vajraName" />
+        <result column="MchId" property="mchId" />
+        <result column="AuthFrom" property="authFrom" />
+        <result column="Status" property="status" />
+        <result column="MediaPath" property="mediaPath" />
+        <result column="JumpUrlType" property="jumpUrlType" />
+        <result column="JumpUrl" property="jumpUrl" />
+        <result column="SortNum" property="sortNum" />
+        <result column="Remark" property="remark" />
+        <result column="CreateTime" property="createTime" />
+        <result column="UpdateTime" property="updateTime" />
+    </resultMap>
+
+</mapper>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.xxpay.service.dao.mapper.IsvAdvertConfigMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="org.xxpay.core.entity.IsvAdvertConfig">
+        <id column="ID" property="id" />
+        <result column="IsvId" property="isvId" />
+        <result column="AdvertName" property="advertName" />
+        <result column="ShowType" property="showType" />
+        <result column="Status" property="status" />
+        <result column="PutMch" property="putMch" />
+        <result column="ProvinceCode" property="provinceCode" />
+        <result column="CityCode" property="cityCode" />
+        <result column="AreaCode" property="areaCode" />
+        <result column="MediaType" property="mediaType" />
+        <result column="MediaPath" property="mediaPath" />
+        <result column="AdvertUrl" property="advertUrl" />
+        <result column="BeginTime" property="beginTime" />
+        <result column="EndTime" property="endTime" />
+        <result column="SortNum" property="sortNum" />
+        <result column="Remark" property="remark" />
+        <result column="CreateTime" property="createTime" />
+        <result column="UpdateTime" property="updateTime" />
+    </resultMap>
+
+    <!-- 根据条件查询广告列表 -->
+    <select id="selectAdList" resultMap="BaseResultMap" parameterType="Map">
+        select * from t_isv_advert_config
+        where status = 1 and BeginTime &lt;=now() and EndTime &gt;= now()
+        and ShowType = #{showType}
+        and isvId = #{isvId}
+        and (PutMch = -1 or PutMch = (select AgentLevel from t_agent_info ai where ai.AgentId = #{agentId}) )
+        and (ProvinceCode = -1 or ProvinceCode = #{provinceCode})
+        and (CityCode = -1 or CityCode = #{cityCode})
+        and (AreaCode = -1 or AreaCode = #{areaCode})
+        order by SortNum desc
+    </select>
+
+</mapper>

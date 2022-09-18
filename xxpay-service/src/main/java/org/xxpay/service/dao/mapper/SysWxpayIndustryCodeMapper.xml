@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.xxpay.service.dao.mapper.SysWxpayIndustryCodeMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="org.xxpay.core.entity.SysWxpayIndustryCode">
+        <id column="Id" property="Id" />
+        <result column="IndustryName" property="industryName" />
+        <result column="IndustryDesc" property="industryDesc" />
+        <result column="Rate" property="rate" />
+        <result column="SettRule" property="settRule" />
+        <result column="ParentCode" property="parentCode" />
+        <result column="CategoryCode" property="categoryCode" />
+    </resultMap>
+
+</mapper>

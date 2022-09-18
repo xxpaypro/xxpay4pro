@@ -1,0 +1,242 @@
+
+<div class=" layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a><cite>配置信息</cite></a>
+    </div>
+</div>
+<style>
+    .layui-table-cell {
+        height: 38px;
+        line-height: 38px;
+    }
+    .center {
+        width: 80%;
+    }
+    .layui-form-label {
+        width: 160px;
+    }
+    .layui-input , .layui-textarea{
+        width: 80%;
+    }
+    .marL {
+        margin-left: 190px;
+    }
+    .leftT {
+        text-align: left;
+    }
+    #cDInfo td {
+        border: none;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">配置信息</li>
+            </ul>
+            <div class="layui-tab-content">
+                <fieldset class="layui-elem-field">
+                    <legend>基本信息</legend>
+                    <form class="layui-form" >
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">通道ID</label>
+                            <div class="layui-input-inline" style="width:30%">
+                                <input type="text" id="passageId" name="passageId" class="layui-input" disabled="disabled" style="border:none">
+                            </div>
+                            <label class="layui-form-label">应用场景</label>
+                            <div class="layui-input-inline" style="width:30%">
+                                <input type="text" id="scene" name="scene"  lay-verify="required"  class="layui-input" disabled="disabled" style="border:none">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">渠道类型</label>
+                            <div class="layui-input-inline" style="width:30%">
+                                <input type="text" id="channelType" lay-verify="required" class="layui-input" disabled="disabled" style="border:none">
+                            </div>
+                            <label class="layui-form-label">渠道ID</label>
+                            <div class="layui-input-inline" style="width:30%">
+                                <input type="text" id="channelId" class="layui-input" disabled="disabled" style="border:none">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">渠道商户ID</label>
+                            <div class="layui-input-inline" style="width:30%">
+                                <input type="text" name="channelMchId" id="channelMchId" placeholder="请输入支付渠道商户ID" class="layui-input" >
+                            </div>
+                            <label class="layui-form-label">渠道状态</label>
+                            <div class="layui-input-inline" style="width:30%">
+                                <input type="radio" name="status" value="0" title="未开通" >
+                                <input type="radio" name="status" value="1" title="已开通" >
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">渠道费率(%)</label>
+                            <div class="layui-input-inline" style="width:30%">
+                                <input type="text" name="channelRate" id="channelRate" placeholder="请输入支付渠道费率" class="layui-input" >
+                            </div>
+                            <label class="layui-form-label">备注</label>
+                            <div class="layui-input-inline" style="width:30%">
+                                <input type="text" name="remark" id="remark" placeholder="请输入备注信息" class="layui-input" >
+                            </div>
+                        </div>
+                    </form>
+                </fieldset>
+
+                <fieldset class="layui-elem-field">
+                    <legend>支付渠道配置</legend>
+                    <form class="layui-form" >
+                        <div id="paramInfo"></div>
+                        <div class="layui-form-item">
+                            <div class="layui-input-block">
+                                <button type="button" lay-submit  lay-filter="btnParam" class="layui-btn">保存</button>
+                                <button type="button" id="btnBack_Param" class="layui-btn">返回</button>
+                            </div>
+                        </div>
+                    </form>
+                </fieldset>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    
+    layui.use(['form','table','util','admin',],function(){
+        var form = layui.form
+        , $ = layui.$
+        , admin = layui.admin
+        , layer = layui.layer 
+        , element = layui.element
+        , table = layui.table;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        var curPassageId = layui.router().search.passageId;
+        var curChanId = layui.router().search.channelId;
+        var curChanType = layui.router().search.channelType;
+
+        var id;
+        admin.req({
+            type: 'post',
+            url: layui.setter.baseUrl + '/config/pay_channel/get',
+            data: {
+                passageId: curPassageId,
+                channelId: curChanId
+            },
+            error: function(err){
+                layer.alert(err);
+            },
+            success: function(res){
+                if(res.code == 0){
+                    // 设置基础信息
+                    id = res.data.id;
+                    $('#passageId').val(res.data.passageId);
+                    $('#scene').val((res.data.scene == 1)?'移动APP':(res.data.scene == 2)?'移动网页':(res.data.scene == 3)?'PC网页':(res.data.scene == 4)?'微信公众平台':(res.data.scene == 5)?'手机扫码':'');
+                    $('#channelType').val((res.data.channelType=='alipay')?'支付宝支付':(res.data.channelType=='wxpay')?'微信支付':(res.data.channelType=='qpay')?'qq支付':(res.data.channelType=='upacp')?'银联支付':(res.data.channelType=='applepay')?'苹果支付':(res.data.channelType=='bfb')?'百付宝支付':(res.data.channelType=='jdpay')?'京东支付':(res.data.channelType=='swiftpay')?'威富通支付':(res.data.channelType=='gomepay')?'银盈通支付':(res.data.channelType=='accountpay')?'账户支付':(res.data.channelType=='kqpay')?'快钱支付':'');
+                    $('#channelId').val(res.data.channelId);
+                    $('#channelMchId').val(res.data.channelMchId);
+                    if(res.data.status == 1) {
+                        $("input[name='status'][value='1']").attr("checked",true);
+                    }else {
+                        $("input[name='status'][value='0']").attr("checked",true);
+                    }
+                    $('#channelRate').val(res.data.channelRate);
+                    $('#remark').val(res.data.remark);
+
+                    // 得到配置的支付渠道参数,动态生成表单
+                    var paramVal = JSON.parse(res.data.param)
+
+                    // 查询配置
+                    admin.req({
+                        type: 'post',
+                        url: layui.setter.baseUrl + '/config/channel/get/channelId',
+                        data: {
+                            channelId: curChanId
+                        },
+                        error: function(err){
+                            layer.alert(err);
+                        },
+                        success: function(res){
+                            if(res.code == 0){
+                                var jsonObj = JSON.parse(res.data.param);
+                                // 根据paramVal填充表单值
+                                var htm = '';
+                                $.each(jsonObj, function(i, obj){
+                                    console.log(obj);
+                                    htm += `
+                                        <div class="layui-form-item">
+                                            <label class="layui-form-label"> ` + obj.desc + ` [` + obj.name + `]` +`</label>
+                                            <div class="layui-input-block"> `;
+                                                if(obj.type == 'text') {
+                                                    htm += ` <input type="text" name="` + obj.name + `" lay-verify="` + obj.verify + `" value="` + (paramVal[obj.name] == undefined ? "" : paramVal[obj.name]) + `" placeholder="请输入` + obj.desc + `" autocomplete="off" class="layui-input">`;
+                                                }else if(obj.type == 'textarea') {
+                                                    htm += ` <textarea required name="` + obj.name + `" lay-verify="` + obj.verify + `" placeholder="请输入` + obj.desc + `" class="layui-textarea">` + (paramVal[obj.name] == undefined ? "" : paramVal[obj.name]) + `</textarea>`;
+                                                }
+                                                htm += ` </div>
+                                        </div>
+                                    </form>`;
+                                });
+                                htm += ``;
+                                $('#paramInfo').html(htm);
+                            }else{
+                                layer.alert(res.msg,{title:"请求失败"})
+                            }
+                        }
+                    })
+                    form.render();
+                }else{
+                    layer.alert(res.msg,{title:"请求失败"})
+                }
+            }
+        })
+
+        $('#btnBack_Param').on('click', function() {
+            location.hash = '/config/pay_channel/list/passageId=' + curPassageId;
+        });
+
+        form.on('submit(btnParam)', function(data){
+            var channelMchId = $.trim($('#channelMchId').val());
+            var passageId = $.trim($('#passageId').val());
+            var channelId = $.trim($('#channelId').val());
+            if(channelMchId == '') {
+                layer.alert("请输入渠道商户ID",{title: '提示'});
+                return false;
+            }
+            var channelRate = $.trim($('#channelRate').val());
+            if(channelRate == '') {
+                layer.alert("请输入支付渠道费率",{title: '提示'});
+                return false;
+            }
+            var remark = $.trim($('#rmark').val());
+            var status = $.trim($('input[name="status"]:checked').val());
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/config/pay_channel/update',
+                data: {
+                    id:id,
+                    passageId: passageId,
+                    channelId: channelId,
+                    channelRate: channelRate,
+                    param: JSON.stringify(data.field),
+                    channelMchId: channelMchId,
+                    status: status,
+                    remark: remark
+                },
+                error: function(err){layer.alert(err.msg,{title:"请求失败"})},
+                success: function(res){
+                    if(res.code == 0){
+                        layer.alert(res.msg, {title: '保存成功'},function(index){
+                            layer.close(index);
+                            location.hash = '/config/pay_channel/list/passageId=' + curPassageId;
+                        });
+                    }else {
+                        layer.alert(res.msg,{title: '保存失败'})
+                    }
+                }
+            })
+            return false;
+        });
+
+    });
+    
+</script>

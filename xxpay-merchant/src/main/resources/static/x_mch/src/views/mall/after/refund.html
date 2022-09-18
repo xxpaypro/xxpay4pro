@@ -1,0 +1,162 @@
+<style>
+    .xxpayPopupDiv .layui-form-label {
+        width:15% !important;
+        margin-left:1%;
+    }
+    .xxpayPopupDiv .layui-input-inline {
+        width: 33% !important;
+        margin-top:0;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">订单详情</li>
+            </ul>
+            <div class="layui-tab-content">
+                <form class="layui-form layui-form-pane" action="">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">售后单ID</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="afterSaleId" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">交易单号</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="tradeOrderId" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">会员ID</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="memberId" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">售后类型</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="afterSaleType" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">原订单商品总金额</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="orderAmount" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">原订单优惠金额</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="discountAmount" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">原订单实际支付金额</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="amount" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">售后商品总金额</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="afterSaleAmount" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">已退款金额</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="refundAmount2" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">商品信息</li>
+            </ul>
+            <div class="layui-tab-content">
+                <table id="order_goods_info" lay-filter="order_goods_info"></table>
+            </div>
+        </div>
+
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">退款</li>
+            </ul>
+            <div class="layui-tab-content">
+                <form class="layui-form layui-form-pane" action="">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">退款金额</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="refundAmount" class="layui-input">
+                        </div>
+                    </div>
+                    <button type="button" class="layui-hide xxpayYesBtn" lay-submit="" lay-filter="refund"></button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    layui.use(['admin','form', 'table', 'view'],function(){
+        var form = layui.form
+            ,$ = layui.$
+            ,admin = layui.admin
+            ,view = layui.view
+            ,table = layui.table
+            ,element = layui.element
+            ,layer = layui.layer ;
+        // 导航
+        element.render('breadcrumb', 'breadcrumb');
+        var afterSaleId = view.getOpenParams("afterSaleId");
+
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/after_sale/get',
+            data: {
+                afterSaleId : afterSaleId
+            },
+            error: function(err){
+                layer.alert(JSON.stringify(err.field), {
+                    title: '错误提示'
+                })
+            },
+            success: function(res){
+                if(res.code == 0){
+                    $('#afterSaleId').val(res.data.afterSaleId);
+                    $('#tradeOrderId').val(res.data.tradeOrderId);
+                    $('#memberId').val(res.data.memberId);
+                    $('#afterSaleType').val(res.data.afterSaleType==1?"退款":res.data.afterSaleType==2?"退货":"");
+                    //$('#status').val(res.data.status==-2?"审核不通过":res.data.status==-1?"待审核":res.data.status==1?"审核通过":res.data.status==2?"待发货":res.data.status==3?"已发货":res.data.status==4?"商家已收货":res.data.status==5?"商家已发货":res.data.status==6?"售后单完成":"");
+
+                    $('#afterSaleAmount').val(res.data.afterSaleAmount==null?"":res.data.afterSaleAmount/100);
+                    $('#orderAmount').val(res.data.orderAmount==null?"":res.data.orderAmount/100);
+                    $('#discountAmount').val(res.data.discountAmount==null?"":res.data.discountAmount/100);
+                    $('#amount').val(res.data.amount==null?"":res.data.amount/100);
+                    $('#refundAmount2').val(res.data.refundAmount==null?"0":res.data.refundAmount/100);
+
+                    form.render();
+                }
+            }
+        });
+
+        //商品信息
+        table.render({
+            elem: '#order_goods_info'
+            ,url: layui.setter.baseUrl + '/after_sale/getGoods' //列表接口
+            ,where: {
+                afterSaleId: afterSaleId
+            }
+            ,id: 'tableReload'
+            ,page: false
+            ,cols: [[
+                {field: 'goodsName', title: '商品名称'}
+                ,{field: 'cellingPrice', title: '商品价格', templet: '<div>{{ d.cellingPrice/100 }}</div>'}
+                ,{field: 'goodsNum', title: '商品数量'}
+                ,{field: 'goodsPropsValue', title: '属性',}
+                ,{field: 'price', title: '小计', templet: '<div>{{ (d.cellingPrice * d.goodsNum)/100 }}</div>'}
+            ]]
+            ,skin: 'line'
+        });
+
+    })
+</script>

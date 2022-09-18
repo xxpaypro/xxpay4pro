@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.xxpay.service.dao.mapper.MemberBalanceMapper">
+
+
+    <!-- 更新会员账户余额信息 -->
+    <update id="updateBalanceByMemberId" parameterType="org.xxpay.core.entity.MemberBalance">
+
+        update t_member_balance
+        <set>
+            <if test="balance != null" >
+                Balance = Balance + #{balance},
+            </if>
+            <if test="totalRechargeAmount != null" >
+                TotalRechargeAmount = TotalRechargeAmount + #{totalRechargeAmount},
+            </if>
+            <if test="totalGiveAmount != null" >
+                TotalGiveAmount = TotalGiveAmount + #{totalGiveAmount},
+            </if>
+            <if test="totalConsumeAmount != null" >
+                TotalConsumeAmount = TotalConsumeAmount + #{totalConsumeAmount},
+            </if>
+            <if test="totalRefundAmount != null" >
+                TotalRefundAmount = TotalRefundAmount + #{totalRefundAmount},
+            </if>
+        </set>
+        where MemberId = #{memberId}
+        <if test="balance != null" >
+            and (balance + #{balance} ) >= 0
+        </if>
+        <if test="totalRechargeAmount != null" >
+            and (TotalRechargeAmount + #{totalRechargeAmount} ) >= 0
+        </if>
+        <if test="totalGiveAmount != null" >
+            and (TotalGiveAmount + #{totalGiveAmount} ) >= 0
+        </if>
+        <if test="totalConsumeAmount != null" >
+            and (TotalConsumeAmount + #{totalConsumeAmount} ) >= 0
+        </if>
+        <if test="totalRefundAmount != null" >
+            and (TotalRefundAmount + #{totalRefundAmount} ) >= 0
+        </if>
+    </update>
+
+
+
+</mapper>

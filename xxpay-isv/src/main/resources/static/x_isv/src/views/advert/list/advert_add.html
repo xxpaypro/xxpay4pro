@@ -1,0 +1,540 @@
+<style>
+    .xxpayPopupDiv .layui-form-label {
+        width:30% !important;
+        margin-left:1%;
+    }
+    .xxpayPopupDiv .layui-input-inline {
+        width: 60% !important;
+    }
+</style>
+<div class="layui-fluid">
+  <div class="layui-card">
+      <form class="layui-form layui-form-pane">
+        <div class="layui-tab layui-tab-brief">
+            <div class=" layui-row">
+
+
+                <div style="width:50%; float: left;">
+
+                    <fieldset class="layui-elem-field">
+                        <legend><button class='layui-btn layui-btn-xs layui-btn-danger'>广告信息及位置</button></legend>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">广告名称</label>
+                            <div class="layui-input-inline">
+                                <input name="advertName" lay-verify="required" placeholder="输入广告名称" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">状态</label>
+                            <div class="layui-input-inline">
+                                <input type="radio" name="status" value="1" title="启用" checked="checked">
+                                <input type="radio" name="status" value="0" title="停止">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">广告显示位置</label>
+                            <div class="layui-input-inline">
+                                <select id="showType" name="showType" lay-verify="required" lay-filter="showTypeSelectFilter">
+                                    <option value="">请选择广告位置</option>
+                                    <option value="1">移动端支付成功页</option>
+                                    <option value="2">刷脸设备支付成功页</option>
+                                    <option value="3">商家APP轮播图片</option>
+                                    <option value="4">刷脸设备投屏广告</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">投放商户</label>
+                            <div class="layui-input-inline">
+                                <select id="putMch" name="putMch" lay-verify="required">
+                                    <option value="">请选择投放商户</option>
+                                    <option value="-1">全部商户</option>
+                                    <option value="1">一级商户</option>
+                                    <option value="2">二级商户</option>
+                                    <option value="3">三级商户</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">投放时间</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="activityTime" lay-verify="required" readonly placeholder="输入有效时间" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">排序数值（降序规则）</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="sortNum" name="sortNum" lay-verify="required" placeholder="输入排序数值（降序规则）" autocomplete="off" class="layui-input" value="1000">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">投放省</label>
+                            <div class="layui-input-inline">
+                                <select name="provinceCode" class="layui-select" lay-search id="provinceSelect" lay-filter="provinceSelectFilter">
+                                    <option value="-1">-- 全部省 --</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">投放市</label>
+                            <div class="layui-input-inline">
+                                <select name="cityCode" lay-search id="citySelect" lay-filter="citySelectFilter">
+                                    <option value="-1">-- 全部市 --</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">投放区 / 县</label>
+                            <div class="layui-input-inline">
+                                <select name="areaCode" lay-search id="areaSelect" lay-filter="areaSelectFilter">
+                                    <option value="-1">-- 全部区 / 县 --</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">备注</label>
+                            <div class="layui-input-inline">
+                                <input name="remark" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+
+                    </fieldset>
+
+                </div>
+
+                <div style="width:50%; float: left;" id="mediaInfoDiv" class="layui-hide">
+
+                    <fieldset class="layui-elem-field">
+                        <legend><button class='layui-btn layui-btn-xs layui-btn-danger'>媒体素材</button></legend>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">媒体类型</label>
+                            <div class="layui-input-inline">
+                                <input type="radio" name="mediaType" value="1" title="图片" checked="checked" lay-filter="mediaTypeRadioFilter" />
+                                <input type="radio" name="mediaType" value="2" title="视频" lay-filter="mediaTypeRadioFilter" />
+                            </div>
+                        </div>
+
+
+                        <div id="mediaByImgDiv" class="">
+
+                            <div class="layui-form-item" id="advertUrlDiv">
+                                <label class="layui-form-label">广告链接</label>
+                                <div class="layui-input-inline">
+                                    <input name="advertUrl" placeholder="输入广告链接" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">上传方式</label>
+                                <div class="layui-input-inline">
+                                    <input type="radio" name="imgUploadType" value="file" title="文件上传" checked="checked" lay-filter="imgUploadTypeFilter" />
+                                    <input type="radio" name="imgUploadType" value="url" title="URL地址" lay-filter="imgUploadTypeFilter" />
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item imgUploadTypeByFileDiv">
+                                <label class="layui-form-label">图片上传</label>
+                                <div class="layui-input-inline">
+                                    <input type="hidden" id="mediaPathByImg" class="layui-hide" />
+                                    <button id="uploadBtnByImg" class="layui-btn layui-btn-sm" type="button" style="margin-left: 20px;margin-top: 5px;">上传图片</button>
+                                    <span style="color:red; margin-left:10px" class="uploadTextSpanByImg">*</span>
+                                </div>
+
+                            </div>
+
+                            <div class="layui-form-item imgUploadTypeByUrlDiv layui-hide">
+                                <label class="layui-form-label">图片URL</label>
+                                <div class="layui-input-inline">
+                                    <input id="imgUrlInput" placeholder="输入图片链接" autocomplete="off" class="layui-input">
+                                    <button class="layui-btn layui-btn-sm imgUrlTypeViewBtn" type="button" style="margin-top: 10px;">预览图片</button>
+                                    <span style="color:red; margin-left:10px" class="uploadTextSpanByImg">*</span>
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">图片预览</label>
+                                <div class="layui-input-inline">
+                                    <img id="mediaViewByImg" class="layui-hide" style="margin-left:30px;cursor: pointer;" title="" />
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div id="mediaByVideoDiv" class="layui-hide">
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">上传方式</label>
+                                <div class="layui-input-inline">
+                                    <input type="radio" name="videoUploadType" value="file" title="文件上传" checked="checked" lay-filter="videoUploadTypeFilter" />
+                                    <input type="radio" name="videoUploadType" value="url" title="URL地址" lay-filter="videoUploadTypeFilter" />
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item videoUploadTypeByFileDiv">
+                                <label class="layui-form-label">视频上传</label>
+                                <div class="layui-input-inline">
+                                    <input type="hidden" id="mediaPathByVideo" class="layui-hide" />
+                                    <button id="uploadBtnByVideo" class="layui-btn layui-btn-sm" type="button" style="margin-left: 20px;margin-top: 5px;">上传视频</button>
+                                    <span style="color:red; margin-left:20px" class="uploadTextSpanByVideo">*</span>
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item videoUploadTypeByUrlDiv layui-hide">
+                                <label class="layui-form-label">视频URL</label>
+                                <div class="layui-input-inline">
+                                    <input id="videoUrlInput" placeholder="输入视频链接" autocomplete="off" class="layui-input">
+                                    <button class="layui-btn layui-btn-sm videoUrlTypeViewBtn" type="button" style="margin-top: 10px;">预览视频</button>
+                                    <span style="color:red; margin-left:10px" class="uploadTextSpanByVideo">*</span>
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">预览</label>
+                                <div class="layui-input-inline">
+                                    <video id="mediaViewByVideo" width="50%" src="" autobuffer class="layui-hide"></video>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+
+                <button type="button" class="layui-hide xxpayYesBtn" lay-submit="" lay-filter="adAdd">保存</button>
+            </div>
+          </div>
+      </form>
+  </div>
+</div>
+
+<script>
+    layui.use(['admin', 'form','view','upload','setter','laydate'],function(){
+        var form = layui.form
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,upload = layui.upload
+        ,element = layui.element
+        ,setter = layui.setter
+        ,laydate = layui.laydate
+        ,layer = layui.layer ;
+
+        element.render('breadcrumb', 'breadcrumb');
+        
+        form.on('submit(adAdd)', function(data) {
+            //活动范围
+            var times = $("#activityTime").val().split("~");
+            if (!times){ return layer.msg('请选择投放时间！');}
+
+            data.field.beginTime = times[0].trim();
+            data.field.endTime = times[1].trim();
+
+
+            if(data.field.mediaType == '1'){ //图片
+
+                if($("input[name='imgUploadType']:checked").val() == 'file'){  //上传方式
+
+                    if(!$("#mediaPathByImg").val()){
+                        return layer.msg('请上传图片！');
+                    }
+                    data.field.mediaPath = $("#mediaPathByImg").val();
+
+                }else{  //url方式
+                    if(!$("#imgUrlInput").val()){
+                        return layer.msg('请输入图片URL！');
+                    }
+                    data.field.mediaPath = $("#imgUrlInput").val();
+                }
+
+            }else{ //视频
+
+                data.field.advertUrl = ''; //清空 URL地址
+
+                if($("input[name='videoUploadType']:checked").val() == 'file'){  //上传方式
+
+                    if(!$("#mediaPathByVideo").val()){
+                        return layer.msg('请上传视频！');
+                    }
+                    data.field.mediaPath = $("#mediaPathByVideo").val();
+
+                }else{  //url方式
+                    if(!$("#videoUrlInput").val()){
+                        return layer.msg('请输入视频URL！');
+                    }
+                    data.field.mediaPath = $("#videoUrlInput").val();
+                }
+            }
+
+            //这里可以写ajax方法提交表单
+            admin.req({
+                type: "POST",
+                url: layui.setter.baseUrl + '/advert_config/add',
+                data: data.field,
+                success: function(res){
+                    if(res.code == 0) {
+                        layer.closeAll(); //关闭所有弹层
+                        layer.msg("保存成功");
+                        layui.table.reload('tableReload', {page: {curr: 1}}); //调用业务弹层外表格重新加载
+                    }
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+        var headers = {};
+        headers[setter.request.tokenName] = layui.data(setter.tableName)[setter.request.tokenName];
+
+        //上传图片
+        upload.render({
+            elem: '#uploadBtnByImg'
+            , url: layui.setter.baseUrl + '/upload/ad'
+            , headers: headers
+            , size: 1024  //仅支持1M图片上传
+            ,done: function(res){
+                //如果上传失败
+                if(res.code != 0){
+                    return layer.msg('上传失败['+res.msg+']', {icon: 2});
+                }
+                //上传成功
+                $("#mediaPathByImg").val(res.data);
+                $('#mediaViewByImg').attr("src", res.data).removeClass('layui-hide');
+                $('#uploadBtnByImg').text('重新上传');
+            }
+        });
+
+        //上传视频
+        upload.render({
+            elem: '#uploadBtnByVideo'
+            , url: layui.setter.baseUrl + '/upload/ad'
+            , headers: headers
+            , size: 1024 * 30  //仅支持30M的视频上传
+            , accept: "video"
+            ,done: function(res){
+                //如果上传失败
+                if(res.code != 0){
+                    return layer.msg('上传失败['+res.msg+']', {icon: 2});
+                }
+                //上传成功
+                $("#mediaPathByVideo").val(res.data);
+                $('#mediaViewByVideo').attr("src", res.data).removeClass('layui-hide');
+                $('#uploadBtnByVideo').text('重新上传');
+            }
+        });
+
+        //播放视频
+        $("#mediaViewByVideo").click(function(){
+            if($(this).attr('src')){
+                $(this)[0].play();
+            }
+        });
+
+        // 初始化 [省] 下拉框
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/area_code/provinces',
+            error: function(err){
+                layer.alert(JSON.stringify(err.field), {title: '错误提示'})
+            },
+            success: function(res){
+                if(res.code == 0){
+                    $.each(res.data, function(){
+                        $("#provinceSelect").append("<option item value='"+this.provinceCode+"'>"+this.provinceName+"</option>");
+                    });
+                    form.render();
+                }
+            }
+        });
+
+        //监听 [省] 下拉框
+        form.on('select(provinceSelectFilter)', function(data){
+
+            //清空， 市， 区 下拉框
+            $("#citySelect option[item]").remove();
+            $("#areaSelect option[item]").remove();
+
+            var provinceCode = data.value; //省级编码
+            if(!provinceCode){
+                form.render();
+                return false; //未选择
+            }
+
+            admin.req({
+                type: 'get',
+                url: layui.setter.baseUrl + '/area_code/cities?provinceCode=' + provinceCode,
+                error: function(err){
+                    layer.alert(JSON.stringify(err.field), {title: '错误提示'})
+                },
+                success: function(res){
+                    if(res.code == 0){
+                        $.each(res.data, function(){
+                            $("#citySelect").append("<option item value='"+this.cityCode+"'>"+this.cityName+"</option>");
+                        });
+                        form.render();
+                    }
+                }
+            });
+        });
+
+        //监听 [市] 下拉框
+        form.on('select(citySelectFilter)', function(data){
+
+            //清空 区 下拉框
+            $("#areaSelect option[item]").remove();
+
+            var cityCode = data.value; //市级编码
+            if(!cityCode){
+                form.render();
+                return false; //未选择
+            }
+            admin.req({
+                type: 'get',
+                url: layui.setter.baseUrl + '/area_code/areas?cityCode=' + cityCode,
+                error: function(err){
+                    layer.alert(JSON.stringify(err.field), {title: '错误提示'})
+                },
+                success: function(res){
+                    if(res.code == 0){
+                        $.each(res.data, function(){
+                            $("#areaSelect").append("<option item value='"+this.areaCode+"'>"+this.areaName+"</option>");
+                        });
+                        form.render();
+                    }
+                }
+            });
+        });
+
+        //时间选择
+        laydate.render({
+            elem: '#activityTime'
+            ,type: 'datetime'
+            ,range: '~'
+            ,trigger: 'click'
+        });
+
+        form.on("radio(mediaTypeRadioFilter)", function(data){
+
+            //
+            if(data.value == '1'){  //图片格式
+                $("#mediaByImgDiv").removeClass('layui-hide');
+                $("#mediaByVideoDiv").addClass('layui-hide');
+
+
+            }else if(data.value == '2'){  //视频格式
+
+                $("#mediaByVideoDiv").removeClass('layui-hide');
+                $("#mediaByImgDiv").addClass('layui-hide');
+            }
+
+
+        });
+
+        form.on("select(showTypeSelectFilter)", function(data){
+
+            if(data.value == '1'){  //移动端支付成功页
+                $("#mediaInfoDiv").removeClass("layui-hide");
+                $(".uploadTextSpanByImg").text("* 建议图片尺寸为 [ 宽690 * 高230 ]");
+                $("#mediaViewByImg").css({"width": "330px", "height": "110px"});  //等比例缩放
+                // $(".uploadTextSpanByVideo").text("* 建议视频尺寸为 [ 宽690 * 高230 ]");
+
+
+            }else if(data.value == '2'){  //刷脸设备支付成功页
+                $("#mediaInfoDiv").removeClass("layui-hide");
+                $(".uploadTextSpanByImg").text("* 建议图片尺寸为 [ 宽800 * 高300 ]");
+                $("#mediaViewByImg").css({"width": "330px", "height": "198px"});  //等比例缩放
+                // $(".uploadTextSpanByVideo").text("* 建议视频尺寸为 [ 宽690 * 高230 ]");
+
+            }else if(data.value == '3'){  //商家APP轮播图片
+                $("#mediaInfoDiv").removeClass("layui-hide");
+                $(".uploadTextSpanByImg").text("* 建议图片尺寸为 [ 宽690 * 高230 ]");
+                $("#mediaViewByImg").css({"width": "330px", "height": "110px"});  //等比例缩放
+                // $(".uploadTextSpanByVideo").text("* 建议视频尺寸为 [ 宽690 * 高230 ]");
+
+            }else if(data.value == '4'){  //刷脸设备投屏广告
+                $("#mediaInfoDiv").removeClass("layui-hide");
+                $(".uploadTextSpanByImg").text("* 建议图片尺寸为 [ 宽800 * 高1200 ]");
+                $("#mediaViewByImg").css({"width": "330px", "height": "495px"});  //等比例缩放
+                // $(".uploadTextSpanByVideo").text("* 建议视频尺寸为 [ 宽690 * 高230 ]");
+
+            }else{ //未选择
+                $("#mediaInfoDiv").addClass("layui-hide");
+            }
+        });
+
+        //图片 - 切换上传方式
+        form.on("radio(imgUploadTypeFilter)", function(data){
+
+            if(data.value == 'file'){ ///文件上传方式
+
+                $(".imgUploadTypeByFileDiv").removeClass('layui-hide');
+                $(".imgUploadTypeByUrlDiv").addClass('layui-hide');
+
+                //更改预览图
+                if($("#mediaPathByImg").val()){
+                    $('#mediaViewByImg').attr("src", $("#mediaPathByImg").val());
+                }
+
+            }else if(data.value == 'url'){  //url方式
+
+                $(".imgUploadTypeByUrlDiv").removeClass('layui-hide');
+                $(".imgUploadTypeByFileDiv").addClass('layui-hide');
+
+                //更改预览图
+                if($("#imgUrlInput").val()){
+                    $('#mediaViewByImg').attr("src", $("#imgUrlInput").val());
+                }
+            }
+        });
+
+        //视频 - 切换上传方式
+        form.on("radio(videoUploadTypeFilter)", function(data){
+
+            if(data.value == 'file'){ ///文件上传方式
+
+                $(".videoUploadTypeByFileDiv").removeClass('layui-hide');
+                $(".videoUploadTypeByUrlDiv").addClass('layui-hide');
+
+                //更改预览图
+                if($("#mediaPathByVideo").val()){
+                    $('#mediaViewByVideo').attr("src", $("#mediaPathByVideo").val());
+                }
+
+            }else if(data.value == 'url'){  //url方式
+
+                $(".videoUploadTypeByUrlDiv").removeClass('layui-hide');
+                $(".videoUploadTypeByFileDiv").addClass('layui-hide');
+
+                //更改预览图
+                if($("#videoUrlInput").val()){
+                    $('#mediaViewByVideo').attr("src", $("#videoUrlInput").val());
+                }
+            }
+        });
+
+        //点击 [预览图片]
+        $('.imgUrlTypeViewBtn').click(function(){
+
+            var imgUrl = $("#imgUrlInput").val();
+            if(!imgUrl) {
+                return layer.msg('请输入图片地址！');
+            }
+            $('#mediaViewByImg').attr("src", imgUrl).removeClass('layui-hide');
+        });
+
+        //点击 [预览视频]
+        $('.videoUrlTypeViewBtn').click(function(){
+
+            var videoUrl = $("#videoUrlInput").val();
+            if(!videoUrl) {
+                return layer.msg('请输入视频地址！');
+            }
+            $('#mediaViewByVideo').attr("src", videoUrl).removeClass('layui-hide');
+        });
+
+        form.render();
+    })
+</script>

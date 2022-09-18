@@ -1,0 +1,154 @@
+<style type="text/css">
+	.layui-form-pane .billlable{
+		width: 150px;
+	}
+	.layui-form-pane .billbiock {
+    	margin-left: 150px;
+    	left: -1px;
+	}
+</style>
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a>商户对账</a>
+        <a>
+            <cite>查看详情</cite>
+        </a>
+    </div>
+</div>
+
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">查看详情</li>
+            </ul>
+            <div class="layui-tab-content">
+                <form class="layui-form layui-form-pane" action="">
+                    <div class="layui-row">
+                        <div class="layui-col-xs6">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label billlable">id</label>
+                                <div class="layui-input-block billbiock">
+                                    <input type="text" id="id" disabled="disabled" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label billlable">商户/代理商ID</label>
+                                <div class="layui-input-block billbiock">
+                                    <input type="text" id="infoId" disabled="disabled" class="layui-input">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label billlable">商户/代理商名称</label>
+                                <div class="layui-input-block billbiock">
+                                    <input type="text" id="infoName" disabled="disabled" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label billlable">商户类型</label>
+                                <div class="layui-input-block billbiock">
+                                    <input type="text" id="mchType" disabled="disabled" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label billlable">商户类型</label>
+                                <div class="layui-input-block billbiock">
+                                    <input type="text" id="infoType" disabled="disabled" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label billlable">状态</label>
+                                <div class="layui-input-block billbiock">
+                                    <input type="text" id="status" disabled="disabled" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label billlable">对账日期</label>
+                                <div class="layui-input-block billbiock">
+                                    <input type="text" id="billDate" disabled="disabled" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label billlable">对账类型</label>
+                                <div class="layui-input-block billbiock">
+                                    <input type="text" id="billType" disabled="disabled" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label billlable">下载地址</label>
+                                <div class="layui-input-block billbiock">
+                                    <input type="text" id="billPath" disabled="disabled" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label billlable">创建时间</label>
+                                <div class="layui-input-block billbiock">
+                                    <input type="text" id="createTime" disabled="disabled" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label billlable">更新时间</label>
+                                <div class="layui-input-block billbiock">
+                                    <input type="text" id="updateTime" disabled="disabled" class="layui-input">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block billbiock">
+                            <a class="layui-btn" lay-href="reconciliation/mch_bill/">返回</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    layui.use(['admin', 'form'], function () {
+        var form = layui.form,
+            $ = layui.$,
+            admin = layui.admin,
+            element = layui.element,
+            layer = layui.layer;
+        // 导航
+        element.render('breadcrumb', 'breadcrumb');
+        var id = layui.router().search.id;
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/bill/mch/get',
+            data: {
+                id: id
+            },
+            error: function (err) {
+                layer.alert(JSON.stringify(err.field), {
+                    title: '错误提示'
+                })
+            },
+            success: function (res) {
+                if (res.code == 0) {
+                    $('#id').val(res.data.id);
+                    $('#infoId').val(res.data.infoId);
+                    $('#infoName').val(res.data.infoName);
+                    $('#mchType').val(res.data.mchType == 1?"平台账户":"私有账户");
+                    $('#infoType').val(res.data.infoType == 1?"商户":"代理商");
+                    $('#billDate').val(layui.util.toDateString(res.data.billDate, "yyyy-MM-dd"));
+                    $('#billType').val(res.data.billType == 1?"支付对账单":"代付对账单");
+                    $('#billPath').val(res.data.billPath);
+                    $('#status').val(res.data.status == 0?"未生成":"已生成");
+                   
+                    if (res.data.createTime != "" && res.data.createTime != null) {
+                        $('#createTime').val(layui.util.toDateString(res.data.createTime));
+                    }
+                    if (res.data.updateTime != "" && res.data.updateTime != null) {
+                        $('#updateTime').val(layui.util.toDateString(res.data.updateTime));
+                    }
+                    form.render();
+                }
+            }
+        })
+    })
+</script>

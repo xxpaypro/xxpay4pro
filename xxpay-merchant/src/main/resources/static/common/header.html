@@ -1,0 +1,159 @@
+<div class="xxpay-bg-white"></div>
+  <div class="layui-container xxpay-header">
+    <a class="fly-logo" href="/">
+      <img src="/images/logo.svg">
+    </a>
+    <ul class="layui-nav fly-nav layui-hide-xs">
+        <li class="layui-nav-item">
+            <a href="/" id="home">首页</a>
+        </li>
+	  <li class="layui-nav-item product-center">
+        <a href="/product/facepay.html" id="product">刷脸支付</a>
+      </li>
+      <!--<li class="layui-nav-item">
+        <a href="/cates/service.html" id="service">解决方案</a>
+      </li>
+      <li class="layui-nav-item  product-center">
+        <a href="/cates/business.html" id="business">产品套餐</a>
+          <div class="product-center-content">
+              <a href="/cates/business.html"><img src="/res/images/product/juheB.svg" /><img src="/res/images/product/juheC.svg" />聚合支付</a>
+              <a href="/cates/facepay.html"><img src="/res/images/product/faceB.svg" /><img src="/res/images/product/faceC.svg" />刷脸支付</a>
+          </div>
+      </li>-->
+        <li class="layui-nav-item">
+            <a href="https://www.xxpay.vip/docs/category_1005.html" target="_blank" id="index">开发文档</a>
+        </li>
+      <!--<li class="layui-nav-item">
+        <a href="/cates/category/1013_1.html" id="category">支付学院</a>
+      </li>
+      <li class="layui-nav-item">
+        <a href="/forum.html" id="forum">技术交流</a>
+      </li>-->
+	  <li class="layui-nav-item">
+		<a href="/about.html" id="about">关于我们</a>
+	  </li>
+    </ul>
+
+    <ul class="layui-nav fly-nav-user layui-hide-sm" style="margin-right: 30%;" lay-filter="">
+    	<li class="layui-nav-item">
+            <a class="fly-nav-avatar" href="javascript:;" onclick="L_menu.className='layui-nav-child layui-anim layui-anim-upbit layui-show';close_menu.className=''">
+          	     <cite><i class="layui-icon">&#xe671;</i>菜单</cite>
+             </a>
+        <dl class="layui-nav-child" style="right: auto;" id="L_menu">
+             <dd><a href="/product/facepay.html">刷脸支付</a></dd>
+             <!--<dd><a href="/cates/service.html">解决方案</a></dd>
+             <dd><a href="/cates/business.html">产品套餐</a></dd>-->
+             <dd><a href="https://www.xxpay.vip/docs/category_1005.html" target="_blank">开发文档</a></dd>
+             <!--<dd><a href="/cates/category/1013_1.html">支付学院</a></dd>
+             <dd><a href="/forum.html">技术交流</a></dd>-->
+             <dd><a href="/">关于我们</a></dd>
+             <hr style="margin: 3px 0;">
+             <dd id="close_menu"><a href="javascript:;" onclick="L_menu.className='layui-nav-child layui-anim layui-anim-upbit'"><i class="layui-icon">&#xe619;</i>收起菜单</a></dd>
+        </dl>
+      </li>
+      <li class="layui-nav-item"><a href=""></a></li>
+    </ul>
+
+      <!--<#if Session["user_session"]?exists>
+		&lt;!&ndash; 登入后的状态 &ndash;&gt;
+	    <ul class="layui-nav fly-nav-user">
+	      <li class="layui-nav-item">
+	        <a class="fly-nav-avatar" href="javascript:;">
+	          <cite class="layui-hide-xs"><span>${Session["user_session"].nickname}</span></cite>
+	          <i class="iconfont icon-renzheng layui-hide-xs" title='认证信息：${Session["user_session"].authInfo!''}'></i>
+	          <#&#45;&#45; <i class="layui-badge fly-badge-vip layui-hide-xs"><span>${Session["user_session"].ps.roleNames!}</span></i> &ndash;&gt;
+	          <img src="${Session["user_session"].avatar!'https://oss.xxpay.vip/img/default.png'}">
+	        </a>
+	        <dl class="layui-nav-child">
+	          <dd><a href="/user/home.html"><i class="layui-icon" style="margin-left: 4px; font-size: 22px;">&#xe68e;</i>我的主页</a></dd>
+	          <dd><a href="/user/index.html"><i class="layui-icon">&#xe60b;</i>用户中心</a></dd>
+	          <dd><a href="/user/set.html"><i class="layui-icon">&#xe620;</i>基本设置</a></dd>
+	          <dd><a href="/user/message.html"><i class="iconfont icon-tongzhi" style="top: 4px;"></i>我的消息</a></dd>
+              <dd><a href="/xwsIntegralRecord/user/record.html"><i class="layui-icon">&#xe630;</i>积分明细</a></dd>
+              <dd><a href="/user/roles.html"><i class="layui-icon">&#xe653;</i>我的权益</a></dd>
+	          <hr style="margin: 5px 0;">
+	          <dd><a id="layOutBtn" type="button" class="layui-btn layui-btn-primary" style="text-align: center;border: none;">退出</a></dd>
+	        </dl>
+	      </li>
+	    </ul>
+      <#else>-->
+		<!-- 未登入的状态 -->
+		<ul id="OFF_Login" class="layui-nav fly-nav-user">
+	      <li class="layui-nav-item">
+	        <a href="/x_mch/start/index.html#/user/login" id="login">登入</a>
+	      </li>
+	      <li class="layui-nav-item">
+	        <a href="/x_mch/start/index.html#/user/reg" id="reg">注册</a>
+	      </li>
+        </ul>
+
+  </div>
+<div style="height:  60px" id="xxpay-body"></div>
+<script type="text/javascript">
+	layui.use(['jquery','layer','util'], function(){
+	    var $ = layui.$
+            ,util = layui.util;
+
+        var url = window.location.pathname;
+        console.log(url)
+        if( url == "/" ) {
+            $("#home").css('color', '#1c83f4');
+        }else if( url.indexOf('/docs') != -1 ) {
+            $("#index").css('color', '#1c83f4');
+        }else if( url.indexOf('/product') != -1 ) {
+            $("#product").css('color', '#1c83f4');
+        }else if( url.indexOf('/cates/service') != -1 ) {
+            $("#service").css('color', '#1c83f4');
+        }else if( url.indexOf('/cates/business') != -1 || url.indexOf('/cates/facepay') != -1) {
+            $("#business").css('color', '#1c83f4');
+        }else if( url.indexOf('/cates/category') != -1 || url.indexOf('/cates/detail') != -1) {
+            $("#category").css('color', '#1c83f4');
+        }else if(url.indexOf('/forum') != -1 ) {
+            $("#forum").css('color', '#1c83f4');
+        }else if(url.indexOf('/login') != -1 ) {
+            $("#login").css('color', '#1c83f4');
+        }else if(url.indexOf('/reg') != -1 ) {
+            $("#reg").css('color', '#1c83f4');
+        }else if(url.indexOf('/about') != -1 ) {
+            $("#about").css('color', '#1c83f4');
+        }else{
+            window.location.href='/x_mch/start/index.html';
+        }
+
+        if( url == '/') {
+            $("#xxpay-body").addClass("layui-hide");
+        }
+
+        $("#layOutBtn").on('click',function(){
+            $.ajax({
+                type: "post",
+                url: "/api/xwsUser/layOut",
+                async: true,
+                success: function(res){
+                    if(res.code == 0){
+                        $("#OFF_Login").removeClass('layui-hide');
+                        $("#ON_Login").addClass('layui-hide');
+                        window.location.href = '/index.html';
+                    }
+                }
+            });
+        });
+
+        var currHref = location.href;
+        var val = currHref.substring(currHref.lastIndexOf("/")+1,currHref.lastIndexOf("."));
+        if(val == "index"){
+            $("#select_this").val("/docs/index.html");
+        }else if(val == "service"){
+            $("#select_this").val("/cates/service.html");
+        }else if(val == "business"){
+            $("#select_this").val("/cates/business.html");
+        }else if(val == "update"){
+            $("#select_this").val("/cates/update.html");
+        }else if(val == "forum"){
+            $("#select_this").val("/forum.html");
+        }else{
+            $("#select_this").val("https://www.xxpay.vip");
+        }
+    });
+
+</script>

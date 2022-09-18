@@ -1,0 +1,76 @@
+<style>
+    .goods-column {
+        display: flex;
+        flex-direction: column;
+        border-top: 1px solid #e6e6e6;
+        border-left: 1px solid #e6e6e6;
+        border-right: 1px solid #e6e6e6;
+    }
+    .goods-row {
+        display: flex;
+        flex-direction: row;
+        height: 45px;
+        border-bottom: 1px solid #e6e6e6;
+    }
+    .goods-detail {
+        width: 33.33%;
+        text-align: center;
+        line-height: 45px;
+    }
+    .goods-detail2 {
+        width: 40%;
+        text-align: center;
+    }
+    .bg-grey {
+        background: #f2f2f2;
+    }
+</style>
+
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <div class="layui-tab-content goods-column" style="padding: 0" id="goodsData">
+                <div class="goods-row">
+                    <div class="goods-detail bg-grey">商品名称</div>
+                    <div class="goods-detail bg-grey">商品价格</div>
+                    <div class="goods-detail bg-grey">商品小程序路径</div>
+                    <!--<div class="goods-detail2">商品封面图链接</div>-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+	 layui.config({
+	    base: '/x_mch/src/lib/extend/',
+	 });
+     layui.use(['table','util','admin'], function(){
+        var table = layui.table
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,element = layui.element
+        ,view = layui.view
+        ,form = layui.form;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+         // 获取数据
+         var goods = view.getOpenParams('goods');
+
+        if (typeof (goods) === 'string') {
+            goods = JSON.parse(goods);
+        }
+        for (var i = 0; i < goods.length; i++) {
+            $("#goodsData").append('<div class="goods-row">' +
+                '<div class="goods-detail">' + goods[i].name + '</div>' +
+                '<div class="goods-detail">' + goods[i].price/100 + '</div>' +
+                '<div class="goods-detail">' + goods[i].url + '</div>' +
+                /*'<div class="goods-detail">' + goods[i].cover_img + '</div>' +*/
+                '</div>')
+        }
+
+         // 渲染表单
+         form.render();
+        
+     })
+</script>

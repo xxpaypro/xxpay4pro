@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.xxpay.service.dao.mapper.MchFreightTemplateMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="org.xxpay.core.entity.MchFreightTemplate">
+        <id column="Id" property="Id" />
+        <result column="MchId" property="mchId" />
+        <result column="IsvId" property="isvId" />
+        <result column="TemplateName" property="templateName" />
+        <result column="ValuationType" property="valuationType" />
+        <result column="Valuation" property="valuation" />
+        <result column="FirstNum" property="firstNum" />
+        <result column="FirstNumValuation" property="firstNumValuation" />
+        <result column="OtherNum" property="otherNum" />
+        <result column="OtherNumValuation" property="otherNumValuation" />
+        <result column="FirstWeight" property="firstWeight" />
+        <result column="FirstWeightValuation" property="firstWeightValuation" />
+        <result column="OtherWeight" property="otherWeight" />
+        <result column="OtherWeightValuation" property="otherWeightValuation" />
+        <result column="CreateTime" property="createTime" />
+        <result column="UpdateTime" property="updateTime" />
+    </resultMap>
+
+</mapper>

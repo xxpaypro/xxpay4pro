@@ -1,0 +1,163 @@
+<script type="text/html" template>
+    <link rel="stylesheet" href="{{ layui.setter.base }}style/login.css?v={{ layui.admin.v }}-2" media="all">
+</script>
+<div class="layadmin-user-login-main">
+    <div class="layadmin-user-login-box layadmin-user-login-header">
+        <h2>商户注册</h2>
+        <p>XxPay聚合支付系统</p>
+    </div>
+    <form class="layui-form center">
+        <div class="layui-form-item">
+            <label class="layui-form-label">商户名称</label>
+            <div class="layui-input-block">
+                <input type="text" required  name="name"  lay-verify="required" placeholder="请输入商户名称" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">商户类型</label>
+            <div class="layui-input-block">
+                <select name="type" lay-filter="type">
+                    <option value="2">私有账户</option>
+                    <option value="1">平台账户</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">邮箱</label>
+            <div class="layui-input-block">
+                <input type="email" required  name="email"  lay-verify="required|email" placeholder="请输入邮箱信息" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">手机号</label>
+            <div class="layui-input-block">
+                <input type="phone" required  name="mobile" id="mobile" lay-verify="required|phone" placeholder="请输入手机号" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">验证码</label>
+            <div class="layui-input-inline" style="width: 100px">
+                <input type="text" required  name="smsCode"  lay-verify="required" placeholder="请输入验证码" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-form-mid layui-word-aux" style="padding:0 9px !important;"><input type="button" class="layui-btn layui-btn-normal send" value="获取验证码" onclick="settime(this)"></div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">登录密码</label>
+            <div class="layui-input-block">
+                <input type="password" required  name="password"  lay-verify="required|pass" placeholder="请输入登录密码" autocomplete="off" class="layui-input pwd">
+            </div>
+            <div class="layui-form-mid layui-word-aux" style="margin-left: 110px;">登录密码为8-16位的字母和数字组合</div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">确认密码</label>
+            <div class="layui-input-block">
+                <input type="password" required   lay-verify="required" placeholder="请输入确认密码" autocomplete="off" class="layui-input confirmPwd">
+            </div>
+        </div>
+        <div class="layui-form-item ">
+            <div class="layui-input-block">
+                <button type="button" lay-submit lay-filter="regBtn" class="layui-btn layui-btn-fluid">注册</button>
+            </div>
+        </div>
+        <div class="layui-form-item ">
+            <div class="layui-input-block">
+                <a id="login" lay-href="user/login">已有账号,直接登入</a>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="layui-trans layadmin-user-login-footer">
+
+    <p>© 2018 <a href="http://www.xxpay.org/" target="_blank">xxpay.org</a></p>
+    <p>
+        <span><a href="http://www.xxpay.org" target="_blank">获取商业版</a></span>
+        <span><a href="http://www.xxpay.org" target="_blank">在线演示</a></span>
+        <span><a href="http://www.xxpay.org" target="_blank">前往官网</a></span>
+    </p>
+</div>
+<script>
+
+    //获取验证码倒计时
+    var countdown = 60;
+    function settime(val) {
+        if (countdown <= 0) {
+            val.removeAttribute("disabled");
+            val.value="获取验证码";
+            clearTimeout(timer);
+            countdown = 60;
+            return;
+        } else {
+            var mobile = document.getElementById("mobile").value;
+            if(!mobile) {
+                layer.alert("请填写手机号",{title: '提示'});
+                return;
+            }
+            // 在这个回调函数里面写ajax提交
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/auth/sms_send?mobile=' + mobile,
+                success: function(res){
+                    console.log(res);
+                    val.setAttribute("disabled", true);
+                    val.value="重新发送(" + countdown + ")";
+                    countdown--;
+                }
+            })
+
+        }
+        timer = setTimeout(function() {
+            settime(val)
+        },1000)
+    }
+
+    layui.use(['admin','form','util','admin'], function(){
+        var form = layui.form
+                ,$ = layui.$
+                ,admin = layui.admin
+                ,admin = layui.admin
+                ,element = layui.element;
+
+        //自定义表单验证 pass
+        form.verify({
+            pass: [
+                /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,16}$/
+                ,'不符合密码为8-16位的字母和数字组合'
+            ]
+        })
+
+        form.on('submit(regBtn)', function(data){
+            //先验证输入的密码和确认密码是否一致
+            var firPwd = $.trim($('.pwd').val());
+            var conPwd = $.trim($('.confirmPwd').val());
+
+            if(firPwd != conPwd){
+                layer.alert('密码输入不一致，请重新输入');
+                return ;
+            }
+
+            // 在这个回调函数里面写ajax提交
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/auth/register',
+                data: data.field,
+                success: function(res){
+                    console.log(res);
+                    if(res.code == 0){
+                        layer.alert(
+                                "注册成功,工作人员会24小时内审核您的信息.",
+                                {title: "注册成功"},
+                                function(index) {
+                                    layer.close(index);
+                                    $("#login").trigger("click");
+                        })
+                    }else {
+                        layer.alert(res.msg,{title: '注册失败'})
+                    }
+                }
+            })
+            return false;//阻止跳转
+        });
+        form.render();
+    })
+</script>

@@ -1,0 +1,426 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.xxpay.service.dao.mapper.PayPassageMapper">
+  <resultMap id="BaseResultMap" type="org.xxpay.core.entity.PayPassage">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="BelongInfoId" jdbcType="BIGINT" property="belongInfoId" />
+    <result column="BelongInfoType" jdbcType="TINYINT" property="belongInfoType" />
+    <result column="PassageName" jdbcType="VARCHAR" property="passageName" />
+    <result column="IfTypeCode" jdbcType="VARCHAR" property="ifTypeCode" />
+    <result column="Status" jdbcType="TINYINT" property="status" />
+    <result column="MaxDayAmount" jdbcType="BIGINT" property="maxDayAmount" />
+    <result column="MaxEveryAmount" jdbcType="BIGINT" property="maxEveryAmount" />
+    <result column="MinEveryAmount" jdbcType="BIGINT" property="minEveryAmount" />
+    <result column="TradeStartTime" jdbcType="VARCHAR" property="tradeStartTime" />
+    <result column="TradeEndTime" jdbcType="VARCHAR" property="tradeEndTime" />
+    <result column="RiskStatus" jdbcType="TINYINT" property="riskStatus" />
+    <result column="ContractStatus" jdbcType="TINYINT" property="contractStatus" />
+    <result column="IsvParam" jdbcType="VARCHAR" property="isvParam" />
+    <result column="MchParam" jdbcType="VARCHAR" property="mchParam" />
+    <result column="Remark" jdbcType="VARCHAR" property="remark" />
+    <result column="CreateTime" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="UpdateTime" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, BelongInfoId, BelongInfoType, PassageName, IfTypeCode, Status, MaxDayAmount,
+    MaxEveryAmount, MinEveryAmount, TradeStartTime, TradeEndTime, RiskStatus, ContractStatus,
+    IsvParam, MchParam, Remark, CreateTime, UpdateTime
+  </sql>
+  <select id="selectByExample" parameterType="org.xxpay.core.entity.PayPassageExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from t_pay_passage
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+    <if test="limit != null">
+      <if test="offset != null">
+        limit ${offset}, ${limit}
+      </if>
+      <if test="offset == null">
+        limit ${limit}
+      </if>
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_pay_passage
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_pay_passage
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="org.xxpay.core.entity.PayPassageExample">
+    delete from t_pay_passage
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="org.xxpay.core.entity.PayPassage">
+    insert into t_pay_passage (id, BelongInfoId, BelongInfoType,
+      PassageName, IfTypeCode, Status,
+      MaxDayAmount, MaxEveryAmount, MinEveryAmount,
+      TradeStartTime, TradeEndTime, RiskStatus,
+      ContractStatus, IsvParam, MchParam,
+      Remark, CreateTime, UpdateTime
+      )
+    values (#{id,jdbcType=INTEGER}, #{belongInfoId,jdbcType=BIGINT}, #{belongInfoType,jdbcType=TINYINT},
+      #{passageName,jdbcType=VARCHAR}, #{ifTypeCode,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT},
+      #{maxDayAmount,jdbcType=BIGINT}, #{maxEveryAmount,jdbcType=BIGINT}, #{minEveryAmount,jdbcType=BIGINT},
+      #{tradeStartTime,jdbcType=VARCHAR}, #{tradeEndTime,jdbcType=VARCHAR}, #{riskStatus,jdbcType=TINYINT},
+      #{contractStatus,jdbcType=TINYINT}, #{isvParam,jdbcType=VARCHAR}, #{mchParam,jdbcType=VARCHAR},
+      #{remark,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="org.xxpay.core.entity.PayPassage">
+    insert into t_pay_passage
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="belongInfoId != null">
+        BelongInfoId,
+      </if>
+      <if test="belongInfoType != null">
+        BelongInfoType,
+      </if>
+      <if test="passageName != null">
+        PassageName,
+      </if>
+      <if test="ifTypeCode != null">
+        IfTypeCode,
+      </if>
+      <if test="status != null">
+        Status,
+      </if>
+      <if test="maxDayAmount != null">
+        MaxDayAmount,
+      </if>
+      <if test="maxEveryAmount != null">
+        MaxEveryAmount,
+      </if>
+      <if test="minEveryAmount != null">
+        MinEveryAmount,
+      </if>
+      <if test="tradeStartTime != null">
+        TradeStartTime,
+      </if>
+      <if test="tradeEndTime != null">
+        TradeEndTime,
+      </if>
+      <if test="riskStatus != null">
+        RiskStatus,
+      </if>
+      <if test="contractStatus != null">
+        ContractStatus,
+      </if>
+      <if test="isvParam != null">
+        IsvParam,
+      </if>
+      <if test="mchParam != null">
+        MchParam,
+      </if>
+      <if test="remark != null">
+        Remark,
+      </if>
+      <if test="createTime != null">
+        CreateTime,
+      </if>
+      <if test="updateTime != null">
+        UpdateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="belongInfoId != null">
+        #{belongInfoId,jdbcType=BIGINT},
+      </if>
+      <if test="belongInfoType != null">
+        #{belongInfoType,jdbcType=TINYINT},
+      </if>
+      <if test="passageName != null">
+        #{passageName,jdbcType=VARCHAR},
+      </if>
+      <if test="ifTypeCode != null">
+        #{ifTypeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="maxDayAmount != null">
+        #{maxDayAmount,jdbcType=BIGINT},
+      </if>
+      <if test="maxEveryAmount != null">
+        #{maxEveryAmount,jdbcType=BIGINT},
+      </if>
+      <if test="minEveryAmount != null">
+        #{minEveryAmount,jdbcType=BIGINT},
+      </if>
+      <if test="tradeStartTime != null">
+        #{tradeStartTime,jdbcType=VARCHAR},
+      </if>
+      <if test="tradeEndTime != null">
+        #{tradeEndTime,jdbcType=VARCHAR},
+      </if>
+      <if test="riskStatus != null">
+        #{riskStatus,jdbcType=TINYINT},
+      </if>
+      <if test="contractStatus != null">
+        #{contractStatus,jdbcType=TINYINT},
+      </if>
+      <if test="isvParam != null">
+        #{isvParam,jdbcType=VARCHAR},
+      </if>
+      <if test="mchParam != null">
+        #{mchParam,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="org.xxpay.core.entity.PayPassageExample" resultType="java.lang.Long">
+    select count(*) from t_pay_passage
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update t_pay_passage
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.belongInfoId != null">
+        BelongInfoId = #{record.belongInfoId,jdbcType=BIGINT},
+      </if>
+      <if test="record.belongInfoType != null">
+        BelongInfoType = #{record.belongInfoType,jdbcType=TINYINT},
+      </if>
+      <if test="record.passageName != null">
+        PassageName = #{record.passageName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ifTypeCode != null">
+        IfTypeCode = #{record.ifTypeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.status != null">
+        Status = #{record.status,jdbcType=TINYINT},
+      </if>
+      <if test="record.maxDayAmount != null">
+        MaxDayAmount = #{record.maxDayAmount,jdbcType=BIGINT},
+      </if>
+      <if test="record.maxEveryAmount != null">
+        MaxEveryAmount = #{record.maxEveryAmount,jdbcType=BIGINT},
+      </if>
+      <if test="record.minEveryAmount != null">
+        MinEveryAmount = #{record.minEveryAmount,jdbcType=BIGINT},
+      </if>
+      <if test="record.tradeStartTime != null">
+        TradeStartTime = #{record.tradeStartTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.tradeEndTime != null">
+        TradeEndTime = #{record.tradeEndTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.riskStatus != null">
+        RiskStatus = #{record.riskStatus,jdbcType=TINYINT},
+      </if>
+      <if test="record.contractStatus != null">
+        ContractStatus = #{record.contractStatus,jdbcType=TINYINT},
+      </if>
+      <if test="record.isvParam != null">
+        IsvParam = #{record.isvParam,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mchParam != null">
+        MchParam = #{record.mchParam,jdbcType=VARCHAR},
+      </if>
+      <if test="record.remark != null">
+        Remark = #{record.remark,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createTime != null">
+        CreateTime = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateTime != null">
+        UpdateTime = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update t_pay_passage
+    set id = #{record.id,jdbcType=INTEGER},
+    BelongInfoId = #{record.belongInfoId,jdbcType=BIGINT},
+    BelongInfoType = #{record.belongInfoType,jdbcType=TINYINT},
+    PassageName = #{record.passageName,jdbcType=VARCHAR},
+    IfTypeCode = #{record.ifTypeCode,jdbcType=VARCHAR},
+    Status = #{record.status,jdbcType=TINYINT},
+    MaxDayAmount = #{record.maxDayAmount,jdbcType=BIGINT},
+    MaxEveryAmount = #{record.maxEveryAmount,jdbcType=BIGINT},
+    MinEveryAmount = #{record.minEveryAmount,jdbcType=BIGINT},
+    TradeStartTime = #{record.tradeStartTime,jdbcType=VARCHAR},
+    TradeEndTime = #{record.tradeEndTime,jdbcType=VARCHAR},
+    RiskStatus = #{record.riskStatus,jdbcType=TINYINT},
+    ContractStatus = #{record.contractStatus,jdbcType=TINYINT},
+    IsvParam = #{record.isvParam,jdbcType=VARCHAR},
+    MchParam = #{record.mchParam,jdbcType=VARCHAR},
+    Remark = #{record.remark,jdbcType=VARCHAR},
+    CreateTime = #{record.createTime,jdbcType=TIMESTAMP},
+    UpdateTime = #{record.updateTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="org.xxpay.core.entity.PayPassage">
+    update t_pay_passage
+    <set>
+      <if test="belongInfoId != null">
+        BelongInfoId = #{belongInfoId,jdbcType=BIGINT},
+      </if>
+      <if test="belongInfoType != null">
+        BelongInfoType = #{belongInfoType,jdbcType=TINYINT},
+      </if>
+      <if test="passageName != null">
+        PassageName = #{passageName,jdbcType=VARCHAR},
+      </if>
+      <if test="ifTypeCode != null">
+        IfTypeCode = #{ifTypeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        Status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="maxDayAmount != null">
+        MaxDayAmount = #{maxDayAmount,jdbcType=BIGINT},
+      </if>
+      <if test="maxEveryAmount != null">
+        MaxEveryAmount = #{maxEveryAmount,jdbcType=BIGINT},
+      </if>
+      <if test="minEveryAmount != null">
+        MinEveryAmount = #{minEveryAmount,jdbcType=BIGINT},
+      </if>
+      <if test="tradeStartTime != null">
+        TradeStartTime = #{tradeStartTime,jdbcType=VARCHAR},
+      </if>
+      <if test="tradeEndTime != null">
+        TradeEndTime = #{tradeEndTime,jdbcType=VARCHAR},
+      </if>
+      <if test="riskStatus != null">
+        RiskStatus = #{riskStatus,jdbcType=TINYINT},
+      </if>
+      <if test="contractStatus != null">
+        ContractStatus = #{contractStatus,jdbcType=TINYINT},
+      </if>
+      <if test="isvParam != null">
+        IsvParam = #{isvParam,jdbcType=VARCHAR},
+      </if>
+      <if test="mchParam != null">
+        MchParam = #{mchParam,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        Remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        CreateTime = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        UpdateTime = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.xxpay.core.entity.PayPassage">
+    update t_pay_passage
+    set BelongInfoId = #{belongInfoId,jdbcType=BIGINT},
+      BelongInfoType = #{belongInfoType,jdbcType=TINYINT},
+      PassageName = #{passageName,jdbcType=VARCHAR},
+      IfTypeCode = #{ifTypeCode,jdbcType=VARCHAR},
+      Status = #{status,jdbcType=TINYINT},
+      MaxDayAmount = #{maxDayAmount,jdbcType=BIGINT},
+      MaxEveryAmount = #{maxEveryAmount,jdbcType=BIGINT},
+      MinEveryAmount = #{minEveryAmount,jdbcType=BIGINT},
+      TradeStartTime = #{tradeStartTime,jdbcType=VARCHAR},
+      TradeEndTime = #{tradeEndTime,jdbcType=VARCHAR},
+      RiskStatus = #{riskStatus,jdbcType=TINYINT},
+      ContractStatus = #{contractStatus,jdbcType=TINYINT},
+      IsvParam = #{isvParam,jdbcType=VARCHAR},
+      MchParam = #{mchParam,jdbcType=VARCHAR},
+      Remark = #{remark,jdbcType=VARCHAR},
+      CreateTime = #{createTime,jdbcType=TIMESTAMP},
+      UpdateTime = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

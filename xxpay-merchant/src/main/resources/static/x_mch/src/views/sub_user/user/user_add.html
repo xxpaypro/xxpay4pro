@@ -1,0 +1,188 @@
+<style>
+    .xxpayPopupDiv .layui-form-label {
+        width:15% !important;
+        margin-left:1%;
+    }
+    .xxpayPopupDiv .layui-input-inline {
+        width: 33% !important;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <form class="layui-form layui-form-pane">
+            <div class="layui-tab layui-tab-brief">
+                <div class="layui-tab-content">
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">头像</label>
+                        <div class="layui-input-inline">
+                            <input type="hidden" name="avatar" id="avatar" class="layui-hide">
+                            <img class="uploadImg layui-hide" style="height:38px; margin-left:30px;cursor: pointer;" title="点击放大" />
+                            <button class="uploadImgBtn layui-btn layui-btn-sm" type="button" style="margin-left: 20px;margin-top: 5px;">上传图片</button>
+                            <button class="delImgBtn layui-btn layui-btn-sm layui-btn-danger layui-hide" style="margin-top: 5px;" type="button">删除图片</button>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">所属门店</label>
+                        <div class="layui-input-inline">
+                            <select name="storeId" id="storeId" lay-search="" lay-verify="required">
+                                <option value="">请选择</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">用户名</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="loginUserName" name="loginUserName" lay-verify="required" placeholder="输入用户名" autocomplete="off" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">员工姓名</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="nickName" name="nickName" lay-verify="required" placeholder="输入用户昵称" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">密码</label>
+                        <div class="layui-input-inline">
+                            <input type="passWord" id="loginPassword" name="loginPassword" lay-verify="pass" placeholder="输入8到16位密码" autocomplete="off" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">手机号</label>
+                        <div class="layui-input-inline">
+                            <input type="tel" id="mobile" name="mobile" lay-verify="phone" placeholder="输入手机号" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">邮箱</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="email" name="email" lay-verify="email" placeholder="输入邮箱" autocomplete="off" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">状态</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="status" value="1" title="启用" checked="checked">
+                            <input type="radio" name="status" value="0" title="停止">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">性别</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="sex" value="1" title="男" checked="checked">
+                            <input type="radio" name="sex" value="2" title="女">
+                            <input type="radio" name="sex" value="0" title="未知">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">备注</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="remark" name="remark" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="layui-hide xxpayYesBtn" lay-submit lay-filter="userAdd">保存</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    layui.use(['form','admin','setter','upload'],function(){
+        var form = layui.form
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,element = layui.element
+        ,setter = layui.setter
+        ,upload = layui.upload
+        ,layer = layui.layer ;
+
+        element.render('breadcrumb', 'breadcrumb');
+
+        admin.req({
+            type: "POST",
+            url: layui.setter.baseUrl + '/store/storeList',
+            success: function(res){
+                if(res.code == 0) {
+                    var storeList = res.data;
+                    //遍历赋值
+                    for(var i in storeList){
+                        if(storeList[i].status == 1){
+                            $("#storeId").append('<option value= '+storeList[i].storeId+'>'+ storeList[i].storeName+'</option>');
+                        }
+                    }
+                    form.render('select');
+                }
+            }
+        });
+
+        /* 自定义验证规则 */
+        form.verify({
+            pass: [/(.+){8,16}$/, '密码必须8到16位']
+        });
+
+        form.on('submit(userAdd)', function(data) {
+            //这里可以写ajax方法提交表单
+            admin.req({
+                type: "POST",
+                url: layui.setter.baseUrl + '/subuser/add',
+                data: "params=" + JSON.stringify(data.field),
+                success: function(res){
+                    if(res.code == 0) {
+                        layer.closeAll(); //关闭所有弹层
+                        layer.msg("保存成功");
+                        layui.table.reload('tableReload', {page: {curr: 1}}); //调用业务弹层外表格重新加载
+                    }
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+        var headers = {};
+        headers[setter.request.tokenName] = layui.data(setter.tableName)[setter.request.tokenName];
+        upload.render({
+            elem: '.uploadImgBtn'
+            , url: layui.setter.baseUrl + '/upload/avatar'
+            , headers: headers
+            , size: 2048  //仅支持2M图片上传
+            ,before: function (obj) {
+                obj.preview(function(index, file, result) {
+                    $('#img').attr('src', result);
+                })
+            },done: function(res){
+                //如果上传失败
+                if(res.code != 0){
+                    return layer.msg('上传失败['+res.msg+']', {icon: 2});
+                }
+                //上传成功
+                $("#avatar").val(res.data);
+                var divElem = $(this.item).parent();
+                divElem.find('.uploadImg').attr("src", res.data).removeClass('layui-hide');
+                divElem.find('.delImgBtn').removeClass('layui-hide');
+                divElem.find('.uploadImgBtn').text('重新上传');
+            }
+        });
+        //点击[图片] 按钮， 事件
+        $('.uploadImg').click(function(){
+            var imgSrc = $(this).attr('src');
+            layer.photos({photos: {
+                    "title": "查看上传图片", //相册标题
+                    "id": 1, //相册id
+                    "start": 0, //初始显示的图片序号，默认0
+                    "data": [   //相册包含的图片，数组格式
+                        {
+                            "alt": "图片",
+                            "pid": 1, //图片id
+                            "src": imgSrc, //原图地址
+                            "thumb": "" //缩略图地址
+                        }
+                    ]
+                } ,anim: 5});
+        });
+
+        //点击[删除图片] 按钮， 事件
+        $('.delImgBtn').click(function(){
+            var divElem = $(this).parent();
+            divElem.find('.imgVal').val(""); //清空图片真实路径
+            divElem.find('.uploadImgBtn').text("上传图片");
+            divElem.find('.uploadImg').attr("src", "").addClass('layui-hide');
+            divElem.find('.delImgBtn').addClass('layui-hide');
+            form.render();
+        });
+        form.render();
+    })
+</script>

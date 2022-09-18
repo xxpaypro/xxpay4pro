@@ -1,0 +1,182 @@
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>资金流水</cite></a>
+        <a><cite>查看资金流水</cite></a>
+    </div>
+</div>
+<style>
+    .layui-form-label {
+        width:15% !important;
+        margin-left:1%;
+    }
+    .layui-input-inline {
+        width: 33% !important;
+    }
+</style>
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-tab layui-tab-brief">
+      <ul class="layui-tab-title">
+        <li class="layui-this">资金流水详情</li>
+      </ul>
+      <div class="layui-tab-content">
+          <form class="layui-form layui-form-pane" action="">
+              <div class="layui-form-item">
+                  <label class="layui-form-label">商户ID</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="mchId" disabled="disabled" class="layui-input">
+                  </div>
+              </div>
+              <div class="layui-form-item">
+                  <label class="layui-form-label">资金变动方向</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="fundDirection" disabled="disabled" class="layui-input">
+                  </div>
+                  <label class="layui-form-label">变更金额(元)</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="amount" disabled="disabled" class="layui-input">
+                  </div>
+              </div>
+              <div class="layui-form-item">
+                  <label class="layui-form-label">变更前账户余额(元)</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="balance" disabled="disabled" class="layui-input">
+                  </div>
+                  <label class="layui-form-label">变更后账户余额(元)</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="afterBalance" disabled="disabled" class="layui-input">
+                  </div>
+              </div>
+              <div class="layui-form-item">
+                  <label class="layui-form-label">订单金额(元)</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="orderAmount" disabled="disabled" class="layui-input">
+                  </div>
+                  <label class="layui-form-label">手续费(元)</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="fee" disabled="disabled" class="layui-input">
+                  </div>
+              </div>
+
+              <div class="layui-form-item">
+                  <label class="layui-form-label">业务类型</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="bizType" disabled="disabled" class="layui-input">
+                  </div>
+                  <label class="layui-form-label">业务类目</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="bizItem" disabled="disabled" class="layui-input">
+                  </div>
+              </div>
+              <div class="layui-form-item">
+
+                  <label class="layui-form-label">业务订单</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="orderId" disabled="disabled" class="layui-input">
+                  </div>
+                  <label class="layui-form-label">渠道订单号</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="channelOrderNo" disabled="disabled" class="layui-input">
+                  </div>
+
+                  <!--<label class="layui-form-label">是否允许结算</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="isAllowSett" disabled="disabled" class="layui-input">
+                  </div>-->
+              </div>
+              <!--<div class="layui-form-item">
+                  <label class="layui-form-label">商户结算</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="mchSettStatus" disabled="disabled" class="layui-input">
+                  </div>
+                  <label class="layui-form-label">代理商结算</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="agentSettStatus" disabled="disabled" class="layui-input">
+                  </div>
+              </div>-->
+
+              <div class="layui-form-item">
+                  <label class="layui-form-label">创建时间</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="createTime" disabled="disabled" class="layui-input">
+                  </div>
+                  <label class="layui-form-label">修改时间</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="updateTime" disabled="disabled" class="layui-input">
+                  </div>
+              </div>
+
+
+              <div class="layui-form-item">
+
+                  <label class="layui-form-label">备注</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="remark" disabled="disabled" class="layui-input">
+                  </div>
+              </div>
+
+              <div class="layui-form-item">
+                  <div class="layui-input-block">
+                      <a class="layui-btn" lay-href="merchant/history/">返回</a>
+                  </div>
+              </div>
+          </form>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+    layui.use(['admin', 'form'],function(){
+        var form = layui.form
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,element = layui.element
+        ,layer = layui.layer ;
+        // 导航
+        element.render('breadcrumb', 'breadcrumb');
+        var router = layui.router();
+        var id = router.search.id;
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/account/history_get',
+            data: {
+                id : id
+            },
+            error: function(err){
+                layer.alert(JSON.stringify(err.field), {
+                    title: '错误提示'
+                })
+            },
+            success: function(res){
+                if(res.code == 0){
+                    $('#mchId').val(res.data.mchId);
+                    $('#amount').val(res.data.changeAmount/100);
+                    $('#balance').val(res.data.balance/100);
+                    $('#afterBalance').val(res.data.afterBalance/100);
+                    $('#fee').val(res.data.bizOrderFee/100);
+                    $('#fundDirection').val(res.data.fundDirection ==1?"加款":"减款");
+                    $('#orderAmount').val(res.data.bizOrderAmount/100);
+                    $('#isAllowSett').val(res.data.isAllowSett ==1?"允许":"不允许");
+                    $('#mchSettStatus').val(res.data.mchSettStatus ==1?"已结算":"未结算");
+                    $('#agentSettStatus').val(res.data.agentSettStatus ==1?"已结算":"未结算");
+                    $('#orderId').val(res.data.bizOrderId);
+                    $('#channelOrderNo').val(res.data.bizChannelOrderNo);
+                    $('#bizType').val(res.data.bizType ==1?"支付":res.data.bizType ==2?"提现":res.data.bizType ==3?"调账":res.data.bizType ==4?"充值":res.data.bizType ==5?"差错处理":res.data.bizType ==6?"代付":"");
+                    $('#bizItem').val(res.data.bizItem ==10?"账户余额":res.data.bizItem ==11?"代付余额":res.data.bizItem ==12?"冻结金额":res.data.bizItem ==13?"保证金额":res.data.bizItem ==20?"支付":res.data.bizItem ==21?"代付":res.data.bizItem ==22?"线下充值":res.data.bizItem ==23?"线上充值":"");
+                    $('#riskDay').val(res.data.riskDay);
+                    $('#remark').val(res.data.remark);
+                    if(res.data.createTime != "" && res.data.createTime != null) {
+                        $('#createTime').val(layui.util.toDateString(res.data.createTime));
+                    }
+                    if(res.data.updateTime != "" && res.data.updateTime != null) {
+                        $('#updateTime').val(layui.util.toDateString(res.data.updateTime));
+                    }
+                    form.render();
+                }else{
+                    layer.alert({title:'请求成功，但是获取数据失败'});
+                }
+            }
+        })
+    })
+</script>

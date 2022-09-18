@@ -1,0 +1,326 @@
+
+.err-visit {
+    margin-top: 25px;
+    padding: 112px 80px;
+    background: #fff;
+    box-shadow: 0 0 0 2px rgba(240, 240, 240, 0.69)
+}
+
+.err-visit .err-cont {
+    margin: 0 auto;
+    width: 800px;
+    background: url(/images/err_icon.png) 220px 8px no-repeat
+}
+
+.err-visit .tit {
+    margin-bottom: 20px;
+    padding-left: 320px;
+    font-size: 18px;
+    line-height: 1;
+    color: #333
+}
+
+.err-visit p {
+    margin-bottom: 6px;
+    padding-left: 320px;
+    font-size: 14px;
+    line-height: 1;
+    color: #999
+}
+
+
+.mid-cont {
+    margin-top: 25px;
+    background-color: rgba(255, 255, 255, 0.69);
+    background-color: #fff\9;
+    border: 2px solid #f0f0f0
+}
+
+.mid-cont .mid-cont-inner {
+    padding: 0 20px
+}
+
+.mid-cont .mid-cont-inner .pay-tit {
+    height: 66px;
+    line-height: 66px;
+    border-bottom: 1px dashed #d9d9d9
+}
+
+.mid-cont .mid-cont-inner .pay-tit.no-botborder {
+    border-bottom: none
+}
+
+.mid-cont .mid-cont-inner .pay-tit .pay-logo {
+    padding-left: 10px
+}
+
+.mid-cont .mid-cont-inner .pay-tit .pay-money {
+    padding-top: 22px;
+    font-size: 14px;
+    color: #333
+}
+
+.mid-cont .mid-cont-inner .pay-tit .pay-money em {
+    padding-left: 10px;
+    font-style: normal;
+    font-size: 18px;
+    color: #ff3131
+}
+
+.mid-cont .mid-cont-inner .bank-box li {
+    position: relative;
+    padding-left: 20px;
+    cursor: pointer
+}
+
+.mid-cont .mid-cont-inner .bank-box li div {
+    display: inline-block
+}
+
+.mid-cont .mid-cont-inner .bank-box li .bank-img {
+    margin: 13px 20px 13px 10px;
+    width: 200px;
+    height: 50px;
+    text-align: center;
+    background-color: #fff;
+    border: solid 1px #dcdcdc
+}
+
+.mid-cont .mid-cont-inner .bank-box li .bank-img img {
+    margin-top: 12px
+}
+
+.mid-cont .mid-cont-inner .bank-box li .bank-type,
+.mid-cont .mid-cont-inner .bank-box li .number {
+    position: absolute;
+    font-size: 14px
+}
+
+.mid-cont .mid-cont-inner .bank-box li .bank-type {
+    margin-top: 26px;
+    width: 55px;
+    height: 24px;
+    color: #fff;
+    line-height: 24px;
+    text-align: center;
+    border-radius: 2px
+}
+
+.mid-cont .mid-cont-inner .bank-box li .debit {
+    background-color: #acd0eb
+}
+
+.mid-cont .mid-cont-inner .bank-box li .credit {
+    background-color: #fabd18
+}
+
+.mid-cont .mid-cont-inner .bank-box li .number {
+    position: absolute;
+    line-height: 76px;
+    margin-left: 70px
+}
+
+.mid-cont .mid-cont-inner .bank-box li .money {
+    display: none;
+    position: absolute;
+    top: 0;
+    right: 65px;
+    color: #666;
+    bottom: 0;
+    line-height: 76px;
+    font-weight: 700;
+    font-size: 18px
+}
+
+.mid-cont .mid-cont-inner .bank-box li .money span {
+    color: #ff3131;
+    font-weight: 700;
+    font-size: 24px
+}
+
+.mid-cont .mid-cont-inner .bank-box .selected {
+    border: 1px solid #aed7ff
+}
+
+.mid-cont .mid-cont-inner .bank-box .selected .bank-img {
+    border-color: #fa9600;
+    background-color: #fff6e1
+}
+
+.mid-cont .mid-cont-inner .bank-box .selected .money {
+    display: block
+}
+
+.mid-cont .mid-cont-inner .hasbankcard {
+    height: 55px;
+    line-height: 55px;
+    font-size: 16px;
+    color: #333
+}
+
+.mid-cont .mid-cont-inner .has-more {
+    background-color: #f7fbff
+}
+
+.mid-cont .mid-cont-inner .has-more ul {
+    height: 78px;
+    overflow: hidden
+}
+
+.mid-cont .mid-cont-inner .has-more li {
+    border: 1px solid #f7fbff;
+    padding-left: 35px
+}
+
+.mid-cont .mid-cont-inner .has-more li label {
+    display: block;
+    cursor: pointer
+}
+
+.mid-cont .mid-cont-inner .has-more li input {
+    position: absolute;
+    top: 30px;
+    left: 20px;
+    margin-right: 20px;
+    -webkit-appearance: radio
+}
+
+.mid-cont .mid-cont-inner .add-bank,
+.mid-cont .mid-cont-inner .choose-other-bank {
+    vertical-align: top;
+    display: inline-block;
+    margin-top: 26px;
+    margin-bottom: 30px;
+    width: 100px;
+    height: 32px;
+    text-align: center;
+    line-height: 26px;
+    color: #35a7ff;
+    border: dashed 1px #d9d9d9;
+    cursor: pointer
+}
+
+.mid-cont .mid-cont-inner .add-bank strong,
+.mid-cont .mid-cont-inner .choose-other-bank strong {
+    font-size: 22px;
+    font-weight: 200;
+    vertical-align: -1px
+}
+
+.mid-cont .mid-cont-inner .choose-other-bank {
+    display: inline-block;
+    border-style: solid;
+    margin-right: 30px;
+    border-color: #35a7ff;
+    line-height: 32px
+}
+
+.mid-cont .mid-cont-inner .botline {
+    border-bottom: 1px dashed #d9d9d9
+}
+
+.pay-result {
+    padding-top: 30px;
+    padding-bottom: 30px
+}
+
+.pay-result h4 {
+    margin-bottom: 30px;
+    padding-left: 40px;
+    height: 30px;
+    font-size: 18px;
+    line-height: 30px;
+    color: #333;
+    background: url("/images/icon-status.png") no-repeat 0 0;
+}
+
+.pay-result.process h4 {
+    background-position: 0 0;
+}
+
+.pay-result.suc h4 {
+    background-position: 0 -40px;
+}
+
+.pay-result.fail h4 {
+    background-position: 0 -80px;
+}
+
+.pay-result .order-info {
+    padding: 18px 30px;
+    background-color: #f7f7f7
+}
+
+.pay-result .order-info p {
+    font-size: 16px;
+    line-height: 40px;
+    color: #333
+}
+
+.pay-result .order-info p strong {
+    display: inline-block;
+    width: 90px;
+    text-align: right
+}
+
+.pay-list {
+    overflow: hidden;
+    margin-top: 0px
+}
+
+.pay-list dt {
+    border: 2px solid #e2e2e2;
+    border-bottom-color: #fff;
+    width: 108px;
+    height: 35px;
+    line-height: 35px;
+    text-align: center;
+    font-size: 20px;
+    color: #343434;
+    font-weight: 700;
+    position: relative;
+    top: 2px
+}
+
+.pay-list dd {
+    width: 105%;
+    overflow: hidden;
+    zoom: 1
+}
+
+.pay-list dd a {
+    float: left;
+    width: 146px;
+    height: 50px;
+    text-align: center;
+    border: 1px solid #e2e2e2;
+    overflow: hidden;
+    margin: 20px 30px 0 0
+}
+
+.pay-list dd a span {
+    display: table-cell;
+    height: 48px;
+    vertical-align: middle;
+    *display: block;
+    width: 140px;
+    *font-size: 33px
+}
+
+.pay-list dd a img {
+    width: auto;
+    vertical-align: middle
+}
+
+.pay-list dd a:link {
+    border: 1px solid #e2e2e2
+}
+
+.pay-list dd a:hover,
+.pay-list dd a.cur {
+    border-color: #35a7ff
+}
+
+.aborder {
+    border-color: red;
+}

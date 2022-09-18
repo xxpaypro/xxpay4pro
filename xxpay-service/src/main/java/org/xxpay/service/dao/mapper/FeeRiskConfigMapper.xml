@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.xxpay.service.dao.mapper.FeeRiskConfigMapper" >
+  <resultMap id="BaseResultMap" type="org.xxpay.core.entity.FeeRiskConfig" >
+    <id column="FeeScaleId" property="feeScaleId" jdbcType="INTEGER" />
+    <result column="MaxDayAmount" property="maxDayAmount" jdbcType="BIGINT" />
+    <result column="MaxEveryAmount" property="maxEveryAmount" jdbcType="BIGINT" />
+    <result column="MinEveryAmount" property="minEveryAmount" jdbcType="BIGINT" />
+    <result column="TradeStartTime" property="tradeStartTime" jdbcType="VARCHAR" />
+    <result column="TradeEndTime" property="tradeEndTime" jdbcType="VARCHAR" />
+    <result column="CreateTime" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="UpdateTime" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    FeeScaleId, MaxDayAmount, MaxEveryAmount, MinEveryAmount, TradeStartTime, TradeEndTime, 
+    CreateTime, UpdateTime
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="org.xxpay.core.entity.FeeRiskConfigExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from t_fee_risk_config
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+    <if test="limit != null" >
+      <if test="offset != null" >
+        limit ${offset}, ${limit}
+      </if>
+      <if test="offset == null" >
+        limit ${limit}
+      </if>
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_fee_risk_config
+    where FeeScaleId = #{feeScaleId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_fee_risk_config
+    where FeeScaleId = #{feeScaleId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="org.xxpay.core.entity.FeeRiskConfigExample" >
+    delete from t_fee_risk_config
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="org.xxpay.core.entity.FeeRiskConfig" >
+    insert into t_fee_risk_config (FeeScaleId, MaxDayAmount, MaxEveryAmount, 
+      MinEveryAmount, TradeStartTime, TradeEndTime, 
+      CreateTime, UpdateTime)
+    values (#{feeScaleId,jdbcType=INTEGER}, #{maxDayAmount,jdbcType=BIGINT}, #{maxEveryAmount,jdbcType=BIGINT}, 
+      #{minEveryAmount,jdbcType=BIGINT}, #{tradeStartTime,jdbcType=VARCHAR}, #{tradeEndTime,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="org.xxpay.core.entity.FeeRiskConfig" >
+    insert into t_fee_risk_config
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="feeScaleId != null" >
+        FeeScaleId,
+      </if>
+      <if test="maxDayAmount != null" >
+        MaxDayAmount,
+      </if>
+      <if test="maxEveryAmount != null" >
+        MaxEveryAmount,
+      </if>
+      <if test="minEveryAmount != null" >
+        MinEveryAmount,
+      </if>
+      <if test="tradeStartTime != null" >
+        TradeStartTime,
+      </if>
+      <if test="tradeEndTime != null" >
+        TradeEndTime,
+      </if>
+      <if test="createTime != null" >
+        CreateTime,
+      </if>
+      <if test="updateTime != null" >
+        UpdateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="feeScaleId != null" >
+        #{feeScaleId,jdbcType=INTEGER},
+      </if>
+      <if test="maxDayAmount != null" >
+        #{maxDayAmount,jdbcType=BIGINT},
+      </if>
+      <if test="maxEveryAmount != null" >
+        #{maxEveryAmount,jdbcType=BIGINT},
+      </if>
+      <if test="minEveryAmount != null" >
+        #{minEveryAmount,jdbcType=BIGINT},
+      </if>
+      <if test="tradeStartTime != null" >
+        #{tradeStartTime,jdbcType=VARCHAR},
+      </if>
+      <if test="tradeEndTime != null" >
+        #{tradeEndTime,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="org.xxpay.core.entity.FeeRiskConfigExample" resultType="java.lang.Integer" >
+    select count(*) from t_fee_risk_config
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update t_fee_risk_config
+    <set >
+      <if test="record.feeScaleId != null" >
+        FeeScaleId = #{record.feeScaleId,jdbcType=INTEGER},
+      </if>
+      <if test="record.maxDayAmount != null" >
+        MaxDayAmount = #{record.maxDayAmount,jdbcType=BIGINT},
+      </if>
+      <if test="record.maxEveryAmount != null" >
+        MaxEveryAmount = #{record.maxEveryAmount,jdbcType=BIGINT},
+      </if>
+      <if test="record.minEveryAmount != null" >
+        MinEveryAmount = #{record.minEveryAmount,jdbcType=BIGINT},
+      </if>
+      <if test="record.tradeStartTime != null" >
+        TradeStartTime = #{record.tradeStartTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.tradeEndTime != null" >
+        TradeEndTime = #{record.tradeEndTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createTime != null" >
+        CreateTime = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateTime != null" >
+        UpdateTime = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update t_fee_risk_config
+    set FeeScaleId = #{record.feeScaleId,jdbcType=INTEGER},
+      MaxDayAmount = #{record.maxDayAmount,jdbcType=BIGINT},
+      MaxEveryAmount = #{record.maxEveryAmount,jdbcType=BIGINT},
+      MinEveryAmount = #{record.minEveryAmount,jdbcType=BIGINT},
+      TradeStartTime = #{record.tradeStartTime,jdbcType=VARCHAR},
+      TradeEndTime = #{record.tradeEndTime,jdbcType=VARCHAR},
+      CreateTime = #{record.createTime,jdbcType=TIMESTAMP},
+      UpdateTime = #{record.updateTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="org.xxpay.core.entity.FeeRiskConfig" >
+    update t_fee_risk_config
+    <set >
+      <if test="maxDayAmount != null" >
+        MaxDayAmount = #{maxDayAmount,jdbcType=BIGINT},
+      </if>
+      <if test="maxEveryAmount != null" >
+        MaxEveryAmount = #{maxEveryAmount,jdbcType=BIGINT},
+      </if>
+      <if test="minEveryAmount != null" >
+        MinEveryAmount = #{minEveryAmount,jdbcType=BIGINT},
+      </if>
+      <if test="tradeStartTime != null" >
+        TradeStartTime = #{tradeStartTime,jdbcType=VARCHAR},
+      </if>
+      <if test="tradeEndTime != null" >
+        TradeEndTime = #{tradeEndTime,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        CreateTime = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        UpdateTime = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where FeeScaleId = #{feeScaleId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.xxpay.core.entity.FeeRiskConfig" >
+    update t_fee_risk_config
+    set MaxDayAmount = #{maxDayAmount,jdbcType=BIGINT},
+      MaxEveryAmount = #{maxEveryAmount,jdbcType=BIGINT},
+      MinEveryAmount = #{minEveryAmount,jdbcType=BIGINT},
+      TradeStartTime = #{tradeStartTime,jdbcType=VARCHAR},
+      TradeEndTime = #{tradeEndTime,jdbcType=VARCHAR},
+      CreateTime = #{createTime,jdbcType=TIMESTAMP},
+      UpdateTime = #{updateTime,jdbcType=TIMESTAMP}
+    where FeeScaleId = #{feeScaleId,jdbcType=INTEGER}
+  </update>
+</mapper>

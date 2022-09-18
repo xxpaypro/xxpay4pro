@@ -1,0 +1,616 @@
+<style>
+    .xxpayPopupDiv .layui-form-label {
+        width:15% !important;
+        margin-left:1%;
+    }
+    .xxpayPopupDiv .layui-input-inline {
+        width: 33% !important;
+        min-height: 1px;  /** 避免没有内容时无法占位的问题 **/
+    }
+
+    .mchProgressDiv{width:20%; float: left; text-align: right}
+    .mchInfoExtDiv{margin-top: 30px;}
+    .requiredSpan{color:red}
+
+
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <div class="layui-tab-content">
+
+                <form class="layui-form layui-form-pane">
+                    <input id="mchId" name="mchId" type="hidden" />
+                    <input id="applyNo" name="applyNo" type="hidden" />
+                    <input name="mccCode" id="mccCode" type="hidden"/>
+                    <div class="layui-tab layui-tab-brief">
+                        <div class="layui-tab-content">
+
+                            <div class="layui-form-item">
+                                <span>当前商户支付宝入驻状态：</span><span class="statusSpan">未入驻</span>
+                                <button class="layui-btn layui-btn-xs layui-btn refreshBtn layui-hide" onclick="return false;">
+                                    <i class="layui-icon">&#xe669;</i> 查询支付宝审核状态
+                                </button>
+                            </div>
+
+                            <div class="layui-form-item mchQrDiv layui-hide">
+                                <span>请商户扫码二维码进行签约操作：</span>
+                                 <!--<img class="uploadImg mchAlipayQrImg" style="height:38px; margin-left:30px;cursor: pointer;" title="点击放大" />-->
+                                <button class="layui-btn layui-btn-xs layui-btn-normal layui-hiden mchAlipayQrImg" infoType="img" onclick="return false;">扫码确认</button>
+                            </div>
+
+                            <div class="layui-form-item layui-hide auditInfoDiv">
+                                <span>错误信息：</span><span class="auditInfoSpan requiredSpan">未入驻</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-tab layui-tab-brief">
+                        <ul class="layui-tab-title">
+                            <li class="layui-this">基本资料</li>
+                            <li class="">
+                                <button class="layui-btn layui-btn-xs layui-btn-normal autoFillInfoBtn" infoType="base" onclick="return false;">
+                                    <i class="layui-icon">&#xe601;</i> 根据 &nbsp;[进件资料]&nbsp; 自动填入信息
+                                </button>
+                            </li>
+                        </ul>
+
+                        <div class="layui-tab-content">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label"><span class="requiredSpan">* </span>支付宝账号</label>
+                                <div class="layui-input-inline">
+                                    <input name="alipayAccount" lay-verify="required" class="layui-input" autocomplete="off">
+                                </div>
+                                <label class="layui-form-label"><span class="requiredSpan">* </span>联系人姓名</label>
+                                <div class="layui-input-inline">
+                                    <input readonly name="contactName" lay-verify="required" class="layui-input layui-bg-gray">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label"><span class="requiredSpan">* </span>联系人手机号</label>
+                                <div class="layui-input-inline">
+                                    <input readonly name="contactMobile" lay-verify="required" class="layui-input layui-bg-gray">
+                                </div>
+                                <label class="layui-form-label"><span class="requiredSpan">* </span>联系人邮箱</label>
+                                <div class="layui-input-inline">
+                                    <input readonly name="contactEmail" lay-verify="required" class="layui-input layui-bg-gray">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label"><span class="requiredSpan">* </span>门店门口照片</label>
+                                <div class="layui-input-inline">
+                                    <input class="imgVal" type="hidden" lay-verify="required" name="shopSignBoardPic" />
+                                    <img class="uploadImg layui-hide" style="height:38px; margin-left:30px;cursor: pointer;" title="点击放大" />
+                                    <button class="uploadImgBtn layui-btn layui-btn-sm" type="button" style="margin-left: 20px;">上传图片</button>
+                                    <button class="delImgBtn layui-btn layui-btn-sm layui-btn-danger layui-hide" type="button">删除图片</button>
+                                </div>
+                                <label class="layui-form-label">企业特殊资质图片</label>
+                                <div class="layui-input-inline">
+                                    <input class="imgVal" type="hidden" name="specialLicensePic" />
+                                    <img class="uploadImg layui-hide" style="height:38px; margin-left:30px;cursor: pointer;" title="点击放大" />
+                                    <button class="uploadImgBtn layui-btn layui-btn-sm" type="button" style="margin-left: 20px;">上传图片</button>
+                                    <button class="delImgBtn layui-btn layui-btn-sm layui-btn-danger layui-hide" type="button">删除图片</button>
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <!--<label class="layui-form-label"><span class="requiredSpan">* </span>mcc编码</label>
+                                <div class="layui-input-inline">
+                                <input name="mccCode" readonly class="layui-input layui-bg-gray" lay-verify="required">
+                                </div>-->
+                                <label class="layui-form-label"><span class="requiredSpan">* </span>费率</label>
+                                <div class="layui-input-inline">
+                                    <input name="rate" class="layui-input" lay-verify="required">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label"><span class="requiredSpan">* </span>选择商户经营行业</label>
+                                <div style="width: 297px; display: inline-block;">
+                                    <select lay-verify="required" id="industryFirstSelect" lay-filter="industryFirstSelectFilter">
+                                        <option value="">[ 一级行业分类 ]</option>
+                                    </select>
+                                </div>
+                                <div style="width: 297px; display: inline-block;">
+                                    <select lay-verify="required" id="industrySecondSelect" lay-filter="industrySecondSelectFilter">
+                                        <option value="">[ 二级行业分类 ]</option>
+                                    </select>
+                                </div>
+                                <div style="width: 297px; display: inline-block;">
+                                    <select name="industryCode" lay-verify="required" id="industryThirdSelect" lay-filter="industryThirdSelectFilter">
+                                        <option value="">[ 三级行业分类 ]</option>
+                                    </select>
+                                </div>
+                                <span id="industryThirdDesc" style="color:red"></span>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="layui-tab layui-tab-brief">
+                        <ul class="layui-tab-title">
+                            <li class="layui-this">企业类型信息</li>
+                            <li class="">
+                                <button class="layui-btn layui-btn-xs layui-btn-normal autoFillInfoBtn" infoType="biz" onclick="return false;">
+                                    <i class="layui-icon">&#xe601;</i> 根据 &nbsp;[进件资料]&nbsp; 自动填入信息
+                                </button>
+                            </li>
+                        </ul>
+
+                        <div class="layui-tab-content">
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">营业执照编号</label>
+                                <div class="layui-input-inline">
+                                    <input name="businessLicenseNo" readonly placeholder="请输入营业执照编号" autocomplete="off" class="layui-input layui-bg-gray">
+                                </div>
+                                <label class="layui-form-label">营业执照有效期</label>
+                                <div class="layui-input-inline">
+                                    <input name="dateLimitation" readonly autocomplete="off" class="layui-input layui-bg-gray">
+                                    <input name="dateLimitation2" readonly autocomplete="off" class="layui-input layui-bg-gray layui-hide">
+                                    <input name="longTerm" value="" type="hidden">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">营业执照图片</label>
+                                <div class="layui-input-inline">
+                                    <input class="imgVal" type="hidden" name="businessLicensePic" />
+                                    <img class="uploadImg layui-hide" style="height:38px; margin-left:30px;cursor: pointer;" title="点击放大" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="button" class="layui-hide xxpayYesBtn" lay-submit="" lay-filter="apply"></button>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    layui.use(['form','table','util','admin','view',  'upload', 'setter'],function(){
+        var form = layui.form
+            , $ = layui.$
+            , admin = layui.admin
+            , layer = layui.layer
+            , element = layui.element
+            , view = layui.view
+            , table = layui.table
+            , upload = layui.upload
+            , setter = layui.setter;
+
+        element.render('breadcrumb', 'breadcrumb'); //渲染导航信息
+
+        var mchId = view.getOpenParams('mchId');  //商户ID
+        $("#mchId").val(mchId);
+
+        var alipayMchSnapshot = null;
+
+        var confirmUrl = "";
+        //初始化信息
+        var initAlipayInfo = function(){
+
+            $(".refreshBtn").addClass("layui-hide");
+            $(".auditInfoDiv").addClass("layui-hide");
+            $(".mchQrDiv").addClass("layui-hide");
+            admin.req({
+                type: 'get',
+                url: layui.setter.baseUrl + '/alipay_mch_applyment/get',
+                data: { mchId : mchId },
+                error: function(err){ layer.alert(JSON.stringify(err.field), { title: '错误提示' }) },
+                success: function(res){
+                    alipayMchSnapshot = res.data;
+                    if(alipayMchSnapshot){
+                        $("#applyNo").val(alipayMchSnapshot.applyNo); //申请单编号
+
+                        //当前状态
+
+                        //支付宝申请状态: 0-初始态, 1-暂存, 2-支付宝审核中, 3-待商户确认, 4-商户确认成功, 5-商户超时未确认, 6-审核失败或商户拒绝
+                        var applyStatus = alipayMchSnapshot.applyStatus;
+                        var auditInfo = alipayMchSnapshot.auditInfo;
+
+                        if(applyStatus == '0'){
+
+                        }else if(applyStatus == '1'){  //1-暂存
+                            $(".statusSpan").text("支付宝暂存， 请重新发起代签约！");
+                            $(".refreshBtn").removeClass("layui-hide");
+
+                        }else if(applyStatus == '2'){  //2-支付宝审核中
+                            $(".statusSpan").text("支付宝审核中");
+                            $(".refreshBtn").removeClass("layui-hide");
+
+                        }else if(applyStatus == '3'){  //3-待商户确认
+
+                            $(".refreshBtn").removeClass("layui-hide");
+                            $(".statusSpan").text("待商户确认");
+                            $(".mchQrDiv").removeClass("layui-hide");
+                            // $(".mchAlipayQrImg").attr("src", res.data.confirmUrl);
+
+                        }else if(applyStatus == '4'){  //4-商户确认成功
+
+                            $(".statusSpan").text("商户确认成功");
+
+                        }else if(applyStatus == '5'){  //5-商户超时未确认
+
+                            $(".statusSpan").text("商户超时未确认， 请重新发起代签约！");
+                        }else if(applyStatus == '6'){  //6-审核失败或商户拒绝
+
+                            $(".statusSpan").text("审核失败或商户拒绝");
+                            $(".auditInfoDiv").removeClass('layui-hide');
+                            $(".auditInfoSpan").text(auditInfo);
+                        }
+
+                        $('input[name="alipayAccount"]').val(res.data.alipayAccount);    //支付宝账号
+                        $('input[name="contactName"]').val(res.data.contactName);    //联系人姓名
+                        $('input[name="contactMobile"]').val(res.data.contactMobile);    //联系人手机号码
+                        $('input[name="contactEmail"]').val(res.data.contactEmail);    //联系人邮箱
+                        $('input[name="mccCode"]').val(res.data.mccCode);    //mcc编号
+
+                        if (res.data.mccCode != "") {
+                            admin.req({
+                                type: 'get',
+                                url: layui.setter.baseUrl + '/alipay_industry_code/getByMccCode?mccCode=' + res.data.mccCode,
+                                error: function(err){
+                                    layer.alert(JSON.stringify(err.field), {title: '错误提示'})
+                                },
+                                success: function(res){
+                                    if(res.code == 0){
+                                        console.log(res);
+                                        resetIndustrySelect(1, 0, res.data.firstId);
+                                        resetIndustrySelect(2, res.data.firstId, res.data.secondId);
+                                        resetIndustrySelect(3, res.data.secondId, res.data.thirdId);
+                                        form.render();
+                                    }
+                                }
+                            });
+                        }
+
+                        $('input[name="rate"]').val(res.data.rate);    //费率
+                        $('input[name="businessLicenseNo"]').val(res.data.businessLicenseNo);    //营业执照编号
+
+
+                        $('input[name="longTerm"]').val(res.data.longTerm);    //是否长期有效0-否 1-是
+
+                        if(res.data.longTerm == 1){ //长期有效
+                            $('input[name="dateLimitation"]').addClass('layui-hide');
+                            $('input[name="dateLimitation2"]').removeClass('layui-hide').val("长期有效");
+                        }else{
+                            $('input[name="dateLimitation"]').val(res.data.dateLimitation);
+                        }
+
+                        setImgValFunc("businessLicensePic", res.data.businessLicensePic, false);  //营业执照图片
+                        setImgValFunc("specialLicensePic", res.data.specialLicensePic, false);  //企业特殊资质图片
+                        setImgValFunc("shopSignBoardPic", res.data.shopSignBoardPic, false);  //门店门口照片
+                        confirmUrl = res.data.confirmUrl;
+                        form.render();
+                    }
+                }
+            });
+        }
+
+        //重置 行业分类下拉框
+        var resetIndustrySelect = function(type, parentCode, selectedCode){
+
+            var jquerySelect = "";
+            if(type == 1) jquerySelect = "#industryFirstSelect";
+            if(type == 2) jquerySelect = "#industrySecondSelect";
+            if(type == 3) jquerySelect = "#industryThirdSelect";
+
+            admin.req({
+                type: 'get',
+                url: layui.setter.baseUrl + '/alipay_industry_code/list?currentCode=' + parentCode,
+                error: function(err){
+                    layer.alert(JSON.stringify(err.field), {title: '错误提示'})
+                },
+                success: function(res){
+                    if(res.code == 0){
+                        $.each(res.data, function(){
+                            var selectHtml = this.id == selectedCode ? "selected" : "";
+                            $(jquerySelect).append("<option "+selectHtml+" item value='"+this.id+"' desc='"+this.industryDesc+"'>"+this.industryName+"</option>");
+                        });
+                        form.render();
+                    }
+                }
+            });
+
+        }
+        //重置 行业分类下拉框
+        resetIndustrySelect(1, 0, "");
+        initAlipayInfo();
+
+        $(".autoFillInfoBtn").click(function(){
+
+            var layerShadeId = layer.msg('请稍后...',{time: 0, shade: 0.1});
+            var infoType = $(this).attr('infoType');
+
+            //查询商户信息- 基本信息
+            admin.req({
+                type: 'get',
+                url: layui.setter.baseUrl + '/mch_info/get',
+                data: { mchId : mchId },
+                error: function(err){ layer.alert(JSON.stringify(err.field), { title: '错误提示' }) },
+                success: function(res){
+                    if(res.code == 0){
+
+                        if(infoType == 'base'){ //基本信息
+
+                            $('input[name="contactName"]').val(res.data.contactRealName);    //超级管理员姓名
+                            $('input[name="contactMobile"]').val(res.data.loginMobile);    //手机号码
+                            $('input[name="contactEmail"]').val(res.data.loginEmail);    //联系邮箱
+
+                        }else if(infoType == 'biz'){ //企业信息
+
+                        }
+
+                        //查询商户进件信息
+                        admin.req({
+                            type: 'get',
+                            url: layui.setter.baseUrl + '/mch_info_ext/get',
+                            data: { mchId : mchId },
+                            error: function(err){ layer.alert(JSON.stringify(err.field), { title: '错误提示' }) },
+                            success: function(res2){
+                                if(res2.code == 0 && res2.data){
+
+
+                                    if(infoType == 'base'){ //基本信息
+
+                                        setImgValFunc("shopSignBoardPic", res2.data.storeOuterImg, false);  //门店门口照片
+
+                                    }else if(infoType == 'biz'){ //企业信息
+                                        setImgValFunc("businessLicensePic", res2.data.businessLicenseImg, false);
+                                        $('input[name="businessLicenseNo"]').val(res2.data.businessLicenseNo);
+
+                                        var businessLicenseDate = res2.data.businessLicenseDate;
+                                        if(businessLicenseDate){
+                                            var endDate = businessLicenseDate.split("_")[1];
+                                            if(endDate == '0'){ //长期有效
+                                                $('input[name="longTerm"]').val('1');
+                                                $('input[name="dateLimitation"]').addClass('layui-hide');
+                                                $('input[name="dateLimitation2"]').removeClass('layui-hide').val("长期有效");
+                                            }else{
+                                                $('input[name="dateLimitation"]').val(endDate);
+                                                $('input[name="longTerm"]').val('0');
+                                            }
+                                        }
+                                    }
+
+                                    form.render();
+                                }
+                                layer.close(layerShadeId);
+                            }
+                            ,error:function(){
+                                layer.close(layerShadeId);
+                            }
+                        });
+                    }
+                }
+            });
+
+            return false;
+        });
+
+
+        form.on('submit(apply)', function(data){
+
+            var fields = data.field;
+
+            if(isNaN(fields.rate)){ //费率
+                layer.alert('请填入正确的费率！');
+                return false;
+            }
+            if(fields.rate * 1 < 0.38 || fields.rate > 3){ //费率 0.38~3
+                layer.alert('费率请在[0.38~3]之间！');
+                return false;
+            }
+
+            if(alipayMchSnapshot){
+                if(alipayMchSnapshot.applyStatus == 2){
+                    layer.alert('当前状态为[审核中]， 无需再次发起！');
+                    return false;
+                }
+                if(alipayMchSnapshot.applyStatus == 3){
+                    layer.alert('当前状态为[待确认]， 无需再次发起！');
+                    return false;
+                }
+                if(alipayMchSnapshot.applyStatus == 4){
+                    layer.alert('当前状态为[完成]， 无需再次发起！');
+                    return false;
+                }
+            }
+
+            layer.confirm("确认发起支付宝商户入驻请求？", function(){
+
+                var layerShadeId = layer.msg('请稍后...',{time: 0, shade: 0.1});
+
+                admin.req({
+                    type: 'post',
+                    url: layui.setter.baseUrl + '/alipay_mch_applyment/apply',
+                    data: fields,
+                    error: function(err){layer.alert(err.msg,{title:"请求失败"})},
+                    success: function(res){
+                        if(res.code == 0){
+                            layer.close(layerShadeId);
+                            admin.events.refresh();  //刷新当前页面
+                        }
+                    },complete:function(){
+                        layer.close(layerShadeId);
+                        admin.events.refresh();  //刷新当前页面
+                    }
+                });
+            });
+            return false;
+        });
+
+
+        //上传图片接口
+        var headers = {};
+        headers[setter.request.tokenName] = layui.data(setter.tableName)[setter.request.tokenName];
+        upload.render({
+            url: layui.setter.baseUrl + '/upload/mch_apply'
+            ,elem: '.uploadImgBtn'
+            , headers: headers
+            , size: 2048  //仅支持2M图片上传
+            ,done: function(res, index, upload){
+
+                //如果上传失败
+                if(res.code != 0){
+                    return layer.msg('上传失败['+res.msg+']', {icon: 2});
+                }
+
+                var divElem = $(this.item).parent();
+                divElem.find('.imgVal').val(res.data); //图片真实路径
+                divElem.find('.uploadImg').attr("src", res.data).removeClass('layui-hide');
+                divElem.find('.delImgBtn').removeClass('layui-hide');
+                divElem.find('.uploadImgBtn').text('重新上传');
+                form.render();
+            }
+        });
+
+        //点击[删除图片] 按钮， 事件
+        $('.delImgBtn').click(function(){
+
+            var divElem = $(this).parent();
+            divElem.find('.imgVal').val(""); //清空图片真实路径
+            divElem.find('.uploadImgBtn').text("上传图片");
+            divElem.find('.uploadImg').attr("src", "").addClass('layui-hide');
+            divElem.find('.delImgBtn').addClass('layui-hide');
+            form.render();
+        });
+
+        //点击[图片] 按钮， 事件
+        $('.uploadImg').click(function(){
+            var imgSrc = $(this).attr('src');
+            layer.photos({photos: {
+                    "title": "查看上传图片", //相册标题
+                    "id": 1, //相册id
+                    "start": 0, //初始显示的图片序号，默认0
+                    "data": [   //相册包含的图片，数组格式
+                        {
+                            "alt": "图片",
+                            "pid": 1, //图片id
+                            "src": imgSrc, //原图地址
+                            "thumb": "" //缩略图地址
+                        }
+                    ]
+                } ,anim: 5});
+        });
+
+
+        var setImgValFunc = function(inputName, src, allowReload){
+
+            if(!src) {return false;}
+            var divElem = $("input[name='"+inputName+"']").parent();
+            divElem.find('.imgVal').val(src); //图片真实路径
+            divElem.find('.uploadImg').attr("src", src).removeClass('layui-hide');
+            if(allowReload){
+                divElem.find('.delImgBtn').removeClass('layui-hide');
+                divElem.find('.uploadImgBtn').text('重新上传');
+            }
+        }
+
+
+        //点击 【查询支付宝审核状态】 按钮
+        $(".refreshBtn").click(function(){
+
+            if(!alipayMchSnapshot){
+                layer.alert("请稍后再试！");
+                return false;
+            }
+
+            if(alipayMchSnapshot.applyStatus != '2' && alipayMchSnapshot.applyStatus != '3'){
+                layer.alert("当前状态无需查询！");
+                return false;
+            }
+
+            var layerShadeId = layer.msg('请稍后...',{time: 0, shade: 0.1});
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/alipay_mch_applyment/queryApplyStatus',
+                data: {applyNo: alipayMchSnapshot.applyNo},
+                error: function(err){layer.alert(err.msg,{title:"请求失败"})},
+                success: function(res){
+                    if(res.code == 0){
+                        layer.msg("查询成功！");
+                        initAlipayInfo();
+                    }
+                },complete:function(){
+                    layer.close(layerShadeId);
+                }
+            });
+
+        });
+
+        //监听 [行业一级分类] 下拉框
+        form.on('select(industryFirstSelectFilter)', function(data){
+
+            //清空，二级， 三级 下拉框
+            $("#industrySecondSelect option[item]").remove();
+            $("#industryThirdSelect option[item]").remove();
+            $("#industryThirdDesc").text("");
+
+            var firstCode = data.value; //省级编码
+            if(!firstCode){
+                form.render();
+                return false; //未选择
+            }
+            resetIndustrySelect(2, firstCode, "");
+        });
+
+        //监听 [行业二级分类] 下拉框
+        form.on('select(industrySecondSelectFilter)', function(data){
+
+            //清空 区 下拉框
+            $("#industryThirdSelect option[item]").remove();
+            $("#industryThirdDesc").text("");
+
+            var secondCode = data.value; //市级编码
+            if(!secondCode){
+                form.render();
+                return false; //未选择
+            }
+
+            resetIndustrySelect(3, secondCode, "");
+        });
+
+        //监听 [行业三级分类] 下拉框
+        form.on('select(industryThirdSelectFilter)', function(data){
+            var desc = $(data.elem).find("option[value='"+data.value+"']").attr('desc');
+            if(!desc){
+                $("#industryThirdDesc").text("");
+            }else{
+                $("#industryThirdDesc").text( "* " + desc);
+            }
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/alipay_industry_code/get',
+                data: {id : data.value},
+                error: function(err){
+                    layer.alert(JSON.stringify(err.field), {title: '错误提示'})
+                },
+                success: function(res){
+                    $("#mccCode").val();
+                    if(res.code == 0){
+                        $("#mccCode").val(res.data.mccCode)
+                    }
+                    console.log($("#mccCode").val());
+                }
+            });
+        });
+
+        $(".mchAlipayQrImg").click(function() {
+            layer.open({
+                title: "扫描二维码签约",
+                type: 1,
+                anim: 1,
+                content: "<img width='200' height='200' src='" + confirmUrl + "' />"
+            })
+        });
+
+        form.render();
+
+    });
+</script>

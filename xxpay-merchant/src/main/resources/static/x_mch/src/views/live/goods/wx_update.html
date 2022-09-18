@@ -1,0 +1,288 @@
+<div class="layui-card-header layui-card" style="margin-bottom: 0">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>商品管理</cite></a>
+    </span>
+</div>
+<style>
+    .layui-form-label {
+        width:15% !important;
+        margin-left:1%;
+    }
+    .layui-input-inline {
+        width: 33% !important;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">提交商品至小程序直播商品库</li>
+                <!--<li class="">
+                    <button class="layui-btn layui-btn-xs layui-btn-normal autoFillInfoBtn" onclick="return false;">
+                        <i class="layui-icon">&#xe601;</i> 根据 &nbsp;[商品资料]&nbsp; 自动填入信息
+                    </button>
+                </li>-->
+            </ul>
+            <div class="layui-tab-content">
+                <form class="layui-form layui-form-pane" action="">
+                    <input type="hidden" id="goodsId" name="goodsId">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">商品名称</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="name" name="name" placeholder="请输入商品名称" lay-verify="required" class="layui-input" required autocomplete="off">
+                            <div style="color: red;margin-top: 5px;">最长14个汉字，1个汉字相当于2个字符</div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">所属小程序</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="industryType" value="1" title="点餐" lay-filter="industryType" disabled>
+                            <input type="radio" name="industryType" value="2" title="商城" lay-filter="industryType" disabled>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">状态</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="auditStatus" value="0" title="未审核" lay-filter="auditStatus" disabled>
+                            <input type="radio" name="auditStatus" value="1" title="审核中" lay-filter="auditStatus" disabled>
+                            <input type="radio" name="auditStatus" value="2" title="审核通过" lay-filter="auditStatus" disabled>
+                            <input type="radio" name="auditStatus" value="3" title="审核失败" lay-filter="auditStatus" disabled>
+                            <div style="color: red;margin-top: 5px;">审核通过的商品仅允许更新价格类型与价格，审核中的商品不允许更新，未审核的商品允许更新所有字段</div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">价格类型</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="priceType" value="1" title="一口价" lay-filter="priceType">
+                            <input type="radio" name="priceType" value="2" title="价格区间" lay-filter="priceType">
+                            <input type="radio" name="priceType" value="3" title="显示折扣价" lay-filter="priceType">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label" id="priceText">一口价(元)</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="price" name="price" placeholder="请输入价格" lay-verify="required" class="layui-input" autocomplete="off">
+                        </div>
+                    </div>
+                    <div class="layui-form-item layui-hide" id="price2Show">
+                        <label class="layui-form-label" id="price2Text"></label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="price2" name="price2" placeholder="请输入价格" class="layui-input" autocomplete="off">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">商品图片</label>
+                        <div class="layui-input-inline">
+                            <input type="hidden" name="coverImgUrl" id="coverImgUrl" class="layui-hide" lay-verify="required">
+                            <img class="uploadImg layui-hide" style="height:38px; margin-left:30px;cursor: pointer;" title="点击放大" />
+                            <button class="uploadImgBtn layui-btn layui-btn-sm" type="button" style="margin-left: 20px;margin-top: 5px;">上传图片</button>
+                            <button class="delImgBtn layui-btn layui-btn-sm layui-btn-danger layui-hide" style="margin-top: 5px;" type="button">删除图片</button>
+                            <div style="color: red;margin-top: 5px;">图片规则：图片尺寸最大300像素*300像素</div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">商品详情页小程序路径</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="url" name="url" disabled class="layui-input" >
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block" style="padding-bottom: 20px;">
+                            <button type="button" class="layui-btn" lay-submit="" lay-filter="goodsUpdate">提交</button>
+                            <button class="layui-btn" lay-href="/live/goods/">返回</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    layui.use(['admin','form','upload','setter'],function(){
+        var form = layui.form
+            ,$ = layui.$
+            ,admin = layui.admin
+            ,element = layui.element
+            ,upload = layui.upload
+            ,setter = layui.setter
+            ,layer = layui.layer ;
+        // 导航
+        element.render('breadcrumb', 'breadcrumb');
+
+        var goodsId = layui.router().search.goodsId;
+        var authFrom = layui.router().search.authFrom;
+
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/wx_mini/goods_warehouse',
+            data: {
+                ids : goodsId,
+                authFrom: authFrom
+            },
+            error: function(err){
+                layer.alert(JSON.stringify(err.field), {
+                    title: '错误提示'
+                })
+            },
+            success: function(res){
+                if(res.code == 0){
+                    var data = res.data[0];
+                    $('#goodsId').val(data.goods_id);
+                    $('#name').val(data.name);
+                    $('#price').val(data.price);
+                    if (data.price2) {
+                        $('#price2').val(data.price2);
+                    }
+
+                    $("input[name='priceType'][value='" + data.price_type + "']").attr('checked', true);
+                    if (data.price_type == 1){
+                        $("#priceText").text("一口价(元)");
+                        $("#price2Show").addClass("layui-hide");
+                    }else if (data.price_type == 2) {
+                        $("#priceText").text("左边界(元)");
+                        $("#price2Text").text("右边界(元)");
+                        $("#price2Show").removeClass("layui-hide");
+                    } else if (data.price_type == 3) {
+                        $("#priceText").text("原价(元)");
+                        $("#price2Text").text("折扣价(元)");
+                        $("#price2Show").removeClass("layui-hide");
+                    }
+
+                    $("input[name='industryType'][value='" + authFrom + "']").attr('checked', true);
+                    $("input[name='auditStatus'][value='" + data.audit_status + "']").attr('checked', true);
+                    if (data.audit_status == 2) {
+                        $("#name").attr("disabled", true);
+                        $(".uploadImgBtn").attr("disabled", true);
+                        $(".delImgBtn").attr("disabled", true);
+                    }else if (data.audit_status == 1 || data.audit_status == 3) {
+                        $("#name").attr("disabled", true);
+                        $("#price").attr("disabled", true);
+                        $("input[name='priceType']").attr("disabled", true);
+                        $(".uploadImgBtn").attr("disabled", true);
+                        $(".delImgBtn").attr("disabled", true);
+                        $("button").addClass("layui-hide");
+                    }
+
+                    $('#url').val(data.url);
+
+                    $('#coverImgUrl').val(data.cover_img_url);
+                    var divElem = $('#coverImgUrl').parent();
+                    divElem.find('.uploadImg').attr("src", data.cover_img_url).removeClass('layui-hide');
+                    divElem.find('.uploadImgBtn').text('重新上传');
+                    divElem.find('.delImgBtn').removeClass('layui-hide');
+                    form.render();
+                }
+            }
+        });
+
+        form.on('radio(priceType)', function(data){
+            if (data.value == 1){
+                $("#priceText").text("一口价(元)");
+                $("#price2Show").addClass("layui-hide");
+            }else if (data.value == 2) {
+                $("#priceText").text("左边界(元)");
+                $("#price2Text").text("右边界(元)");
+                $("#price2Show").removeClass("layui-hide");
+            } else if (data.value == 3) {
+                $("#priceText").text("原价(元)");
+                $("#price2Text").text("折扣价(元)");
+                $("#price2Show").removeClass("layui-hide");
+            }
+        });
+
+        form.on('radio(industryType)', function(data){
+            if (data.value == 1){
+                $('#url').val("pages/index/dishdat/dishdat?goodsId=" + goodsId);
+            }else if (data.value == 2) {
+                $('#url').val("/pages/classify/productDetails/productDetails?goodsId=" + goodsId);
+            }
+        });
+
+        //监听提交
+        form.on('submit(goodsUpdate)', function(data){
+            var reqData = data.field;
+
+            if ((reqData.priceType == 2 || reqData.priceType == 3) && !reqData.price2) {
+                return layer.msg("请将价格填写完整！")
+            }
+
+            // 在这个回调函数里面写ajax提交
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/wx_mini/update_goods',
+                data: reqData,
+                success: function(res){
+                    if(res.code == 0){
+                        layer.msg("保存成功");
+                        setTimeout(function () {
+                            location.hash = '/live/goods/';
+                        },1500)
+                    }
+                }
+            });
+            return false;//阻止跳转
+        });
+
+        var headers = {};
+        headers[setter.request.tokenName] = layui.data(setter.tableName)[setter.request.tokenName];
+        var uploadInst = upload.render({
+            elem: '.uploadImgBtn'
+            , url: layui.setter.baseUrl + '/wx_mini/upload'
+            , headers: headers
+            , data: {
+                authFrom: function () {
+                    return $('input[name="industryType"]:checked').val();
+                }
+            }
+            , size: 2048  //仅支持2M图片上传
+            ,before: function (obj) {
+                obj.preview(function(index, file, result) {
+                    $('.uploadImg').attr('src', result);
+                })
+            },done: function(res){
+                //如果上传失败
+                if(res.code != 0){
+                    return layer.msg('上传失败['+res.msg+']', {icon: 2});
+                }
+                //上传成功
+                $("#coverImgUrl").val(res.data.media_id);
+                var divElem = $(this.item).parent();
+                divElem.find('.uploadImg').removeClass('layui-hide');
+                divElem.find('.delImgBtn').removeClass('layui-hide');
+                divElem.find('.uploadImgBtn').text('重新上传');
+            }
+        });
+        //点击[图片] 按钮， 事件
+        $('.uploadImg').click(function(){
+            var imgSrc = $(this).attr('src');
+            layer.photos({photos: {
+                    "title": "查看上传图片", //相册标题
+                    "id": 1, //相册id
+                    "start": 0, //初始显示的图片序号，默认0
+                    "data": [   //相册包含的图片，数组格式
+                        {
+                            "alt": "图片",
+                            "pid": 1, //图片id
+                            "src": imgSrc, //原图地址
+                            "thumb": "" //缩略图地址
+                        }
+                    ]
+                } ,anim: 5});
+        });
+
+        //点击[删除图片] 按钮， 事件
+        $('.delImgBtn').click(function(){
+            var divElem = $(this).parent();
+            divElem.find('.coverImgUrl').val(""); //清空图片真实路径
+            divElem.find('.uploadImgBtn').text("上传图片");
+            divElem.find('.uploadImg').attr("src", "").addClass('layui-hide');
+            divElem.find('.delImgBtn').addClass('layui-hide');
+            form.render();
+        });
+
+        form.render();
+
+    })
+</script>

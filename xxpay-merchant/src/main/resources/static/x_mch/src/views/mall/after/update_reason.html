@@ -1,0 +1,78 @@
+<style>
+    .xxpayPopupDiv .layui-form-label {
+        width:30% !important;
+        margin-left:1%;
+    }
+    .xxpayPopupDiv .layui-input-inline {
+        width: 66% !important;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <form class="layui-form layui-form-pane">
+            <div class="layui-tab layui-tab-brief">
+                <div class="layui-tab-content">
+                    <input type="hidden" value="reason" name="configCode" >
+                    <input type="hidden" value="售后申请原因" name="configName" >
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">所属小程序</label>
+                        <div class="layui-input-block">
+                            <!--<input type="radio" name="authFrom" value="1" title="点餐小程序" lay-filter="authFromFilter"  />-->
+                            <input type="radio" name="authFrom" value="2" title="商城小程序" lay-filter="authFromFilter" checked="checked" />
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">申请原因</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="configValue" name="configValue" lay-verify="required" placeholder="输入申请原因" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="layui-hide xxpayYesBtn" lay-submit="" lay-filter="reasonAdd">保存</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+   
+    layui.use(['form','admin', 'view'], function(){
+        var form = layui.form
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,view = layui.view
+        ,element = layui.element;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+        // 获取数据
+        var id = view.getOpenParams('id');
+        var authFrom = view.getOpenParams('authFrom');
+        var configValue = view.getOpenParams('configValue');
+        if (authFrom && configValue) {
+            $("input[name='authFrom'][value=" + authFrom + "]").attr("checked", true);
+            $("#configValue").val(configValue);
+        }
+
+        //监听提交
+        form.on('submit(reasonAdd)', function(data){
+            data.field.id = id;
+            // 在这个回调函数里面写ajax提交
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/mini_config/reason_update',
+                data: data.field,
+                success: function(res){
+                    if(res.code == 0){
+                        layer.closeAll(); //关闭所有弹层
+                        layer.msg("保存成功");
+                        layui.table.reload('tableReload', {page: {curr: 1}}); //调用业务弹层外表格重新加载
+                    }
+                }
+            });
+            return false;//阻止跳转
+        });
+
+        form.render();
+    });
+
+        
+</script>

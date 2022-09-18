@@ -1,0 +1,380 @@
+<style>
+    .xxpayPopupDiv .layui-form-label {
+        width:15% !important;
+        margin-left:1%;
+    }
+    .xxpayPopupDiv .layui-input-inline {
+        width: 33% !important;
+    }
+    .allmap {
+        width: 600px;
+        height: 300px;
+        margin:0;
+        overflow: hidden;
+        font-family:"微软雅黑";
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <form class="layui-form layui-form-pane">
+            <div class="layui-tab layui-tab-brief">
+                <div class="layui-tab-content">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">门店图片</label>
+                        <div class="layui-input-inline">
+                            <input type="hidden" name="storeImgPath" id="storeImgPath" class="layui-hide">
+                            <img class="uploadImg layui-hide" style="height:38px; margin-left:30px;cursor: pointer;" title="点击放大" />
+                            <button class="uploadImgBtn layui-btn layui-btn-sm" type="button" style="margin-left: 20px;margin-top: 5px;">上传图片</button>
+                            <button class="delImgBtn layui-btn layui-btn-sm layui-btn-danger layui-hide" style="margin-top: 5px;" type="button">删除图片</button>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">门店编号</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="storeNo" name="storeNo" lay-verify="required" placeholder="输入门店编号" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">门店名称</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="storeName" name="storeName" lay-verify="required" placeholder="输入门店名称" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">商户位置选择省、市、县</label>
+                        <div style="width: 280px; display: inline-block;">
+                            <select name="provinceCode" lay-search lay-verify="required" id="provinceSelect" lay-filter="provinceSelectFilter">
+                                <option value="">-- 省 --</option>
+                            </select>
+                        </div>
+                        <div style="width: 280px; display: inline-block;">
+                            <select name="cityCode" lay-search lay-verify="required" id="citySelect" lay-filter="citySelectFilter">
+                                <option value="">-- 市 --</option>
+                            </select>
+                        </div>
+                        <div style="width: 280px; display: inline-block;">
+                            <select name="areaCode" lay-verify="required" lay-search id="areaSelect" lay-filter="areaSelectFilter">
+                                <option value="">-- 区 / 县 --</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">商户位置详细地址</label>
+                        <div class="layui-input-inline">
+                            <input name="address" id="address" lay-verify="required" readonly placeholder="输入商户位置详细地址" autocomplete="off" class="layui-input">
+                        </div>
+                        <button class="openMap layui-btn layui-btn-sm" type="button" value="1" style="margin-left: 20px;margin-top: 5px;">地图定位</button>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">经纬度</label>
+                        <div class="layui-input-inline">
+                            <input id="latAndLng" name="latAndLng" readonly placeholder="经纬度" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-inline" style="margin-left: 15px; margin-top: 0%">
+                            <div id="allmap" class="allmap layui-hide"></div>
+                        </div>
+                        <div class="layui-input-inline selectArea layui-hide" style="margin-left: 10%;">
+                            <select lay-search lay-filter="areaSelectFilter" id="areaLatAndLngSelect">
+                                <option value="">-- 请选择地址 --</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">门店电话</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="tel" name="tel" placeholder="输入门店电话" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">门店状态</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="status" value="1" title="正常营业" checked="checked">
+                            <input type="radio" name="status" value="0" title="暂停营业">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">退款密码（8-16位）</label>
+                        <div class="layui-input-inline">
+                            <input type="password" id="refundPassword" name="refundPassword" lay-verify="pass" placeholder="输入退款密码" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">备注</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="remark" name="remark" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <input class="layui-hide" name="lot" id="lot">
+                    <input class="layui-hide" name="lat" id="lat">
+                </div>
+                <button type="button" class="layui-hide xxpayYesBtn" lay-submit="" lay-filter="storeAdd">保存</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    function loadJScript() {
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = "//api.map.baidu.com/api?v=2.0&ak=v9pUcQGWoCnaLYOxIYabQ7XyZYGBR173&callback=init";
+        document.body.appendChild(script);
+    }
+    loadJScript()
+    layui.use(['form','util','upload','admin','setter'], function(){
+        var form = layui.form
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,upload = layui.upload
+        ,setter = layui.setter
+        ,element = layui.element;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        // 初始化 [省] 下拉框
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/area_code/provinces',
+            error: function(err){
+                layer.alert(JSON.stringify(err.field), {title: '错误提示'})
+            },
+            success: function(res){
+                if(res.code == 0){
+                    $.each(res.data, function(){
+                        $("#provinceSelect").append("<option item value='"+this.provinceCode+"'>"+this.provinceName+"</option>");
+                    });
+                    form.render();
+                }
+            }
+        });
+
+        //监听 [省] 下拉框
+        form.on('select(provinceSelectFilter)', function(data){
+
+            //清空， 市， 区 下拉框
+            $("#citySelect option[item]").remove();
+            $("#areaSelect option[item]").remove();
+
+            var provinceCode = data.value; //省级编码
+            if(!provinceCode){
+                form.render();
+                return false; //未选择
+            }
+
+            admin.req({
+                type: 'get',
+                url: layui.setter.baseUrl + '/area_code/cities?provinceCode=' + provinceCode,
+                error: function(err){
+                    layer.alert(JSON.stringify(err.field), {title: '错误提示'})
+                },
+                success: function(res){
+                    if(res.code == 0){
+                        $.each(res.data, function(){
+                            $("#citySelect").append("<option item value='"+this.cityCode+"'>"+this.cityName+"</option>");
+                        });
+                        form.render();
+                    }
+                }
+            });
+        });
+
+        //监听 [市] 下拉框
+        form.on('select(citySelectFilter)', function(data){
+
+            //清空 区 下拉框
+            $("#areaSelect option[item]").remove();
+
+            var cityCode = data.value; //市级编码
+            if(!cityCode){
+                form.render();
+                return false; //未选择
+            }
+            admin.req({
+                type: 'get',
+                url: layui.setter.baseUrl + '/area_code/areas?cityCode=' + cityCode,
+                error: function(err){
+                    layer.alert(JSON.stringify(err.field), {title: '错误提示'})
+                },
+                success: function(res){
+                    if(res.code == 0){
+                        $.each(res.data, function(){
+                            $("#areaSelect").append("<option item value='"+this.areaCode+"'>"+this.areaName+"</option>");
+                        });
+                        form.render();
+                    }
+                }
+            });
+        });
+
+        //监听提交
+        form.on('submit(storeAdd)', function(data){
+
+            var reqData = data.field;  //请求参数
+
+            if (!reqData.refundPassword) {return layer.alert('退款密码不能为空！'); }
+            /* 自定义验证规则 */
+            form.verify({
+                pass: [/(.+){8,16}$/, '密码必须8到16位']
+            });
+
+            //验证 必填信息
+            if(!reqData.provinceCode || !reqData.cityCode || !reqData.areaCode){return layer.alert('请选择商户位置信息！'); }
+
+            //封装位置描述信息
+            reqData.areaInfo = $("#provinceSelect option[value='"+reqData.provinceCode+"']").text() + " " +
+                $("#citySelect option[value='"+reqData.cityCode+"']").text() + " " +
+                $("#areaSelect option[value='"+reqData.areaCode+"']").text();
+
+            // 在这个回调函数里面写ajax提交
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/store/add',
+                data: data.field,
+                success: function(res){
+                    if(res.code == 0){
+                        layer.closeAll(); //关闭所有弹层
+                        layer.msg("保存成功");
+                        layui.table.reload('tableReload', {page: {curr: 1}}); //调用业务弹层外表格重新加载
+                    }
+                }
+            });
+            return false;//阻止跳转
+        });
+
+        var headers = {};
+        headers[setter.request.tokenName] = layui.data(setter.tableName)[setter.request.tokenName];
+        var uploadInst = upload.render({
+            elem: '.uploadImgBtn'
+            , url: layui.setter.baseUrl + '/upload/store'
+            , headers: headers
+            , size: 2048  //仅支持2M图片上传
+            ,before: function (obj) {
+                obj.preview(function(index, file, result) {
+                    $('#img').attr('src', result);
+                })
+            },done: function(res){
+                //如果上传失败
+                if(res.code != 0){
+                    return layer.msg('上传失败['+res.msg+']', {icon: 2});
+                }
+                //上传成功
+                $("#storeImgPath").val(res.data);
+                var divElem = $(this.item).parent();
+                divElem.find('.uploadImg').attr("src", res.data).removeClass('layui-hide');
+                divElem.find('.delImgBtn').removeClass('layui-hide');
+                divElem.find('.uploadImgBtn').text('重新上传');
+            }
+        });
+        //点击[图片] 按钮， 事件
+        $('.uploadImg').click(function(){
+            var imgSrc = $(this).attr('src');
+            layer.photos({photos: {
+                    "title": "查看上传图片", //相册标题
+                    "id": 1, //相册id
+                    "start": 0, //初始显示的图片序号，默认0
+                    "data": [   //相册包含的图片，数组格式
+                        {
+                            "alt": "图片",
+                            "pid": 1, //图片id
+                            "src": imgSrc, //原图地址
+                            "thumb": "" //缩略图地址
+                        }
+                    ]
+                } ,anim: 5});
+        });
+
+        //点击[删除图片] 按钮， 事件
+        $('.delImgBtn').click(function(){
+            var divElem = $(this).parent();
+            divElem.find('.imgVal').val(""); //清空图片真实路径
+            divElem.find('.uploadImgBtn').text("上传图片");
+            divElem.find('.uploadImg').attr("src", "").addClass('layui-hide');
+            divElem.find('.delImgBtn').addClass('layui-hide');
+            form.render();
+        });
+
+        // 获取商户地址信息
+        var areaInfo = "";
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/mch/get',
+            error: function(err){
+                layer.alert(JSON.stringify(err.field), {title: '错误提示'})
+            },
+            success: function(res){
+                if(res.code == 0){
+                    areaInfo = res.data.areaInfo
+                }
+            }
+        });
+
+        window.init = function() {
+            // 百度地图API功能
+            var map = new BMap.Map("allmap");
+            var point = new BMap.Point(116.331398,39.897445);
+            map.centerAndZoom(point, 12);
+            // 创建地址解析器实例
+            var myGeo = new BMap.Geocoder();
+            map.addControl(new BMap.MapTypeControl());
+            // 将地址解析结果显示在地图上,并调整地图视野
+            myGeo.getPoint(areaInfo, function(point){
+                if (point) {
+                    map.enableScrollWheelZoom();
+                    map.centerAndZoom(point, 16);
+                    map.addOverlay(new BMap.Marker(point));
+                    map.panBy(260, 200);
+                }else{
+                    alert("您选择地址没有解析到结果!");
+                }
+            }, "北京市");
+
+            var map = new BMap.Map("allmap");
+            var point = new BMap.Point(116.331398,39.897445);
+            map.centerAndZoom(point,12);
+            var geoc = new BMap.Geocoder();
+            map.addEventListener("click", function(e){
+                var pt = e.point;
+                $("#lot").val(pt.lng);
+                $("#lat").val(pt.lat);
+                $("#latAndLng").val(pt.lng + "," + pt.lat);
+                geoc.getLocation(pt, function(rs){
+                    //清空 地址选择 下拉框
+                    $("#areaLatAndLngSelect option").remove();
+                    // 遍历附近地址
+                    $.each(rs.surroundingPois, function(){
+                        console.log("<option value='"+this.title+"'>["+this.title+"]"+this.address+"</option>")
+                        $("#areaLatAndLngSelect").append("<option value='"+this.title+"'>["+this.title+"]"+this.address+"</option>");
+                    });
+                    form.render();
+                });
+            });
+        }
+
+        //点击[图片] 按钮， 事件
+        $('.openMap').click(function() {
+            var openMap = $(".openMap").val();
+            if ("1" == openMap) {
+                $("#allmap").removeClass("layui-hide")
+                $(".selectArea").removeClass("layui-hide")
+                $(".openMap").html("收起地图")
+                $(".openMap").val("2")
+            }else {
+                $(".selectArea").addClass("layui-hide")
+                $("#allmap").addClass("layui-hide")
+                $(".openMap").val("1")
+                $(".openMap").html("地图定位")
+            }
+
+        })
+
+        //监听 地址选择 下拉框
+        form.on('select(areaSelectFilter)', function(data){
+            $("#address").val(data.value)
+        });
+
+        form.render();
+    });
+
+        
+</script>

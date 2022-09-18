@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.xxpay.service.dao.mapper.MchMiniVersionMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="org.xxpay.core.entity.MchMiniVersion">
+        <id column="Id" property="Id" />
+        <result column="MchId" property="mchId" />
+        <result column="IsvId" property="isvId" />
+        <result column="AuthFrom" property="authFrom" />
+        <result column="AuthAppId" property="authAppId" />
+        <result column="MiniVersion" property="miniVersion" />
+        <result column="MiniDesc" property="miniDesc" />
+        <result column="Develop" property="develop" />
+        <result column="CommitTime" property="commitTime" />
+        <result column="AuditTime" property="auditTime" />
+        <result column="ReleaseTime" property="releaseTime" />
+        <result column="AuditId" property="auditId" />
+        <result column="VersionStatus" property="versionStatus" />
+        <result column="AuditStatus" property="auditStatus" />
+        <result column="RefusedReason" property="refusedReason" />
+        <result column="RefusedScreenShot" property="refusedScreenShot" />
+        <result column="CreateTime" property="createTime" />
+        <result column="UpdateTime" property="updateTime" />
+    </resultMap>
+
+</mapper>

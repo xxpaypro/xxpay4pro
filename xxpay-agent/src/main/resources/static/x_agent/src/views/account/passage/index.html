@@ -1,0 +1,64 @@
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a><cite>代理商</cite></a>
+    </span>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">支付通道</li>
+            </ul>
+            <div class="layui-tab-content">
+                <style>
+                    .center {
+                        width: 80%;
+                    }
+                </style>
+                <table class="layui-hide center" id="cList"></table>
+            </div>
+        </div>
+    </div>
+</div>
+    <script>
+        layui.use(['table','util'], function(){
+            var $ = layui.$
+            ,admin = layui.admin
+            ,table = layui.table
+            ,element = layui.element
+            ,form = layui.form;
+
+            element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+            var tplStatus = function(d){
+                if(d.status == 0) {
+                    return "关闭";
+                }else if(d.status == 1) {
+                    return "<span style='color: green'>开启</span>";
+                }
+            };
+
+            var tplRate = function(d){
+                if(d.fee == '' || d.fee == null) {
+                    return "未设置";
+                }else {
+                    return "<span style='color: blue'>"+ d.fee+"%<span>";
+                }
+            };
+
+            table.render({
+                elem: '#cList'
+                ,url: layui.setter.baseUrl + '/agent_passage/list'
+                ,cols: [[
+                    {title: '产品ID', templet: "<span>{{d.ps.productId}}</span>"}
+                    ,{title: '产品名称', templet: "<span>{{d.ps.productName}}</span>"}
+                    ,{field:'agentRate', title: '代理费率',templet: tplRate}
+                    ,{field:'status', title: '状态',templet: tplStatus }
+                ]]
+                ,page: false
+                ,skin: 'line'
+            });
+        });
+      
+    </script>

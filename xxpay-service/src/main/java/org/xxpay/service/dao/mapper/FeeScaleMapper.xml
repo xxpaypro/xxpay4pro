@@ -1,0 +1,521 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.xxpay.service.dao.mapper.FeeScaleMapper" >
+  <resultMap id="BaseResultMap" type="org.xxpay.core.entity.FeeScale" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="InfoId" property="infoId" jdbcType="BIGINT" />
+    <result column="InfoType" property="infoType" jdbcType="TINYINT" />
+    <result column="ProductType" property="productType" jdbcType="TINYINT" />
+    <result column="refProductId" property="refProductId" jdbcType="INTEGER" />
+    <result column="FeeScale" property="feeScale" jdbcType="TINYINT" />
+    <result column="FeeScaleStep" property="feeScaleStep" jdbcType="INTEGER" />
+    <result column="SingleFeeType" property="singleFeeType" jdbcType="TINYINT" />
+    <result column="Fee" property="fee" jdbcType="DECIMAL" />
+    <result column="ExtConfig" property="extConfig" jdbcType="VARCHAR" />
+    <result column="Status" property="status" jdbcType="TINYINT" />
+    <result column="IsDefault" property="isDefault" jdbcType="TINYINT" />
+    <result column="CreateTime" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="UpdateTime" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, InfoId, InfoType, ProductType, refProductId, FeeScale, FeeScaleStep, SingleFeeType, 
+    Fee, ExtConfig, Status, IsDefault, CreateTime, UpdateTime
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="org.xxpay.core.entity.FeeScaleExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from t_fee_scale
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+    <if test="limit != null" >
+      <if test="offset != null" >
+        limit ${offset}, ${limit}
+      </if>
+      <if test="offset == null" >
+        limit ${limit}
+      </if>
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_fee_scale
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_fee_scale
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="org.xxpay.core.entity.FeeScaleExample" >
+    delete from t_fee_scale
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="org.xxpay.core.entity.FeeScale" keyProperty="id" useGeneratedKeys="true">
+    insert into t_fee_scale (id, InfoId, InfoType, 
+      ProductType, refProductId, FeeScale, 
+      FeeScaleStep, SingleFeeType, Fee, 
+      ExtConfig, Status, IsDefault, 
+      CreateTime, UpdateTime)
+    values (#{id,jdbcType=INTEGER}, #{infoId,jdbcType=BIGINT}, #{infoType,jdbcType=TINYINT}, 
+      #{productType,jdbcType=TINYINT}, #{refProductId,jdbcType=INTEGER}, #{feeScale,jdbcType=TINYINT}, 
+      #{feeScaleStep,jdbcType=INTEGER}, #{singleFeeType,jdbcType=TINYINT}, #{fee,jdbcType=DECIMAL}, 
+      #{extConfig,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT}, #{isDefault,jdbcType=TINYINT}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="org.xxpay.core.entity.FeeScale" keyProperty="id" useGeneratedKeys="true">
+    insert into t_fee_scale
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="infoId != null" >
+        InfoId,
+      </if>
+      <if test="infoType != null" >
+        InfoType,
+      </if>
+      <if test="productType != null" >
+        ProductType,
+      </if>
+      <if test="refProductId != null" >
+        refProductId,
+      </if>
+      <if test="feeScale != null" >
+        FeeScale,
+      </if>
+      <if test="feeScaleStep != null" >
+        FeeScaleStep,
+      </if>
+      <if test="singleFeeType != null" >
+        SingleFeeType,
+      </if>
+      <if test="fee != null" >
+        Fee,
+      </if>
+      <if test="extConfig != null" >
+        ExtConfig,
+      </if>
+      <if test="status != null" >
+        Status,
+      </if>
+      <if test="isDefault != null" >
+        IsDefault,
+      </if>
+      <if test="createTime != null" >
+        CreateTime,
+      </if>
+      <if test="updateTime != null" >
+        UpdateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="infoId != null" >
+        #{infoId,jdbcType=BIGINT},
+      </if>
+      <if test="infoType != null" >
+        #{infoType,jdbcType=TINYINT},
+      </if>
+      <if test="productType != null" >
+        #{productType,jdbcType=TINYINT},
+      </if>
+      <if test="refProductId != null" >
+        #{refProductId,jdbcType=INTEGER},
+      </if>
+      <if test="feeScale != null" >
+        #{feeScale,jdbcType=TINYINT},
+      </if>
+      <if test="feeScaleStep != null" >
+        #{feeScaleStep,jdbcType=INTEGER},
+      </if>
+      <if test="singleFeeType != null" >
+        #{singleFeeType,jdbcType=TINYINT},
+      </if>
+      <if test="fee != null" >
+        #{fee,jdbcType=DECIMAL},
+      </if>
+      <if test="extConfig != null" >
+        #{extConfig,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="isDefault != null" >
+        #{isDefault,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="org.xxpay.core.entity.FeeScaleExample" resultType="java.lang.Integer" >
+    select count(*) from t_fee_scale
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update t_fee_scale
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.infoId != null" >
+        InfoId = #{record.infoId,jdbcType=BIGINT},
+      </if>
+      <if test="record.infoType != null" >
+        InfoType = #{record.infoType,jdbcType=TINYINT},
+      </if>
+      <if test="record.productType != null" >
+        ProductType = #{record.productType,jdbcType=TINYINT},
+      </if>
+      <if test="record.refProductId != null" >
+        refProductId = #{record.refProductId,jdbcType=INTEGER},
+      </if>
+      <if test="record.feeScale != null" >
+        FeeScale = #{record.feeScale,jdbcType=TINYINT},
+      </if>
+      <if test="record.feeScaleStep != null" >
+        FeeScaleStep = #{record.feeScaleStep,jdbcType=INTEGER},
+      </if>
+      <if test="record.singleFeeType != null" >
+        SingleFeeType = #{record.singleFeeType,jdbcType=TINYINT},
+      </if>
+      <if test="record.fee != null" >
+        Fee = #{record.fee,jdbcType=DECIMAL},
+      </if>
+      <if test="record.extConfig != null" >
+        ExtConfig = #{record.extConfig,jdbcType=VARCHAR},
+      </if>
+      <if test="record.status != null" >
+        Status = #{record.status,jdbcType=TINYINT},
+      </if>
+      <if test="record.isDefault != null" >
+        IsDefault = #{record.isDefault,jdbcType=TINYINT},
+      </if>
+      <if test="record.createTime != null" >
+        CreateTime = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateTime != null" >
+        UpdateTime = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update t_fee_scale
+    set id = #{record.id,jdbcType=INTEGER},
+      InfoId = #{record.infoId,jdbcType=BIGINT},
+      InfoType = #{record.infoType,jdbcType=TINYINT},
+      ProductType = #{record.productType,jdbcType=TINYINT},
+      refProductId = #{record.refProductId,jdbcType=INTEGER},
+      FeeScale = #{record.feeScale,jdbcType=TINYINT},
+      FeeScaleStep = #{record.feeScaleStep,jdbcType=INTEGER},
+      SingleFeeType = #{record.singleFeeType,jdbcType=TINYINT},
+      Fee = #{record.fee,jdbcType=DECIMAL},
+      ExtConfig = #{record.extConfig,jdbcType=VARCHAR},
+      Status = #{record.status,jdbcType=TINYINT},
+      IsDefault = #{record.isDefault,jdbcType=TINYINT},
+      CreateTime = #{record.createTime,jdbcType=TIMESTAMP},
+      UpdateTime = #{record.updateTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="org.xxpay.core.entity.FeeScale" >
+    update t_fee_scale
+    <set >
+      <if test="infoId != null" >
+        InfoId = #{infoId,jdbcType=BIGINT},
+      </if>
+      <if test="infoType != null" >
+        InfoType = #{infoType,jdbcType=TINYINT},
+      </if>
+      <if test="productType != null" >
+        ProductType = #{productType,jdbcType=TINYINT},
+      </if>
+      <if test="refProductId != null" >
+        refProductId = #{refProductId,jdbcType=INTEGER},
+      </if>
+      <if test="feeScale != null" >
+        FeeScale = #{feeScale,jdbcType=TINYINT},
+      </if>
+      <if test="feeScaleStep != null" >
+        FeeScaleStep = #{feeScaleStep,jdbcType=INTEGER},
+      </if>
+      <if test="singleFeeType != null" >
+        SingleFeeType = #{singleFeeType,jdbcType=TINYINT},
+      </if>
+      <if test="fee != null" >
+        Fee = #{fee,jdbcType=DECIMAL},
+      </if>
+      <if test="extConfig != null" >
+        ExtConfig = #{extConfig,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        Status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="isDefault != null" >
+        IsDefault = #{isDefault,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null" >
+        CreateTime = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        UpdateTime = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.xxpay.core.entity.FeeScale" >
+    update t_fee_scale
+    set InfoId = #{infoId,jdbcType=BIGINT},
+      InfoType = #{infoType,jdbcType=TINYINT},
+      ProductType = #{productType,jdbcType=TINYINT},
+      refProductId = #{refProductId,jdbcType=INTEGER},
+      FeeScale = #{feeScale,jdbcType=TINYINT},
+      FeeScaleStep = #{feeScaleStep,jdbcType=INTEGER},
+      SingleFeeType = #{singleFeeType,jdbcType=TINYINT},
+      Fee = #{fee,jdbcType=DECIMAL},
+      ExtConfig = #{extConfig,jdbcType=VARCHAR},
+      Status = #{status,jdbcType=TINYINT},
+      IsDefault = #{isDefault,jdbcType=TINYINT},
+      CreateTime = #{createTime,jdbcType=TIMESTAMP},
+      UpdateTime = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+
+  <!--selectAgpayAvailable    得到商户/代理商 代付业务可用通道信息（优先使用默认通道） -->
+  <select id="selectAgpayAvailable" resultMap="BaseResultMap" parameterType="java.util.Map">
+
+    select fee.* from t_fee_scale fee
+    inner join t_agentpay_passage ap on fee.refProductId = ap.id
+    where fee.InfoId = #{infoId} and fee.InfoType = #{infoType}
+    and fee.ProductType = '2' and fee.`Status` = '1' and ap.`Status` = '1'
+    order by fee.IsDefault desc
+    limit 1
+
+  </select>
+
+
+  <!-- BaseResultMap 包含支付产品信息 -->
+  <resultMap id="BaseResultMapByProduct" type="org.xxpay.core.entity.FeeScale"  extends="BaseResultMap">
+    <result column="p_id" property="ps.productId" jdbcType="INTEGER" />
+    <result column="p_productName" property="ps.productName" jdbcType="VARCHAR" />
+    <result column="p_productType" property="ps.productType" jdbcType="TINYINT" />
+    <result column="p_parentAgentFee" property="ps.parentAgentFee" jdbcType="DECIMAL" />
+  </resultMap>
+
+  <!--  t_product表左连接查询feeScale , 以t_product 表信息为主  -->
+  <select id="productLeftJoinFeeScale" resultMap="BaseResultMapByProduct" parameterType="java.util.Map" >
+    select p.id as p_id, p.ProductName as p_productName, p.ProductType as p_productType,
+    (select  fsa.fee from t_fee_scale fsa where fsa.InfoId  =
+      <if test="infoType == 1">( select agentId from t_mch_info where MchId = #{infoId} )</if>
+      <if test="infoType == 2">( select pid from t_agent_info where AgentId = #{infoId} )</if>
+     and fsa.InfoType = '2' and fsa.ProductType = '1' and fsa.refProductId = p.id )
+    as p_parentAgentFee,
+    fs.*
+    from t_pay_product p
+    left join (select * from t_fee_scale ifs where ifs.InfoType= #{infoType} and ifs.InfoId = #{infoId} and ifs.productType = '1') fs
+    on p.id = fs.RefProductId
+    where p.`Status` = 1
+  </select>
+
+
+  <!--  以t_fee_scale表信息为主， inner join  t_pay_product 查询信息 -->
+  <select id="productInnerJoinFeeScale" resultMap="BaseResultMapByProduct" parameterType="java.util.Map" >
+    select p.id as p_id, p.ProductName as p_productName, p.ProductType as p_productType,
+    (select fsa.fee from t_fee_scale fsa where fsa.InfoId  =
+    <if test="infoType == 1">( select agentId from t_mch_info where MchId = #{infoId} )</if>
+    <if test="infoType == 2">( select pid from t_agent_info where AgentId = #{infoId} )</if>
+    and fsa.InfoType = '2' and fsa.ProductType = '1' and fsa.refProductId = p.id )
+    as p_parentAgentFee,
+    fs.*
+    from t_fee_scale fs
+    inner join t_pay_product p on fs.refProductId = p.id
+    where p.`Status` = 1
+    and fs.InfoType= #{infoType} and fs.InfoId = #{infoId} and fs.productType = '1'
+  </select>
+
+
+
+  <!-- BaseResultMap 包含代付产品信息 -->
+  <resultMap id="BaseResultMapByPassage" type="org.xxpay.core.entity.FeeScale"  extends="BaseResultMap">
+    <result column="ap_id" property="ps.passageId" jdbcType="INTEGER" />
+    <result column="ap_passageName" property="ps.passageName" jdbcType="VARCHAR" />
+    <result column="ap_feeEvery" property="ps.feeEvery" jdbcType="BIGINT" />
+    <result column="ap_parentAgentFee" property="ps.parentAgentFee" jdbcType="DECIMAL" />
+  </resultMap>
+
+  <!--  t_agentpay_passage表左连接查询feeScale , 以t_agentpay_passage 表信息为主  -->
+  <select id="agpayPassageLeftJoinFeeScale" resultMap="BaseResultMapByPassage" parameterType="java.util.Map" >
+    select ap.id as ap_id, ap.PassageName as ap_passageName, ap.FeeEvery as ap_feeEvery,
+    (select fsa.fee from t_fee_scale fsa where fsa.InfoId  =
+    <if test="infoType == 1">( select agentId from t_mch_info where MchId = #{infoId} )</if>
+    <if test="infoType == 2">( select pid from t_agent_info where AgentId = #{infoId} )</if>
+    and fsa.InfoType = '2' and fsa.ProductType = '2' and fsa.refProductId = ap.id )
+    as ap_parentAgentFee,
+    fs.*
+    from t_agentpay_passage ap
+    left join ( select * from t_fee_scale ifs where ifs.InfoType= #{infoType} and ifs.InfoId = #{infoId} and ifs.productType = '2' ) fs
+    on ap.id = fs.RefProductId
+    where ap.`Status` = 1 and ap.BelongInfoId = #{passageBelongInfoId} and ap.BelongInfoType = #{passageBelongInfoType}
+  </select>
+
+
+  <!--  以t_fee_scale表信息为主， inner join  t_agentpay_passage 查询信息 -->
+  <select id="agpayPassageInnerJoinFeeScale" resultMap="BaseResultMapByPassage" parameterType="java.util.Map" >
+    select ap.id as ap_id, ap.PassageName as ap_passageName,
+    (select fsa.fee from t_fee_scale fsa where fsa.InfoId  =
+    <if test="infoType == 1">( select agentId from t_mch_info where MchId = #{infoId} )</if>
+    <if test="infoType == 2">( select pid from t_agent_info where AgentId = #{infoId} )</if>
+    and fsa.InfoType = '2' and fsa.ProductType = '2' and fsa.refProductId = ap.id )
+    as ap_parentAgentFee,
+    fs.*
+    from t_agentpay_passage ap
+    inner join t_fee_scale fs
+    on ap.id = fs.RefProductId
+    where ap.`Status` = 1 and ap.BelongInfoId = #{passageBelongInfoId} and ap.BelongInfoType = #{passageBelongInfoType}
+    and fs.InfoType= #{infoType} and fs.InfoId = #{infoId} and fs.productType = '2'
+  </select>
+
+
+
+
+<!-- 查询下级 最小费率/费用值-->
+  <select id="selectMinChildrenFee" resultType="java.math.BigDecimal" parameterType="java.util.Map" >
+
+    select min(f.fee) from t_fee_scale f where f.InfoType = #{childInfoType} and f.InfoId in
+    <if test="childInfoType == 1" > ( select m.MchId from t_mch_info m where m.AgentId = #{currentAgentId} )</if>
+    <if test="childInfoType == 2" > ( select ag.AgentId from t_agent_info ag where ag.pid = #{currentAgentId} )</if>
+    and f.ProductType = #{productType} and f.refProductId = #{refProductId}
+
+  </select>
+
+
+
+  <!-- ↓↓↓↓↓↓↓ 以下为原 AgentAgentpayPassageMapper.xml  方法 -->
+  <!-- 统计 所有当前代理商的所属代理商配置该通道信息(不包含本代理商)  -->
+  <select id="countAllCanSetAccountIds4AllSubAgent" resultType="java.lang.Integer" parameterType="java.util.Map" >
+    select count(1) from t_agent_agentpay_passage ap where
+    ap.CanSetAccountId like concat( '%', #{accountId}, '%'  )
+    and ap.AgentId in (<include refid="org.xxpay.service.dao.mapper.AgentInfoMapper.queryAllSubAgentIdsSQL"/>)
+    and ap.AgentId != #{currentAgentId}
+  </select>
+
+
+  <!-- ↓↓↓↓↓↓↓ 以下为原 AgentPassageMapper.xml  方法 -->
+
+
+  <!-- 统计 所有当前代理商的所属代理商配置该通道信息(不包含本代理商)  -->
+  <select id="countAllCanSetPassageIds4AllSubAgent" resultType="java.lang.Integer" parameterType="java.util.Map" >
+    select count(1) from t_agent_passage ap where
+    ap.CanSetPassageId like concat( '%', #{payPassageId}, '%'  )
+    and ap.AgentId in (<include refid="org.xxpay.service.dao.mapper.AgentInfoMapper.queryAllSubAgentIdsSQL"/>)
+    and ap.AgentId != #{currentAgentId}
+  </select>
+
+
+  <!-- ↓↓↓↓↓↓↓ 以下为原 MchAgentpayPassageMapper.xml  方法 -->
+
+  <!-- 统计 所有当前代理商商户，和所有子商户 配置过该代付通道的数量 -->
+  <select id="countAllMchAccountIds4AllSubAgent" resultType="java.lang.Integer" parameterType="java.util.Map" >
+    select count(1) from t_mch_agentpay_passage mp
+    where mp.AgentpayPassageAccountId = #{accountId}
+    and mp.MchId in (
+    <include refid="org.xxpay.service.dao.mapper.MchInfoMapper.queryAllMchIds4SubAgents"/>
+    )
+  </select>
+
+
+
+  <!-- ↓↓↓↓↓↓↓ 以下为原 MchPayPassageMapper.xml  方法 -->
+
+
+  <!-- 统计 所有当前代理商商户，和所有子商户 配置过该支付通道的数量 -->
+  <select id="countAllMchPassageIds4AllSubAgent" resultType="java.lang.Integer" parameterType="java.util.Map" >
+    select count(1) from t_mch_pay_passage mp
+    where (mp.PayPassageId = #{payPassageId} or mp.PollParam like concat( '%{"payPassageId":', #{payPassageId}, '%' ) )
+    and mp.MchId in (
+    <include refid="org.xxpay.service.dao.mapper.MchInfoMapper.queryAllMchIds4SubAgents"/>
+    )
+  </select>
+
+
+
+</mapper>

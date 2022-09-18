@@ -1,0 +1,223 @@
+<style>
+  .layui-input-inline{margin-top:10px;}
+</style>
+<div class="layui-card layadmin-header">
+  <div class="layui-breadcrumb" lay-filter="breadcrumb">
+    <a lay-href="">主页</a>
+    <a><cite>交易管理</cite></a>
+  </div>
+</div>
+
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-tab layui-tab-brief">
+      <ul class="layui-tab-title">
+        <li class="layui-this">交易记录</li>
+      </ul>
+      <div class="layui-tab-content">
+        <div class="layui-tab-item layui-show">
+          <div class="layui-row">
+            <div class="layui-form" style="float:right; margin-bottom: 10px;">
+              <div id="timeDiv" class="layui-form-item" style="margin:0;">
+                <div class="layui-input-inline">
+                  <input type="text" name="searchMchId" id="searchMchId" placeholder="商户ID" autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-input-inline">
+                  <input type="text" name="searchTradeOrderId" id="searchTradeOrderId" placeholder="交易订单号" autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-input-inline">
+                  <input type="text" name="searchPayOrderId" id="searchPayOrderId" placeholder="支付订单号" autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-input-inline">
+                  <select name="searchTradeType" id="searchTradeType" lay-search="">
+                    <option value="-99">交易类型</option>
+                    <option value="1">收款</option>
+                    <option value="2">充值</option>
+                  </select>
+                </div>
+                <div class="layui-input-inline">
+                  <select name="searchStatus" id="searchStatus" lay-search="">
+                    <option value="-99">交易状态</option>
+                    <option value="0">生成</option>
+                    <option value="1">处理中</option>
+                    <option value="2">成功</option>
+                    <option value="-1">失败</option>
+                    <option value="4">部分退款</option>
+                    <option value="5">全额退款</option>
+                    <option value="6">押金未结算</option>
+                    <option value="7">押金退还</option>
+                  </select>
+                </div>
+                <div class="layui-input-inline">
+                  <button id="search" class="layui-btn" data-type="reload">搜索</button>
+                </div>
+              </div>
+            </div>
+            <!--<div class="layui-form-item">
+              <blockquote class="layui-elem-quote" id="amountTip">
+                订单数:<sapn id="allTotalCount" style="color: blue; margin-right: 10px;"></sapn>
+                交易金额:<span id="allTotalAmount" style="color: blue; margin-right: 10px;"></span>
+                入账金额:<span id="allTotalMchIncome" style="color: green; margin-right: 10px;"></span>
+              </blockquote>
+            </div>-->
+          </div>
+          <table id="XxPay_Mgr_Notify_dataAll" lay-filter="XxPay_Mgr_Notify_dataAll"></table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/html" id="xxpayBar">
+  <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+</script>
+
+<script>
+layui.use(['admin', 'table', 'util', 'timePick','view'], function(){
+  var $ = layui.$
+  ,admin = layui.admin
+  ,table = layui.table
+  ,element = layui.element
+  ,timePick = layui.timePick
+  ,view = layui.view
+  ,form = layui.form;
+  
+  element.render('breadcrumb', 'breadcrumb');
+  timePick.init();  //第一个参数表示开始时间   第二个表示结束时间   0,0今天   -1,-1昨天   -7,0近一周   以此类推
+
+  var createTimeStart = $('#createTimeStart').val();
+  var createTimeEnd = $('#createTimeEnd').val();
+
+  $.setCountResult = function(mchId, tradeOrderId, payOrderId, tradeType, status, createTimeStart, createTimeEnd) {
+    admin.req({
+      type: 'get',
+      url: layui.setter.baseUrl + '/trade_order/count',
+      data: {
+        mchId : mchId,
+        tradeOrderId : tradeOrderId,
+        payOrderId : payOrderId,
+        tradeType: tradeType,
+        status : status,
+        createTimeStart : createTimeStart,
+        createTimeEnd : createTimeEnd
+      },
+      error: function(err){
+        layer.alert(JSON.stringify(err.field), {
+          title: '错误提示'
+        })
+      },
+      success: function(res){
+        if(res.code == 0){
+          $('#allTotalCount').html(res.data.allTotalCount);
+          $('#allTotalAmount').html("￥" + res.data.allTotalAmount/100.00);
+          $('#allTotalMchIncome').html(res.data.allTotalMchIncome/100.0);
+        }
+      }
+    });
+  };
+
+  var tplStatus = function(d){
+    if(d.status == 0) {
+      return "<span style='color: blue'>生成</span>";
+    }else if(d.status == 1) {
+      return "<span style='color: orange'>处理中</span>";
+    }else if(d.status == 2) {
+      return "<span style='color: green'>成功</span>";
+    }else if(d.status == -1) {
+      return "<span style='color: red'>失败</span>";
+    }else if(d.status == 4) {
+        return "<span style='color: red'>部分退款</span>";
+    }else if(d.status == 5) {
+        return "<span style='color: red'>全额退款</span>";
+    }else if(d.status == 6) {
+        return "<span style='color: orange'>押金未结算</span>";
+    }else if(d.status == 7) {
+        return "<span style='color: red'>押金退还</span>";
+    }
+  };
+
+  var tplTradeType = function(d){
+    if(d.tradeType == 1) {
+      return "收款";
+    }else if(d.tradeType == 2) {
+      return "充值";
+    }
+  };
+
+  // 初始化统计结果
+  $.setCountResult();
+
+  //列表
+  table.render({
+    elem: '#XxPay_Mgr_Notify_dataAll'
+    ,url: layui.setter.baseUrl + '/trade_order/list' //列表接口
+    ,where: {
+        queryStartDateTime : createTimeStart,
+        queryEndDateTime : createTimeEnd
+    }
+    ,id: 'tableReload'
+    ,page: true
+    ,cols: [[
+      {field: 'tradeOrderId', title: '交易单号', width: 230}
+      ,{field: 'payOrderId', title: '支付单号', width: 230}
+      ,{field: 'mchId', title: '商户ID'}
+      ,{field: 'subject', title: '商品名称'}
+      ,{field: 'tradeType', title: '交易类型', templet: tplTradeType}
+      ,{field: 'productName', title: '支付产品'}
+      ,{field: 'amount', title: '交易金额(元)', templet: '<div>{{ d.amount/100 }}</div>'}
+      ,{field: 'mchIncome', title: '入账金额(元)', templet: '<div>{{ d.mchIncome/100 }}</div>'}
+      ,{field: 'status', title: '状态', templet: tplStatus}
+      ,{field: 'createTime', title: '时间', width: 180, templet: '<div>{{ layui.util.toDateString(d.createTime, "yyyy-MM-dd HH:mm:ss") }}</div>'}
+      ,{field: 'edit', title: '操作', toolbar: '#xxpayBar' }
+    ]]
+    ,skin: 'line'
+  });
+
+  //监听工具条
+  table.on('tool(XxPay_Mgr_Notify_dataAll)', function(obj){
+    var data = obj.data;
+    if(obj.event === 'detail'){
+      view.xxpayPopup("订单详情", "order/trade/view", {tradeOrderId: data.tradeOrderId}, {btn: false});
+    }
+  });
+
+  // 搜索
+  var $ = layui.$, active = {
+    reload: function(){
+      var mchId = $('#searchMchId').val();
+      var createTimeStart = $('#createTimeStart').val();
+      var createTimeEnd = $('#createTimeEnd').val();
+      var tradeOrderId = $('#searchTradeOrderId').val();
+      var payOrderId = $('#searchPayOrderId').val();
+      var tradeType = $("#searchTradeType").val();
+      var status = $("#searchStatus").val();
+
+      $.setCountResult(mchId, tradeOrderId, payOrderId, tradeType, status, createTimeStart, createTimeEnd);
+
+      //执行重载
+      table.reload('tableReload', {
+        page: {
+          curr: 1 //重新从第 1 页开始
+        }
+        ,where: {
+          mchId : mchId,
+          tradeOrderId: tradeOrderId,
+          payOrderId: payOrderId,
+          tradeType: tradeType,
+          status : status,
+          queryStartDateTime : createTimeStart,
+          queryEndDateTime : createTimeEnd
+        }
+      });
+    }
+  };
+  $('#search').on('click', function() {
+    var type = $(this).data('type');
+    active[type] ? active[type].call(this) : '';
+  });
+
+  // 渲染表单
+  form.render();
+});
+</script>

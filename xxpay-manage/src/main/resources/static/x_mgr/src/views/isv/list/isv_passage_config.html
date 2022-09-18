@@ -1,0 +1,241 @@
+
+<div class=" layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>服务商管理</cite></a>
+        <a><cite>配置服务商接口</cite></a>
+    </div>
+</div>
+<style>
+    .xxpayPopupDiv .layui-form-label {
+        width:120px !important;
+        margin-left:1%;
+    }
+    .xxpayPopupDiv .layui-input-inline {
+        width: 80% !important;
+    }
+    .xxpayPopupDiv .layui-input , .layui-textarea{
+        width: 80%;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">配置服务商接口</li>
+            </ul>
+            <div class="layui-tab-content">
+
+                <form class="layui-form center">
+                    <input id="id" type="hidden">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">接口类型代码</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="ifTypeCode" readonly="readonly" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">接口类型名称</label>
+                        <div class="layui-input-inline">
+                            <input type="text" readonly="readonly" id="ifTypeName" placeholder="请输入接口类型名称" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">状态</label>
+                        <div class="layui-input-inline" >
+                            <input type="radio" name="status" title="开启" value="1" />
+                            <input type="radio" name="status" title="关闭" value="0" />
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">备注信息</label>
+                        <div class="layui-input-inline">
+                            <input id="remark" type="text" placeholder="请输入备注信息" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+
+                    <fieldset class="layui-elem-field">
+                        <legend><button class='layui-btn layui-btn-xs layui-btn-danger'><span id="ifTypeNameSpan"></span> 服务商配置</button></legend>
+                            <div id="paramInfo"></div>
+                    </fieldset>
+
+	                
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button type="button" class="layui-hide xxpayYesBtn" lay-submit="" lay-filter="saveConfig">保存</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    
+    layui.use(['form','table','util','admin','view', 'setter', 'upload'],function(){
+        var form = layui.form
+        , $ = layui.$
+        , admin = layui.admin
+        , layer = layui.layer 
+        , element = layui.element
+        , view = layui.view
+        , table = layui.table
+        , setter = layui.setter
+        , upload = layui.upload;
+        
+        element.render('breadcrumb', 'breadcrumb'); //渲染导航信息
+        
+        var ifTypeCode = view.getOpenParams('ifTypeCode');  //接口类型代码
+        var isvId = view.getOpenParams('isvId');  //isvId
+
+        admin.req({
+            type: 'post',
+            url: layui.setter.baseUrl + '/isv_passage_config/get',
+            data: {
+                ifTypeCode:ifTypeCode, isvId: isvId
+            },
+            error: function(err){layer.alert(err);},
+            success: function(res){
+                if(res.code == 0){
+
+                    var paramVal = {};
+
+                    if(res.data){ //存在数据
+                        $("#id").val(res.data.id);
+                        paramVal = JSON.parse(res.data.isvParam);
+                        $("input[name='status'][value='"+res.data.status+"']").attr("checked",true);
+                        $('#remark').val(res.data.remark);
+                    }
+
+                    //查询该接口类型的具体配置信息
+                    admin.req({
+                        type: 'post',
+                        url: layui.setter.baseUrl + '/config/pay_interface_type/get',
+                        data: { ifTypeCode: ifTypeCode },
+                        error: function(err){layer.alert(err);},
+                        success: function(res2){
+                            if(res2.code == 0){
+
+                                $('#ifTypeCode').val(res2.data.ifTypeCode);
+                                $('#ifTypeName').val(res2.data.ifTypeName);
+                                $("#ifTypeNameSpan").html(res2.data.ifTypeName);
+                                var jsonObj = JSON.parse(res2.data.isvParam);
+
+                                // 根据paramVal填充表单值
+                                var htm = '';
+                                $.each(jsonObj, function(i, obj){
+                                    htm += `
+                                        <div class="layui-form-item">
+                                            <label class="layui-form-label"> ` + obj.desc + ` [` + obj.name + `]` +`</label>
+                                            <div class="layui-input-block"> `;
+                                    if(obj.type == 'text') {
+                                        htm += ` <input type="text" name="` + obj.name + `" value="` + (paramVal[obj.name] == undefined ? "" : paramVal[obj.name]) + `" placeholder="请输入` + obj.desc + `" autocomplete="off" class="layui-input">`;
+                                    }else if(obj.type == 'textarea') {
+                                        htm += ` <textarea name="` + obj.name + `" placeholder="请输入` + obj.desc + `" class="layui-textarea">` + (paramVal[obj.name] == undefined ? "" : paramVal[obj.name]) + `</textarea>`;
+                                    }else if(obj.type == 'file') {
+
+                                        var fileName = paramVal[obj.name] == undefined ? "" : paramVal[obj.name];
+                                        htm += `<input type="text" readonly style="width:320px; display: inline-block;" name="` + obj.name + `" value="` + fileName + `" placeholder="请上传` + obj.desc + `" autocomplete="off" class="layui-input">`;
+                                        var btnText = fileName ? "替换文件" : "上传文件";
+                                        htm += `<button class="uploadFileBtn layui-btn layui-btn-normal layui-btn-sm" type="button" style="margin-left: 20px;">`+btnText+`</button>`;
+                                        htm += `<span style="color:red; margin-left:20px" class="fileTip layui-hide">*点击[保存]按钮后文件生效</span>`;
+
+                                    }else if(obj.type == 'radio') {
+
+                                        var checkedVal = paramVal[obj.name] ? paramVal[obj.name] : ""; //已选择的值
+
+                                        var radioName = obj.name == undefined ? "" : obj.name;
+                                        var radioTitleArray = obj.titles == undefined ? [] : obj.titles.split(',');
+                                        var radioValueArray = obj.values == undefined ? [] : obj.values.split(',');
+
+                                        if(radioValueArray.indexOf(checkedVal) >= 0){ //包含已选择的
+                                            for(var j = 0; j < radioTitleArray.length; j++){
+                                                var radioCheckedHtml = radioValueArray[j] == checkedVal ? "checked" :"";
+                                                htm += ` <input `+radioCheckedHtml+` type="radio" name="` + radioName + `" lay-verify="` + obj.verify + `" value="` + radioValueArray[j] + `" title="`+radioTitleArray[j]+`">`;
+                                            }
+
+                                        }else{ //没有选择的， 默认第一个为选择
+
+                                            for(var j = 0; j < radioTitleArray.length; j++){
+                                                var radioCheckedHtml = j == 0 ? "checked" :"";
+                                                htm += ` <input `+radioCheckedHtml+` type="radio" name="` + radioName + `" lay-verify="` + obj.verify + `" value="` + radioValueArray[j] + `" title="`+radioTitleArray[j]+`">`;
+                                            }
+                                        }
+                                    }
+                                    htm += ` </div>
+                                        </div>`;
+                                });
+                                htm += ``;
+                                $('#paramInfo').html(htm);
+
+                                //上传文件接口
+                                var headers = {};
+                                headers[setter.request.tokenName] = layui.data(setter.tableName)[setter.request.tokenName];
+                                upload.render({
+                                    url: layui.setter.baseUrl + '/upload/isv_cert'
+                                    ,elem: '.uploadFileBtn'
+                                    ,headers: headers
+                                    ,accept: 'file'
+                                    ,done: function(res, index, upload){
+
+                                        if(res.code != 0){ //上传失败
+                                            return layer.msg('上传失败');
+                                        }
+                                        layer.msg('上传成功！');
+                                        var uploadFileName = res.data;
+                                        var btnElem = $(this.item);
+                                        btnElem.prev().val(uploadFileName);
+                                        btnElem.parent().find('.fileTip').removeClass("layui-hide");
+                                    }
+                                });
+
+                                form.render();
+                            }else{
+                                layer.alert(res2.msg,{title:"请求失败"});
+                            }
+                        }
+                    });
+
+                }else{
+                    layer.alert(res.msg,{title:"请求失败"})
+                }
+            }
+        });
+
+        form.on('submit(saveConfig)', function(data){
+
+            if(!data.field.status){
+                return layer.alert('请选择状态！');
+            }
+
+            var reqParam = {};
+            reqParam.id = $("#id").val();
+            reqParam.ifTypeCode = ifTypeCode;
+            reqParam.passageName = $("#ifTypeName").val();
+            reqParam.belongInfoId = isvId;
+            reqParam.belongInfoType = 4; //4-服务商
+            reqParam.status = data.field.status;
+            reqParam.remark = $("#remark").val();
+
+            var isvParam = data.field;
+            delete isvParam.status; //删除状态，默认其他都为isv参数
+            reqParam.isvParam = JSON.stringify(isvParam); //toString
+
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/isv_passage_config/saveOrUpdate',
+                data: reqParam,
+                error: function(err){layer.alert(err.msg,{title:"请求失败"})},
+                success: function(res){
+                    if(res.code == 0){
+                        layer.closeAll(); //关闭所有弹层
+                        layer.msg("配置成功");
+                        layui.table.reload('tableReload', {page: {curr: 1}}); //调用业务弹层外表格重新加载
+                    }
+                }
+            });
+            return false;
+        });
+
+    });
+</script>

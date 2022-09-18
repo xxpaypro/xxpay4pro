@@ -1,0 +1,166 @@
+
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+      <a lay-href="">主页</a>
+      <a><cite>数据分析</cite></a>
+    </div>
+  </div>
+  
+  <div class="layui-fluid">
+    <div class="layui-card">
+      <div class="layui-tab layui-tab-brief">
+        <ul class="layui-tab-title">
+          <li class="layui-this">代付统计</li>
+        </ul>
+        <div class="layui-tab-content">
+          <div class="layui-tab-item layui-show">
+            <div class="layui-row">
+              <div class="layui-form" style="float:right;">
+                <div id="timeDiv" class="layui-form-item" style="margin:0;">
+                  <div class="layui-input-inline">
+                    <input type="text" name="infoId" id="infoId" placeholder="商户或代理商ID" autocomplete="off" class="layui-input">
+                  </div>
+                  <div class="layui-input-inline">
+                    <select name="infoType" id="infoType" lay-search="">
+                        <option value="">类型</option>
+                        <option value="1">商户</option>
+                        <option value="2">代理商</option>
+                    </select>
+                  </div>
+                  <button id="search" class="layui-btn" data-type="reload">搜索</button>
+                </div>
+              </div>
+            <div class="layui-form-item" style="padding-top: 15px;">
+              <blockquote class="layui-elem-quote" id="amountTip">
+                 总代付金额:<span id="totalAmount" style="color: green; margin-right: 10px;"></span>
+                 总代付笔数:<sapn id="totalCount" style="color: blue; margin-right: 10px;"></sapn>
+              </blockquote>
+            </div>
+            </div>
+            <div class="layui-row">
+              <div class="layuiAdmin-btns" style="margin-bottom: 10px;">
+              </div>
+            </div>
+            <table id="zjdataAll" lay-filter="zjdataAll"></table>
+          </div>
+  
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+  	var tplName = function(d){
+         if(d.agentName == null) {
+             return d.mchName;
+         }else if(d.mchName == null) {
+             return d.agentName;
+         }
+     };
+     
+     var tplInfoType = function(d){
+         if(d.infoType == 1) {
+             return '商户';
+         }else if(d.infoType == 2) {
+             return '代理商';
+         }
+     };
+     
+  	layui.config({
+	    base: '/x_mgr/src/lib/extend/',
+	});
+    layui.use(['admin', 'table', 'util', 'laydate', 'timePick'], function(){
+      var $ = layui.$
+        ,admin = layui.admin
+        ,table = layui.table
+        ,element = layui.element
+        ,laydate = layui.laydate
+        ,timePick = layui.timePick
+        ,form = layui.form;
+        
+      timePick.init();  //第一个参数表示开始时间   第二个表示结束时间   0,0今天   -1,-1昨天   -7,0近一周   以此类推
+      element.render('breadcrumb', 'breadcrumb');
+      $.setCountResult = function(infoId, infoType, createTimeStart, createTimeEnd) {
+	    admin.req({
+	      type: 'get',
+	      url: layui.setter.baseUrl + '/data/countAgentpayStatistics',
+	      data: {
+	        infoId : infoId,
+	        infoType : infoType,
+	        createTimeStart : createTimeStart,
+	        createTimeEnd : createTimeEnd
+	      },
+	      error: function(err){
+	        layer.alert(JSON.stringify(err.field), {
+	          title: '错误提示'
+	        })
+	      },
+	      success: function(res){
+	        if(res.code == 0){
+	          $('#totalAmount').html("￥" + res.data[0].totalAmount/100.00);
+	          $('#totalCount').html(res.data[0].totalCount);
+	        }
+	      }
+	    });
+	  };
+      
+      // 初始化统计结果
+  	  var createTimeStart = $('#createTimeStart').val();
+      var createTimeEnd = $('#createTimeEnd').val();
+      var infoId = $('#infoId').val();
+      var infoType = $('#infoType').val();
+      
+      $.setCountResult(infoId, infoType, createTimeStart, createTimeEnd);
+  
+      //商户列表
+      table.render({
+        elem: '#zjdataAll'
+        ,url: layui.setter.baseUrl + '/data/agentpayStatistics' //列表接口
+        ,where: {
+            createTimeStart : createTimeStart,
+            createTimeEnd : createTimeEnd
+        }
+        ,id: 'tableReload'
+        ,page: true
+        ,cols: [[
+          {type: 'checkbox', fixed: 'left'}
+          ,{field: 'infoId', title: '商户或代理商ID'}
+          ,{field: 'infoType',title: '商户类型',templet: tplInfoType}
+          ,{field: 'mchName', title: '商户或代理商名称', templet: tplName}
+          ,{field: 'totalAmount',title: '代付金额(元)',templet: '<div>{{d.totalAmount/100}}</div>'}
+          ,{field: 'totalCount',title: '代付笔数' ,width: 270}
+        ]]
+        ,skin: 'line'
+      });
+  
+      // 搜索
+      var $ = layui.$, active = {
+        reload: function(){
+          var createTimeStart = $('#createTimeStart').val();
+          var createTimeEnd = $('#createTimeEnd').val();
+          var infoId = $('#infoId').val();
+          var infoType = $('#infoType').val();
+          
+          $.setCountResult(infoId, infoType, createTimeStart, createTimeEnd);
+          //执行重载
+          table.reload('tableReload', {
+            page: {
+              curr: 1 //重新从第 1 页开始
+            }
+            ,where: {
+              infoId: infoId,
+              infoType: infoType,
+              createTimeStart : createTimeStart,
+              createTimeEnd : createTimeEnd,
+            }
+          });
+        }
+      };
+      $('#search').on('click', function() {
+        var type = $(this).data('type');
+        active[type] ? active[type].call(this) : '';
+      });
+      // 渲染表单
+      form.render();
+    });
+  </script>

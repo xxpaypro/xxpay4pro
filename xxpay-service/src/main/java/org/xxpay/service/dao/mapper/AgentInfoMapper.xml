@@ -1,0 +1,488 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.xxpay.service.dao.mapper.AgentInfoMapper">
+  <resultMap id="BaseResultMap" type="org.xxpay.core.entity.AgentInfo">
+    <id column="AgentId" jdbcType="BIGINT" property="agentId" />
+    <result column="AgentName" jdbcType="VARCHAR" property="agentName" />
+    <result column="LoginUserName" jdbcType="VARCHAR" property="loginUserName" />
+    <result column="Mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="Email" jdbcType="VARCHAR" property="email" />
+    <result column="RealName" jdbcType="VARCHAR" property="realName" />
+    <result column="IdCard" jdbcType="VARCHAR" property="idCard" />
+    <result column="Qq" jdbcType="VARCHAR" property="qq" />
+    <result column="Address" jdbcType="VARCHAR" property="address" />
+    <result column="ProfitRate" jdbcType="DECIMAL" property="profitRate" />
+    <result column="Status" jdbcType="TINYINT" property="status" />
+    <result column="IsvId" jdbcType="BIGINT" property="isvId" />
+    <result column="Pid" jdbcType="BIGINT" property="pid" />
+    <result column="AgentLevel" jdbcType="INTEGER" property="agentLevel" />
+    <result column="AllowAddSubAgent" jdbcType="TINYINT" property="allowAddSubAgent" />
+    <result column="AllowAddMch" jdbcType="TINYINT" property="allowAddMch" />
+    <result column="Remark" jdbcType="VARCHAR" property="remark" />
+    <result column="CreateTime" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="UpdateTime" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    AgentId, AgentName, LoginUserName, Mobile, Email, RealName, IdCard, Qq, Address,
+    ProfitRate, Status, IsvId, Pid, AgentLevel, AllowAddSubAgent, AllowAddMch, Remark,
+    CreateTime, UpdateTime
+  </sql>
+  <select id="selectByExample" parameterType="org.xxpay.core.entity.AgentInfoExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from t_agent_info
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+    <if test="limit != null">
+      <if test="offset != null">
+        limit ${offset}, ${limit}
+      </if>
+      <if test="offset == null">
+        limit ${limit}
+      </if>
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_agent_info
+    where AgentId = #{agentId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from t_agent_info
+    where AgentId = #{agentId,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="org.xxpay.core.entity.AgentInfoExample">
+    delete from t_agent_info
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="org.xxpay.core.entity.AgentInfo">
+    insert into t_agent_info (AgentId, AgentName, LoginUserName,
+      Mobile, Email, RealName,
+      IdCard, Qq, Address,
+      ProfitRate, Status, IsvId,
+      Pid, AgentLevel, AllowAddSubAgent,
+      AllowAddMch, Remark, CreateTime,
+      UpdateTime)
+    values (#{agentId,jdbcType=BIGINT}, #{agentName,jdbcType=VARCHAR}, #{loginUserName,jdbcType=VARCHAR},
+      #{mobile,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{realName,jdbcType=VARCHAR},
+      #{idCard,jdbcType=VARCHAR}, #{qq,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR},
+      #{profitRate,jdbcType=DECIMAL}, #{status,jdbcType=TINYINT}, #{isvId,jdbcType=BIGINT},
+      #{pid,jdbcType=BIGINT}, #{agentLevel,jdbcType=INTEGER}, #{allowAddSubAgent,jdbcType=TINYINT},
+      #{allowAddMch,jdbcType=TINYINT}, #{remark,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
+      #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="org.xxpay.core.entity.AgentInfo">
+    <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="agentId">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into t_agent_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="agentId != null">
+        AgentId,
+      </if>
+      <if test="agentName != null">
+        AgentName,
+      </if>
+      <if test="loginUserName != null">
+        LoginUserName,
+      </if>
+      <if test="mobile != null">
+        Mobile,
+      </if>
+      <if test="email != null">
+        Email,
+      </if>
+      <if test="realName != null">
+        RealName,
+      </if>
+      <if test="idCard != null">
+        IdCard,
+      </if>
+      <if test="qq != null">
+        Qq,
+      </if>
+      <if test="address != null">
+        Address,
+      </if>
+      <if test="profitRate != null">
+        ProfitRate,
+      </if>
+      <if test="status != null">
+        Status,
+      </if>
+      <if test="isvId != null">
+        IsvId,
+      </if>
+      <if test="pid != null">
+        Pid,
+      </if>
+      <if test="agentLevel != null">
+        AgentLevel,
+      </if>
+      <if test="allowAddSubAgent != null">
+        AllowAddSubAgent,
+      </if>
+      <if test="allowAddMch != null">
+        AllowAddMch,
+      </if>
+      <if test="remark != null">
+        Remark,
+      </if>
+      <if test="createTime != null">
+        CreateTime,
+      </if>
+      <if test="updateTime != null">
+        UpdateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="agentId != null">
+        #{agentId,jdbcType=BIGINT},
+      </if>
+      <if test="agentName != null">
+        #{agentName,jdbcType=VARCHAR},
+      </if>
+      <if test="loginUserName != null">
+        #{loginUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null">
+        #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="realName != null">
+        #{realName,jdbcType=VARCHAR},
+      </if>
+      <if test="idCard != null">
+        #{idCard,jdbcType=VARCHAR},
+      </if>
+      <if test="qq != null">
+        #{qq,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="profitRate != null">
+        #{profitRate,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="isvId != null">
+        #{isvId,jdbcType=BIGINT},
+      </if>
+      <if test="pid != null">
+        #{pid,jdbcType=BIGINT},
+      </if>
+      <if test="agentLevel != null">
+        #{agentLevel,jdbcType=INTEGER},
+      </if>
+      <if test="allowAddSubAgent != null">
+        #{allowAddSubAgent,jdbcType=TINYINT},
+      </if>
+      <if test="allowAddMch != null">
+        #{allowAddMch,jdbcType=TINYINT},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="org.xxpay.core.entity.AgentInfoExample" resultType="java.lang.Long">
+    select count(*) from t_agent_info
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update t_agent_info
+    <set>
+      <if test="record.agentId != null">
+        AgentId = #{record.agentId,jdbcType=BIGINT},
+      </if>
+      <if test="record.agentName != null">
+        AgentName = #{record.agentName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.loginUserName != null">
+        LoginUserName = #{record.loginUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mobile != null">
+        Mobile = #{record.mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="record.email != null">
+        Email = #{record.email,jdbcType=VARCHAR},
+      </if>
+      <if test="record.realName != null">
+        RealName = #{record.realName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.idCard != null">
+        IdCard = #{record.idCard,jdbcType=VARCHAR},
+      </if>
+      <if test="record.qq != null">
+        Qq = #{record.qq,jdbcType=VARCHAR},
+      </if>
+      <if test="record.address != null">
+        Address = #{record.address,jdbcType=VARCHAR},
+      </if>
+      <if test="record.profitRate != null">
+        ProfitRate = #{record.profitRate,jdbcType=DECIMAL},
+      </if>
+      <if test="record.status != null">
+        Status = #{record.status,jdbcType=TINYINT},
+      </if>
+      <if test="record.isvId != null">
+        IsvId = #{record.isvId,jdbcType=BIGINT},
+      </if>
+      <if test="record.pid != null">
+        Pid = #{record.pid,jdbcType=BIGINT},
+      </if>
+      <if test="record.agentLevel != null">
+        AgentLevel = #{record.agentLevel,jdbcType=INTEGER},
+      </if>
+      <if test="record.allowAddSubAgent != null">
+        AllowAddSubAgent = #{record.allowAddSubAgent,jdbcType=TINYINT},
+      </if>
+      <if test="record.allowAddMch != null">
+        AllowAddMch = #{record.allowAddMch,jdbcType=TINYINT},
+      </if>
+      <if test="record.remark != null">
+        Remark = #{record.remark,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createTime != null">
+        CreateTime = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateTime != null">
+        UpdateTime = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update t_agent_info
+    set AgentId = #{record.agentId,jdbcType=BIGINT},
+    AgentName = #{record.agentName,jdbcType=VARCHAR},
+    LoginUserName = #{record.loginUserName,jdbcType=VARCHAR},
+    Mobile = #{record.mobile,jdbcType=VARCHAR},
+    Email = #{record.email,jdbcType=VARCHAR},
+    RealName = #{record.realName,jdbcType=VARCHAR},
+    IdCard = #{record.idCard,jdbcType=VARCHAR},
+    Qq = #{record.qq,jdbcType=VARCHAR},
+    Address = #{record.address,jdbcType=VARCHAR},
+    ProfitRate = #{record.profitRate,jdbcType=DECIMAL},
+    Status = #{record.status,jdbcType=TINYINT},
+    IsvId = #{record.isvId,jdbcType=BIGINT},
+    Pid = #{record.pid,jdbcType=BIGINT},
+    AgentLevel = #{record.agentLevel,jdbcType=INTEGER},
+    AllowAddSubAgent = #{record.allowAddSubAgent,jdbcType=TINYINT},
+    AllowAddMch = #{record.allowAddMch,jdbcType=TINYINT},
+    Remark = #{record.remark,jdbcType=VARCHAR},
+    CreateTime = #{record.createTime,jdbcType=TIMESTAMP},
+    UpdateTime = #{record.updateTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="org.xxpay.core.entity.AgentInfo">
+    update t_agent_info
+    <set>
+      <if test="agentName != null">
+        AgentName = #{agentName,jdbcType=VARCHAR},
+      </if>
+      <if test="loginUserName != null">
+        LoginUserName = #{loginUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null">
+        Mobile = #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        Email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="realName != null">
+        RealName = #{realName,jdbcType=VARCHAR},
+      </if>
+      <if test="idCard != null">
+        IdCard = #{idCard,jdbcType=VARCHAR},
+      </if>
+      <if test="qq != null">
+        Qq = #{qq,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        Address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="profitRate != null">
+        ProfitRate = #{profitRate,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null">
+        Status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="isvId != null">
+        IsvId = #{isvId,jdbcType=BIGINT},
+      </if>
+      <if test="pid != null">
+        Pid = #{pid,jdbcType=BIGINT},
+      </if>
+      <if test="agentLevel != null">
+        AgentLevel = #{agentLevel,jdbcType=INTEGER},
+      </if>
+      <if test="allowAddSubAgent != null">
+        AllowAddSubAgent = #{allowAddSubAgent,jdbcType=TINYINT},
+      </if>
+      <if test="allowAddMch != null">
+        AllowAddMch = #{allowAddMch,jdbcType=TINYINT},
+      </if>
+      <if test="remark != null">
+        Remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        CreateTime = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        UpdateTime = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where AgentId = #{agentId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.xxpay.core.entity.AgentInfo">
+    update t_agent_info
+    set AgentName = #{agentName,jdbcType=VARCHAR},
+      LoginUserName = #{loginUserName,jdbcType=VARCHAR},
+      Mobile = #{mobile,jdbcType=VARCHAR},
+      Email = #{email,jdbcType=VARCHAR},
+      RealName = #{realName,jdbcType=VARCHAR},
+      IdCard = #{idCard,jdbcType=VARCHAR},
+      Qq = #{qq,jdbcType=VARCHAR},
+      Address = #{address,jdbcType=VARCHAR},
+      ProfitRate = #{profitRate,jdbcType=DECIMAL},
+      Status = #{status,jdbcType=TINYINT},
+      IsvId = #{isvId,jdbcType=BIGINT},
+      Pid = #{pid,jdbcType=BIGINT},
+      AgentLevel = #{agentLevel,jdbcType=INTEGER},
+      AllowAddSubAgent = #{allowAddSubAgent,jdbcType=TINYINT},
+      AllowAddMch = #{allowAddMch,jdbcType=TINYINT},
+      Remark = #{remark,jdbcType=VARCHAR},
+      CreateTime = #{createTime,jdbcType=TIMESTAMP},
+      UpdateTime = #{updateTime,jdbcType=TIMESTAMP}
+    where AgentId = #{agentId,jdbcType=BIGINT}
+  </update>
+
+
+  <!-- 统计代理商信息 -->
+  <select id="count4Agent" resultType="java.util.Map" parameterType="java.util.Map" >
+    SELECT COUNT(1) AS totalCount FROM t_agent_info
+  </select>
+
+  <!-- 递归查询当前代理商ID 和 所有子代理商ID 集合 -->
+  <sql id="queryAllSubAgentIdsSQL">
+	select t3.AgentId from (
+	select t1.AgentId, if(find_in_set(pid, @pids) > 0, @pids := concat(@pids, ',', AgentId), 0) as ischild
+ 	from ( select AgentId, pid from t_agent_info t order by pid, AgentId ) t1, (select @pids := #{currentAgentId}) t2
+	) t3 where ischild != 0 or AgentId = #{currentAgentId}
+  </sql>
+
+  <!-- 递归查询当前代理商ID 和 所有子代理商ID 集合的 基础信息 -->
+  <select id="queryAllSubAgentBaseInfo" parameterType="Map" resultMap="BaseResultMap">
+    select AgentId, AgentName, Pid, AgentLevel from t_agent_info where AgentId in
+    (
+        <include refid="queryAllSubAgentIdsSQL" />
+    )
+  </select>
+
+  <!-- 递归查询当前代理商ID 和 所有子代理商ID -->
+  <select id="queryAllSubAgentIds" parameterType="Map" resultType="java.lang.Long">
+    <include refid="queryAllSubAgentIdsSQL" />
+  </select>
+
+
+  <!-- 查询下级代理商 的最小线下充值费率 -->
+  <select id="selectChildrenAgentsMinOffRechargeRate" resultType="java.math.BigDecimal" parameterType="java.lang.Long" >
+    select min(ag.offRechargeRate) from t_agent_info ag where ag.Pid = #{currentAgentId}
+  </select>
+
+  <!-- 通过proc 递归查询所有上级代理商 分佣比例，直到一级代理商  -->
+  <select id="selectAgentsProfitRate" parameterType="java.lang.Long" resultMap="BaseResultMap" >
+    call proc_s_agents_profit_rate(#{agentId,jdbcType=BIGINT})
+  </select>
+
+  <!-- 查询下级最高分佣比例  -->
+  <select id="selectSubAgentsMaxProfitRate" parameterType="java.lang.Long" resultType="java.math.BigDecimal" >
+    select max(ProfitRate) from t_agent_info where pid = #{agentId}
+  </select>
+
+</mapper>

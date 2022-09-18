@@ -1,0 +1,217 @@
+<style>
+    .layui-input-inline{margin-top:10px;}
+    .layui-btn{margin-left: 10%}
+</style>
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>商户会员</cite></a>
+        <a><cite>商户会员列表</cite></a>
+        <a><cite>会员储值记录</cite></a>
+    </span>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">会员储值记录</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-row">
+                    <form action="" id="exportForm" method="post">
+                        <div class="layui-form" style="float:right; margin-bottom: 10px;">
+                            <div id="timeDiv" class="layui-form-item" style="margin:0;">
+                                <div class="layui-input-inline">
+                                    <input type="text" name="memberNo" id="memberNo" placeholder="会员卡号" autocomplete="off" class="layui-input">
+                                </div>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="bizOrderId" id="bizOrderId" placeholder="订单号" autocomplete="off" class="layui-input">
+                                </div>
+                                <div class="layui-input-inline">
+                                    <select name="bizType" id="bizType" lay-search="">
+                                        <option value="">交易类型</option>
+                                        <option value="1">充值</option>
+                                        <option value="2">消费</option>
+                                        <option value="3">退款</option>
+                                        <option value="4">导入</option>
+                                        <option value="5">赠送</option>
+                                    </select>
+                                </div>
+                                <div class="layui-input-inline">
+                                    <select name="payType" id="payType" lay-search="">
+                                        <option value="">支付方式</option>
+                                        <option value="1">微信</option>
+                                        <option value="2">支付宝</option>
+                                        <option value="3">储值卡</option>
+                                        <option value="4">导入</option>
+                                    </select>
+                                </div>
+                                <div class="layui-input-inline">
+                                    <select name="pageOrigin" id="pageOrigin" lay-search="">
+                                        <option value="">来源</option>
+                                        <option value="1">PC</option>
+                                        <option value="2">android</option>
+                                        <option value="3">IOS</option>
+                                        <option value="4">H5</option>
+                                    </select>
+                                </div>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="operatorId" id="operatorId" placeholder="操作员ID" autocomplete="off" class="layui-input">
+                                </div>
+                                <div class="layui-input-inline">
+                                    <button id="search" class="layui-btn" data-type="reload">搜索</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-row">
+                    <div class="layui-tab-content">
+                        <table id="balanceHistory" lay-filter="balanceHistory"></table>
+                    </div>
+                </div>
+            <div class="layui-form-item">
+                <div class="layui-input-inline">
+                    <a class="layui-btn" lay-href="/account/member/">返回</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+     var payType = function(d){
+         if(d.payType == 1) {
+             return '微信';
+         }else if(d.payType == 2) {
+             return '支付宝';
+         }else if(d.payType == 3) {
+             return '储值卡';
+         }else if(d.payType == 4) {
+             return '导入';
+         }
+         return "";
+     };
+
+     var bizType = function(d){
+         if(d.bizType == 1) {
+             return '充值';
+         }else if(d.bizType == 2) {
+             return '消费';
+         }else if(d.bizType == 3) {
+             return '退款';
+         }else if(d.bizType == 4) {
+             return '导入';
+         }else if(d.bizType == 5) {
+             return '赠送';
+         }else {
+             return '其他';
+         }
+     };
+
+     var pageOrigin = function(d){
+         if(d.pageOrigin == 1) {
+             return 'PC';
+         }else if(d.pageOrigin == 2) {
+             return 'ANDROID';
+         }else if(d.pageOrigin == 3) {
+             return 'IOS';
+         }else if(d.pageOrigin == 4) {
+             return 'H5';
+         }else {
+             return '其他';
+         }
+     };
+
+	 layui.config({
+	    base: '/x_mch/src/lib/extend/',
+	 });
+     layui.use(['table','util','admin'], function(){
+        var table = layui.table
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,element = layui.element
+        ,form = layui.form;
+
+         element.render('breadcrumb', 'breadcrumb');
+         var memberId = layui.router().search.memberId;
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        table.render({
+            elem: '#balanceHistory'
+            ,id: "tableReload"
+            ,url: layui.setter.baseUrl + '/member_balance/history_list'
+            ,where:{
+                memberId: memberId
+            }
+            ,cols: [[
+                {field: 'balanceHistoryId', title: '账户流水ID'}
+                ,{field: 'memberId', title: '会员ID'}
+                ,{field: 'memberNo', title: '会员卡号'}
+                ,{field: 'bizOrderId', title: '平台订单号'}
+                ,{field: 'changeAmount',title: '变动金额', templet: '<div>{{d.changeAmount/100}}</div>'}
+                ,{field: 'balance',title: '变动前账户余额', templet: '<div>{{d.balance/100}}</div>'}
+                ,{field: 'bizType', title: '交易类型', templet: bizType}
+                ,{field: 'payType', title: '支付方式', templet: payType}
+                ,{field: 'pageOrigin',title: '来源', templet: pageOrigin}
+                ,{field: 'operatorId',title: '操作员ID'}
+                ,{field: 'operatorName',title: '操作员名称'}
+                ,{field: 'createTime',  title: '时间', width: 180, templet: '<div>{{ layui.util.toDateString(d.createTime) }}</div>' }
+            ]]
+            ,page: true
+            ,skin: 'line'
+        });
+
+         // 搜索
+         var $ = layui.$, active = {
+             reload: function(){
+                 var memberNo = $('#memberNo').val().trim();
+                 var bizOrderId = $('#bizOrderId').val();
+                 var bizType = $('#bizType').val();
+                 var payType = $('#payType').val();
+                 var pageOrigin = $('#pageOrigin').val();
+                 var operatorId = $('#operatorId').val();
+                 //执行重载
+                 table.reload('tableReload', {
+                     page: {
+                         curr: 1 //重新从第 1 页开始
+                     }
+                     ,where: {
+                         memberNo: memberNo,
+                         bizOrderId: bizOrderId,
+                         bizType: bizType,
+                         payType: payType,
+                         pageOrigin: pageOrigin,
+                         operatorId: operatorId
+                     }
+                 });
+             }
+         };
+         $('#search').on('click', function() {
+             var type = $(this).data('type');
+             active[type] ? active[type].call(this) : '';
+             return false;
+         });
+
+         //监听工具条
+         table.on('tool(memberList)', function(obj){
+             var data = obj.data;
+             var layEvent = obj.event;
+
+             if(layEvent === 'edit'){ //编辑
+                 location.hash="/account/member/update/memberId=" + data.memberId;
+             } else if(obj.event === 'detail'){
+                 location.hash="/account/member/detail/memberId=" + data.memberId;
+             } else if (obj.event === 'balanceHistory'){
+                 location.hash="/account/member/balance_history/memberId=" + data.memberId;
+             } else if (obj.event === 'pointsHistory'){
+                 location.hash="/account/member/points_history/memberId=" + data.memberId;
+             }
+
+         });
+
+         // 渲染表单
+         form.render();
+        
+     })
+</script>

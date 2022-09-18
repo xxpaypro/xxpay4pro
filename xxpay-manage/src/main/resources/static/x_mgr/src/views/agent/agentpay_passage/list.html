@@ -1,0 +1,84 @@
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a><cite>代理商代付通道管理</cite></a>
+    </span>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">代付通道</li>
+            </ul>
+            <div class="layui-tab-content">
+                <style>
+                    .center {
+                        width: 80%;
+                    }
+                </style>
+                <table class="layui-hide center" id="cList"></table>
+            </div>
+        </div>
+    </div>
+</div>
+    <script>
+        layui.use(['table','util'], function(){
+            var $ = layui.$
+            ,admin = layui.admin
+            ,table = layui.table
+            ,element = layui.element
+            ,form = layui.form;
+
+            element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+            var router = layui.router();
+            var agentId = router.search.agentId;
+            
+             //标题内容模板
+            var tplTitle = function(d){
+                return '<a class="layui-btn layui-btn-sm" lay-href="agent/agentpay_passage/config/agentId='+ agentId +'/agentpayPassageId='+ d.ps.passageId +'">配置</a>'
+            };
+
+            var tplStatus = function(d){
+                if(d.status == 0) {
+                    return '<span class="layui-badge layui-bg-gray">关闭</span>';
+                }else if(d.status == 1) {
+                    return '<span class="layui-badge">开启</span>';
+                }
+                return "未设置";
+            };
+
+            var tplFeeEvery = function(d){
+                if(d.fee == null) {return "-"; }
+                return "<span style='color: blue'>"+ d.fee/100 + "元/笔<span>";
+            };
+
+            var tplIsDefault = function(d){
+                if(d.isDefault == 1) {
+                    return '<span class="layui-badge">是</span>';
+                }else if(d.isDefault == 0) {
+                    return '<span class="layui-badge layui-bg-gray">否</span>';
+                }
+
+                return "-";
+            };
+
+
+            table.render({
+                elem: '#cList'
+                ,url: layui.setter.baseUrl + '/agent_agentpay_passage/list'
+                ,where: {agentId: agentId }
+                ,cols: [[
+                     {title: '通道ID', templet: "<span>{{d.ps.passageId}}</span>"}
+                    ,{title: '通道名称', templet: "<span>{{d.ps.passageName}}</span>"}
+                    ,{title: '代付费用', templet: tplFeeEvery}
+                    ,{title: '是否默认', templet: tplIsDefault}
+                    ,{title: '状态',templet: tplStatus }
+                    ,{width: 200, title: '操作', templet: tplTitle }
+                ]]
+                ,page: false
+                ,skin: 'line'
+            });
+        });
+      
+    </script>

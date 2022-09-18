@@ -1,0 +1,132 @@
+<div class=" layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>代理商管理</cite></a>
+        <a><cite>已签约代理商</cite></a>
+        <a><cite>分佣设置</cite></a>
+    </div>
+</div>
+
+<style>
+    .xxpayPopupDiv .layui-form-label {
+        width:120px !important;
+        margin-left:1%;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <div class="layui-tab-content">
+                <form class="layui-form center">
+                    <input type="hidden" name="agentId">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">分佣占比(%)</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="profitRate" name="profitRate"  placeholder="请输入分佣占比" lay-verify="required" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item parentTextDiv layui-hide">
+                        <label class="layui-form-label"></label>
+                        <span style="color:red">请设置当前代理分佣比例， 不能大于上级代理占比（<span class="profitSpan"></span>%）</span> <br>
+                    </div>
+                    <div class="layui-form-item maxSubsTextDiv layui-hide">
+                        <label class="layui-form-label"></label>
+                        <span style="color:red">请设置当前代理分佣比例， 不能小于下级代理占比（<span class="profitSpan"></span>%）</span>
+                    </div>
+                    <button type="button" class="layui-hide xxpayYesBtn" lay-submit="" lay-filter="update">保存</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    layui.use(['form','table','util','admin','view'],function(){
+        var form = layui.form
+                , $ = layui.$
+                , admin = layui.admin
+                , layer = layui.layer
+                , element = layui.element
+                , view = layui.view
+                , table = layui.table;
+
+        element.render('breadcrumb', 'breadcrumb'); //渲染导航信息
+
+        var agentId = view.getOpenParams('agentId');
+        $('input[name="agentId"]').val(agentId);
+
+        var profitSetInfo = null;
+
+        admin.req({
+            type: 'post',
+            url: layui.setter.baseUrl + '/agent/getProfitSetInfo',
+            data: {agentId:agentId},
+            error: function(err){layer.alert(err);},
+            success: function(res){
+                if(res.code == 0){
+
+                    profitSetInfo = res.data;
+                    $('#profitRate').val(profitSetInfo.currentProfit);
+
+                    if(profitSetInfo.parentProfit){
+                        $(".parentTextDiv .profitSpan").text(profitSetInfo.parentProfit);
+                        $(".parentTextDiv").removeClass("layui-hide");
+                    }
+                    if(profitSetInfo.maxSubsProfit){
+                        $(".maxSubsTextDiv .profitSpan").text(profitSetInfo.maxSubsProfit);
+                        $(".maxSubsTextDiv").removeClass("layui-hide");
+                    }
+
+                    form.render();
+                }
+            }
+        });
+
+        form.on('submit(update)', function(data){
+
+            if(!profitSetInfo){
+                layer.alert("请稍后再试");
+                return false;
+            }
+
+            var profitRate = data.field.profitRate;
+
+            if(profitRate < 0 || profitRate > 100){
+                layer.alert("设置值有误！");
+                return false;
+            }
+
+            // 设置规则： 下级最高 ≤ X ≤ 上级分佣比例
+
+            //包含上级代理商费率
+            if(profitSetInfo.parentProfit && data.field.profitRate > profitSetInfo.parentProfit ){
+                layer.alert("设置值不得高于（"+profitSetInfo.parentProfit+"%）！");
+                return false;
+            }
+
+            //包含下级最高费率
+            if(profitSetInfo.maxSubsProfit && data.field.profitRate < profitSetInfo.maxSubsProfit ){
+                layer.alert("设置值不得低于（"+profitSetInfo.maxSubsProfit+"%）！");
+                return false;
+            }
+
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/agent/update',
+                data: data.field,
+                error: function(err){layer.alert(err.msg,{title:"请求失败"})},
+                success: function(res){
+                    if(res.code == 0){
+                        layer.alert(res.msg, {title: '保存成功'},function(index){
+                            layer.closeAll(); //关闭所有弹层
+                            layui.table.reload('tableReload', {page: {curr: 1}}); //调用业务弹层外表格重新加载
+                        });
+                    }
+                }
+            });
+            return false;
+        });
+
+    });
+
+</script>

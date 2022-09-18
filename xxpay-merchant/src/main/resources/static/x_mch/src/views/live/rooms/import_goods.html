@@ -1,0 +1,100 @@
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <div class="layui-row">
+                <div class="layuiAdmin-btns" style="margin-bottom: 10px;">
+                    <a class="layui-btn" data-type="all" data-events="addSubGoods">添加商品</a>
+                </div>
+            </div>
+                <table id="goodsList" lay-filter="goodsList"></table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    var tplStatus = function(d){
+        if(d.status == 0) {
+            return '<span class="layui-badge layui-bg-red">下架</span>';
+        }else if(d.status == 1) {
+            return '<span class="layui-badge layui-bg-green">上架</span>';
+        }else if(d.status == 2) {
+            return '<span class="layui-badge layui-bg-orange">售罄</span>';
+        }
+    };
+   
+    layui.use(['form','admin', 'table', 'view'], function(){
+        var form = layui.form
+        ,$ = layui.$
+        ,table = layui.table
+        ,admin = layui.admin
+        ,view = layui.view
+        ,element = layui.element;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        var roomId = view.getOpenParams('roomId');
+        var authFrom = view.getOpenParams('authFrom');
+
+        table.render({
+            elem: '#goodsList'
+            ,id: "tableReload2"
+            ,url: layui.setter.baseUrl + '/wx_mini/getapproved'
+            ,where: {
+                authFrom: authFrom,
+                status: 2
+            }
+            ,cols: [[
+                {type: 'checkbox', fixed: 'left'}
+                ,{field: 'goodsId', title: '商品ID'}
+                ,{field: 'name',title: '商品名称'}
+            ]]
+            ,page: true
+            ,skin: 'line'
+        });
+
+        // 事件处理
+        var events = {
+            addSubGoods: function(othis, type){
+                var checkStatus = table.checkStatus("tableReload2")
+                    ,data = checkStatus.data; //获得选中的数据
+                if(data.length === 0) return layer.msg('请选择数据');
+                var subGoodsId = "";
+                $.each(data, function(i, n){
+                    subGoodsId = subGoodsId + "," + n.goodsId;
+                });
+                if(subGoodsId != "") {
+                    subGoodsId = subGoodsId.substring(1);
+                }
+
+                var authFrom = $("#searchAuthFrom").val();
+                admin.req({
+                    type: 'get',
+                    url: layui.setter.baseUrl + '/wx_mini/room_addgoods',
+                    data: {
+                        ids: subGoodsId,
+                        authFrom: authFrom,
+                        roomId: roomId
+                    },
+                    success: function(res){
+                        if(res.code == 0) {
+                            layer.msg('导入成功', {
+                                icon: 1
+                            });
+                        }
+                    }
+                });
+
+            }
+        };
+
+        $('.layuiAdmin-btns .layui-btn').on('click', function(){
+            var othis = $(this)
+                ,thisEvent = othis.data('events')
+                ,type = othis.data('type');
+            events[thisEvent] && events[thisEvent].call(this, othis, type);
+        });
+
+    });
+
+</script>

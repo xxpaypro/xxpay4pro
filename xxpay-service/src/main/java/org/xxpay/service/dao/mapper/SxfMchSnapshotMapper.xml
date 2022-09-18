@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.xxpay.service.dao.mapper.SxfMchSnapshotMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="org.xxpay.core.entity.SxfMchSnapshot">
+        <id column="ApplyNo" property="ApplyNo" />
+        <result column="MchId" property="mchId" />
+        <result column="IsvId" property="isvId" />
+        <result column="MecDisNm" property="mecDisNm" />
+        <result column="MblNo" property="mblNo" />
+        <result column="CsTelNo" property="csTelNo" />
+        <result column="IdentityName" property="identityName" />
+        <result column="IdentityTyp" property="identityTyp" />
+        <result column="IdentityNo" property="identityNo" />
+        <result column="LegalPersonidPositivePic" property="legalPersonidPositivePic" />
+        <result column="LegalPersonidOppositePic" property="legalPersonidOppositePic" />
+        <result column="OperationalType" property="operationalType" />
+        <result column="HaveLicenseNo" property="haveLicenseNo" />
+        <result column="MecTypeFlag" property="mecTypeFlag" />
+        <result column="ParentMno" property="parentMno" />
+        <result column="QrcodeList" property="qrcodeList" />
+        <result column="OnlineType" property="onlineType" />
+        <result column="OnlineName" property="onlineName" />
+        <result column="OnlineTypeInfo" property="onlineTypeInfo" />
+        <result column="CprRegNmCn" property="cprRegNmCn" />
+        <result column="RegistCode" property="registCode" />
+        <result column="LicenseMatch" property="licenseMatch" />
+        <result column="CprRegAddr" property="cprRegAddr" />
+        <result column="StorePic" property="storePic" />
+        <result column="InsideScenePic" property="insideScenePic" />
+        <result column="RegProvCd" property="regProvCd" />
+        <result column="RegCityCd" property="regCityCd" />
+        <result column="RegDistCd" property="regDistCd" />
+        <result column="MccCd" property="mccCd" />
+        <result column="ActTyp" property="actTyp" />
+        <result column="ActNm" property="actNm" />
+        <result column="DepoBank" property="depoBank" />
+        <result column="BankCardPositivePic" property="bankCardPositivePic" />
+        <result column="DepoProvCd" property="depoProvCd" />
+        <result column="DepoCityCd" property="depoCityCd" />
+        <result column="LbnkNo" property="lbnkNo" />
+        <result column="ActNo" property="actNo" />
+        <result column="StmManIdNo" property="stmManIdNo" />
+        <result column="SettlePersonIdcardPositive" property="settlePersonIdcardPositive" />
+        <result column="SettlePersonIdcardOpposite" property="settlePersonIdcardOpposite" />
+        <result column="LicensePic" property="licensePic" />
+        <result column="TaxRegistLicensePic" property="taxRegistLicensePic" />
+        <result column="OrgCodePic" property="orgCodePic" />
+        <result column="OpeningAccountLicensePic" property="openingAccountLicensePic" />
+        <result column="IcpLicence" property="icpLicence" />
+        <result column="LetterOfAuthPic" property="letterOfAuthPic" />
+        <result column="ApplyStatus" property="applyStatus" />
+        <result column="OtherMaterialPictureOne" property="otherMaterialPictureOne" />
+        <result column="OtherMaterialPictureTwo" property="otherMaterialPictureTwo" />
+        <result column="ApplicationId" property="applicationId" />
+        <result column="AuditInfo" property="auditInfo" />
+    </resultMap>
+
+</mapper>

@@ -1,0 +1,578 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.xxpay.service.dao.mapper.OrderProfitDetailMapper">
+  <resultMap id="BaseResultMap" type="org.xxpay.core.entity.OrderProfitDetail">
+    <id column="Id" jdbcType="BIGINT" property="id" />
+    <result column="BizType" jdbcType="TINYINT" property="bizType" />
+    <result column="BizOrderId" jdbcType="VARCHAR" property="bizOrderId" />
+    <result column="BizOrderPayAmount" jdbcType="BIGINT" property="bizOrderPayAmount" />
+    <result column="BizOrderCreateDate" jdbcType="TIMESTAMP" property="bizOrderCreateDate" />
+    <result column="ProductId" jdbcType="INTEGER" property="productId" />
+    <result column="ReferInfoType" jdbcType="TINYINT" property="referInfoType" />
+    <result column="ReferInfoId" jdbcType="BIGINT" property="referInfoId" />
+    <result column="IsvId" jdbcType="BIGINT" property="isvId" />
+    <result column="IncomeAmount" jdbcType="BIGINT" property="incomeAmount" />
+    <result column="FeeAmount" jdbcType="BIGINT" property="feeAmount" />
+    <result column="FeeRateSnapshot" jdbcType="VARCHAR" property="feeRateSnapshot" />
+    <result column="SettTaskStatus" jdbcType="TINYINT" property="settTaskStatus" />
+    <result column="SettTaskId" jdbcType="BIGINT" property="settTaskId" />
+    <result column="SettTime" jdbcType="TIMESTAMP" property="settTime" />
+    <result column="CreatedTime" jdbcType="TIMESTAMP" property="createdTime" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    Id, BizType, BizOrderId, BizOrderPayAmount, BizOrderCreateDate, ProductId, ReferInfoType,
+    ReferInfoId, IsvId, IncomeAmount, FeeAmount, FeeRateSnapshot, SettTaskStatus, SettTaskId,
+    SettTime, CreatedTime
+  </sql>
+  <select id="selectByExample" parameterType="org.xxpay.core.entity.OrderProfitDetailExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from t_order_profit_detail
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+    <if test="limit != null">
+      <if test="offset != null">
+        limit ${offset}, ${limit}
+      </if>
+      <if test="offset == null">
+        limit ${limit}
+      </if>
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_order_profit_detail
+    where Id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from t_order_profit_detail
+    where Id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="org.xxpay.core.entity.OrderProfitDetailExample">
+    delete from t_order_profit_detail
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="org.xxpay.core.entity.OrderProfitDetail">
+    insert into t_order_profit_detail (Id, BizType, BizOrderId,
+      BizOrderPayAmount, BizOrderCreateDate,
+      ProductId, ReferInfoType, ReferInfoId,
+      IsvId, IncomeAmount, FeeAmount,
+      FeeRateSnapshot, SettTaskStatus, SettTaskId,
+      SettTime, CreatedTime)
+    values (#{id,jdbcType=BIGINT}, #{bizType,jdbcType=TINYINT}, #{bizOrderId,jdbcType=VARCHAR},
+      #{bizOrderPayAmount,jdbcType=BIGINT}, #{bizOrderCreateDate,jdbcType=TIMESTAMP},
+      #{productId,jdbcType=INTEGER}, #{referInfoType,jdbcType=TINYINT}, #{referInfoId,jdbcType=BIGINT},
+      #{isvId,jdbcType=BIGINT}, #{incomeAmount,jdbcType=BIGINT}, #{feeAmount,jdbcType=BIGINT},
+      #{feeRateSnapshot,jdbcType=VARCHAR}, #{settTaskStatus,jdbcType=TINYINT}, #{settTaskId,jdbcType=BIGINT},
+      #{settTime,jdbcType=TIMESTAMP}, #{createdTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="org.xxpay.core.entity.OrderProfitDetail">
+    insert into t_order_profit_detail
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        Id,
+      </if>
+      <if test="bizType != null">
+        BizType,
+      </if>
+      <if test="bizOrderId != null">
+        BizOrderId,
+      </if>
+      <if test="bizOrderPayAmount != null">
+        BizOrderPayAmount,
+      </if>
+      <if test="bizOrderCreateDate != null">
+        BizOrderCreateDate,
+      </if>
+      <if test="productId != null">
+        ProductId,
+      </if>
+      <if test="referInfoType != null">
+        ReferInfoType,
+      </if>
+      <if test="referInfoId != null">
+        ReferInfoId,
+      </if>
+      <if test="isvId != null">
+        IsvId,
+      </if>
+      <if test="incomeAmount != null">
+        IncomeAmount,
+      </if>
+      <if test="feeAmount != null">
+        FeeAmount,
+      </if>
+      <if test="feeRateSnapshot != null">
+        FeeRateSnapshot,
+      </if>
+      <if test="settTaskStatus != null">
+        SettTaskStatus,
+      </if>
+      <if test="settTaskId != null">
+        SettTaskId,
+      </if>
+      <if test="settTime != null">
+        SettTime,
+      </if>
+      <if test="createdTime != null">
+        CreatedTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="bizType != null">
+        #{bizType,jdbcType=TINYINT},
+      </if>
+      <if test="bizOrderId != null">
+        #{bizOrderId,jdbcType=VARCHAR},
+      </if>
+      <if test="bizOrderPayAmount != null">
+        #{bizOrderPayAmount,jdbcType=BIGINT},
+      </if>
+      <if test="bizOrderCreateDate != null">
+        #{bizOrderCreateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="productId != null">
+        #{productId,jdbcType=INTEGER},
+      </if>
+      <if test="referInfoType != null">
+        #{referInfoType,jdbcType=TINYINT},
+      </if>
+      <if test="referInfoId != null">
+        #{referInfoId,jdbcType=BIGINT},
+      </if>
+      <if test="isvId != null">
+        #{isvId,jdbcType=BIGINT},
+      </if>
+      <if test="incomeAmount != null">
+        #{incomeAmount,jdbcType=BIGINT},
+      </if>
+      <if test="feeAmount != null">
+        #{feeAmount,jdbcType=BIGINT},
+      </if>
+      <if test="feeRateSnapshot != null">
+        #{feeRateSnapshot,jdbcType=VARCHAR},
+      </if>
+      <if test="settTaskStatus != null">
+        #{settTaskStatus,jdbcType=TINYINT},
+      </if>
+      <if test="settTaskId != null">
+        #{settTaskId,jdbcType=BIGINT},
+      </if>
+      <if test="settTime != null">
+        #{settTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="org.xxpay.core.entity.OrderProfitDetailExample" resultType="java.lang.Long">
+    select count(*) from t_order_profit_detail
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update t_order_profit_detail
+    <set>
+      <if test="record.id != null">
+        Id = #{record.id,jdbcType=BIGINT},
+      </if>
+      <if test="record.bizType != null">
+        BizType = #{record.bizType,jdbcType=TINYINT},
+      </if>
+      <if test="record.bizOrderId != null">
+        BizOrderId = #{record.bizOrderId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.bizOrderPayAmount != null">
+        BizOrderPayAmount = #{record.bizOrderPayAmount,jdbcType=BIGINT},
+      </if>
+      <if test="record.bizOrderCreateDate != null">
+        BizOrderCreateDate = #{record.bizOrderCreateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.productId != null">
+        ProductId = #{record.productId,jdbcType=INTEGER},
+      </if>
+      <if test="record.referInfoType != null">
+        ReferInfoType = #{record.referInfoType,jdbcType=TINYINT},
+      </if>
+      <if test="record.referInfoId != null">
+        ReferInfoId = #{record.referInfoId,jdbcType=BIGINT},
+      </if>
+      <if test="record.isvId != null">
+        IsvId = #{record.isvId,jdbcType=BIGINT},
+      </if>
+      <if test="record.incomeAmount != null">
+        IncomeAmount = #{record.incomeAmount,jdbcType=BIGINT},
+      </if>
+      <if test="record.feeAmount != null">
+        FeeAmount = #{record.feeAmount,jdbcType=BIGINT},
+      </if>
+      <if test="record.feeRateSnapshot != null">
+        FeeRateSnapshot = #{record.feeRateSnapshot,jdbcType=VARCHAR},
+      </if>
+      <if test="record.settTaskStatus != null">
+        SettTaskStatus = #{record.settTaskStatus,jdbcType=TINYINT},
+      </if>
+      <if test="record.settTaskId != null">
+        SettTaskId = #{record.settTaskId,jdbcType=BIGINT},
+      </if>
+      <if test="record.settTime != null">
+        SettTime = #{record.settTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.createdTime != null">
+        CreatedTime = #{record.createdTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update t_order_profit_detail
+    set Id = #{record.id,jdbcType=BIGINT},
+    BizType = #{record.bizType,jdbcType=TINYINT},
+    BizOrderId = #{record.bizOrderId,jdbcType=VARCHAR},
+    BizOrderPayAmount = #{record.bizOrderPayAmount,jdbcType=BIGINT},
+    BizOrderCreateDate = #{record.bizOrderCreateDate,jdbcType=TIMESTAMP},
+    ProductId = #{record.productId,jdbcType=INTEGER},
+    ReferInfoType = #{record.referInfoType,jdbcType=TINYINT},
+    ReferInfoId = #{record.referInfoId,jdbcType=BIGINT},
+    IsvId = #{record.isvId,jdbcType=BIGINT},
+    IncomeAmount = #{record.incomeAmount,jdbcType=BIGINT},
+    FeeAmount = #{record.feeAmount,jdbcType=BIGINT},
+    FeeRateSnapshot = #{record.feeRateSnapshot,jdbcType=VARCHAR},
+    SettTaskStatus = #{record.settTaskStatus,jdbcType=TINYINT},
+    SettTaskId = #{record.settTaskId,jdbcType=BIGINT},
+    SettTime = #{record.settTime,jdbcType=TIMESTAMP},
+    CreatedTime = #{record.createdTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="org.xxpay.core.entity.OrderProfitDetail">
+    update t_order_profit_detail
+    <set>
+      <if test="bizType != null">
+        BizType = #{bizType,jdbcType=TINYINT},
+      </if>
+      <if test="bizOrderId != null">
+        BizOrderId = #{bizOrderId,jdbcType=VARCHAR},
+      </if>
+      <if test="bizOrderPayAmount != null">
+        BizOrderPayAmount = #{bizOrderPayAmount,jdbcType=BIGINT},
+      </if>
+      <if test="bizOrderCreateDate != null">
+        BizOrderCreateDate = #{bizOrderCreateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="productId != null">
+        ProductId = #{productId,jdbcType=INTEGER},
+      </if>
+      <if test="referInfoType != null">
+        ReferInfoType = #{referInfoType,jdbcType=TINYINT},
+      </if>
+      <if test="referInfoId != null">
+        ReferInfoId = #{referInfoId,jdbcType=BIGINT},
+      </if>
+      <if test="isvId != null">
+        IsvId = #{isvId,jdbcType=BIGINT},
+      </if>
+      <if test="incomeAmount != null">
+        IncomeAmount = #{incomeAmount,jdbcType=BIGINT},
+      </if>
+      <if test="feeAmount != null">
+        FeeAmount = #{feeAmount,jdbcType=BIGINT},
+      </if>
+      <if test="feeRateSnapshot != null">
+        FeeRateSnapshot = #{feeRateSnapshot,jdbcType=VARCHAR},
+      </if>
+      <if test="settTaskStatus != null">
+        SettTaskStatus = #{settTaskStatus,jdbcType=TINYINT},
+      </if>
+      <if test="settTaskId != null">
+        SettTaskId = #{settTaskId,jdbcType=BIGINT},
+      </if>
+      <if test="settTime != null">
+        SettTime = #{settTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdTime != null">
+        CreatedTime = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where Id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.xxpay.core.entity.OrderProfitDetail">
+    update t_order_profit_detail
+    set BizType = #{bizType,jdbcType=TINYINT},
+      BizOrderId = #{bizOrderId,jdbcType=VARCHAR},
+      BizOrderPayAmount = #{bizOrderPayAmount,jdbcType=BIGINT},
+      BizOrderCreateDate = #{bizOrderCreateDate,jdbcType=TIMESTAMP},
+      ProductId = #{productId,jdbcType=INTEGER},
+      ReferInfoType = #{referInfoType,jdbcType=TINYINT},
+      ReferInfoId = #{referInfoId,jdbcType=BIGINT},
+      IsvId = #{isvId,jdbcType=BIGINT},
+      IncomeAmount = #{incomeAmount,jdbcType=BIGINT},
+      FeeAmount = #{feeAmount,jdbcType=BIGINT},
+      FeeRateSnapshot = #{feeRateSnapshot,jdbcType=VARCHAR},
+      SettTaskStatus = #{settTaskStatus,jdbcType=TINYINT},
+      SettTaskId = #{settTaskId,jdbcType=BIGINT},
+      SettTime = #{settTime,jdbcType=TIMESTAMP},
+      CreatedTime = #{createdTime,jdbcType=TIMESTAMP}
+    where Id = #{id,jdbcType=BIGINT}
+  </update>
+
+
+
+  <!-- 查询所有未结算的 商户/代理商 分润信息  -->
+  <select id="selectMchAndAgentNotSettProfitDetails" resultMap="BaseResultMap" >
+
+    select d.* from t_order_profit_detail d
+    inner join t_agent_info ai on d.ReferInfoId =  ai.AgentId
+    where
+    d.ReferInfoType = '2' and d.SettStatus = 0 <!-- 查询代理商类型  并且未结算状态 -->
+    and ai.`Status` = 1  <!--  判断代理商状态-->
+    <![CDATA[ and  datediff(now(), CreatedTime)  >=   ]]> <!-- 当前时间减去下单时间的天数  需要大于等于结算周期  -->
+    CASE
+    CASE ai.SettConfigMode    <!-- 判断是否继承系统设置 -->
+    WHEN '1' THEN (select cast(`value` as signed) from t_sys_config c where c.code ='settMode' and c.type = 'sett')
+    WHEN '2' THEN ai.SettMode
+    ELSE 99999 END
+    <!-- 判断结算周期  1-D 2-T -->
+    WHEN '1' THEN  CASE ai.SettConfigMode    <!-- 判断是否继承系统设置 -->
+    WHEN '1' THEN (select cast(`value` as signed) from t_sys_config c where c.code ='settRiskDay' and c.type = 'sett')
+    ELSE ai.SettRiskDay END
+    WHEN '2' THEN 9999   <!-- 暂时不支持 T类型 -->
+    ELSE 99999 END
+
+    union all
+
+    select d.* from t_order_profit_detail d
+    inner join t_mch_info mi on d.ReferInfoId =  mi.MchId
+    where
+    d.ReferInfoType = '1' and d.SettStatus = 0 <!-- 查询商户类型  并且未结算状态 -->
+    and mi.`Status` = 1   <!--  判断商户状态 -->
+    <![CDATA[ and  datediff(now(), CreatedTime)  >=   ]]> <!-- 当前时间减去下单时间的天数  需要大于等于结算周期  -->
+    CASE
+    CASE mi.SettConfigMode    <!-- 判断是否继承系统设置 -->
+    WHEN '1' THEN (select cast(`value` as signed) from t_sys_config c where c.code ='settMode' and c.type = 'sett')
+    WHEN '2' THEN mi.SettMode
+    ELSE 99999 END
+    <!-- 判断结算周期  1-D 2-T -->
+    WHEN '1' THEN  CASE mi.SettConfigMode    <!-- 判断是否继承系统设置 -->
+    WHEN '1' THEN (select cast(`value` as signed) from t_sys_config c where c.code ='settRiskDay' and c.type = 'sett')
+    ELSE mi.SettRiskDay END
+    WHEN '2' THEN 9999   <!-- 暂时不支持 T类型 -->
+    ELSE 99999 END
+
+
+
+  </select>
+
+  <!--代理商统计-->
+  <select id="agentStatistics" resultType="java.util.Map" parameterType="java.util.Map" >
+    SELECT topd.ReferInfoId AS agentId,
+    tgi.AgentName AS agentName,
+    SUM(topd.IncomeAmount) AS totalAgentProfit,
+    SUM(topd.FeeAmount) AS totalAgentFee
+    FROM t_order_profit_detail topd
+    INNER JOIN t_agent_info tgi ON topd.ReferInfoId = tgi.AgentId
+    WHERE topd.ReferInfoType = 2
+    AND topd.SettStatus = 1
+    <if test="agentId != null"> AND topd.referInfoId = #{agentId} </if>
+    <if test="bizType != null"> AND topd.bizType = #{bizType} </if>
+    <if test="createTimeStart != null"> AND topd.CreatedTime &gt;= #{createTimeStart} </if>
+    <if test="createTimeEnd != null"> AND topd.CreatedTime &lt;= #{createTimeEnd} </if>
+    GROUP BY topd.ReferInfoId ORDER BY totalAgentProfit DESC
+    <if test="limit != null" >
+      <if test="offset != null" >
+        limit ${offset}, ${limit}
+      </if>
+      <if test="offset == null" >
+        limit ${limit}
+      </if>
+    </if>;
+  </select>
+
+  <select id="countAgentStatistics" resultType="java.util.Map" parameterType="java.util.Map" >
+    SELECT
+    SUM(IncomeAmount) AS totalAgentProfit,
+    SUM(FeeAmount) AS totalAgentFee,
+    COUNT(distinct ReferInfoId) AS totalCount
+    FROM t_order_profit_detail
+    WHERE ReferInfoType = 2
+    AND SettStatus = 1
+    <if test="agentId != null"> AND referInfoId = #{agentId} </if>
+    <if test="bizType != null"> AND bizType = #{bizType} </if>
+    <if test="createTimeStart != null"> AND CreatedTime &gt;= #{createTimeStart} </if>
+    <if test="createTimeEnd != null"> AND CreatedTime &lt;= #{createTimeEnd} </if>
+    ORDER BY totalAgentProfit DESC;
+  </select>
+
+  <!--平台统计-->
+  <select id="platStatistics" resultType="java.util.Map" parameterType="java.util.Map" >
+    SELECT
+    SUM(IncomeAmount) AS totalPlatProfit,
+    SUM(FeeAmount) AS totalPlatFee
+    FROM t_order_profit_detail
+    WHERE ReferInfoType = 3
+    AND SettStatus =1
+    <if test="createTimeStart != null"> AND CreatedTime &gt;= #{createTimeStart} </if>
+    <if test="createTimeEnd != null"> AND CreatedTime &lt;= #{createTimeEnd} </if>
+    ;
+  </select>
+
+  <!--代理商系统代理分润统计-->
+  <select id="count4AgentProfit" resultType="java.util.Map" parameterType="java.util.Map" >
+    SELECT BizType,
+    ifnull(SUM(IncomeAmount),0) AS totalAgentProfit,
+    ifnull(COUNT(DISTINCT BizOrderId),0) AS totalCount
+    FROM t_order_profit_detail
+    WHERE ReferInfoType = 2
+    <if test="agentId != null"> AND ReferInfoId = #{agentId} </if>
+    GROUP BY BizType;
+  </select>
+
+  <!--查询代理商利润明细-->
+  <select id="selectAgentDetailInfoList" resultType="java.util.Map" parameterType="java.util.Map" >
+    select d.IncomeAmount agentIncome, d.FeeRateSnapshot agentRate, agent.AgentId agentId,
+    agent.AgentName agentName, agent.AgentLevel agentLevel
+    from t_order_profit_detail d inner join t_agent_info agent on d.ReferInfoId = agent.AgentId
+    where d.BizOrderId = #{bizOrderId} and d.BizType = #{bizType}
+    and d.BizItem = #{bizItem} and d.ReferInfoType = 2
+    order by agent.AgentLevel desc
+  </select>
+
+  <sql id="selectCountCondition">
+
+    <if test="isvId != null">and IsvId = #{isvId}</if>
+    <if test="referInfoId != null">and ReferInfoId = #{referInfoId}</if>
+    <if test="referInfoType != null">and ReferInfoType = #{referInfoType}</if>
+    <if test="ltBizOrderCreateDate != null">and BizOrderCreateDate &lt; #{ltBizOrderCreateDate}</if>
+    <if test="settTaskStatus != null">and SettTaskStatus = #{settTaskStatus}</if>
+
+    <if test="productIdList != null">
+      and ProductId in <foreach collection="productIdList" item="productId" index="index" open="(" close=")" separator=",">#{productId}</foreach>
+    </if>
+
+  </sql>
+
+  <!-- 查询统计数据包括：订单总数, 支付总金额, 最早交易时间, 最晚交易时间   -->
+  <select id="selectCountTradeData" parameterType="Map" resultType="Map">
+
+    select count(1) as totalCount,
+    ifnull(sum(BizOrderPayAmount), 0) as totalPayAmount,
+    min(BizOrderCreateDate) as minCreateDate,
+    max(BizOrderCreateDate) as maxCreateDate
+    from t_order_profit_detail
+    where BizType in (1, 2)  <!-- 查询： 支付订单 | 充值订单 -->
+    <include refid="selectCountCondition" />
+  </select>
+
+
+  <!-- 查询统计数据包括：分润总金额  -->
+  <select id="selectSumProfitData" parameterType="Map" resultType="java.math.BigDecimal">
+    select ifnull(sum(IncomeAmount - FeeAmount) ,0) as totalProfit
+    from t_order_profit_detail
+    <where>
+      <include refid="selectCountCondition" />
+    </where>
+  </select>
+
+
+
+
+  <!-- 根据tradeOrderId 查询对应角色金额的sum值 -->
+  <select id="selectSumAmountByTradeOrder" resultMap="BaseResultMap" parameterType="Map">
+      select sum(IncomeAmount) as IncomeAmount, sum(FeeAmount) as FeeAmount
+      from t_order_profit_detail
+      where ReferInfoType = #{referInfoType} and ReferInfoId = #{referInfoId}
+      and (
+              ( BizType in (1, 2) and BizOrderId = #{mchTradeOrderId} )
+              or ( BizType = 3 and BizOrderId in (select mchRefundOrderId from t_mch_refund_order where tradeOrderId = #{mchTradeOrderId} and status = 2 )  )
+      )
+  </select>
+
+
+  <!-- 查询统计数据, 分润任务完成后的金额  -->
+  <select id="selectSumProfitDataByFinishTask" parameterType="Map" resultType="java.math.BigDecimal">
+    select ifnull(sum(IncomeAmount - FeeAmount) ,0) as totalProfit
+    from t_order_profit_detail where SettTaskStatus = 1
+      <if test="referInfoId != null">and ReferInfoId = #{referInfoId}</if>
+      <if test="referInfoType != null">and ReferInfoType = #{referInfoType}</if>
+      <if test="bizOrderCreateDateStart != null">and BizOrderCreateDate &gt;= #{bizOrderCreateDateStart}</if>
+      <if test="bizOrderCreateDateEnd != null">and BizOrderCreateDate &lt;= #{bizOrderCreateDateEnd}</if>
+  </select>
+
+
+</mapper>

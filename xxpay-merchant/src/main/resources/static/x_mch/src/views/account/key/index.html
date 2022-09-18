@@ -1,0 +1,116 @@
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a><cite>基本信息</cite></a>
+    </span>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">私钥信息</li>
+            </ul>
+            <div class="layui-tab-content">
+                <style>
+                    .center {
+                        width: 80%;
+                    }
+                </style>
+                <form class="layui-form center">
+                    <div class="layui-form-item layui-form-text">
+                        <label class="layui-form-label">商户私钥</label>
+                        <div class="layui-input-block">
+                            <input type="text" required name="privateKey"  lay-verify="required" placeholder="请输入私钥" autocomplete="off" class="layui-input privateKey">
+                        </div>
+                    </div>
+                    <div class="layui-form-item layui-form-text">
+                        <label class="layui-form-label">支付密码</label>
+                        <div class="layui-input-block">
+                            <input type="password" required name="payPassword" lay-verify="required" placeholder="修改私钥需输入支付密码" autocomplete="off" class="layui-input payPassword">
+                        </div>
+                    </div>
+                    <div class="layui-form-item ">
+                        <div class="layui-input-block">
+                            <button type="button" id="randomBuildKey" class="layui-btn">随机生成私钥</button>
+                            <button type="button" lay-filter="btnC" lay-submit class="layui-btn ">修改私钥</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+   layui.use(['table','laytpl','admin',], function(){
+        var form = layui.form
+            ,laytpl = layui.laytpl
+            ,table = layui.table
+            ,$ = layui.$
+            ,admin = layui.admin
+            ,element = layui.element;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        admin.req({
+           type: 'get',
+           url:  layui.setter.baseUrl + '/mch/get' //模拟基本信息接口,
+           ,error: function(err){
+               console.log(err)
+           },
+           success: function(res){
+               if(res.code == 0){
+                   $('.privateKey').val(res.data.privateKey);
+               }
+           }
+        });
+
+       //监听提交
+       form.on('submit(btnC)', function(data){
+           admin.req({
+               type: 'post',
+               url: layui.setter.baseUrl + '/mch/key_update',
+               data: data.field,
+               success: function(res){
+                   if(res.code == 0){
+                       layer.alert(res.msg, {title: '提示'}, function(index){
+                           layer.close(index);
+                           $('.payPassword').val('');
+                       });
+                   }
+               }
+           })
+           return false;
+       });
+
+       $('#randomBuildKey').click(function() {
+           $('.privateKey').val(randomWord(false, 128));
+       })
+
+    });
+
+   /**
+    * 随机生成密钥
+    * @param randomFlag
+    * @param min
+    * @param max
+    * @returns {string}
+    */
+   function randomWord(randomFlag, min, max){
+       var str = "",
+               range = min,
+               arr = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+
+       // 随机产生
+       if(randomFlag){
+           range = Math.round(Math.random() * (max-min)) + min;
+       }
+       for(var i=0; i<range; i++){
+           pos = Math.round(Math.random() * (arr.length-1));
+           str += arr[pos];
+       }
+       return str;
+   }
+   
+</script>

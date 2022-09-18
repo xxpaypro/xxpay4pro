@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.xxpay.service.dao.mapper.MchStoreBannerMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="org.xxpay.core.entity.MchStoreBanner">
+        <id column="BannerId" property="BannerId" />
+        <result column="MchId" property="mchId" />
+        <result column="BannerName" property="bannerName" />
+        <result column="AuthFrom" property="authFrom" />
+        <result column="ShowType" property="showType" />
+        <result column="Status" property="status" />
+        <result column="PutStoreLimitType" property="putStoreLimitType" />
+        <result column="MediaPath" property="mediaPath" />
+        <result column="AdvertUrl" property="advertUrl" />
+        <result column="SortNum" property="sortNum" />
+        <result column="Remark" property="remark" />
+        <result column="CreateTime" property="createTime" />
+        <result column="UpdateTime" property="updateTime" />
+    </resultMap>
+
+</mapper>

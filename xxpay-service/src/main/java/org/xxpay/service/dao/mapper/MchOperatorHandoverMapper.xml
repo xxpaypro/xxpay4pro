@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.xxpay.service.dao.mapper.MchOperatorHandoverMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="org.xxpay.core.entity.MchOperatorHandover">
+        <id column="id" property="id" />
+        <result column="UserId" property="userId" />
+        <result column="UserName" property="userName" />
+        <result column="StoreId" property="storeId" />
+        <result column="MchId" property="mchId" />
+        <result column="WorkStartTime" property="workStartTime" />
+        <result column="WorkEndTime" property="workEndTime" />
+        <result column="CountTotalOrder" property="countTotalOrder" />
+        <result column="SumRechargeAmount" property="sumRechargeAmount" />
+        <result column="SumDiscountAmount" property="sumDiscountAmount" />
+        <result column="SumCashAmount" property="sumCashAmount" />
+        <result column="SumRefundAmount" property="sumRefundAmount" />
+        <result column="SumRealAmount" property="sumRealAmount" />
+        <result column="Remark" property="remark" />
+        <result column="CreateTime" property="createTime" />
+        <result column="UpdateTime" property="updateTime" />
+    </resultMap>
+
+</mapper>

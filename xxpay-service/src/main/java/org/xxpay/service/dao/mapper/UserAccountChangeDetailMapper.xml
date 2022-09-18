@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.xxpay.service.dao.mapper.UserAccountChangeDetailMapper" >
+  <resultMap id="BaseResultMap" type="org.xxpay.core.entity.UserAccountChangeDetail" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="UserId" property="userId" jdbcType="VARCHAR" />
+    <result column="MchId" property="mchId" jdbcType="BIGINT" />
+    <result column="ChangeDay" property="changeDay" jdbcType="INTEGER" />
+    <result column="ChangeType" property="changeType" jdbcType="SMALLINT" />
+    <result column="AccountType" property="accountType" jdbcType="SMALLINT" />
+    <result column="ChangeAmount" property="changeAmount" jdbcType="BIGINT" />
+    <result column="ChangeLogId" property="changeLogId" jdbcType="BIGINT" />
+    <result column="CreateTime" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="UpdateTime" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, UserId, MchId, ChangeDay, ChangeType, AccountType, ChangeAmount, ChangeLogId, 
+    CreateTime, UpdateTime
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="org.xxpay.core.entity.UserAccountChangeDetailExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from t_user_account_change_detail
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+    <if test="limit != null" >
+      <if test="offset != null" >
+        limit ${offset}, ${limit}
+      </if>
+      <if test="offset == null" >
+        limit ${limit}
+      </if>
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_user_account_change_detail
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from t_user_account_change_detail
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="org.xxpay.core.entity.UserAccountChangeDetailExample" >
+    delete from t_user_account_change_detail
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="org.xxpay.core.entity.UserAccountChangeDetail" >
+    insert into t_user_account_change_detail (id, UserId, MchId, 
+      ChangeDay, ChangeType, AccountType, 
+      ChangeAmount, ChangeLogId, CreateTime, 
+      UpdateTime)
+    values (#{id,jdbcType=BIGINT}, #{userId,jdbcType=VARCHAR}, #{mchId,jdbcType=BIGINT}, 
+      #{changeDay,jdbcType=INTEGER}, #{changeType,jdbcType=SMALLINT}, #{accountType,jdbcType=SMALLINT}, 
+      #{changeAmount,jdbcType=BIGINT}, #{changeLogId,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="org.xxpay.core.entity.UserAccountChangeDetail" >
+    insert into t_user_account_change_detail
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="userId != null" >
+        UserId,
+      </if>
+      <if test="mchId != null" >
+        MchId,
+      </if>
+      <if test="changeDay != null" >
+        ChangeDay,
+      </if>
+      <if test="changeType != null" >
+        ChangeType,
+      </if>
+      <if test="accountType != null" >
+        AccountType,
+      </if>
+      <if test="changeAmount != null" >
+        ChangeAmount,
+      </if>
+      <if test="changeLogId != null" >
+        ChangeLogId,
+      </if>
+      <if test="createTime != null" >
+        CreateTime,
+      </if>
+      <if test="updateTime != null" >
+        UpdateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="mchId != null" >
+        #{mchId,jdbcType=BIGINT},
+      </if>
+      <if test="changeDay != null" >
+        #{changeDay,jdbcType=INTEGER},
+      </if>
+      <if test="changeType != null" >
+        #{changeType,jdbcType=SMALLINT},
+      </if>
+      <if test="accountType != null" >
+        #{accountType,jdbcType=SMALLINT},
+      </if>
+      <if test="changeAmount != null" >
+        #{changeAmount,jdbcType=BIGINT},
+      </if>
+      <if test="changeLogId != null" >
+        #{changeLogId,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="org.xxpay.core.entity.UserAccountChangeDetailExample" resultType="java.lang.Integer" >
+    select count(*) from t_user_account_change_detail
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update t_user_account_change_detail
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=BIGINT},
+      </if>
+      <if test="record.userId != null" >
+        UserId = #{record.userId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mchId != null" >
+        MchId = #{record.mchId,jdbcType=BIGINT},
+      </if>
+      <if test="record.changeDay != null" >
+        ChangeDay = #{record.changeDay,jdbcType=INTEGER},
+      </if>
+      <if test="record.changeType != null" >
+        ChangeType = #{record.changeType,jdbcType=SMALLINT},
+      </if>
+      <if test="record.accountType != null" >
+        AccountType = #{record.accountType,jdbcType=SMALLINT},
+      </if>
+      <if test="record.changeAmount != null" >
+        ChangeAmount = #{record.changeAmount,jdbcType=BIGINT},
+      </if>
+      <if test="record.changeLogId != null" >
+        ChangeLogId = #{record.changeLogId,jdbcType=BIGINT},
+      </if>
+      <if test="record.createTime != null" >
+        CreateTime = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateTime != null" >
+        UpdateTime = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update t_user_account_change_detail
+    set id = #{record.id,jdbcType=BIGINT},
+      UserId = #{record.userId,jdbcType=VARCHAR},
+      MchId = #{record.mchId,jdbcType=BIGINT},
+      ChangeDay = #{record.changeDay,jdbcType=INTEGER},
+      ChangeType = #{record.changeType,jdbcType=SMALLINT},
+      AccountType = #{record.accountType,jdbcType=SMALLINT},
+      ChangeAmount = #{record.changeAmount,jdbcType=BIGINT},
+      ChangeLogId = #{record.changeLogId,jdbcType=BIGINT},
+      CreateTime = #{record.createTime,jdbcType=TIMESTAMP},
+      UpdateTime = #{record.updateTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="org.xxpay.core.entity.UserAccountChangeDetail" >
+    update t_user_account_change_detail
+    <set >
+      <if test="userId != null" >
+        UserId = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="mchId != null" >
+        MchId = #{mchId,jdbcType=BIGINT},
+      </if>
+      <if test="changeDay != null" >
+        ChangeDay = #{changeDay,jdbcType=INTEGER},
+      </if>
+      <if test="changeType != null" >
+        ChangeType = #{changeType,jdbcType=SMALLINT},
+      </if>
+      <if test="accountType != null" >
+        AccountType = #{accountType,jdbcType=SMALLINT},
+      </if>
+      <if test="changeAmount != null" >
+        ChangeAmount = #{changeAmount,jdbcType=BIGINT},
+      </if>
+      <if test="changeLogId != null" >
+        ChangeLogId = #{changeLogId,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null" >
+        CreateTime = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        UpdateTime = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.xxpay.core.entity.UserAccountChangeDetail" >
+    update t_user_account_change_detail
+    set UserId = #{userId,jdbcType=VARCHAR},
+      MchId = #{mchId,jdbcType=BIGINT},
+      ChangeDay = #{changeDay,jdbcType=INTEGER},
+      ChangeType = #{changeType,jdbcType=SMALLINT},
+      AccountType = #{accountType,jdbcType=SMALLINT},
+      ChangeAmount = #{changeAmount,jdbcType=BIGINT},
+      ChangeLogId = #{changeLogId,jdbcType=BIGINT},
+      CreateTime = #{createTime,jdbcType=TIMESTAMP},
+      UpdateTime = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <select id="selectByUniqueKeyForUpdate" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" />
+    from t_user_account_change_detail
+    where UserId = #{userId,jdbcType=VARCHAR}
+    and MchId = #{mchId,jdbcType=BIGINT},
+    and ChangeDay = #{changeDay,jdbcType=INTEGER}
+    and ChangeType = #{changeType,jdbcType=SMALLINT}
+  </select>
+
+  <select id="selectListByPage" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" />
+    from t_user_account_change_detail
+    where UserId = #{userId,jdbcType=VARCHAR}
+    and MchId = #{mchId,jdbcType=BIGINT}
+    <if test="changeType != null">
+      and ChangeType = #{changeType,jdbcType=SMALLINT}
+    </if>
+    <if test="accountType != null">
+      and AccountType = #{accountType,jdbcType=SMALLINT}
+    </if>
+    <if test="changeDay != null">
+      and ChangeDay = #{changeDay,jdbcType=INTEGER}
+    </if>
+    order by id desc
+    limit ${startNumber}, ${viewNumber}
+  </select>
+
+  <insert id="insertBatch" parameterType="java.util.List" >
+    insert into t_user_account_change_detail (UserId, MchId, ChangeDay, ChangeType, AccountType, ChangeAmount, ChangeLogId)
+    values
+    <foreach collection="list" item="detail" index="index" separator=",">
+      (
+        #{detail.userId,jdbcType=VARCHAR},
+        #{detail.mchId,jdbcType=BIGINT},
+        #{detail.changeDay,jdbcType=INTEGER},
+        #{detail.changeType,jdbcType=SMALLINT},
+        #{detail.accountType,jdbcType=SMALLINT},
+        #{detail.changeAmount,jdbcType=BIGINT},
+        #{detail.changeLogId,jdbcType=BIGINT}
+      )
+    </foreach>
+  </insert>
+
+</mapper>

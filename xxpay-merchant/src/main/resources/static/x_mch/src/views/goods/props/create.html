@@ -1,0 +1,60 @@
+<style>
+    .xxpayPopupDiv .layui-form-label {
+        width:30% !important;
+        margin-left:1%;
+    }
+    .xxpayPopupDiv .layui-input-inline {
+        width: 66% !important;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <form class="layui-form layui-form-pane">
+            <div class="layui-tab layui-tab-brief">
+                <div class="layui-tab-content">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">分类名称</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="propsCategoryName" name="propsCategoryName" lay-verify="required" placeholder="输入分类名称" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="layui-hide xxpayYesBtn" lay-submit="" lay-filter="propsCategoryAdd">保存</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+   
+    layui.use(['form','admin'], function(){
+        var form = layui.form
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,element = layui.element;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        //监听提交
+        form.on('submit(propsCategoryAdd)', function(data){
+
+            // 在这个回调函数里面写ajax提交
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/mchGoodsProps/category/add',
+                data: data.field,
+                success: function(res){
+                    if(res.code == 0){
+                        layer.closeAll(); //关闭所有弹层
+                        layer.msg("保存成功");
+                        layui.table.reload('tableReload', {page: {curr: 1}}); //调用业务弹层外表格重新加载
+                    }
+                }
+            });
+            return false;//阻止跳转
+        });
+
+        form.render();
+    });
+
+        
+</script>

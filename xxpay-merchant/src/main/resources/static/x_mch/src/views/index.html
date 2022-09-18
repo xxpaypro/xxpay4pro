@@ -1,0 +1,459 @@
+<style>
+  .layuiadmin-card-list p.layuiadmin-big-font{font-size:16px}
+  .dataCard{    background: aliceblue;}
+  body .layui-card{border-radius:10px;}
+</style>
+<div class="layui-fluid layui-row layui-col-space15">
+
+  <!-- 数据统计卡片 -->
+  <div class="layui-col-md8">
+    <div class="layui-card">
+
+      <div class="layui-row layui-card-header" style="padding-bottom: 20px; padding-top:10px">
+        <div class="layui-col-md3" style="font-size: 24px;">数据统计</div>
+        <div class="layui-col-md3">
+          <input type="text" class="layui-input" id="selectDateInputByData" placeholder="选择时间范围" readonly/>
+        </div>
+        <div class="layui-col-md5 layui-col-md-offset1">
+          <div class="layui-btn-group">
+            <button type="button" class="layui-btn layui-btn-sm selectDateBtn" isSelect="true" queryDateRange="today">今天</button>
+            <button type="button" class="layui-btn layui-btn-sm layui-btn-primary selectDateBtn" queryDateRange="yesterday">昨天</button>
+            <button type="button" class="layui-btn layui-btn-sm layui-btn-primary selectDateBtn" queryDateRange="near2yesterday_3">近3天</button>
+            <button type="button" class="layui-btn layui-btn-sm layui-btn-primary selectDateBtn" queryDateRange="near2yesterday_7">近7天</button>
+            <button type="button" class="layui-btn layui-btn-sm layui-btn-primary selectDateBtn" queryDateRange="near2yesterday_30">近30天</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="layui-row layui-col-space15" style="padding-left:50px; padding-top:20px">
+
+        <div class="layui-col-sm6 layui-col-md2">
+          <div class="layui-card dataCard">
+            <div class="layui-card-header">订单金额</div>
+            <div class="layui-card-body layuiadmin-card-list">
+              <p class="layuiadmin-big-font" id="sumTradeAmount">-</p>
+              <p></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="layui-col-sm6 layui-col-md2">
+          <div class="layui-card dataCard">
+            <div class="layui-card-header">实际收款</div>
+            <div class="layui-card-body layuiadmin-card-list">
+              <p class="layuiadmin-big-font" id="sumRealAmount">-</p>
+              <p></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="layui-col-sm6 layui-col-md2">
+          <div class="layui-card dataCard">
+            <div class="layui-card-header">会员消费</div>
+            <div class="layui-card-body layuiadmin-card-list">
+              <p class="layuiadmin-big-font" id="sumMemberAmount">-</p>
+              <p></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="layui-col-sm6 layui-col-md2">
+          <div class="layui-card dataCard">
+            <div class="layui-card-header">退款金额</div>
+            <div class="layui-card-body layuiadmin-card-list">
+              <p class="layuiadmin-big-font" id="sumRefundAmount">-</p>
+              <p></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="layui-col-sm6 layui-col-md2">
+          <div class="layui-card dataCard">
+            <div class="layui-card-header">新增会员</div>
+            <div class="layui-card-body layuiadmin-card-list">
+              <p class="layuiadmin-big-font" id="countAddMember">-</p>
+              <p></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="layui-row layui-col-space15" style="padding-left:50px; padding-bottom: 50px">
+
+      <div class="layui-col-sm6 layui-col-md2">
+        <div class="layui-card dataCard">
+          <div class="layui-card-header">订单笔数</div>
+          <div class="layui-card-body layuiadmin-card-list">
+            <p class="layuiadmin-big-font" id="countTrade">-</p>
+            <p></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="layui-col-sm6 layui-col-md2">
+        <div class="layui-card dataCard">
+          <div class="layui-card-header">优惠金额</div>
+          <div class="layui-card-body layuiadmin-card-list">
+            <p class="layuiadmin-big-font" id="sumDiscountAmount">-</p>
+            <p></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="layui-col-sm6 layui-col-md2">
+        <div class="layui-card dataCard">
+          <div class="layui-card-header">非会员消费</div>
+          <div class="layui-card-body layuiadmin-card-list">
+            <p class="layuiadmin-big-font" id="sumNotMemberAmount">-</p>
+            <p></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="layui-col-sm6 layui-col-md2">
+        <div class="layui-card dataCard">
+          <div class="layui-card-header">退款笔数</div>
+          <div class="layui-card-body layuiadmin-card-list">
+            <p class="layuiadmin-big-font" id="countRefund">-</p>
+            <p></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="layui-col-sm6 layui-col-md2">
+        <div class="layui-card dataCard">
+          <div class="layui-card-header">会员充值</div>
+          <div class="layui-card-body layuiadmin-card-list">
+            <p class="layuiadmin-big-font" id="sumRechargeAmount">-</p>
+            <p></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    </div>
+  </div>
+
+  <!-- 最新公告 -->
+  <div class="layui-col-md4">
+    <div class="layui-card">
+
+      <div class="layui-row layui-card-header" style="padding-bottom: 20px; padding-top:10px">
+        <div class="layui-col-md4" style="font-size: 24px;">最新公告</div>
+      </div>
+
+      <div style="height: 340px;">
+        <ul class="layuiadmin-card-status layuiadmin-home2-usernote" id="messagePageUL"></ul>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 数据统计 金额柱状图 -->
+  <div class="layui-col-md7">
+    <div class="layui-card">
+      <div class="layui-row layui-card-header" style="padding-bottom: 20px; padding-top:10px">
+        <div class="layui-col-md3" style="font-size: 24px;">数据统计</div>
+        <div class="layui-col-md4 layui-col-md-offset5">
+          <input type="text" class="layui-input" id="selectDateInputByAmountCharts" placeholder="选择时间范围" readonly/>
+        </div>
+      </div>
+
+      <div style="height:450px">
+        <div id="chartsByAmount" style="width: 100%;height:450px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 支付方式 -->
+  <div class="layui-col-md5">
+    <div class="layui-card">
+      <div class="layui-row layui-card-header" style="padding-bottom: 20px; padding-top:10px">
+        <div class="layui-col-md6" style="font-size: 24px;">支付方式</div>
+        <div class="layui-col-md6">
+          <input type="text" class="layui-input" id="selectDateInputByProductType" placeholder="选择时间范围" readonly/>
+        </div>
+      </div>
+
+      <div style="height:450px">
+        <div id="chartsByProductType" style="width: 100%;height:450px;"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<script>
+	layui.use(['admin', 'view', 'echarts', 'laydate', 'util'], function(){
+	  var $ = layui.$
+	    ,admin = layui.admin
+	    ,element = layui.element
+        ,laydate = layui.laydate
+        ,util = layui.util
+	    ,echarts = layui.echarts
+        ,view = layui.view;
+
+        //两个时间相差天数 兼容firefox chrome
+        var dateDifference = function(sDate1, sDate2) {    //sDate1和sDate2是2006-12-18格式
+            var dateSpan, tempDate, iDays;
+            sDate1 = Date.parse(sDate1);
+            sDate2 = Date.parse(sDate2);
+            dateSpan = sDate2 - sDate1;
+            dateSpan = Math.abs(dateSpan);
+            iDays = Math.floor(dateSpan / (24 * 3600 * 1000));
+            return iDays;
+        };
+
+        //统计柱状图
+        var chartsByAmount = echarts.init($('#chartsByAmount')[0],layui.echartsTheme);
+
+        //支付方式 饼状图
+        var chartsByProductType = echarts.init($('#chartsByProductType')[0],layui.echartsTheme);
+
+        /** 重新画 金额柱状图 **/
+        var resizeChartsByAmount = function(dateRangeArr, tradeAmountArr, refundAmountArr){
+            chartsByAmount.setOption({
+                title : {text: '', subtext: ''},  //设置标题
+                tooltip : {trigger: 'axis'},  //当触发树状图时， 显示标题
+                legend: {data:['交易金额','退款金额']},  //图例组件
+                calculable : false,  //是否可拖拽
+                xAxis : [{type : 'category', data : dateRangeArr} ],    //x轴数据
+                yAxis : [{type : 'value'}],    //y轴数据
+                series : [  //数据信息
+                    { name:'交易金额', type:'bar', data:tradeAmountArr },
+                    { name:'退款金额', type:'bar', data:refundAmountArr },
+                ]
+            }, true);  //第二个参数，true表示重新渲染
+        }
+
+        /** 重新画 支付类型饼状图 **/
+        var resizeChartsByProductType = function(wxCount, alipayCount, memberCount, cashCount){
+            chartsByProductType.setOption({
+                title : {text: '', subtext: ''},  //设置标题
+                tooltip : {show: true},  //当触发树状图时， 显示标题
+                legend: {data:['微信','支付宝','会员卡', '现金']},  //图例组件
+                calculable : false,  //是否可拖拽
+                series : [  //数据信息
+                    { center: ['60%', '60%'], radius: '60%', name:'交易金额', type:'pie'
+                        , data: [
+                            {value: wxCount, name: '微信'},
+                            {value: alipayCount, name: '支付宝'},
+                            {value: memberCount, name: '会员卡'},
+                            {value: cashCount, name: '现金'}
+                        ]
+                    }
+                ]
+            }, true);  //第二个参数，true表示重新渲染
+        }
+
+        //刷新统计数据 卡片
+        var refreshDataStatistics = function(queryData){
+            admin.req({
+                type: 'get',
+                url: layui.setter.baseUrl + '/data/dataStatistics',
+                data: queryData,
+                error: function (err) {
+                    layer.alert(JSON.stringify(err.field), {title: '错误提示'})
+                },
+                success: function (res) {
+                    if(res.code == 0){
+                        $("#sumTradeAmount").text("￥" + res.data.sumTradeAmount / 100);
+                        $("#sumRealAmount").text("￥" + res.data.sumRealAmount / 100);
+                        $("#sumMemberAmount").text("￥" + res.data.sumMemberAmount / 100);
+                        $("#sumRefundAmount").text("￥" + res.data.sumRefundAmount / 100);
+                        $("#countAddMember").text(res.data.countAddMember);
+                        $("#countTrade").text(res.data.countTrade);
+                        $("#sumDiscountAmount").text("￥" + res.data.sumDiscountAmount / 100);
+                        $("#sumNotMemberAmount").text("￥" + res.data.sumNotMemberAmount / 100);
+                        $("#countRefund").text(res.data.countRefund);
+                        $("#sumRechargeAmount").text("￥" + res.data.sumRechargeAmount / 100);
+                    }
+                }
+            });
+        };
+
+        //刷新 金额柱状图 卡片
+        var refreshChartsByAmount = function(queryData){
+            admin.req({
+                type: 'get',
+                url: layui.setter.baseUrl + '/data/statisticsByAmountCharts',
+                data: queryData,
+                error: function (err) {
+                    layer.alert(JSON.stringify(err.field), {title: '错误提示'})
+                },
+                success: function (res) {
+                    if(res.code == 0){
+                        resizeChartsByAmount(res.data.xTitleArray, res.data.tradeAmountArray , res.data.refundAmountArray);
+                    }
+                }
+            });
+        };
+
+        //刷新 交易类型饼状图 卡片
+        var refreshChartsByProductType = function(queryData){
+
+            admin.req({
+                type: 'get',
+                url: layui.setter.baseUrl + '/data/statisticsByProductType',
+                data: queryData,
+                error: function (err) {
+                    layer.alert(JSON.stringify(err.field), {title: '错误提示'})
+                },
+                success: function (res) {
+                    if(res.code == 0){
+
+                        var wxCount = 0;
+                        var alipayCount = 0;
+                        var memberCount = 0;
+                        var cashCount = 0;
+
+                        $.each(res.data, function(){
+                            if(this.productType == '1'){  //现金
+                                cashCount = this.totalCount;
+                            }else if(this.productType == '2'){ //会员卡支付
+                                memberCount = this.totalCount;
+                            }else if(this.productType == '3'){ //微信
+                                wxCount = this.totalCount;
+                            }else if(this.productType == '4'){ //支付宝
+                                alipayCount = this.totalCount;
+                            }
+                        });
+                        resizeChartsByProductType(wxCount, alipayCount, memberCount, cashCount);
+                    }
+                }
+            });
+        };
+
+
+        //【数据型的统计卡片】 按钮点击事件
+        $(".selectDateBtn").click(function(){
+
+            $(".selectDateBtn").removeClass("layui-btn-primary").addClass("layui-btn-primary");
+            $(this).removeClass("layui-btn-primary");
+            $("#selectDateInputByData").val("");   //清除时间选择框的内容
+
+            var queryDateRange = $(this).attr("queryDateRange");  //查询时间范围
+            refreshDataStatistics({queryDateRange: queryDateRange});
+        });
+
+        //【数据型的统计卡片】 的选择时间控件绑定事件
+        laydate.render({
+            elem: '#selectDateInputByData' //指定元素
+            ,range: "~"   //时间选择范围, ~分割
+            ,max: util.toDateString(new Date(), 'yyyy-MM-dd')  //不能超过今天
+            ,done: function(value, date, endDate){
+                //清空 / 未选择
+                if(!value){ return false; }
+                $(".selectDateBtn").removeClass("layui-btn-primary").addClass("layui-btn-primary");  //全部未选择
+                var startTime = value.split("~")[0].trim();
+                var endTime = value.split("~")[1].trim();
+                refreshDataStatistics({"queryStartDate": startTime, "queryEndDate": endTime});
+            }
+        });
+
+        //【交易金额树状图卡片】 的选择时间控件绑定事件
+        var layDateByAmount = laydate.render({
+            elem: '#selectDateInputByAmountCharts' //指定元素
+            ,range: "~"   //时间选择范围, ~分割
+            ,max: util.toDateString(new Date(), 'yyyy-MM-dd')  //不能超过今天
+            ,change: function(value, date, endDate){
+                var startTime = value.split("~")[0].trim();
+                var endTime = value.split("~")[1].trim();
+
+                if(dateDifference(endTime, startTime) >= 15){
+                    layDateByAmount.hint("时间范围不得超过15天！");
+                }
+
+            }
+            ,done: function(value, date, endDate){
+                //清空 / 未选择
+                if(!value){ return false; }
+                var startTime = value.split("~")[0].trim();
+                var endTime = value.split("~")[1].trim();
+
+                if(dateDifference(endTime, startTime) >= 15){   //时间超过15天
+                    return;
+                }
+                refreshChartsByAmount({"queryStartDate": startTime, "queryEndDate": endTime});
+            }
+        });
+
+        //【支付类型饼状图卡片】 的选择时间控件绑定事件
+        var layDateByProductType = laydate.render({
+            elem: '#selectDateInputByProductType' //指定元素
+            ,range: "~"   //时间选择范围, ~分割
+            ,max: util.toDateString(new Date(), 'yyyy-MM-dd')  //不能超过今天
+            ,change: function(value, date, endDate){
+                var startTime = value.split("~")[0].trim();
+                var endTime = value.split("~")[1].trim();
+
+                if(dateDifference(endTime, startTime) >= 15){
+                    layDateByAmount.hint("时间范围不得超过15天！");
+                }
+
+            }
+            ,done: function(value, date, endDate){
+                //清空 / 未选择
+                if(!value){ return false; }
+                var startTime = value.split("~")[0].trim();
+                var endTime = value.split("~")[1].trim();
+
+                if(dateDifference(endTime, startTime) >= 15){   //时间超过15天
+                    return;
+                }
+                refreshChartsByProductType({"queryStartDate": startTime, "queryEndDate": endTime});
+            }
+        });
+
+        // 重新加载 [最新公告] 卡片
+        var reloadMessage = function(){
+            admin.req({
+                type: 'get',
+                url: layui.setter.baseUrl + '/message/list',
+                data: {limit: 5 },
+                error: function (err) {
+                    layer.alert(JSON.stringify(err.field), {title: '错误提示'})
+                },
+                success: function (res) {
+                    $("#messagePageUL").empty();
+                    $.each(res.data, function(){
+                        $("#messagePageUL").append(
+                            `
+                            <li>
+                              <p>`+this.title+`</p>
+                              <span>`+layui.util.timeAgo(this.createTime, true)+`</span>
+                              <a href="javascript:;" messageId = "` + this.id + `" class="layui-btn layui-btn-xs layuiadmin-reply messageDetailBtn">查看详情</a>
+                            </li>
+                            `
+                        );
+                    });
+                }
+            });
+        };
+
+        //绑定 [查询详情] 按钮
+        $('#messagePageUL').off('click', ".messageDetailBtn").on('click', '.messageDetailBtn', function(){
+            view.xxpayPopup("消息详情", "message/detail", {id: $(this).attr('messageId')}, {btn:false});
+        });
+
+        //根据窗口的大小变动图表
+        window.onresize = function(){
+            chartsByAmount.resize();
+            chartsByProductType.resize();
+        };
+
+        //默认显示【今天】 数据
+        refreshDataStatistics({queryDateRange: "today"});
+        refreshChartsByAmount({queryDateRange: "today"});
+        refreshChartsByProductType({queryDateRange: "today"});
+        reloadMessage();  //查询最新公告消息
+
+
+
+
+
+
+
+  });
+</script>

@@ -1,0 +1,110 @@
+<div class=" layui-card layadmin-header">
+	<div class="layui-breadcrumb" lay-filter="breadcrumb">
+		<a lay-href="">首页</a>
+		<a>商城管理</a>
+		<a><cite>商城配置</cite></a>
+	</div>
+</div>
+<style>
+	.layui-form-label {
+		width: 20% !important;
+	}
+	.layui-input-inline {
+		width: 50% !important;
+	}
+</style>
+<div class="layui-fluid">
+	<div class="layui-card">
+		<div class="layui-tab layui-tab-brief">
+			<ul class="layui-tab-title">
+				<li class="layui-this tabLi">商城配置</li>
+			</ul>
+
+			<div class="layui-tab-content">
+				<div class="layui-row layui-tab-item layui-show">
+					<form class="layui-form layui-form-pane">
+						<input type="hidden" value="codAmount" name="configCode" >
+						<input type="hidden" value="货到付款订单限额" name="configName" >
+						<div class="layui-form-item">
+							<label class="layui-form-label">所属小程序</label>
+							<div class="layui-input-block">
+								<!--<input type="radio" name="authFrom" value="1" title="点餐小程序" lay-filter="authFromFilter"  />-->
+								<input type="radio" name="authFrom" value="2" title="商城小程序" lay-filter="authFromFilter" checked="checked" />
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">货到付款订单限额(元)</label>
+							<div class="layui-input-inline">
+								<input type="text" id="value" name="value" placeholder="请填写货到付款订单限额" class="layui-input" >
+								<div style="color:red;margin-top: 5px;">订单金额达到此限额时，才支持货到付款</div>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<div class="layui-input-block">
+								<button type="button" lay-submit="" lay-filter="save" class="layui-btn">保存</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+        </div>
+    </div>
+</div>
+<script>
+	//标题内容模板
+	var tplTitle = function(d){
+		return '<a class="layui-btn layui-btn-xs" lay-event="edit" >编辑</a> '
+	};
+
+	layui.use(['form', 'admin', 'view'], function() {
+		var form = layui.form,
+			$ = layui.$,
+			admin = layui.admin,
+			layer = layui.layer,
+			element = layui.element;
+
+		element.render('breadcrumb', 'breadcrumb'); //渲染导航信息
+
+		admin.req({
+			type: 'post',
+			url: layui.setter.baseUrl + '/mini_config/get',
+			data: {
+				authFrom: 2,
+				configCode: 'codAmount'
+			},
+			success: function(res){
+				if(res.code == 0){
+					$("#value").val(res.data.value);
+				}
+			}
+		});
+
+		//监听提交
+		form.on('submit(save)', function(data){
+			if (!data.field.value) {
+				return layer.msg("请输入货到付款订单限额！")
+			}
+			var arg = /^(([1-9]{1}\d*)|(0{1}))(\.\d{1,2})?$/;
+			if (!arg.test(data.field.value)) {
+				return layer.msg("请输入正确金额！")
+			}
+
+			// 在这个回调函数里面写ajax提交
+			admin.req({
+				type: 'post',
+				url: layui.setter.baseUrl + '/mini_config/save',
+				data: data.field,
+				success: function(res){
+					if(res.code == 0){
+						layer.msg("保存成功");
+					}
+				}
+			});
+			return false;//阻止跳转
+		});
+
+
+		form.render();
+
+})
+</script>

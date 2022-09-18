@@ -1,0 +1,148 @@
+<style>
+    .xxpayPopupDiv .layui-form-label {
+        width:15% !important;
+        margin-left:1%;
+    }
+    .xxpayPopupDiv .layui-input-inline {
+        width: 33% !important;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <form class="layui-form layui-form-pane">
+            <div class="layui-tab layui-tab-brief">
+                <div class="layui-tab-content">
+
+                    <input type="hidden" id="ruleId" name="ruleId" />
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">充值金额</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="rechargeAmount" name="rechargeAmount" lay-verify="required" placeholder="输入充值金额" autocomplete="off" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">赠送优惠券ID</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="giveCouponId" name="giveCouponId" placeholder="输入赠送优惠券ID" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">赠送返点, 余额/积分</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="givePoints" name="givePoints" placeholder="输入赠送返点" autocomplete="off" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">赠送规则</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="ruleType" value="1" title="赠余额">
+                            <input type="radio" name="ruleType" value="2" title="赠积分" checked="checked">
+                            <input type="radio" name="ruleType" value="3" title="赠优惠券">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">推荐标识</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="firstFlag" value="0" title="否">
+                            <input type="radio" name="firstFlag" value="1" title="是" checked="checked">
+                        </div>
+                        <label class="layui-form-label">状态</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="status" value="0" title="停止使用">
+                            <input type="radio" name="status" value="1" title="正常使用" checked="checked">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">备注</label>
+                        <div class="layui-input-inline">
+                            <input type="text" required id="remark" name="remark" placeholder="请输入备注信息" autocomplete="off" class="layui-input allAccInput">
+                        </div>
+                    </div>
+                    <button type="button" lay-submit lay-filter="btnUP" class="layui-hide xxpayYesBtn">保存</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    layui.use(['form','util','admin','view'], function(){
+        var form = layui.form
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,view = layui.view
+        ,element = layui.element;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+        
+        var ruleId = view.getOpenParams('ruleId');
+        //首先让页面中获取到原来的数据
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/member_recharge_rule/get',
+            data: {
+                ruleId: ruleId
+            },
+            error: function(err){
+                layer.alert(err);
+            },
+            success: function(res){
+                if(res.code == 0 ){
+                    $('#ruleId').val(res.data.ruleId);
+
+                    $('#rechargeAmount').val(res.data.rechargeAmount/100);
+                    $('#giveCouponId').val(res.data.giveCouponId);
+
+                    if(res.data.ruleType == 1) {
+                        $('#givePoints').val(res.data.givePoints/100);
+                        $("input[name='ruleType'][value='1']").attr("checked",true);
+                    }else if (res.data.ruleType == 2) {
+                        $('#givePoints').val(res.data.givePoints);
+                        $("input[name='ruleType'][value='2']").attr("checked",true);
+                    }else if (res.data.ruleType == 3) {
+                        $("input[name='ruleType'][value='3']").attr("checked",true);
+                    }
+                    
+                    if(res.data.firstFlag == 0) {
+                        $("input[name='firstFlag'][value='0']").attr("checked",true);
+                    }else {
+                        $("input[name='firstFlag'][value='1']").attr("checked",true);
+                    }
+                    if(res.data.status == 1) {
+                        $("input[name='status'][value='1']").attr("checked",true);
+                    }else {
+                        $("input[name='status'][value='0']").attr("checked",true);
+                    }
+                    $('#remark').val(res.data.remark);
+                }else {
+                    layer.alert(res.msg,{title: '请求失败'})
+                }
+                form.render();
+            }
+            
+        });
+
+        //提交修改后的数据
+        //监听提交
+        form.on('submit(btnUP)', function(data){
+            //充值金额转化
+            data.field.rechargeAmount = data.field.rechargeAmount * 100;
+
+            if (data.field.ruleType == 1) {
+                data.field.givePoints = data.field.givePoints * 100;
+            }
+            // 在这个回调函数里面写ajax提交
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/member_recharge_rule/update',
+                data: data.field,
+                success: function(res){
+                    if(res.code == 0){
+                        layer.closeAll(); //关闭所有弹层
+                        layer.msg("保存成功");
+                        layui.table.reload('tableReload', {page: {curr: 1}}); //调用业务弹层外表格重新加载
+                    }
+                }
+            });
+            return false;//阻止跳转
+        });
+
+        form.render();
+
+    })
+</script>

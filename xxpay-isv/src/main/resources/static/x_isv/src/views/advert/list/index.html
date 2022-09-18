@@ -1,0 +1,248 @@
+
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>广告管理</cite></a>
+        <a><cite>广告列表</cite></a>
+    </div>
+</div>
+
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">广告列表</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-tab-item layui-show">
+                    <div class="layui-row">
+                        <div class="layui-form" style="float:right;">
+                            <div class="layui-form-item" style="margin:0;">
+                                <div class="layui-input-inline">
+                                    <input type="text" name="searchAdvertName" id="searchAdvertName" placeholder="广告名称" autocomplete="off" class="layui-input">
+                                </div>
+                                <div class="layui-input-inline">
+                                    <select name="type" id="searchShowType" placeholder="广告显示位置" lay-search="">
+                                        <option value=""></option>
+                                        <option value="1">闪屏页面</option>
+                                        <option value="2">banner</option>
+                                        <option value="3">支付成功</option>
+                                        <option value="3">支付成功</option>
+                                    </select>
+                                </div>
+                                <div class="layui-input-inline">
+                                    <select name="type" id="searchPutMch" placeholder="投放商户" lay-search="">
+                                        <option value="">投放商户</option>
+                                        <option value="-1">所有商户</option>
+                                        <option value="1">一级子商户</option>
+                                        <option value="2">二级子商户</option>
+                                        <option value="3">三级子商户</option>
+                                    </select>
+                                </div>
+                                <div class="layui-input-inline">
+                                  <input type="text" name="searchEndTime" id="searchEndTime" autocomplete="off" placeholder="结束时间" class="layui-input">
+                                </div>
+                                <button id="search" class="layui-btn" data-type="reload">搜索</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-row">
+                        <div class="layuiAdmin-btns" style="margin-bottom: 10px;">
+                            <a class="layui-btn" data-events="create">新增</a>
+                            <a class="layui-btn" data-events="del">删除</a>
+                        </div>
+                    </div>
+                    <table id="XxPay_Isv_Advert_list" lay-filter="XxPay_Isv_Advert_list"></table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/html" id="xxpayBar">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
+<script>
+    layui.use(['admin', 'table', 'util','view','laydate'], function(){
+        var $ = layui.$
+            ,admin = layui.admin
+            ,table = layui.table
+            ,element = layui.element
+            ,laydate = layui.laydate
+            ,view = layui.view
+            ,form = layui.form;
+
+        element.render('breadcrumb', 'breadcrumb');
+
+        var tplStatus = function(d){
+            if(d.status == 1) {
+                return "<span style='color: green'>启用</span>";
+            }else if(d.status == 0) {
+                return "<span style='color: red'>关闭</span>";
+            }
+        };
+
+        var tplShowType = function(d){
+
+            //显示位置：1-移动端支付成功页, 2-刷脸设备支付成功页, 3-商家APP轮播图片, 4-刷脸设备投屏广告
+            if(d.showType == 1) {
+                return "<span>移动端支付成功页</span>";
+            }else if(d.showType == 2) {
+                return "<span>刷脸设备支付成功页</span>";
+            }else if(d.showType == 3) {
+                return "<span>商家APP轮播图片</span>";
+            }else if(d.showType == 4) {
+                return "<span>刷脸设备投屏广告</span>";
+            }
+        };
+        var tplMch = function(d){
+            if(d.putMch == -1) {
+                return "<span>所有商户</span>";
+            }else if(d.putMch == 1) {
+                return "<span>一级商户</span>";
+            }else if(d.putMch == 2) {
+                return "<span>二级商户</span>";
+            }else if(d.putMch == 3) {
+                return "<span>三级商户</span>";
+            }
+        };
+
+        var tplTime = function(d){
+
+            return "<div>" + layui.util.toDateString(d.beginTime, "yyyy-MM-dd HH:mm:ss") + "~"+ layui.util.toDateString(d.endTime, "yyyy-MM-dd HH:mm:ss") + "</div>" ;
+        }
+
+        //商户列表
+        table.render({
+            elem: '#XxPay_Isv_Advert_list'
+            ,url: layui.setter.baseUrl + '/advert_config/list' //列表接口
+            ,id: 'tableReload'
+            ,page: true
+            ,cols: [[
+                {type: 'checkbox', fixed: 'left'}
+                ,{field: 'advertName', title: '广告名称'}
+                ,{title: '媒体类型', templet: "<div>{{d.mediaType == 1 ? '图片': '视频'}}</div>"}
+                ,{title: '显示位置', templet: tplShowType}
+                ,{field: 'sortNum', title: '排序值'}
+                ,{title: '投放对象', templet: tplMch}
+                ,{title: '投放时间', templet: tplTime }
+                ,{title: '状态', templet: tplStatus}
+                ,{field: 'createTime', title: '创建时间', templet: '<div>{{ layui.util.toDateString(d.createTime, "yyyy-MM-dd HH:mm:ss") }}</div>'}
+                ,{field: 'edit', title: '操作', templet: '#xxpayBar' }
+            ]]
+            ,skin: 'line'
+        });
+
+        //监听工具条
+        table.on('tool(XxPay_Isv_Advert_list)', function(obj){
+            var data = obj.data;
+            if(obj.event === 'detail'){
+                view.xxpayPopup("广告详情", "advert_config/advert_view", {id: data.id}, {btn: false});
+            }else if(obj.event === 'edit'){
+                view.xxpayPopup("修改广告信息", "advert/list/advert_edit", {id: data.id});
+            }else if(obj.event === 'del'){
+                layer.confirm('确认删除么', function(index){
+                    admin.req({
+                        type: 'get',
+                        url: layui.setter.baseUrl + '/advert_config/delete',
+                        data: {
+                            ids: data.id
+                        },
+                        success: function(res){
+                            if(res.code == 0) {
+                                layer.msg('删除成功', {
+                                    icon: 1
+                                });
+                                table.reload("tableReload");
+                            }
+                        }
+                    });
+                });
+            }
+
+        });
+
+        // 事件处理
+        var events = {
+            create: function() {
+                view.xxpayPopup("新增广告", "advert/list/advert_add");
+            },
+            del: function(othis, type){
+                var checkStatus = table.checkStatus("tableReload")
+                    ,data = checkStatus.data; //获得选中的数据
+                if(data.length === 0) return layer.msg('请选择数据');
+                console.log(data);
+                layer.confirm('确定删除选中的数据吗？', function(){
+                    var ids = "";
+                    $.each(data, function(i, n){
+                        ids = ids + "," + n.id;
+                    });
+                    if(ids != "") {
+                        ids = ids.substring(1);
+                    }
+
+                    admin.req({
+                        type: 'get',
+                        url: layui.setter.baseUrl + '/advert_config/delete',
+                        data: {
+                            ids: ids,
+                        },
+                        success: function(res){
+                            if(res.code == 0) {
+                                layer.msg('删除成功', {
+                                    icon: 1
+                                });
+                                table.reload("tableReload");
+                            }
+                        }
+                    });
+                });
+            }
+        };
+
+        $('.layuiAdmin-btns .layui-btn').on('click', function(){
+            var othis = $(this)
+                ,thisEvent = othis.data('events')
+                ,type = othis.data('type');
+            events[thisEvent] && events[thisEvent].call(this, othis, type);
+        });
+
+        // 搜索
+        var $ = layui.$, active = {
+            reload: function(){
+                var advertName = $('#searchAdvertName').val();
+                var advertPlace = $('#searchAdvertPlace').val();
+                var putMch = $('#searchPutMch').val();
+                var endTime = $('#searchEndTime').val();
+                //执行重载
+                table.reload('tableReload', {
+                    page: {
+                        curr: 1 //重新从第 1 页开始
+                    }
+                    ,where: {
+                        advertName: advertName,
+                        advertPlace: advertPlace,
+                        putMch: putMch,
+                        endTime: endTime
+                    }
+                });
+            }
+        };
+        $('#search').on('click', function() {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+
+        laydate.render({
+            elem: '#searchEndTime'
+            ,type: 'datetime'
+            ,format: 'yyyy-MM-dd HH:mm:ss'
+            ,trigger: 'click'
+        });
+        // 渲染表单
+        form.render();
+    });
+</script>

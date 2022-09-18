@@ -1,0 +1,220 @@
+<style>
+    .xxpayPopupDiv .layui-form-label {
+        width:15% !important;
+        margin-left:1%;
+    }
+    .xxpayPopupDiv .layui-input-inline {
+        width: 33% !important;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <div class="layui-tab-content">
+                <form class="layui-form layui-form-pane" action="">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">优惠券ID</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="couponId" name="couponId" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">优惠券名称</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="couponName" name="couponName" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label" id="previewColor">优惠券配色</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="couponColor" name="couponColor" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">优惠券logo路径</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="logoImgPath" name="logoImgPath" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">优惠券面值</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="couponAmount" name="couponAmount" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">最低消费金额</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="payAmountLimit" name="payAmountLimit" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">领取后有效期天数</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="validateDay" name="validateDay" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">是否同步到微信卡包</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="syncWX" name="syncWX" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">有效期类型</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="validateType" name="validateType" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">状态</label>
+                        <div class="layui-input-inline">
+                            <input type="tel" id="status" name="status" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">总发放数量</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="totalNum" name="totalNum" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">已领取数量</label>
+                        <div class="layui-input-inline">
+                            <input type="tel" id="receiveNum" name="receiveNum" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">优惠券使用限制</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="useTimeConfig" name="useTimeConfig" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">单用户领取数量限制</label>
+                        <div class="layui-input-inline">
+                            <input type="tel" id="singleUserLimit" name="singleUserLimit" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">过期提醒提前天数</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="expiredWarningTime" name="expiredWarningTime" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">所属商户ID</label>
+                        <div class="layui-input-inline">
+                            <input type="tel" id="mchId" name="mchId" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">活动开始时间</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="beginTime" name="beginTime" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">活动结束时间</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="endTime" name="endTime" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">是否限制门店</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="storeLimitType" name="storeLimitType" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">备注</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="remark" name="remark" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">创建时间</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="createTime" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">更新时间</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="updateTime" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    layui.use(['admin','form'],function(){
+        var form = layui.form
+            ,$ = layui.$
+            ,admin = layui.admin
+            ,element = layui.element
+            ,view = layui.view
+            ,layer = layui.layer ;
+        // 导航
+        element.render('breadcrumb', 'breadcrumb');
+
+        var couponId = view.getOpenParams('couponId');
+            admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/coupon/get',
+            data: {
+                couponId : couponId
+            },
+            error: function(err){
+                layer.alert(JSON.stringify(err.field), {
+                    title: '错误提示'
+                })
+            },
+            success: function(res){
+                if(res.code == 0){
+                    $('#couponId').val(res.data.couponId);
+
+                    $('#couponName').val(res.data.couponName);
+                    $('#couponColor').val(res.data.couponColor);
+                    $("#previewColor").css("backgroundColor", res.data.couponColor);
+                    $('#logoImgPath').val(res.data.logoImgPath);
+                    $('#couponAmount').val(res.data.couponAmount/100);
+                    $('#payAmountLimit').val(res.data.payAmountLimit/100);
+                    $('#validateDay').val(res.data.validateDay);
+                    $('#totalNum').val(res.data.totalNum);
+                    $('#receiveNum').val(res.data.receiveNum);
+                    $('#useTimeConfig').val(res.data.useTimeConfig);
+                    $('#mchId').val(res.data.mchId);
+                    if(res.data.status == 0) {
+                        $('#status').val("停止发放");
+                    }else if(res.data.status == 1) {
+                        $('#status').val("正常发放");
+                    }else if(res.data.status == 2) {
+                        $('#status').val("活动已结束");
+                    }
+                    if(res.data.validateType == 1) {
+                        $('#validateType').val("领取后天数");
+                    }else if(res.data.validateType == 2) {
+                        $('#validateType').val("按活动日期");
+                    }
+                    if(res.data.storeLimitType == 0) {
+                        $('#storeLimitType').val("不限门店");
+                    }else if(res.data.storeLimitType == 1) {
+                        $('#storeLimitType').val("限制门店");
+                    }
+                    if(res.data.syncWX == 0) {
+                        $('#syncWX').val("否");
+                    }else if(res.data.syncWX == 1) {
+                        $('#syncWX').val("是");
+                    }
+                    if(res.data.singleUserLimit == -1) {
+                        $('#singleUserLimit').val("不限制");
+                    }else {
+                        $('#singleUserLimit').val(res.data.singleUserLimit);
+                    }
+                    if(res.data.expiredWarningTime == -1) {
+                        $('#expiredWarningTime').val("不提醒");
+                    }else {
+                        $('#expiredWarningTime').val(res.data.expiredWarningTime);
+                    }
+                    $('#remark').val(res.data.remark);
+
+                    if(res.data.beginTime != "" && res.data.beginTime != null) {
+                        $('#beginTime').val(layui.util.toDateString(res.data.beginTime));
+                    }
+                    if(res.data.endTime != "" && res.data.endTime != null) {
+                        $('#endTime').val(layui.util.toDateString(res.data.endTime));
+                    }
+                    if(res.data.createTime != "" && res.data.createTime != null) {
+                        $('#createTime').val(layui.util.toDateString(res.data.createTime));
+                    }
+                    if(res.data.updateTime != "" && res.data.updateTime != null) {
+                        $('#updateTime').val(layui.util.toDateString(res.data.updateTime));
+                    }
+                    form.render();
+                }
+            }
+        })
+    })
+</script>

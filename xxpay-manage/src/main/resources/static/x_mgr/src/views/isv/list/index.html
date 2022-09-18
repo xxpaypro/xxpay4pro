@@ -1,0 +1,204 @@
+
+<div class="layui-card layadmin-header">
+  <div class="layui-breadcrumb" lay-filter="breadcrumb">
+    <a lay-href="">主页</a>
+    <a><cite>服务商管理</cite></a>
+    <a><cite>所有服务商</cite></a>
+  </div>
+</div>
+
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-tab layui-tab-brief">
+      <ul class="layui-tab-title">
+        <li class="layui-this">服务商列表</li>
+      </ul>
+      <div class="layui-tab-content">
+        <div class="layui-tab-item layui-show">
+          <div class="layui-row">
+            <div class="layui-form" style="float:right;">
+              <div class="layui-form-item" style="margin:0;">
+
+                <div class="layui-input-inline">
+                  <input type="text" name="searchIsvId" id="searchIsvId" placeholder="服务商ID" autocomplete="off" class="layui-input">
+                </div>
+
+                <button id="search" class="layui-btn" data-type="reload">搜索</button>
+              </div>
+            </div>
+          </div>
+          <div class="layui-row">
+            <div class="layuiAdmin-btns" style="margin-bottom: 10px;">
+              <a class="layui-btn" data-events="create">新增</a>
+            </div>
+          </div>
+          <table id="XxPay_Mgr_Isv_dataAll" lay-filter="XxPay_Mgr_Isv_dataAll"></table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  layui.use(['admin', 'table', 'util','view'], function(){
+    var $ = layui.$
+            ,admin = layui.admin
+            ,table = layui.table
+            ,element = layui.element
+            ,view = layui.view
+            ,form = layui.form;
+
+    element.render('breadcrumb', 'breadcrumb');
+
+    var tplStatus = function(d){
+
+      var checkedHtml = " recordId='"+d.isvId+"' ";
+      if(d.status == 1) {
+          checkedHtml += " checked";
+      }
+
+      var statusHtml;
+      if (d.status == 0 || d.status == 1) {
+        statusHtml = '<input type="checkbox" lay-filter="statusSwitch" lay-skin="switch" '+checkedHtml+' lay-text="启用|停用">';
+      }else if(d.status == -1) {
+        statusHtml = '<span style="color: orange">等待审核</span>';
+      }else if(d.status == -2) {
+        statusHtml = '<span style="color: red">审核不通过</span>';
+      }
+
+      return statusHtml;
+    };
+
+    var tplEdit = function(d){
+
+        var editHtml = "<a class='layui-btn layui-btn-primary layui-btn-xs' lay-event='loginSystem'>登录系统</a>" +
+                "<a class='layui-btn layui-btn-primary layui-btn-xs' lay-event='isvDetail'>查看信息</a>" +
+                "<a class='layui-btn layui-btn-primary layui-btn-xs' lay-event='ifTypeConfig'>接口配置</a>" +
+                "<a class='layui-btn layui-btn-xs' lay-event='edit'>编辑</a>" +
+                "<a class='layui-btn layui-btn-xs' lay-event='resetLoginPwd'>重置密码</a>";
+
+        if (d.status == '-1') {
+          editHtml += "<a class='layui-btn layui-btn-xs' lay-event='audit'>审核</a>";
+        }
+            return editHtml;
+    };
+
+    //服务商列表
+    table.render({
+      elem: '#XxPay_Mgr_Isv_dataAll'
+      ,url: layui.setter.baseUrl + '/isv_info/list' //列表接口
+      ,id: 'tableReload'
+      ,page: true
+      ,cols: [[
+        {type: 'checkbox', fixed: 'left'}
+        ,{field: 'isvId', title: '服务商ID'}
+        ,{field: 'isvName', title: '服务商名称'}
+        ,{field: 'status', title: '状态', templet: tplStatus}
+        ,{field: 'createTime', title: '时间', width: 200, templet: '<div>{{ layui.util.toDateString(d.createTime, "yyyy-MM-dd HH:mm:ss") }}</div>'}
+        ,{field: 'edit', title: '操作', width: 500, templet: tplEdit }
+      ]]
+      ,skin: 'line'
+    });
+
+    //监听工具条
+    table.on('tool(XxPay_Mgr_Isv_dataAll)', function(obj){
+      var data = obj.data;
+      if(obj.event === 'isvDetail'){
+        view.xxpayPopup("服务商详情", "isv/list/isv_view", {isvId: data.isvId}, {btn: false});
+      }else if(obj.event === 'edit'){
+        view.xxpayPopup("编辑服务商", "isv/list/isv_edit", {isvId: data.isvId});
+      }else if(obj.event === 'ifTypeConfig'){  //接口配置
+          location.href = layui.setter.baseLocal + "isv/list/isv_passage_list/isvId=" + data.isvId;
+      }else if(obj.event === 'audit'){ //服务商审核
+        view.xxpayPopup("审核商户", "isv/list/isv_audit", {isvId: data.isvId});
+      }else if(obj.event === 'loginSystem'){
+    	  
+ 	     admin.req({
+ 			type: 'post',
+ 			url: layui.setter.baseUrl + '/isv_info/genLoginUrl',
+ 			data: {isvId : data.isvId},
+ 			success: function(resData){
+      					layer.alert("请点击登录按钮（有效期1分钟）：", {btn:['登录']}
+      					,function(aid){
+      						window.open(resData.data.loginUrl);
+      						layer.close(aid);
+      					});
+      			     }
+ 			});
+      }else if(obj.event === "resetLoginPwd"){ //重置密码
+
+          layer.confirm("确认重置服务商登录密码？ ", function(index){
+
+              admin.req({
+                  type: 'post',
+                  url: layui.setter.baseUrl + '/isv_info/resetLoginPwd',
+                  data: {isvId : data.isvId},
+                  success: function(resData){
+                      layer.msg("重置成功", {icon: 1});
+                      layer.close(index);
+                  }
+              });
+          });
+      }
+
+    });
+
+    form.on('switch(statusSwitch)', function(data){
+
+        var updateRecordId = $(data.elem).attr('recordId');
+        var updateState = data.elem.checked ? "1" : "0";
+        var loadingIndex = layer.load();
+        admin.req({
+            type: "POST",
+            url: layui.setter.baseUrl + '/isv_info/update',
+            data: {isvId: updateRecordId, status: updateState},
+            success: function(res){
+                if(res.code == 0) {
+                    table.reload('tableReload');
+                }
+            },
+            complete:function(){
+                layer.close(loadingIndex);
+            }
+        });
+    });
+    // 事件处理
+    var events = {
+        create: function () {
+            view.xxpayPopup("新建服务商", "isv/list/isv_add");
+        }
+    };
+
+    // 搜索
+    var $ = layui.$, active = {
+      reload: function(){
+        var isvId = $('#searchIsvId').val();
+        //执行重载
+        table.reload('tableReload', {
+          page: {
+            curr: 1 //重新从第 1 页开始
+          }
+          ,where: {
+            isvId: isvId
+          }
+        });
+      }
+    };
+
+    $('#search').on('click', function() {
+      var type = $(this).data('type');
+      active[type] ? active[type].call(this) : '';
+    });
+
+    $('.layuiAdmin-btns .layui-btn').on('click', function(){
+        var othis = $(this)
+            ,thisEvent = othis.data('events')
+            ,type = othis.data('type');
+        events[thisEvent] && events[thisEvent].call(this, othis, type);
+    });
+
+    // 渲染表单
+    form.render();
+  });
+</script>

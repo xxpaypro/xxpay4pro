@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+    <title>刷脸支付 - 小新支付</title>
+    <meta name="keywords" content="刷脸支付,刷脸支付系统源码,XxPay刷脸支付解决方案">
+    <meta name="description" content="XxPay刷脸支付系统使用Java开发,支持分布式部署,高并发.商户收款支持收款app|小程序|pc收银插件|青蛙和蜻蜓刷脸.">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+  <link rel="stylesheet" href="/x_mch/start/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="/css/global.css" media="all">
+    <style>
+        .banner-img {
+            width: 100%;
+            height: 600px;
+        }
+        .banner-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+<div class="page">
+    <div class="headerpage fly-header"></div>
+    <!-- banner -->
+    <div class="layui-carousel" id="banner">
+        <div carousel-item  id="imgH">
+            <div class="banner-img"><img src="images/banner/b1.jpg" /></div>
+            <div class="banner-img"><img src="images/banner/b2.jpg" /></div>
+        </div>
+    </div>
+    <div class="xxpay-index">
+        <div class="xxpay-mode">
+            <div class="xxpay-mode-title">
+                <p>多种支付方案，满足不同商家需求</p>
+            </div>
+            <div class="xxpay-mode-body">
+                <div class="xxpay-body-card-list" id="cardList">
+                    <div class="xxpay-body-card" id="alipay">
+                        <div class="xxpay-body-card-top">
+                            <img src="images/index/alipayB.png" />
+                        </div>
+                        <p class="title">支付宝刷脸</p>
+                        <div class="xxpay-body-card-bottom">
+                            <p>支付宝刷脸支付接入</p>
+                            <p>支付宝进行收款退款</p>
+                        </div>
+                    </div>
+                    <div class="xxpay-body-card layui-hide" style="margin-top: 10px;background-color: #1296DB;" id="alipayHover">
+                        <div class="xxpay-body-card-top">
+                            <img src="images/index/alipayW.png" />
+                        </div>
+                        <p class="title" style="color: #ffffff">支付宝刷脸</p>
+                        <div class="xxpay-body-card-bottom">
+                            <button type="button" class="layui-btn layui-btn-primary" style="color: #1296DB">查看详情</button>
+                        </div>
+                    </div>
+                    <div class="xxpay-body-card" id="wxpay">
+                        <div class="xxpay-body-card-top">
+                            <img src="images/index/wxpayB.png" />
+                        </div>
+                        <p class="title">微信刷脸</p>
+                        <div class="xxpay-body-card-bottom">
+                            <p>微信刷脸支付接入</p>
+                            <p>微信进行收款退款</p>
+                        </div>
+                    </div>
+                    <div class="xxpay-body-card layui-hide" style="margin-top: 10px;background-color: #09BB07;z-index: 999;" id="wxpayHover">
+                        <div class="xxpay-body-card-top">
+                            <img src="images/index/wxpayW.png" />
+                        </div>
+                        <p class="title" style="color: #ffffff">微信刷脸</p>
+                        <div class="xxpay-body-card-bottom">
+                            <button type="button" class="layui-btn layui-btn-primary" style="color: #09BB07">查看详情</button>
+                        </div>
+                    </div>
+                    <div class="xxpay-body-card" id="app">
+                        <div class="xxpay-body-card-top">
+                            <img src="images/index/appB.png" />
+                        </div>
+                        <p class="title">APP</p>
+                        <div class="xxpay-body-card-bottom">
+                            <p>APP进件、商家、会员端</p>
+                            <p>APP进行收款退款</p>
+                        </div>
+                    </div>
+                    <div class="xxpay-body-card layui-hide" style="margin-top: 10px;background-color: #FF4B00;z-index: 99;" id="appHover">
+                        <div class="xxpay-body-card-top">
+                            <img src="images/index/appW.png" />
+                        </div>
+                        <p class="title" style="color: #ffffff">APP</p>
+                        <div class="xxpay-body-card-bottom">
+                            <button type="button" class="layui-btn layui-btn-primary" style="color: #FF4B00">查看详情</button>
+                        </div>
+                    </div>
+                    <div class="xxpay-body-card" id="wxproject">
+                        <div class="xxpay-body-card-top">
+                            <img src="images/index/wxprojectB.png" />
+                        </div>
+                        <p class="title">小程序</p>
+                        <div class="xxpay-body-card-bottom">
+                            <p>小程序进件、商家、会员端</p>
+                            <p>小程序进行收款退款</p>
+                        </div>
+                    </div>
+                    <div class="xxpay-body-card layui-hide" style="margin-top: 10px;background-color: #4607DF;z-index: 99;" id="wxprojectHover">
+                        <div class="xxpay-body-card-top">
+                            <img src="images/index/wxprojectW.png" />
+                        </div>
+                        <p class="title" style="color: #ffffff">小程序</p>
+                        <div class="xxpay-body-card-bottom">
+                            <button type="button" class="layui-btn layui-btn-primary" style="color: #4607DF">查看详情</button>
+                        </div>
+                    </div>
+                    <div class="xxpay-body-card" id="code">
+                        <div class="xxpay-body-card-top">
+                            <img src="images/index/codeB.png" />
+                        </div>
+                        <p class="title">聚合码</p>
+                        <div class="xxpay-body-card-bottom">
+                            <p>固定、非固定金额聚合码</p>
+                            <p>聚合码加入会员</p>
+                        </div>
+                    </div>
+                    <div class="xxpay-body-card layui-hide" style="margin-top: 10px;background-color: #F62E2E;z-index: 99;" id="codeHover">
+                        <div class="xxpay-body-card-top">
+                            <img src="images/index/codeW.png" />
+                        </div>
+                        <p class="title" style="color: #ffffff">聚合码</p>
+                        <div class="xxpay-body-card-bottom">
+                            <button type="button" class="layui-btn layui-btn-primary" style="color: #F62E2E">查看详情</button>
+                        </div>
+                    </div>
+                    <div class="xxpay-body-card" id="pc">
+                        <div class="xxpay-body-card-top">
+                            <img src="images/index/pcB.png" />
+                        </div>
+                        <p class="title">收银插件</p>
+                        <div class="xxpay-body-card-bottom">
+                            <p>收银插件刷脸支付接入</p>
+                            <p>收银插件进行收款退款</p>
+                        </div>
+                    </div>
+                    <div class="xxpay-body-card layui-hide" style="margin-top: 10px;background-color: #00D4AA;z-index: 99;" id="pcHover">
+                        <div class="xxpay-body-card-top">
+                            <img src="images/index/pcW.png" />
+                        </div>
+                        <p class="title" style="color: #ffffff">收银插件</p>
+                        <div class="xxpay-body-card-bottom">
+                            <button type="button" class="layui-btn layui-btn-primary" style="color: #00D4AA">查看详情</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="xxpay-mode layui-hide-xs">
+            <div class="xxpay-mode-title">
+                <p>支付新体验</p>
+            </div>
+            <div class="xxpay-mode-body">
+                <div class="xxpay-body-bg-text">NEWEXPERIENCE</div>
+                <div class="xxpay-mode-body-left">
+                    <div style="z-index: 99;position: relative">
+                        <img class="xxpay-experience" src="images/index/pay.webp"/>
+                    </div>
+                    <div class="xxpay-body-left-bg"></div>
+                </div>
+                <div class="xxpay-body-column-list">
+                    <div class="xxpay-body-column-text">
+                        <p class="title">新技术</p>
+                        <p class="content">支付场景极低误识率（FAR）, 整体识别流程耗时小于 1s，节约支付环节的等待时间。</p>
+                    </div>
+                    <div class="xxpay-body-column-text">
+                        <p class="title">新趋势</p>
+                        <p class="content">零售模式升级，从传统的赶集造节变成顾客日常触达，商户自主营销、能力更强，市场 竞争力更强。</p>
+                    </div>
+                    <div class="xxpay-body-column-text">
+                        <p class="title">新流量</p>
+                        <p class="content">行业平台流量转化为商户自有流量，精细化私域经营，流量获取成本更低，更精准，更有效。</p>
+                    </div>
+                    <div class="xxpay-body-column-text">
+                        <p class="title">更安全</p>
+                        <p class="content">3D活体检测技术，可拦截照片、面具、视频等攻击，支付ID盗取、复制难度极大，支付更安全可靠。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="xxpay-mode layui-hide-xs">
+            <div class="xxpay-mode-title">
+                <p>刷脸流程演示</p>
+            </div>
+            <div class="xxpay-mode-body">
+                <div class="xxpay-body-card-list" style="width: 1180px">
+                    <div class="xxpay-body-step">
+                        <div>
+                            <img src="images/index/step1.png" style="width: 220px;height: 380px;"/>
+                        </div>
+                        <div class="xxpay-body-step-bottom">01 店家输入付款金额</div>
+                    </div>
+                    <div class="xxpay-body-step">
+                        <div>
+                            <img src="images/index/step2.png" style="width: 220px;height: 380px;"/>
+                        </div>
+                        <div class="xxpay-body-step-bottom">02 选择刷脸支付</div>
+                    </div>
+                    <div class="xxpay-body-step">
+                        <div>
+                            <img src="images/index/step3.png" style="width: 220px;height: 380px;"/>
+                        </div>
+                        <div class="xxpay-body-step-bottom">03 刷脸核实身份</div>
+                    </div>
+                    <div class="xxpay-body-step">
+                        <div>
+                            <img src="images/index/step4.png" style="width: 220px;height: 380px;"/>
+                        </div>
+                        <div class="xxpay-body-step-bottom">04 输入手机号核实身份</div>
+                    </div>
+                    <div class="xxpay-body-step">
+                        <div>
+                            <img src="images/index/step5.png" style="width: 220px;height: 380px;"/>
+                        </div>
+                        <div class="xxpay-body-step-bottom" style="background-color: #0FD061;box-shadow:0px 20px 60px 0px rgba(0,195,101,0.3);">05 支付成功</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="xxpay-mode layui-hide-xs">
+            <div class="xxpay-mode-title">
+                <p>刷脸支付+营销升级交易体验</p>
+            </div>
+            <div class="xxpay-mode-body">
+                <div class="xxpay-body-column-list" style="width: 550px">
+                    <div class="xxpay-body-column-text-right">
+                        <p class="title">支付 + 广告</p>
+                        <p class="content">支付APP广告，付款后跳转广告，丰富计费模式以及广告形式</p>
+                    </div>
+                    <div class="xxpay-body-column-text-right">
+                        <p class="title">支付 + 积分</p>
+                        <p class="content">根据商户相关规则，支付后可获积分，积分可用于兑换商品，激发用户使用欲望</p>
+                    </div>
+                    <div class="xxpay-body-column-text-right">
+                        <p class="title">支付 + 卡券</p>
+                        <p class="content">支持优惠券使用，有利于引流聚粉，快速实现二次交易</p>
+                    </div>
+                </div>
+                <div class="xxpay-mode-body-left" style="margin: 0">
+                    <div style="z-index: 99;position: relative">
+                        <img src="images/index/facepay.webp" style="width: 700px;height:500px;"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="ellipse layui-hide-xs">
+            <div class="xxpay-mode">
+                <div class="xxpay-white-title">
+                    <p>多重产品优势打造核心竞争力</p>
+                </div>
+                <div class="xxpay-white-body">
+                    <div class="xxpay-white-body-left">
+                       <div class="xxpay-white-left-item">
+                           <div class="xxpay-item-left">
+                               <p class="title">支付更高效</p>
+                               <p class="content">人脸支付识别耗时更低，节约支付等待时间，支付更高效</p>
+                           </div>
+                           <div class="xxpay-white-body-img">
+                               <img src="images/index/left_top.webp" />
+                           </div>
+                       </div>
+                        <div class="xxpay-white-left-item">
+                            <div class="xxpay-item-left">
+                                <p class="title">巨头布局</p>
+                                <p class="content">行业巨头布局，深耕全新零售场景</p>
+                            </div>
+                            <div class="xxpay-white-body-img">
+                                <img src="images/index/left_bottom.webp" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="xxpay-white-body-right">
+                        <div class="xxpay-white-left-item">
+                            <div class="xxpay-white-body-img">
+                                <img src="images/index/right_top.webp" />
+                            </div>
+                            <div class="xxpay-item-right">
+                                <p class="title">交易更安全</p>
+                                <p class="content">全新识别技术交易安全更可靠</p>
+                            </div>
+                        </div>
+                        <div class="xxpay-white-left-item">
+                            <div class="xxpay-white-body-img">
+                                <img src="images/index/right_bottom.webp" />
+                            </div>
+                            <div class="xxpay-item-right">
+                                <p class="title">维护与迭代</p>
+                                <p class="content">强大的技术团队为您提供完整的技术指导与行业支持</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="background-color: #000000" class=" layui-hide-xs">
+            <div class="xxpay-mode">
+                <div class="xxpay-white-title" style="margin: 80px 0 0 0">
+                    <p>标准化管理矩阵</p>
+                </div>
+                <p style="font-size:16px;font-family:PingFang SC;font-weight:500;color:rgba(255,255,255,1);line-height:45px;opacity:0.6;">快速提高管理效率</p>
+                <div class="xxpay-white-body">
+                    <div class="xxpay-mode-body-left">
+                        <div>
+                            <img src="images/index/manage.webp" style="width: 500px;height:500px;"/>
+                        </div>
+                    </div>
+                    <div class="xxpay-body-column-list">
+                        <div class="xxpay-body-column-text">
+                            <p class="title">角色管理</p>
+                            <p class="content">运营平台，服务商平台，多级代理商平台，商户，轻松管理</p>
+                        </div>
+                        <div class="xxpay-body-column-text">
+                            <p class="title">营销管理</p>
+                            <p class="content">完善的营销管理体系，帮助商户高效的进行活动营销</p>
+                        </div>
+                        <div class="xxpay-body-column-text">
+                            <p class="title">支付管理</p>
+                            <p class="content ">订单查询，收退款，交班记录，可视化交易数据，对账更便捷</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="partners">
+            <div class="xxpay-mode">
+                <div class="xxpay-white-title">
+                    <p>企业介绍</p>
+                </div>
+                <div style="width: 100%;text-align: center">
+                    <img src="images/index/index.webp" style="width: 65px;height: 56px;"/>
+                </div>
+                <div class="xxpay-mode-body" style="padding-bottom: 60px">
+                    <div class="xxpay-body-card-list">
+                        <p class="xxpay-introduce">
+                            &ensp;&ensp;&ensp;&ensp;骏易科技是一家专业的互联网软件研发公司，为客户提供专业的支付解决方案。团队核心成员来自一线互联网支付公司，熟悉支付业务及技术架构。公司自研的XxPay开源聚合支付系统，得到了广大用户的支持，并成为最早一批开源中国授予的GVP项目奖。公司团队基于该开源产品，相继推出了聚合支付商业版、个付通系统、刷脸支付系统。骏易科技定位于专业的支付软件开发商，定以工匠精神打磨行业精品！
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="footerpage fly-footer"></div>
+<script src="/x_mch/start/layui/layui.js"></script>
+<script>
+    layui.use('carousel', function(){
+        var $ = layui.$;
+                carousel = layui.carousel;
+
+        //建造实例
+        carousel.render({
+            elem: '#banner'
+            ,width: '100%' //设置容器宽度
+            ,height: '600px'
+            ,indicator: 'inside'
+            ,interval: '5000'
+            ,anim: 'fade'
+        });
+
+        $(".headerpage").load("/common/header.html");
+        $(".footerpage").load("/common/footer.html");
+
+        $("#alipay").on('mouseenter', function () { $("#alipay").addClass("layui-hide"); $("#alipayHover").removeClass("layui-hide");})
+        $("#alipayHover").on('mouseleave', function () { $("#alipay").removeClass("layui-hide"); $("#alipayHover").addClass("layui-hide"); })
+
+        $("#wxpay").on('mouseenter', function () { $("#wxpay").addClass("layui-hide"); $("#wxpayHover").removeClass("layui-hide"); })
+        $("#wxpayHover").on('mouseleave', function () { $("#wxpay").removeClass("layui-hide"); $("#wxpayHover").addClass("layui-hide"); })
+
+        $("#app").on('mouseenter', function () { $("#app").addClass("layui-hide"); $("#appHover").removeClass("layui-hide"); })
+        $("#appHover").on('mouseleave', function () { $("#app").removeClass("layui-hide"); $("#appHover").addClass("layui-hide"); })
+
+        $("#code").on('mouseenter', function () { $("#code").addClass("layui-hide"); $("#codeHover").removeClass("layui-hide"); })
+        $("#codeHover").on('mouseleave', function () { $("#code").removeClass("layui-hide"); $("#codeHover").addClass("layui-hide"); })
+
+        $("#wxproject").on('mouseenter', function () { $("#wxproject").addClass("layui-hide"); $("#wxprojectHover").removeClass("layui-hide"); })
+        $("#wxprojectHover").on('mouseleave', function () { $("#wxproject").removeClass("layui-hide"); $("#wxprojectHover").addClass("layui-hide"); })
+
+        $("#pc").on('mouseenter', function () { $("#pc").addClass("layui-hide"); $("#pcHover").removeClass("layui-hide"); })
+        $("#pcHover").on('mouseleave', function () { $("#pc").removeClass("layui-hide"); $("#pcHover").addClass("layui-hide"); })
+
+        $("#cardList").on('mouseleave', function () {
+            $("#alipay").removeClass("layui-hide"); $("#alipayHover").addClass("layui-hide");
+            $("#wxpay").removeClass("layui-hide"); $("#wxpayHover").addClass("layui-hide");
+            $("#app").removeClass("layui-hide"); $("#appHover").addClass("layui-hide");
+            $("#code").removeClass("layui-hide"); $("#codeHover").addClass("layui-hide");
+            $("#wxproject").removeClass("layui-hide"); $("#wxprojectHover").addClass("layui-hide");
+            $("#pc").removeClass("layui-hide"); $("#pcHover").addClass("layui-hide");
+        })
+
+    });
+</script>
+</body>
+</html>

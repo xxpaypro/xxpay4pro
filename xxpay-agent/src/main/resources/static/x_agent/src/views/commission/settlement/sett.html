@@ -1,0 +1,67 @@
+<style>
+    .xxpayPopupDiv .layui-form-label {
+        width:120px !important;
+        margin-left:1%;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <div class="layui-tab-content">
+
+                <form class="layui-form center">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">任务ID</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="taskId" name="taskId" readonly="readonly" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">支付凭证附件</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="settImg" autocomplete="off" class="layui-input" lay-verify="required">
+                        </div>
+                    </div>
+                    <button type="button" class="layui-hide xxpayYesBtn" lay-submit="" lay-filter="saveSett">保存</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    layui.use(['form','table','util','admin','view'],function(){
+        var form = layui.form
+            , $ = layui.$
+            , admin = layui.admin
+            , layer = layui.layer
+            , element = layui.element
+            , view = layui.view
+            , table = layui.table;
+
+        element.render('breadcrumb', 'breadcrumb'); //渲染导航信息
+
+        var taskId = view.getOpenParams('taskId');
+        $("#taskId").val(taskId);
+
+
+        form.on('submit(saveSett)', function(data){
+
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/sub_order_profit/settApply',
+                data: data.field,
+                error: function(err){layer.alert(err.msg,{title:"请求失败"})},
+                success: function(res){
+                    if(res.code == 0){
+                        layer.alert(res.msg, {title: '处理成功'},function(index){
+                            layer.closeAll(); //关闭所有弹层
+                            layui.table.reload('tableReload', {page: {curr: 1}}); //调用业务弹层外表格重新加载
+                        });
+                    }
+                }
+            });
+            return false;
+        });
+    });
+</script>

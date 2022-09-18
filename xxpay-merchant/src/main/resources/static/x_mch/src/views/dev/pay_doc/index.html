@@ -1,0 +1,53 @@
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a><cite>接口文档</cite></a>
+    </span>
+</div>
+
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <form class="layui-form downForm" method='post'>
+                <input hidden class='downAccessToken'/>
+                <div class="layui-tab layui-tab-brief">
+                    <ul class="layui-tab-title">
+                        <li class="layui-this">商户接口文档</li>
+                    </ul>
+                    <div class="layui-tab-content">
+                        <div class="layui-form-item">
+                            <div class="" style="padding-bottom: 20px;">
+                                <label class="layui-form-label">在线文档：</label>
+                                <a href='../src/views/dev/pay_doc/pay.html' target='_blank' class="layui-btn layui-icon layui-icon-file-b" > 支付API接口文档</a>
+                                <a href='../src/views/dev/pay_doc/agpay.html' target='_blank' class="layui-btn layui-icon layui-icon-file-b" > 代付API接口文档</a>
+                            </div>
+
+                            <div class="" style="padding-bottom: 20px;">
+                                <label class="layui-form-label">demo下载：</label>
+                                <button type="submit" class="layui-btn layui-btn-info layui-icon layui-icon-download-circle" lay-submit > java</button>
+                                <button type="submit" class="layui-btn layui-btn-info layui-icon layui-icon-download-circle" lay-submit > php</button>
+                                <button type="submit" class="layui-btn layui-btn-info layui-icon layui-icon-download-circle" lay-submit > asp</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    layui.use([], function(){
+        var $ = layui.$;
+        var tokenParamsName = layui.setter.request.tokenName;
+        $('.downAccessToken').attr('name', tokenParamsName).val(layui.data(layui.setter.tableName)[tokenParamsName]);
+        $('.downForm').attr('action' , layui.setter.baseUrl+'/paydoc/downloadDemo');
+    });
+
+</script>
+
+
+
+
+

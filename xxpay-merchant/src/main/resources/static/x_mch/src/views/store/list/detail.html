@@ -1,0 +1,138 @@
+<style>
+    .xxpayPopupDiv .layui-form-label {
+        width:15% !important;
+        margin-left:1%;
+    }
+    .xxpayPopupDiv .layui-input-inline {
+        width: 33% !important;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <div class="layui-tab-content">
+                <form class="layui-form layui-form-pane" action="">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">门店图片</label>
+                        <div class="layui-input-inline">
+                            <input id="storeImgPath" type="hidden" name="storeImgPath" autocomplete="off" class="layui-input">
+                            <div class="layui-input-inline">
+                                <img id="img" class="uploadImg" style="height:38px; margin-left:30px;cursor: pointer;" title="点击放大" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">门店编号</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="storeNo" name="storeNo" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">门店名称</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="storeName" name="storeName" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">门店详细地址</label>
+                        <div class="layui-input-inline">
+                            <input id="address" name="address" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">门店电话</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="tel" name="tel" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">门店状态</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="status" name="status" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">备注</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="remark" name="remark" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">创建时间</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="createTime" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">更新时间</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="updateTime" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    layui.use(['admin','form'],function(){
+        var form = layui.form
+            ,$ = layui.$
+            ,admin = layui.admin
+            ,element = layui.element
+            ,view = layui.view
+            ,layer = layui.layer ;
+        // 导航
+        element.render('breadcrumb', 'breadcrumb');
+
+        var storeId = view.getOpenParams('storeId');
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/store/get',
+            data: {
+                storeId : storeId
+            },
+            error: function(err){
+                layer.alert(JSON.stringify(err.field), {
+                    title: '错误提示'
+                })
+            },
+            success: function(res){
+                if(res.code == 0){
+                    $('#storeNo').val(res.data.storeNo);
+                    $('#storeName').val(res.data.storeName);
+                    $('#address').val(res.data.areaInfo + " " + res.data.address);  // 位置信息
+                    $('#lot').val(res.data.lot);
+                    $('#lat').val(res.data.lat);
+                    if(res.data.status == 0) {
+                        $('#status').val("暂停营业");
+                    }else if(res.data.status == 1) {
+                        $('#status').val("正常营业");
+                    }
+                    $('#tel').val(res.data.tel);
+                    $('#img').attr('src', res.data.storeImgPath);
+                    $('#remark').val(res.data.remark);
+
+                    if(res.data.createTime != "" && res.data.createTime != null) {
+                        $('#createTime').val(layui.util.toDateString(res.data.createTime));
+                    }
+                    if(res.data.updateTime != "" && res.data.updateTime != null) {
+                        $('#updateTime').val(layui.util.toDateString(res.data.updateTime));
+                    }
+                    form.render();
+                }
+            }
+        });
+        //点击[图片] 按钮， 事件
+        $('.uploadImg').click(function(){
+            var imgSrc = $(this).attr('src');
+            layer.photos({photos: {
+                    "title": "查看上传图片", //相册标题
+                    "id": 1, //相册id
+                    "start": 0, //初始显示的图片序号，默认0
+                    "data": [   //相册包含的图片，数组格式
+                        {
+                            "alt": "图片",
+                            "pid": 1, //图片id
+                            "src": imgSrc, //原图地址
+                            "thumb": "" //缩略图地址
+                        }
+                    ]
+                } ,anim: 5});
+        });
+
+    })
+</script>

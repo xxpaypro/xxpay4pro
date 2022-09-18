@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="false" debug="false">
+
+    <!-- 日志存放路径 -->
+    <property name="currentLoggerFilePath" value="@logger.root.path@/merchant" />
+    <!-- 日志文件名称 -->
+    <property name="currentLoggerFileName" value="merchant" />
+    <!-- 日志格式, 参考：https://logback.qos.ch/manual/layouts.html -->
+    <property name="currentLoggerPattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] [%logger{15}] - %msg%n" />
+
+    <!-- appender： 控制台日志 -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder charset="UTF-8" >
+            <pattern>${currentLoggerPattern}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- appender：主日志文件 -->
+    <appender name="ALL_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 日志文件路径及文件名 -->
+        <file>${currentLoggerFilePath}/all/${currentLoggerFileName}.log</file>
+        <!-- 内容编码及格式 -->
+        <encoder charset="UTF-8" ><pattern>${currentLoggerPattern}</pattern></encoder>
+        <!-- 日志记录器的滚动策略，按日期，按大小记录 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 每天日志归档路径以及格式 -->
+            <fileNamePattern>${currentLoggerFilePath}/all/${currentLoggerFileName}-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>10</maxHistory> <!--日志文件保留天数-->
+        </rollingPolicy>
+    </appender>
+
+    <!-- appender：错误信息日志文件 -->
+    <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 日志文件路径及文件名 -->
+        <file>${currentLoggerFilePath}/error/${currentLoggerFileName}-error.log</file>
+        <!-- 内容编码及格式 -->
+        <encoder charset="UTF-8" ><pattern>${currentLoggerPattern}</pattern></encoder>
+        <!-- 日志记录器的滚动策略，按日期，按大小记录 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 每天日志归档路径以及格式 -->
+            <fileNamePattern>${currentLoggerFilePath}/error/${currentLoggerFileName}-error-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>20</maxHistory> <!--日志文件保留天数-->
+        </rollingPolicy>
+        <!-- 此日志文件只记录ERROR级别的 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <root level="info">
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="ALL_FILE" />
+        <appender-ref ref="ERROR_FILE" />
+    </root>
+    <!-- mybatis-plus sql打印 -->
+    <logger name="org.xxpay.service.dao.mapper" level="INFO"/>
+
+</configuration>

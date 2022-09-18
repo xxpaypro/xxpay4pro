@@ -1,0 +1,710 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.xxpay.service.dao.mapper.RechargeOrderMapper" >
+  <resultMap id="BaseResultMap" type="org.xxpay.core.entity.RechargeOrder" >
+    <id column="RechargeOrderId" property="rechargeOrderId" jdbcType="VARCHAR" />
+    <result column="MchId" property="mchId" jdbcType="BIGINT" />
+    <result column="MchType" property="mchType" jdbcType="TINYINT" />
+    <result column="RechargeType" property="rechargeType" jdbcType="TINYINT" />
+    <result column="MchRate" property="mchRate" jdbcType="DECIMAL" />
+    <result column="MchIncome" property="mchIncome" jdbcType="BIGINT" />
+    <result column="AgentId" property="agentId" jdbcType="BIGINT" />
+    <result column="AgentRate" property="agentRate" jdbcType="DECIMAL" />
+    <result column="AgentProfit" property="agentProfit" jdbcType="BIGINT" />
+    <result column="PassageId" property="passageId" jdbcType="INTEGER" />
+    <result column="PassageAccountId" property="passageAccountId" jdbcType="INTEGER" />
+    <result column="ChannelType" property="channelType" jdbcType="VARCHAR" />
+    <result column="ChannelId" property="channelId" jdbcType="VARCHAR" />
+    <result column="Amount" property="amount" jdbcType="BIGINT" />
+    <result column="Currency" property="currency" jdbcType="VARCHAR" />
+    <result column="Status" property="status" jdbcType="TINYINT" />
+    <result column="ClientIp" property="clientIp" jdbcType="VARCHAR" />
+    <result column="Device" property="device" jdbcType="VARCHAR" />
+    <result column="Subject" property="subject" jdbcType="VARCHAR" />
+    <result column="Body" property="body" jdbcType="VARCHAR" />
+    <result column="Extra" property="extra" jdbcType="VARCHAR" />
+    <result column="ChannelUser" property="channelUser" jdbcType="VARCHAR" />
+    <result column="ChannelMchId" property="channelMchId" jdbcType="VARCHAR" />
+    <result column="ChannelOrderNo" property="channelOrderNo" jdbcType="VARCHAR" />
+    <result column="PlatProfit" property="platProfit" jdbcType="BIGINT" />
+    <result column="ChannelRate" property="channelRate" jdbcType="DECIMAL" />
+    <result column="ChannelCost" property="channelCost" jdbcType="BIGINT" />
+    <result column="IsRefund" property="isRefund" jdbcType="TINYINT" />
+    <result column="RefundTimes" property="refundTimes" jdbcType="INTEGER" />
+    <result column="SuccessRefundAmount" property="successRefundAmount" jdbcType="BIGINT" />
+    <result column="ErrCode" property="errCode" jdbcType="VARCHAR" />
+    <result column="ErrMsg" property="errMsg" jdbcType="VARCHAR" />
+    <result column="ExpireTime" property="expireTime" jdbcType="TIMESTAMP" />
+    <result column="PaySuccTime" property="paySuccTime" jdbcType="TIMESTAMP" />
+    <result column="CreateTime" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="UpdateTime" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    RechargeOrderId, MchId, MchType, RechargeType, MchRate, MchIncome, AgentId, AgentRate, 
+    AgentProfit, PassageId, PassageAccountId, ChannelType, ChannelId, Amount, Currency, 
+    Status, ClientIp, Device, Subject, Body, Extra, ChannelUser, ChannelMchId, ChannelOrderNo, 
+    PlatProfit, ChannelRate, ChannelCost, IsRefund, RefundTimes, SuccessRefundAmount, 
+    ErrCode, ErrMsg, ExpireTime, PaySuccTime, CreateTime, UpdateTime
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="org.xxpay.core.entity.RechargeOrderExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from t_recharge_order
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+    <if test="limit != null" >
+      <if test="offset != null" >
+        limit ${offset}, ${limit}
+      </if>
+      <if test="offset == null" >
+        limit ${limit}
+      </if>
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_recharge_order
+    where RechargeOrderId = #{rechargeOrderId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from t_recharge_order
+    where RechargeOrderId = #{rechargeOrderId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="org.xxpay.core.entity.RechargeOrderExample" >
+    delete from t_recharge_order
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="org.xxpay.core.entity.RechargeOrder" >
+    insert into t_recharge_order (RechargeOrderId, MchId, MchType, 
+      RechargeType, MchRate, MchIncome, 
+      AgentId, AgentRate, AgentProfit, 
+      PassageId, PassageAccountId, ChannelType, 
+      ChannelId, Amount, Currency, 
+      Status, ClientIp, Device, 
+      Subject, Body, Extra, 
+      ChannelUser, ChannelMchId, ChannelOrderNo, 
+      PlatProfit, ChannelRate, ChannelCost, 
+      IsRefund, RefundTimes, SuccessRefundAmount, 
+      ErrCode, ErrMsg, ExpireTime, 
+      PaySuccTime, CreateTime, UpdateTime
+      )
+    values (#{rechargeOrderId,jdbcType=VARCHAR}, #{mchId,jdbcType=BIGINT}, #{mchType,jdbcType=TINYINT}, 
+      #{rechargeType,jdbcType=TINYINT}, #{mchRate,jdbcType=DECIMAL}, #{mchIncome,jdbcType=BIGINT}, 
+      #{agentId,jdbcType=BIGINT}, #{agentRate,jdbcType=DECIMAL}, #{agentProfit,jdbcType=BIGINT}, 
+      #{passageId,jdbcType=INTEGER}, #{passageAccountId,jdbcType=INTEGER}, #{channelType,jdbcType=VARCHAR}, 
+      #{channelId,jdbcType=VARCHAR}, #{amount,jdbcType=BIGINT}, #{currency,jdbcType=VARCHAR}, 
+      #{status,jdbcType=TINYINT}, #{clientIp,jdbcType=VARCHAR}, #{device,jdbcType=VARCHAR}, 
+      #{subject,jdbcType=VARCHAR}, #{body,jdbcType=VARCHAR}, #{extra,jdbcType=VARCHAR}, 
+      #{channelUser,jdbcType=VARCHAR}, #{channelMchId,jdbcType=VARCHAR}, #{channelOrderNo,jdbcType=VARCHAR}, 
+      #{platProfit,jdbcType=BIGINT}, #{channelRate,jdbcType=DECIMAL}, #{channelCost,jdbcType=BIGINT}, 
+      #{isRefund,jdbcType=TINYINT}, #{refundTimes,jdbcType=INTEGER}, #{successRefundAmount,jdbcType=BIGINT}, 
+      #{errCode,jdbcType=VARCHAR}, #{errMsg,jdbcType=VARCHAR}, #{expireTime,jdbcType=TIMESTAMP}, 
+      #{paySuccTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="org.xxpay.core.entity.RechargeOrder" >
+    insert into t_recharge_order
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="rechargeOrderId != null" >
+        RechargeOrderId,
+      </if>
+      <if test="mchId != null" >
+        MchId,
+      </if>
+      <if test="mchType != null" >
+        MchType,
+      </if>
+      <if test="rechargeType != null" >
+        RechargeType,
+      </if>
+      <if test="mchRate != null" >
+        MchRate,
+      </if>
+      <if test="mchIncome != null" >
+        MchIncome,
+      </if>
+      <if test="agentId != null" >
+        AgentId,
+      </if>
+      <if test="agentRate != null" >
+        AgentRate,
+      </if>
+      <if test="agentProfit != null" >
+        AgentProfit,
+      </if>
+      <if test="passageId != null" >
+        PassageId,
+      </if>
+      <if test="passageAccountId != null" >
+        PassageAccountId,
+      </if>
+      <if test="channelType != null" >
+        ChannelType,
+      </if>
+      <if test="channelId != null" >
+        ChannelId,
+      </if>
+      <if test="amount != null" >
+        Amount,
+      </if>
+      <if test="currency != null" >
+        Currency,
+      </if>
+      <if test="status != null" >
+        Status,
+      </if>
+      <if test="clientIp != null" >
+        ClientIp,
+      </if>
+      <if test="device != null" >
+        Device,
+      </if>
+      <if test="subject != null" >
+        Subject,
+      </if>
+      <if test="body != null" >
+        Body,
+      </if>
+      <if test="extra != null" >
+        Extra,
+      </if>
+      <if test="channelUser != null" >
+        ChannelUser,
+      </if>
+      <if test="channelMchId != null" >
+        ChannelMchId,
+      </if>
+      <if test="channelOrderNo != null" >
+        ChannelOrderNo,
+      </if>
+      <if test="platProfit != null" >
+        PlatProfit,
+      </if>
+      <if test="channelRate != null" >
+        ChannelRate,
+      </if>
+      <if test="channelCost != null" >
+        ChannelCost,
+      </if>
+      <if test="isRefund != null" >
+        IsRefund,
+      </if>
+      <if test="refundTimes != null" >
+        RefundTimes,
+      </if>
+      <if test="successRefundAmount != null" >
+        SuccessRefundAmount,
+      </if>
+      <if test="errCode != null" >
+        ErrCode,
+      </if>
+      <if test="errMsg != null" >
+        ErrMsg,
+      </if>
+      <if test="expireTime != null" >
+        ExpireTime,
+      </if>
+      <if test="paySuccTime != null" >
+        PaySuccTime,
+      </if>
+      <if test="createTime != null" >
+        CreateTime,
+      </if>
+      <if test="updateTime != null" >
+        UpdateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="rechargeOrderId != null" >
+        #{rechargeOrderId,jdbcType=VARCHAR},
+      </if>
+      <if test="mchId != null" >
+        #{mchId,jdbcType=BIGINT},
+      </if>
+      <if test="mchType != null" >
+        #{mchType,jdbcType=TINYINT},
+      </if>
+      <if test="rechargeType != null" >
+        #{rechargeType,jdbcType=TINYINT},
+      </if>
+      <if test="mchRate != null" >
+        #{mchRate,jdbcType=DECIMAL},
+      </if>
+      <if test="mchIncome != null" >
+        #{mchIncome,jdbcType=BIGINT},
+      </if>
+      <if test="agentId != null" >
+        #{agentId,jdbcType=BIGINT},
+      </if>
+      <if test="agentRate != null" >
+        #{agentRate,jdbcType=DECIMAL},
+      </if>
+      <if test="agentProfit != null" >
+        #{agentProfit,jdbcType=BIGINT},
+      </if>
+      <if test="passageId != null" >
+        #{passageId,jdbcType=INTEGER},
+      </if>
+      <if test="passageAccountId != null" >
+        #{passageAccountId,jdbcType=INTEGER},
+      </if>
+      <if test="channelType != null" >
+        #{channelType,jdbcType=VARCHAR},
+      </if>
+      <if test="channelId != null" >
+        #{channelId,jdbcType=VARCHAR},
+      </if>
+      <if test="amount != null" >
+        #{amount,jdbcType=BIGINT},
+      </if>
+      <if test="currency != null" >
+        #{currency,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="clientIp != null" >
+        #{clientIp,jdbcType=VARCHAR},
+      </if>
+      <if test="device != null" >
+        #{device,jdbcType=VARCHAR},
+      </if>
+      <if test="subject != null" >
+        #{subject,jdbcType=VARCHAR},
+      </if>
+      <if test="body != null" >
+        #{body,jdbcType=VARCHAR},
+      </if>
+      <if test="extra != null" >
+        #{extra,jdbcType=VARCHAR},
+      </if>
+      <if test="channelUser != null" >
+        #{channelUser,jdbcType=VARCHAR},
+      </if>
+      <if test="channelMchId != null" >
+        #{channelMchId,jdbcType=VARCHAR},
+      </if>
+      <if test="channelOrderNo != null" >
+        #{channelOrderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="platProfit != null" >
+        #{platProfit,jdbcType=BIGINT},
+      </if>
+      <if test="channelRate != null" >
+        #{channelRate,jdbcType=DECIMAL},
+      </if>
+      <if test="channelCost != null" >
+        #{channelCost,jdbcType=BIGINT},
+      </if>
+      <if test="isRefund != null" >
+        #{isRefund,jdbcType=TINYINT},
+      </if>
+      <if test="refundTimes != null" >
+        #{refundTimes,jdbcType=INTEGER},
+      </if>
+      <if test="successRefundAmount != null" >
+        #{successRefundAmount,jdbcType=BIGINT},
+      </if>
+      <if test="errCode != null" >
+        #{errCode,jdbcType=VARCHAR},
+      </if>
+      <if test="errMsg != null" >
+        #{errMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="expireTime != null" >
+        #{expireTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="paySuccTime != null" >
+        #{paySuccTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="org.xxpay.core.entity.RechargeOrderExample" resultType="java.lang.Integer" >
+    select count(*) from t_recharge_order
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update t_recharge_order
+    <set >
+      <if test="record.rechargeOrderId != null" >
+        RechargeOrderId = #{record.rechargeOrderId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mchId != null" >
+        MchId = #{record.mchId,jdbcType=BIGINT},
+      </if>
+      <if test="record.mchType != null" >
+        MchType = #{record.mchType,jdbcType=TINYINT},
+      </if>
+      <if test="record.rechargeType != null" >
+        RechargeType = #{record.rechargeType,jdbcType=TINYINT},
+      </if>
+      <if test="record.mchRate != null" >
+        MchRate = #{record.mchRate,jdbcType=DECIMAL},
+      </if>
+      <if test="record.mchIncome != null" >
+        MchIncome = #{record.mchIncome,jdbcType=BIGINT},
+      </if>
+      <if test="record.agentId != null" >
+        AgentId = #{record.agentId,jdbcType=BIGINT},
+      </if>
+      <if test="record.agentRate != null" >
+        AgentRate = #{record.agentRate,jdbcType=DECIMAL},
+      </if>
+      <if test="record.agentProfit != null" >
+        AgentProfit = #{record.agentProfit,jdbcType=BIGINT},
+      </if>
+      <if test="record.passageId != null" >
+        PassageId = #{record.passageId,jdbcType=INTEGER},
+      </if>
+      <if test="record.passageAccountId != null" >
+        PassageAccountId = #{record.passageAccountId,jdbcType=INTEGER},
+      </if>
+      <if test="record.channelType != null" >
+        ChannelType = #{record.channelType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.channelId != null" >
+        ChannelId = #{record.channelId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.amount != null" >
+        Amount = #{record.amount,jdbcType=BIGINT},
+      </if>
+      <if test="record.currency != null" >
+        Currency = #{record.currency,jdbcType=VARCHAR},
+      </if>
+      <if test="record.status != null" >
+        Status = #{record.status,jdbcType=TINYINT},
+      </if>
+      <if test="record.clientIp != null" >
+        ClientIp = #{record.clientIp,jdbcType=VARCHAR},
+      </if>
+      <if test="record.device != null" >
+        Device = #{record.device,jdbcType=VARCHAR},
+      </if>
+      <if test="record.subject != null" >
+        Subject = #{record.subject,jdbcType=VARCHAR},
+      </if>
+      <if test="record.body != null" >
+        Body = #{record.body,jdbcType=VARCHAR},
+      </if>
+      <if test="record.extra != null" >
+        Extra = #{record.extra,jdbcType=VARCHAR},
+      </if>
+      <if test="record.channelUser != null" >
+        ChannelUser = #{record.channelUser,jdbcType=VARCHAR},
+      </if>
+      <if test="record.channelMchId != null" >
+        ChannelMchId = #{record.channelMchId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.channelOrderNo != null" >
+        ChannelOrderNo = #{record.channelOrderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.platProfit != null" >
+        PlatProfit = #{record.platProfit,jdbcType=BIGINT},
+      </if>
+      <if test="record.channelRate != null" >
+        ChannelRate = #{record.channelRate,jdbcType=DECIMAL},
+      </if>
+      <if test="record.channelCost != null" >
+        ChannelCost = #{record.channelCost,jdbcType=BIGINT},
+      </if>
+      <if test="record.isRefund != null" >
+        IsRefund = #{record.isRefund,jdbcType=TINYINT},
+      </if>
+      <if test="record.refundTimes != null" >
+        RefundTimes = #{record.refundTimes,jdbcType=INTEGER},
+      </if>
+      <if test="record.successRefundAmount != null" >
+        SuccessRefundAmount = #{record.successRefundAmount,jdbcType=BIGINT},
+      </if>
+      <if test="record.errCode != null" >
+        ErrCode = #{record.errCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.errMsg != null" >
+        ErrMsg = #{record.errMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="record.expireTime != null" >
+        ExpireTime = #{record.expireTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.paySuccTime != null" >
+        PaySuccTime = #{record.paySuccTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.createTime != null" >
+        CreateTime = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateTime != null" >
+        UpdateTime = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update t_recharge_order
+    set RechargeOrderId = #{record.rechargeOrderId,jdbcType=VARCHAR},
+      MchId = #{record.mchId,jdbcType=BIGINT},
+      MchType = #{record.mchType,jdbcType=TINYINT},
+      RechargeType = #{record.rechargeType,jdbcType=TINYINT},
+      MchRate = #{record.mchRate,jdbcType=DECIMAL},
+      MchIncome = #{record.mchIncome,jdbcType=BIGINT},
+      AgentId = #{record.agentId,jdbcType=BIGINT},
+      AgentRate = #{record.agentRate,jdbcType=DECIMAL},
+      AgentProfit = #{record.agentProfit,jdbcType=BIGINT},
+      PassageId = #{record.passageId,jdbcType=INTEGER},
+      PassageAccountId = #{record.passageAccountId,jdbcType=INTEGER},
+      ChannelType = #{record.channelType,jdbcType=VARCHAR},
+      ChannelId = #{record.channelId,jdbcType=VARCHAR},
+      Amount = #{record.amount,jdbcType=BIGINT},
+      Currency = #{record.currency,jdbcType=VARCHAR},
+      Status = #{record.status,jdbcType=TINYINT},
+      ClientIp = #{record.clientIp,jdbcType=VARCHAR},
+      Device = #{record.device,jdbcType=VARCHAR},
+      Subject = #{record.subject,jdbcType=VARCHAR},
+      Body = #{record.body,jdbcType=VARCHAR},
+      Extra = #{record.extra,jdbcType=VARCHAR},
+      ChannelUser = #{record.channelUser,jdbcType=VARCHAR},
+      ChannelMchId = #{record.channelMchId,jdbcType=VARCHAR},
+      ChannelOrderNo = #{record.channelOrderNo,jdbcType=VARCHAR},
+      PlatProfit = #{record.platProfit,jdbcType=BIGINT},
+      ChannelRate = #{record.channelRate,jdbcType=DECIMAL},
+      ChannelCost = #{record.channelCost,jdbcType=BIGINT},
+      IsRefund = #{record.isRefund,jdbcType=TINYINT},
+      RefundTimes = #{record.refundTimes,jdbcType=INTEGER},
+      SuccessRefundAmount = #{record.successRefundAmount,jdbcType=BIGINT},
+      ErrCode = #{record.errCode,jdbcType=VARCHAR},
+      ErrMsg = #{record.errMsg,jdbcType=VARCHAR},
+      ExpireTime = #{record.expireTime,jdbcType=TIMESTAMP},
+      PaySuccTime = #{record.paySuccTime,jdbcType=TIMESTAMP},
+      CreateTime = #{record.createTime,jdbcType=TIMESTAMP},
+      UpdateTime = #{record.updateTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="org.xxpay.core.entity.RechargeOrder" >
+    update t_recharge_order
+    <set >
+      <if test="mchId != null" >
+        MchId = #{mchId,jdbcType=BIGINT},
+      </if>
+      <if test="mchType != null" >
+        MchType = #{mchType,jdbcType=TINYINT},
+      </if>
+      <if test="rechargeType != null" >
+        RechargeType = #{rechargeType,jdbcType=TINYINT},
+      </if>
+      <if test="mchRate != null" >
+        MchRate = #{mchRate,jdbcType=DECIMAL},
+      </if>
+      <if test="mchIncome != null" >
+        MchIncome = #{mchIncome,jdbcType=BIGINT},
+      </if>
+      <if test="agentId != null" >
+        AgentId = #{agentId,jdbcType=BIGINT},
+      </if>
+      <if test="agentRate != null" >
+        AgentRate = #{agentRate,jdbcType=DECIMAL},
+      </if>
+      <if test="agentProfit != null" >
+        AgentProfit = #{agentProfit,jdbcType=BIGINT},
+      </if>
+      <if test="passageId != null" >
+        PassageId = #{passageId,jdbcType=INTEGER},
+      </if>
+      <if test="passageAccountId != null" >
+        PassageAccountId = #{passageAccountId,jdbcType=INTEGER},
+      </if>
+      <if test="channelType != null" >
+        ChannelType = #{channelType,jdbcType=VARCHAR},
+      </if>
+      <if test="channelId != null" >
+        ChannelId = #{channelId,jdbcType=VARCHAR},
+      </if>
+      <if test="amount != null" >
+        Amount = #{amount,jdbcType=BIGINT},
+      </if>
+      <if test="currency != null" >
+        Currency = #{currency,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        Status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="clientIp != null" >
+        ClientIp = #{clientIp,jdbcType=VARCHAR},
+      </if>
+      <if test="device != null" >
+        Device = #{device,jdbcType=VARCHAR},
+      </if>
+      <if test="subject != null" >
+        Subject = #{subject,jdbcType=VARCHAR},
+      </if>
+      <if test="body != null" >
+        Body = #{body,jdbcType=VARCHAR},
+      </if>
+      <if test="extra != null" >
+        Extra = #{extra,jdbcType=VARCHAR},
+      </if>
+      <if test="channelUser != null" >
+        ChannelUser = #{channelUser,jdbcType=VARCHAR},
+      </if>
+      <if test="channelMchId != null" >
+        ChannelMchId = #{channelMchId,jdbcType=VARCHAR},
+      </if>
+      <if test="channelOrderNo != null" >
+        ChannelOrderNo = #{channelOrderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="platProfit != null" >
+        PlatProfit = #{platProfit,jdbcType=BIGINT},
+      </if>
+      <if test="channelRate != null" >
+        ChannelRate = #{channelRate,jdbcType=DECIMAL},
+      </if>
+      <if test="channelCost != null" >
+        ChannelCost = #{channelCost,jdbcType=BIGINT},
+      </if>
+      <if test="isRefund != null" >
+        IsRefund = #{isRefund,jdbcType=TINYINT},
+      </if>
+      <if test="refundTimes != null" >
+        RefundTimes = #{refundTimes,jdbcType=INTEGER},
+      </if>
+      <if test="successRefundAmount != null" >
+        SuccessRefundAmount = #{successRefundAmount,jdbcType=BIGINT},
+      </if>
+      <if test="errCode != null" >
+        ErrCode = #{errCode,jdbcType=VARCHAR},
+      </if>
+      <if test="errMsg != null" >
+        ErrMsg = #{errMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="expireTime != null" >
+        ExpireTime = #{expireTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="paySuccTime != null" >
+        PaySuccTime = #{paySuccTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null" >
+        CreateTime = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        UpdateTime = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where RechargeOrderId = #{rechargeOrderId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.xxpay.core.entity.RechargeOrder" >
+    update t_recharge_order
+    set MchId = #{mchId,jdbcType=BIGINT},
+      MchType = #{mchType,jdbcType=TINYINT},
+      RechargeType = #{rechargeType,jdbcType=TINYINT},
+      MchRate = #{mchRate,jdbcType=DECIMAL},
+      MchIncome = #{mchIncome,jdbcType=BIGINT},
+      AgentId = #{agentId,jdbcType=BIGINT},
+      AgentRate = #{agentRate,jdbcType=DECIMAL},
+      AgentProfit = #{agentProfit,jdbcType=BIGINT},
+      PassageId = #{passageId,jdbcType=INTEGER},
+      PassageAccountId = #{passageAccountId,jdbcType=INTEGER},
+      ChannelType = #{channelType,jdbcType=VARCHAR},
+      ChannelId = #{channelId,jdbcType=VARCHAR},
+      Amount = #{amount,jdbcType=BIGINT},
+      Currency = #{currency,jdbcType=VARCHAR},
+      Status = #{status,jdbcType=TINYINT},
+      ClientIp = #{clientIp,jdbcType=VARCHAR},
+      Device = #{device,jdbcType=VARCHAR},
+      Subject = #{subject,jdbcType=VARCHAR},
+      Body = #{body,jdbcType=VARCHAR},
+      Extra = #{extra,jdbcType=VARCHAR},
+      ChannelUser = #{channelUser,jdbcType=VARCHAR},
+      ChannelMchId = #{channelMchId,jdbcType=VARCHAR},
+      ChannelOrderNo = #{channelOrderNo,jdbcType=VARCHAR},
+      PlatProfit = #{platProfit,jdbcType=BIGINT},
+      ChannelRate = #{channelRate,jdbcType=DECIMAL},
+      ChannelCost = #{channelCost,jdbcType=BIGINT},
+      IsRefund = #{isRefund,jdbcType=TINYINT},
+      RefundTimes = #{refundTimes,jdbcType=INTEGER},
+      SuccessRefundAmount = #{successRefundAmount,jdbcType=BIGINT},
+      ErrCode = #{errCode,jdbcType=VARCHAR},
+      ErrMsg = #{errMsg,jdbcType=VARCHAR},
+      ExpireTime = #{expireTime,jdbcType=TIMESTAMP},
+      PaySuccTime = #{paySuccTime,jdbcType=TIMESTAMP},
+      CreateTime = #{createTime,jdbcType=TIMESTAMP},
+      UpdateTime = #{updateTime,jdbcType=TIMESTAMP}
+    where RechargeOrderId = #{rechargeOrderId,jdbcType=VARCHAR}
+  </update>
+</mapper>

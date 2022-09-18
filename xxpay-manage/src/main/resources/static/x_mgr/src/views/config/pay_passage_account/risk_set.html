@@ -1,0 +1,184 @@
+
+<div class=" layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a>支付配置</a>
+        <a><cite>修改通道账户</cite></a>
+    </div>
+</div>
+
+<style>
+    .layui-form-label {
+        width:120px !important;
+        margin-left:1%;
+    }
+    .layui-input-inline {
+        width: 80% !important;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">风控配置</li>
+            </ul>
+            <div class="layui-tab-content">
+                <form class="layui-form center">
+                    <input type="hidden" name="id" id="id">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">账户名称</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="accountName" id="accountName"  autocomplete="off" class="layui-input" readonly="readonly">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">风控模式</label>
+                        <div class="layui-input-inline" >
+                            <input type="radio" name="riskMode" value="1" title="继承通道" lay-filter="riskModeFilter" checked="checked">
+                            <input type="radio" name="riskMode" value="2" title="自定义" lay-filter="riskModeFilter">
+                        </div>
+                    </div>
+                    <div id="riskModeId"  style="display: none">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">当天交易金额(元)</label>
+                            <div class="layui-input-inline">
+                                <input type="tel" id="maxDayAmount" name="maxDayAmount" placeholder="输入当天交易金额" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">单笔最大金额(元)</label>
+                            <div class="layui-input-inline">
+                                <input type="tel" id="maxEveryAmount" name="maxEveryAmount" placeholder="输入单笔最大金额" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">单笔最小金额(元)</label>
+                            <div class="layui-input-inline">
+                                <input type="tel" id="minEveryAmount" name="minEveryAmount" placeholder="输入单笔最小金额" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">交易开始时间</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="tradeStartTime" id="tradeStartTime" placeholder="输入交易开始时间,格式为:01:30:00"  autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">交易结束时间</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="tradeEndTime" id="tradeEndTime" placeholder="输入交易结束时间,格式为:21:00:00"  autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">风控状态</label>
+                            <div class="layui-input-inline" >
+                                <input type="radio" name="riskStatus" title="开启" value="1" />
+                                <input type="radio" name="riskStatus" title="关闭" value="0" checked="checked" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-inline">
+                            <button type="button" class="layui-btn" lay-submit="" lay-filter="update">保存</button>
+                            <button type="button" id="btnBack" class="layui-btn">返回</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    layui.use(['form','table','util','admin', 'laydate'],function(){
+        var form = layui.form
+                , $ = layui.$
+                , admin = layui.admin
+                , layer = layui.layer
+                , element = layui.element
+                ,laydate = layui.laydate
+                , table = layui.table;
+
+        element.render('breadcrumb', 'breadcrumb'); //渲染导航信息
+
+        var router = layui.router();
+        var id = router.search.id;
+        var payPassageId;
+
+        admin.req({
+            type: 'post',
+            url: layui.setter.baseUrl + '/config/pay_passage_account/get',
+            data: {
+                id:id,
+            },
+            error: function(err){
+                layer.alert(err);
+            },
+            success: function(res){
+                if(res.code == 0){
+                    payPassageId = res.data.payPassageId;
+                    $('#id').val(res.data.id);
+                    $('#accountName').val(res.data.accountName);
+                    $('#maxDayAmount').val(res.data.maxDayAmount/100);
+                    $('#maxEveryAmount').val(res.data.maxEveryAmount/100);
+                    $('#minEveryAmount').val(res.data.minEveryAmount/100);
+                    $('#tradeStartTime').val(res.data.tradeStartTime);
+                    $('#tradeEndTime').val(res.data.tradeEndTime);
+                    $("input[name='riskStatus'][value='"+ res.data.riskStatus +"']").attr("checked",true);
+                    if(res.data.riskMode == 1) {
+                        $("input[name='riskMode'][value='1']").attr("checked",true);
+                        $("#riskModeId").hide();
+                    }else if(res.data.riskMode == 2) {
+                        $("input[name='riskMode'][value='2']").attr("checked",true);
+                        $("#riskModeId").show();
+                    }
+                    form.render();
+                }
+            }
+        });
+
+        form.on('submit(update)', function(data){
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/config/pay_passage_account/update', //模拟接口,
+                data: data.field,
+                error: function(err){layer.alert(err.msg,{title:"请求失败"})},
+                success: function(res){
+                    if(res.code == 0){
+                        layer.alert(res.msg, {title: '保存成功'},function(index){
+                            layer.close(index);
+                            location.hash = '/config/pay_passage_account//payPassageId=' + payPassageId;
+                        });
+                    }
+                }
+            })
+            return false;
+        });
+
+        $('#btnBack').on('click', function() {
+            location.hash = '/config/pay_passage_account//payPassageId=' + payPassageId;
+        });
+
+        form.on('radio(riskModeFilter)', function(data){
+            if(data.value == 1) {
+                $("#riskModeId").hide();
+            }else if(data.value == 2) {
+                $("#riskModeId").show();
+            }
+        });
+
+        laydate.render({
+            elem: '#tradeStartTime'
+            ,type: 'time'
+            ,format: 'HH:mm:ss'
+        });
+
+        laydate.render({
+            elem: '#tradeEndTime'
+            ,type: 'time'
+            ,format: 'HH:mm:ss'
+        });
+
+    });
+
+</script>

@@ -1,0 +1,110 @@
+<style>
+    .xxpayPopupDiv .layui-form-label {
+        width:25% !important;
+        margin-left:1%;
+    }
+    .xxpayPopupDiv .layui-input-inline {
+        width: 70% !important;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <div class="layui-tab-content">
+                <form class="layui-form layui-form-pane" action="">
+                    <input type="hidden" id="goodsId" name="goodsId">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">商品名称</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="goodsName" name="goodsName" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">是否设置精品推荐</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="isRecommend" value="1" title="是" lay-filter="isRecommend" checked="checked">
+                            <input type="radio" name="isRecommend" value="0" title="否" lay-filter="isRecommend">
+                        </div>
+                    </div>
+                    <div class="layui-form-item" id="recommendSortShow">
+                        <label class="layui-form-label">精品推荐商品排序值</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="recommendSort" name="recommendSort" placeholder="请输入精品推荐商品排序值" class="layui-input" autocomplete="off">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <button type="button" class="layui-hide xxpayYesBtn" lay-submit="" lay-filter="goodsEdit">保存</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    layui.use(['admin','form','view'],function(){
+        var form = layui.form
+            ,$ = layui.$
+            ,admin = layui.admin
+            ,element = layui.element
+            ,layer = layui.layer ;
+        // 导航
+        element.render('breadcrumb', 'breadcrumb');
+
+        var goodsId = layui.view.getOpenParams('goodsId');
+
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/mchGoods/get',
+            data: {
+                goodsId : goodsId
+            },
+            error: function(err){
+                layer.alert(JSON.stringify(err.field), {
+                    title: '错误提示'
+                })
+            },
+            success: function(res){
+                if(res.code == 0){
+                    $('#goodsId').val(res.data.goodsId);
+                    $('#goodsName').val(res.data.goodsName);
+                    $("input[name='isRecommend'][value='1']").attr('checked', res.data.goodsType == 1 ? true : false);
+                    $("input[name='isRecommend'][value='0']").attr('checked', res.data.goodsType == 0 ? true : false);
+                    $('#recommendSort').val(res.data.recommendSort);
+                    form.render();
+                }
+            }
+        });
+
+        form.on('radio(isRecommend)', function(data){
+            if (data.value == 0){
+                $("#recommendSortShow").addClass("layui-hide");
+            }else {
+                $("#recommendSortShow").removeClass("layui-hide");
+            }
+        });
+
+
+        //监听提交
+        form.on('submit(goodsEdit)', function(data){
+
+            // 在这个回调函数里面写ajax提交
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/mchGoods/recommend',
+                data: data.field,
+                success: function(res){
+                    if(res.code == 0){
+                        layer.closeAll(); //关闭所有弹层
+                        layer.msg("保存成功");
+                        layui.table.reload('tableReload', {page: {curr: 1}}); //调用业务弹层外表格重新加载
+                    }
+                }
+            });
+            return false;//阻止跳转
+        });
+
+        form.render();
+
+    })
+</script>

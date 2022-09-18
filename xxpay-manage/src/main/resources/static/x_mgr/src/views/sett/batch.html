@@ -1,0 +1,53 @@
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a><cite>结算列表</cite></a>
+    </span>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">结算账户列表</li>
+            </ul>
+            <div class="layui-tab-content">
+                <table id="jsList"></table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+     layui.use(['table','util','admin'], function(){
+        var table = layui.table
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,element = layui.element;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        var creId = layui.router().search.id;
+
+        table.render({
+            elem: '#jsList'
+            ,url: layui.setter.baseUrl + '/sett/batch_record_list'
+            ,where: {
+                id : creId
+            }
+            ,cols: [[
+                {field:'bankAccountName', title: '收款银行户名', sort: true }
+                ,{field: 'bankAccountNumber',title: '收款银行账号'}
+                ,{field: 'bankName',title: '开户银行'}
+                ,{field: 'bankNetName',title: '开户网点名称'}
+                ,{field: 'bankProvince',title: '开户行所在省'}
+                ,{field: 'bankCity',title: '开户行所在市'}
+                ,{field:'amount', title: '金额',templet: '<div>{{d.amount/100}}</div>' }
+                ,{field: 'publicFlag',title: '对公私标识'}
+                ,{field:'createTime',  title: '时间', templet: '<div>{{ layui.util.toDateString(d.createTime) }}</div>' }
+            ]]
+            ,page: true
+            ,skin: 'line'
+        });
+        
+     })
+</script>

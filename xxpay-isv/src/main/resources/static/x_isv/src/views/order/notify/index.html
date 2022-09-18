@@ -1,0 +1,233 @@
+
+<div class="layui-card layadmin-header">
+  <div class="layui-breadcrumb" lay-filter="breadcrumb">
+    <a lay-href="">主页</a>
+    <a><cite>通知管理</cite></a>
+  </div>
+</div>
+
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-tab layui-tab-brief">
+      <ul class="layui-tab-title">
+        <li class="layui-this">商户通知</li>
+      </ul>
+
+      <div class="layui-tab-content">
+        <div class="layui-tab-item layui-show">
+          <div class="layui-row">
+            <div class="layui-form" style="float:right; margin-bottom: 10px;">
+              <div class="layui-form-item" style="margin:0;">
+                <div class="layui-input-inline">
+                  <input type="text" name="searchOrderId" id="searchOrderId" placeholder="订单号" autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-input-inline">
+                  <select name="searchOrderType" id="searchOrderType" lay-search="">
+                    <option value="">类型</option>
+                    <option value="1">支付</option>
+                    <option value="2">转账</option>
+                    <option value="3">退款</option>
+                    <option value="4">代付</option>
+                  </select>
+                </div>
+                <div class="layui-input-inline">
+                  <select name="searchStatus" id="searchStatus" lay-search="">
+                    <option value="-99">通知状态</option>
+                    <option value="1">通知中</option>
+                    <option value="2">通知成功</option>
+                    <option value="3">通知失败</option>
+                  </select>
+                </div>
+                <button id="search" class="layui-btn" data-type="reload">搜索</button>
+              </div>
+            </div>
+          </div>
+          <div class="layui-row">
+            <div class="layuiAdmin-btns" style="margin-bottom: 10px;">
+              <a class="layui-btn" id="batchResendBtn">重发通知</a>
+            </div>
+          </div>
+          <table id="XxPay_Mgr_Notify_dataAll" lay-filter="XxPay_Mgr_Notify_dataAll"></table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/html" id="xxpayBar">
+  <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+</script>
+
+<script>
+layui.use(['admin', 'table', 'util','view'], function(){
+  var $ = layui.$
+  ,admin = layui.admin
+  ,table = layui.table
+  ,element = layui.element
+  ,view = layui.view
+  ,form = layui.form;
+
+
+  $("#batchResendBtn").off().on("click", function(){
+
+      var orderIds = [];
+      var errorMsg = "";
+      $.each(table.cache.tableReload, function(){
+
+
+          var thisObject = $(".layui-table tr[data-index='"+this.LAY_TABLE_INDEX+"'] input[name='layTableCheckbox']");
+          if(thisObject.is(':checked')){ //勾选状态
+              if(this.status == '2'){
+                  errorMsg = "无法发送通知状态为成功的通知消息！";
+                  return false;
+              }
+              orderIds.push(this.orderId);
+          }
+      });
+      if(errorMsg) return layer.alert(errorMsg);
+      if(orderIds.length <= 0) return layer.alert("请勾选需要重发的订单！");
+      if(orderIds.length > 10) return layer.alert("批量重发商户通知个数不得大于10个！");
+
+      var loadingIndex = layer.load();
+      admin.req({
+          type: 'post',
+          url: layui.setter.baseUrl + '/mch_notify/resend',
+          data: {orderIds : JSON.stringify(orderIds)},
+          error: function(err){layer.alert(err);},
+          success: function(res){
+
+                  if(res.code == 0 ) {
+                      if(res.data.errMsg){
+                          layer.alert(res.data.errMsg);
+                      }else{
+                          layer.alert("重发成功！, 共发送"+ res.data.sendCount + "条通知！",function(layid){
+                              layer.close(layid);
+                              table.reload('tableReload');
+                          });
+                      }
+                      return false;
+                  }
+          },
+          complete:function(){
+              layer.close(loadingIndex);
+          }
+
+      });
+
+  });
+
+  form.on('checkbox(mchNotifyAllChoose)', function(){
+
+      var isChecked = $('input[lay-filter="mchNotifyAllChoose"]').is(':checked');
+
+      $.each(table.cache.tableReload, function(){
+
+          if(this.status == '2'){
+              return true;
+          }
+          var thisObject = $(".layui-table tr[data-index='"+this.LAY_TABLE_INDEX+"'] input[name='layTableCheckbox']");
+          if(isChecked){
+              thisObject.prop("checked", true);
+          }else{
+              thisObject.removeAttr("checked");
+          }
+      });
+      form.render();
+      return false;
+  });
+
+  element.render('breadcrumb', 'breadcrumb');
+
+  var tplStatus = function(d){
+    if(d.status == 1) {
+      return "<span style='color: blue'>通知中</span>";
+    }else if(d.status == 2) {
+      return "<span style='color: green'>通知成功</span>";
+    }else if(d.status == 3) {
+      return "<span style='color: red'>通知失败</span>";
+    }
+  };
+
+  var tplType = function(d){
+    if(d.orderType == 1) {
+      return "支付";
+    }else if(d.orderType == 2) {
+      return "转账";
+    }else if(d.orderType == 3) {
+      return "退款";
+    }else if(d.orderType == 4) {
+      return "代付";
+    }
+  };
+
+  //通知列表
+  table.render({
+    elem: '#XxPay_Mgr_Notify_dataAll'
+    ,url: layui.setter.baseUrl + '/mch_notify/list' //通知列表接口
+    ,id: 'tableReload'
+    ,page: true
+    ,cols: [[
+      {type: "checkbox"}
+      ,{field: 'orderId', width: 220, title: '订单号'}
+      ,{field: 'mchId', title: '商户ID'}
+      ,{field: 'orderType', title: '订单类型', templet: tplType}
+      ,{field: 'notifyCount', title: '通知次数'}
+      ,{field: 'status', title: '状态', templet: tplStatus}
+      ,{field: 'lastNotifyTime', title: '最后通知', templet: '<div>{{ d.lastNotifyTime == null ? "" : layui.util.toDateString(d.lastNotifyTime, "yyyy-MM-dd HH:mm:ss") }}</div>'}
+      ,{field: 'edit', title: '操作', toolbar: '#xxpayBar' }
+    ]]
+    ,skin: 'line'
+    ,done:function(res, curr, count){
+
+        $.each(res.data, function(){
+
+            if(this.status == 2){  //禁止选择checkbox
+                $(".layui-table tr[data-index='"+this.LAY_TABLE_INDEX+"'] input[name='layTableCheckbox']")
+                    .attr("disabled", 'disabled').removeAttr("checked");
+            }
+        });
+
+        //覆盖layui checkbox全选框
+        $(".layui-table-header").find("input[name = 'layTableCheckbox'][lay-filter='layTableAllChoose']")
+            .parent().html("<input type='checkbox' lay-skin='primary' lay-filter='mchNotifyAllChoose'>");
+
+        form.render();
+     }
+  });
+
+  //监听工具条
+  table.on('tool(XxPay_Mgr_Notify_dataAll)', function(obj){
+    var data = obj.data;
+    if(obj.event === 'detail'){
+      view.xxpayPopup("通知详情", "order/notify/view", {orderId: data.orderId}, {btn: false});
+    }
+  });
+
+  // 搜索
+  var $ = layui.$, active = {
+    reload: function(){
+      var orderId = $('#searchOrderId').val();
+      var orderType = $("#searchOrderType").val();
+      var status = $("#searchStatus").val();
+      //执行重载
+      table.reload('tableReload', {
+        page: {
+          curr: 1 //重新从第 1 页开始
+        }
+        ,where: {
+          orderId: orderId,
+          orderType: orderType,
+          status : status
+        }
+      });
+    }
+  };
+  $('#search').on('click', function() {
+    var type = $(this).data('type');
+    active[type] ? active[type].call(this) : '';
+  });
+  // 渲染表单
+  form.render();
+});
+</script>

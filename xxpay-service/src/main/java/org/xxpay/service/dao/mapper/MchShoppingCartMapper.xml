@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.xxpay.service.dao.mapper.MchShoppingCartMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="org.xxpay.core.entity.MchShoppingCart">
+        <id column="CartId" property="CartId" />
+        <result column="MemberId" property="memberId" />
+        <result column="GoodsId" property="goodsId" />
+        <result column="IsGoodsSelected" property="isGoodsSelected" />
+        <result column="GoodsNum" property="goodsNum" />
+        <result column="GoodsProps" property="goodsProps" />
+        <result column="IndustryType" property="industryType" />
+        <result column="MchId" property="mchId" />
+        <result column="IsvId" property="isvId" />
+        <result column="CreateTime" property="createTime" />
+        <result column="UpdateTime" property="updateTime" />
+    </resultMap>
+
+    <!--购物车列表-->
+    <select id="selectCartList" resultType="java.util.Map" parameterType="java.util.Map" >
+        SELECT msc.*, mg.GoodsName, mg.SubGoodsId, mg.GoodsDesc, mg.MemberPrice, mg.CellingPrice, mg.Unit, mg.StockLimitType,
+            mg.StockNum, mg.ImgPathMain, mg.Brand, GROUP_CONCAT(mgp.PropsValue) PropsValue
+        FROM `t_mch_shopping_cart` msc
+        INNER JOIN `t_mch_goods` mg ON msc.GoodsId = mg.GoodsId
+        LEFT JOIN `t_mch_goods_props` mgp ON FIND_IN_SET(mgp.PropsId,msc.GoodsProps)
+        WHERE 1=1
+        <if test="industryType != null"> AND msc.IndustryType = #{industryType} </if>
+        <if test="memberId != null"> AND msc.MemberId = #{memberId} </if>
+        <if test="mchId != null"> AND msc.MchId = #{mchId} </if>
+        GROUP BY msc.CartId ORDER BY msc.CreateTime DESC
+        <if test="limit != null" >
+            <if test="offset != null" >
+                limit ${offset}, ${limit}
+            </if>
+            <if test="offset == null" >
+                limit ${limit}
+            </if>
+        </if>;
+    </select>
+
+    <!--购物车列表总数-->
+    <select id="count" resultType="java.lang.Integer" parameterType="java.util.Map" >
+        SELECT COUNT(1)
+        FROM `t_mch_shopping_cart` msc
+        INNER JOIN `t_mch_goods` mg ON msc.GoodsId = mg.GoodsId
+        LEFT JOIN `t_mch_goods_props` mgp ON FIND_IN_SET(mgp.PropsId,msc.GoodsProps)
+        WHERE 1=1
+        <if test="industryType != null"> AND msc.IndustryType = #{industryType} </if>
+        <if test="memberId != null"> AND msc.MemberId = #{memberId} </if>
+        <if test="mchId != null"> AND msc.MchId = #{mchId} </if>;
+    </select>
+
+</mapper>

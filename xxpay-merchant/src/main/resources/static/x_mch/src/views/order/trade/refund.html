@@ -1,0 +1,196 @@
+<style>
+    .xxpayPopupDiv .layui-form-label {
+        width:15% !important;
+        margin-left:1%;
+    }
+    .xxpayPopupDiv .layui-input-inline {
+        width: 33% !important;
+        margin-top:0;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">订单详情</li>
+            </ul>
+            <div class="layui-tab-content">
+                <form class="layui-form layui-form-pane" action="">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">交易单号</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="tradeOrderId" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">交易状态</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="status" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">会员ID</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="memberId" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">会员手机号</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="memberTel" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">交易金额</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="amount" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">已退款金额</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="refundTotalAmount" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">退款</li>
+            </ul>
+            <div class="layui-tab-content">
+                <form class="layui-form layui-form-pane" action="">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">退款类型</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="refundType" value="0" title="全额退款" lay-filter="refundTypeF" checked="checked">
+                            <input type="radio" name="refundType" value="1" title="部分退款" lay-filter="refundTypeF">
+                        </div>
+                        <label class="layui-form-label">退款金额(元)</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="refundAmount" id="refundAmount" class="layui-input" placeholder="请输入退款金额">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">退款密码</label>
+                        <div class="layui-input-inline">
+                            <input type="password" name="refundPassword" class="layui-input" placeholder="请输入退款密码">
+                        </div>
+                        <label class="layui-form-label">退款原因</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="refundDesc" class="layui-input" placeholder="请输入退款原因">
+                        </div>
+                    </div>
+                    <button type="button" class="layui-hide xxpayYesBtn" lay-submit="" lay-filter="toRefund"></button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    layui.use(['admin','form', 'view'],function(){
+        var form = layui.form
+            ,$ = layui.$
+            ,admin = layui.admin
+            ,view = layui.view
+            ,element = layui.element
+            ,layer = layui.layer ;
+        // 导航
+        element.render('breadcrumb', 'breadcrumb');
+        var tradeOrderId = view.getOpenParams('tradeOrderId');
+
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/trade_order/get',
+            data: {
+                tradeOrderId : tradeOrderId
+            },
+            error: function(err){
+                layer.alert(JSON.stringify(err.field), {
+                    title: '错误提示'
+                })
+            },
+            success: function(res){
+                if(res.code == 0){
+                    $('#tradeOrderId').val(res.data.tradeOrderId);
+                    $('#goodsId').val(res.data.goodsId);
+                    $('#amount').val(res.data.amount/100);
+
+                    var refundTotalAmount = res.data.refundTotalAmount ? res.data.refundTotalAmount : 0;
+                    $('#refundTotalAmount').val(refundTotalAmount/100);
+                    $("#refundAmount").val((res.data.amount - res.data.refundTotalAmount)/100);
+                    $("#refundAmount").attr("disabled", "disabled");
+                    $('#memberId').val(res.data.memberId);
+                    $('#memberTel').val(res.data.memberTel);
+                    if(res.data.status == 0) {
+                        $('#status').val("订单生成");
+                    }else if(res.data.status == 1) {
+                        $('#status').val("处理中");
+                    }else if(res.data.status == 2) {
+                        $('#status').val("支付成功");
+                    }else if(res.data.status == -1) {
+                        $('#status').val("支付失败");
+                    }else if(res.data.status == 4) {
+                        $('#status').val("部分退款");
+                    }else if(res.data.status == 5) {
+                        $('#status').val("全额退款");
+                    }else if(res.data.status == 6) {
+                        $('#status').val("押金未结算");
+                    }else if(res.data.status == 7) {
+                        $('#status').val("押金退还");
+                    }
+
+                    form.render();
+                }
+            }
+        });
+
+        //监听提交
+        form.on('submit(toRefund)', function(data){
+            var reqData = data.field;
+
+            if (!reqData.refundAmount) {
+                layer.msg("退款金额不能为空！");
+                return false;
+            }
+
+            var regex = new RegExp("^(([1-9]{1}\\d*)|(0{1}))(\\.\\d{1,2})?$");
+            if(!regex.test(reqData.refundAmount)){
+                layer.msg("请输入正确的金额（最多两位小数）！");
+                return false;
+            }
+
+            if (!reqData.refundPassword) {
+                layer.msg("退款密码不能为空！");
+                return false;
+            }
+
+            reqData.tradeOrderId = tradeOrderId;
+
+            // 在这个回调函数里面写ajax提交
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + "/memberPay/refund2",
+                data: reqData,
+                success: function(res){
+                    if(res.code == 0){
+                        layer.closeAll();
+                        layer.msg("退款成功");
+                        layui.table.reload('tableReload', {page: {curr: 1}}); //调用业务弹层外表格重新加载
+                    }
+                }
+            });
+            return false;//阻止跳转
+        });
+
+        form.on('radio(refundTypeF)', function(data){
+            var amount = $('#amount').val();
+            var refundTotalAmount = $('#refundTotalAmount').val();
+            if (data.value == 0){
+                $("#refundAmount").val(amount - refundTotalAmount);
+                $("#refundAmount").attr("disabled", "disabled");
+            }else {
+                $("#refundAmount").removeAttr("disabled", "disabled");
+            }
+        });
+
+    })
+</script>

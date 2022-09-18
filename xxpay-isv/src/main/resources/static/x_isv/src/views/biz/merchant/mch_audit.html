@@ -1,0 +1,87 @@
+<style>
+    .xxpayPopupDiv .layui-form-label {
+        width:15% !important;
+        margin-left:1%;
+    }
+    .xxpayPopupDiv .layui-input-inline {
+        width: 33% !important;
+    }
+</style>
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-tab layui-tab-brief">
+      <div class="layui-tab-content">
+          <form class="layui-form center">
+              <div class="layui-form-item">
+                  <label class="layui-form-label">商户ID</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="mchId" name="mchId" readonly="readonly" class="layui-input">
+                  </div>
+              </div>
+              <div class="layui-form-item">
+                  <label class="layui-form-label">商户名称</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="mchName" name="mchName" autocomplete="off" class="layui-input" disabled="disabled">
+                  </div>
+              </div>
+              <div class="layui-form-item">
+                  <label class="layui-form-label">状态</label>
+                  <div class="layui-input-inline">
+                      <input type="radio" name="status" value="1" title="通过" checked="checked">
+                      <input type="radio" name="status" value="-2" title="拒绝">
+                  </div>
+              </div>
+            <button type="button" class="layui-hide xxpayYesBtn" lay-submit="" lay-filter="audit">审核</button>
+          </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    layui.use(['admin', 'form','view'],function(){
+        var form = layui.form
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,view = layui.view
+        ,layer = layui.layer;
+        // 导航
+
+        var mchId = view.getOpenParams('mchId');
+
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/mch_info/get',
+            data: { mchId : mchId },
+            error: function(err){
+                layer.alert(JSON.stringify(err.field));
+            },
+            success: function(res){
+
+                if(res.code == 0){
+                    $('#mchId').val(res.data.mchId);
+                    $('#mchName').val(res.data.mchName);
+                    form.render();
+                }
+            }
+        });
+
+        form.on('submit(audit)', function(data) {
+            //这里可以写ajax方法提交表单
+            admin.req({
+                type: "POST",
+                url: layui.setter.baseUrl + '/mch_info/audit',
+                data: data.field,
+                success: function(res){
+                    if(res.code == 0) {
+                        layer.closeAll(); //关闭所有弹层
+                        layer.msg("审核成功");
+                        layui.table.reload('tableReload', {page: {curr: 1}}); //调用业务弹层外表格重新加载
+                    }
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+    })
+</script>

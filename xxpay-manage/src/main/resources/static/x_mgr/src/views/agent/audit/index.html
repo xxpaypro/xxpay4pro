@@ -1,0 +1,116 @@
+
+<div class="layui-card layadmin-header">
+  <div class="layui-breadcrumb" lay-filter="breadcrumb">
+    <a lay-href="">主页</a>
+    <a><cite>代理商管理</cite></a>
+    <a><cite>代理商审核</cite></a>
+  </div>
+</div>
+
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-tab layui-tab-brief">
+      <ul class="layui-tab-title">
+        <li class="layui-this">待审代理商</li>
+      </ul>
+      <div class="layui-tab-content">
+        <div class="layui-tab-item layui-show">
+          <div class="layui-row">
+            <div class="layui-form" style="float:right;">
+              <div class="layui-form-item" style="margin:0;">
+                <div class="layui-input-inline">
+                  <input type="text" name="agentId" id="agentId" placeholder="代理商ID" autocomplete="off" class="layui-input">
+                </div>
+                <button id="search" class="layui-btn" data-type="reload">搜索</button>
+              </div>
+            </div>
+          </div>
+          <div class="layui-row">
+            <div class="layuiAdmin-btns" style="margin-bottom: 10px;">
+
+            </div>
+          </div>
+          <table id="XxPay_Mgr_Audit_dataAll" lay-filter="XxPay_Mgr_Audit_dataAll"></table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/html" id="xxpayBar">
+  <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="audit">审核</a>
+  <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+</script>
+
+<script>
+  layui.use(['admin', 'table', 'util'], function(){
+    var $ = layui.$
+      ,admin = layui.admin
+      ,table = layui.table
+      ,element = layui.element
+      ,form = layui.form;
+
+    element.render('breadcrumb', 'breadcrumb');
+
+    var tplStatus = function(d){
+      if(d.status == -1) {
+        return "<span style='color: orange'>等待审核</span>";
+      }else if(d.status == -2) {
+        return "<span style='color: red'>审核不通过</span>";
+      }
+    };
+
+    //代理商列表
+    table.render({
+      elem: '#XxPay_Mgr_Audit_dataAll'
+      ,url: layui.setter.baseUrl + '/agent_audit/list' //列表接口
+      ,id: 'tableReload'
+      ,page: true
+      ,cols: [[
+        {type: 'checkbox', fixed: 'left'}
+        ,{field: 'agentId', title: '代理商ID'}
+        ,{field: 'agentName', title: '代理商名称'}
+        ,{field: 'status', title: '状态', templet: tplStatus}
+        ,{field: 'createTime', title: '时间', width: 200, templet: '<div>{{ layui.util.toDateString(d.createTime, "yyyy-MM-dd HH:mm:ss") }}</div>'}
+        ,{field: 'edit', title: '操作', width: 320, toolbar: '#xxpayBar' }
+      ]]
+      ,skin: 'line'
+    });
+
+    //监听工具条
+    table.on('tool(XxPay_Mgr_Audit_dataAll)', function(obj){
+      var data = obj.data;
+      if(obj.event === 'audit'){
+        location.href = layui.setter.baseLocal + "agent/audit/agent_audit/agentId=" + data.agentId;
+      } else if(obj.event === 'edit'){
+        location.href = layui.setter.baseLocal + "agent/audit/agent_edit/agentId=" + data.agentId;
+      }
+    });
+
+    // 搜索
+    var $ = layui.$, active = {
+      reload: function(){
+        var agentId = $('#agentId').val();
+        var type = $("#type").val();
+        //执行重载
+        table.reload('tableReload', {
+          page: {
+            curr: 1 //重新从第 1 页开始
+          }
+          ,where: {
+            agentId: agentId,
+            type : type
+          }
+        });
+      }
+    };
+    $('#search').on('click', function() {
+      var type = $(this).data('type');
+      active[type] ? active[type].call(this) : '';
+    });
+
+    // 渲染表单
+    form.render();
+  });
+</script>

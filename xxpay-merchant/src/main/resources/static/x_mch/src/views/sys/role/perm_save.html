@@ -1,0 +1,103 @@
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>权限管理</cite></a>
+        <a><cite>分配权限</cite></a>
+    </div>
+</div>
+
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">权限列表</li>
+            </ul>
+            <div class="layui-tab-content">
+                <form class="layui-form center">
+                    <div id="permTree" class="xtree_contianer"></div>
+                    <hr>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button type="button" class="layui-btn" lay-submit="" lay-filter="permSave">保存</button>
+                            <a class="layui-btn" lay-href="sys/role/">返回</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!--引用xtree-->
+<script src="layui/layui-xtree/layui-xtree.js"></script>
+<script>
+    layui.use(['form','admin'],function(){
+        var form = layui.form
+                ,$ = layui.$
+                ,admin = layui.admin
+                ,element = layui.element
+                ,layer = layui.layer ;
+        // 导航
+        element.render('breadcrumb', 'breadcrumb');
+        var router = layui.router();
+        var roleId = router.search.roleId;
+        var permTree;
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/subuser/role/permission_view',
+            data: {
+                 roleId : roleId
+            },
+            error: function(err){
+                layer.alert(JSON.stringify(err.field), {
+                    title: '错误提示'
+                })
+            },
+            success: function(res){
+                if(res.code == 0){
+                    permTree = new layuiXtree({
+                        elem: 'permTree'   //(必填) 放置xtree的容器，样式参照 .xtree_contianer
+                        , form: form     //(必填) layui 的 from
+                        , data: res.data     //(必填) json数据
+                    });
+                }
+            }
+        });
+
+        form.on('submit(permSave)', function(data) {
+            // 获取所有选中的
+            var oCks = permTree.GetAllCheckBox();
+            var resourceIds = "";
+            for (var i = 0; i < oCks.length; i++) {
+                if(oCks[i].checked) {
+                    resourceIds = resourceIds + "," + oCks[i].value;
+                }
+            }
+            resourceIds = resourceIds.substring(1);
+            console.log(resourceIds);
+
+            //这里可以写ajax方法提交表单
+            admin.req({
+                type: "POST",
+                url: layui.setter.baseUrl + '/subuser/role/permission_save',
+                data: {
+                    roleId: roleId,
+                    resourceIds: resourceIds,
+                },
+                success: function(res){
+                    if(res.code == 0) {
+                        layer.alert(res.msg, {title: "保存成功"}, function(index){
+                            layer.close(index);
+                            location.hash = '/sys/role/';
+                        });
+                    }else {
+                        layer.alert(res.msg, {
+                            title: '保存失败'
+                        });
+                    }
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+    })
+</script>

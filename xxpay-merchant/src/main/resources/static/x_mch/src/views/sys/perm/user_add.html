@@ -1,0 +1,115 @@
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>用户管理</cite></a>
+        <a><cite>新建用户</cite></a>
+    </div>
+</div>
+
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-tab layui-tab-brief">
+      <ul class="layui-tab-title">
+        <li class="layui-this">新建用户</li>
+      </ul>
+      <div class="layui-tab-content">
+          <form class="layui-form center">
+            <div class="layui-form-item">
+              <div class="layui-inline">
+                <label class="layui-form-label">用户名</label>
+                <div class="layui-input-inline">
+                  <input type="text" id="userName" name="userName" lay-verify="required" placeholder="输入用户名" autocomplete="off" class="layui-input">
+                </div>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-inline">
+                <label class="layui-form-label">用户昵称</label>
+                <div class="layui-input-inline">
+                  <input type="text" id="nickName" name="nickName" lay-verify="required" placeholder="输入用户昵称" autocomplete="off" class="layui-input">
+                </div>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">密码</label>
+              <div class="layui-input-inline">
+                <input type="password" id="passWord" name="passWord" lay-verify="pass" placeholder="输入密码" autocomplete="off" class="layui-input">
+              </div>
+              <div class="layui-form-mid layui-word-aux">请填写6到12位密码</div>
+            </div>           
+            <div class="layui-form-item">
+              <div class="layui-inline">
+                <label class="layui-form-label">邮箱</label>
+                <div class="layui-input-inline">
+                  <input type="text" id="email" name="email" lay-verify="email" placeholder="输入邮箱" autocomplete="off" class="layui-input">
+                </div>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-inline">
+                <label class="layui-form-label">手机号</label>
+                <div class="layui-input-inline">
+                  <input type="tel" id="mobile" name="mobile" lay-verify="phone" placeholder="输入手机号" autocomplete="off" class="layui-input">
+                </div>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-inline">
+                  <label class="layui-form-label">状态</label>
+                  <div class="layui-input-block">
+                      <input type="radio" name="status" value="1" title="启用" checked="checked">
+                      <input type="radio" name="status" value="0" title="停止">
+                  </div>
+              </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button type="button" class="layui-btn" lay-submit="" lay-filter="userAdd">保存</button>
+                    <a class="layui-btn" lay-href="sys/perm/user">返回</a>
+                </div>
+            </div>
+          </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    layui.use(['form','admin'],function(){
+        var form = layui.form
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,element = layui.element
+        ,layer = layui.layer ;
+
+        element.render('breadcrumb', 'breadcrumb');
+        
+        /* 自定义验证规则 */
+        form.verify({
+            pass: [/(.+){6,12}$/, '密码必须6到12位']
+        });
+
+        form.on('submit(userAdd)', function(data) {
+            //这里可以写ajax方法提交表单
+            admin.req({
+                type: "POST",
+                url: layui.setter.baseUrl + '/sys_user/add',
+                data: "params=" + JSON.stringify(data.field),
+                success: function(res){
+                    if(res.code == 0) {
+                        layer.alert(res.msg, {title: "保存成功"}, function(index){
+                          layer.close(index);
+                          location.href = layui.setter.baseLocal + 'sys/perm/user';
+                        });
+                    }else {
+                        layer.alert(res.msg, {
+                            title: '保存失败'
+                        }); 
+                    }
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+        form.render();
+    })
+</script>

@@ -1,0 +1,148 @@
+<style>
+    .xxpayPopupDiv .layui-form-label {
+        width:20% !important;
+        margin-left:1%;
+    }
+    .xxpayPopupDiv .layui-input-inline {
+        width: 45% !important;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <form class="layui-form layui-form-pane">
+            <div class="layui-tab layui-tab-brief">
+                <div class="layui-tab-content">
+
+                    <input type="hidden" id="storeId" name="storeId" />
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">打印机ID</label>
+                        <div class="layui-input-inline">
+                            <input type="text" required id="printerId" name="printerId" placeholder="输入打印机ID" lay-verify="required" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">状态</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="status" value="1" title="开启" checked="checked">
+                            <input type="radio" name="status" value="0" title="关闭">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">测试单号</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="tradeOrderId" name="tradeOrderId" placeholder="输入订单号" autocomplete="off" class="layui-input">
+                        </div>
+                        <div class="layui-input-inline" style="width: 30% !important;">
+                            <input class="layui-btn" type="button" id="test" value="测试" lay-submit lay-filter="test">
+                        </div>
+                    </div>
+                    <button type="button" lay-submit lay-filter="btnUP" class="layui-hide xxpayYesBtn">保存</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    layui.use(['form','util','admin'], function(){
+        var form = layui.form
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,view = layui.view
+        ,element = layui.element;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+        
+        var storeId = view.getOpenParams('storeId');
+
+        $("#storeId").val(storeId);
+
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/mch_store_printer/get',
+            data: {
+                storeId: storeId
+            },
+            error: function(err){
+                layer.alert(err);
+            },
+            success: function(res){
+                if(res.code == 0 && res.data != null){
+                    $('#printerId').val(res.data.printerId);
+                    if(res.data.status == 1) {
+                        $("input[name='status'][value='1']").attr("checked",true);
+                    }else {
+                        $("input[name='status'][value='0']").attr("checked",true);
+                    }
+                }
+                form.render();
+            }
+
+        });
+
+
+        //提交修改后的数据
+        //监听提交
+        form.on('submit(btnUP)', function(data){
+
+            // 在这个回调函数里面写ajax提交
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/mch_store_printer/relation_printer',
+                data: data.field,
+                success: function(res){
+                    if(res.code == 0){
+                        layer.alert(res.msg, function(index){
+                            layer.closeAll(); //关闭所有弹层
+                            layui.table.reload('tableReload', {page: {curr: 1}}); //调用业务弹层外表格重新加载
+                        })
+                    }
+                }
+            });
+            return false;//阻止跳转
+        });
+
+        //提交修改后的数据
+        //监听提交
+        form.on('submit(test)', function(data){
+            settime($("#test"));
+            // 在这个回调函数里面写ajax提交
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/mch_store_printer/pushmsgToPrinter',
+                data: data.field,
+                success: function(res){
+                    if(res.code == 0){
+                        layer.alert(res.msg, function(index){
+                            layer.msg("打印成功！");
+                        })
+                    }
+                }
+            });
+            return false;//阻止跳转
+        });
+
+        var countdown = 30;
+        function settime(obj) { //发送验证码倒计时
+            if(countdown == 0) {
+                obj.removeClass('layui-btn-disabled');
+                obj.attr('disabled', false);
+                //obj.removeattr("disabled");
+                obj.val("点击获取验证码");
+                countdown = 30;
+                return;
+            } else {
+                obj.addClass('layui-btn-disabled');
+                obj.attr('disabled', true);
+                obj.val("(" + countdown + ")秒后可重新测试");
+                countdown--;
+            }
+            setTimeout(function() {
+                settime(obj)
+            }, 1000)
+        }
+
+
+        form.render();
+
+    })
+</script>

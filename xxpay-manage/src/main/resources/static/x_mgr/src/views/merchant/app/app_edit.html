@@ -1,0 +1,116 @@
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a>应用管理</a>
+        <a><cite>编辑应用</cite></a>
+    </div>
+</div>
+    
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">编辑应用</li>
+            </ul>
+            <div class="layui-tab-content">
+                <style>
+                    .center {
+                        width: 45%;
+                    }
+                </style>
+                <form class="layui-form center">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">应用ID</label>
+                        <div class="layui-input-block">
+                            <input type="text" required name="appId" readonly="readonly" lay-verify="required" placeholder="请输入应用名称" autocomplete="off" class="layui-input appId">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">应用名称</label>
+                        <div class="layui-input-block">
+                            <input type="text" required name="appName" lay-verify="required" placeholder="请输入应用名称" autocomplete="off" class="layui-input appName">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">状态</label>
+                        <div class="layui-input-block" >
+                            <input type="radio" name="status" class="qy" value="1" title="启用">
+                            <input type="radio" name="status" class="tz" value="0" title="停止">
+                        </div>
+                    </div>
+                    <div class="layui-form-item ">
+                        <div class="layui-input-block">
+                            <button type="button" lay-filter="btnM" lay-submit class="layui-btn ">保存</button>
+                            <a lay-href="/merchant/app/"  class="layui-btn">返回</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    
+    layui.use(['admin', 'form','element'],function(){
+        var form = layui.form
+        , $ = layui.$
+        ,admin = layui.admin
+        , layer = layui.layer 
+        ,element = layui.element;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        var router = layui.router();
+        var curAppId = router.search.appId;
+
+        
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/app/get',
+            data: {
+                appId : curAppId
+            },
+            error: function(err){
+                layer.alert(err, {
+                    title: 'error'
+                })
+            },
+            success: function(res){
+                if(res.code == '0'){
+                    $('.appId').val(res.data.appId);
+                    $('.appName').val(res.data.appName);
+                    if(res.data.status == '0'){
+                        $('.tz').attr('checked','checked');
+                    }else {
+                        $('.qy').attr('checked','checked');
+                    }
+                    form.render(); 
+                }else {
+                    layer.alert(res.msg,{title: '请求失败'})
+                }
+            }
+        })
+
+
+        //监听提交
+        form.on('submit(btnM)', function(data){
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/app/update', //模拟接口,
+                data: data.field,
+                error: function(err){layer.alert(err.msg,{title:"请求失败"})},
+                success: function(res){
+                    if(res.code == 0){
+                        layer.alert(res.msg, {title: '保存成功'},function(index){
+                            layer.close(index);
+                            location.hash = '/merchant/app/';
+                        });
+                    }else {
+                        layer.alert(res.msg,{title: '保存失败'})
+                    }
+                }
+                })
+            return false;
+        });
+    })
+</script>

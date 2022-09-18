@@ -1,0 +1,521 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.xxpay.service.dao.mapper.CheckBatchMapper" >
+  <resultMap id="BaseResultMap" type="org.xxpay.core.entity.CheckBatch" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="batchNo" property="batchNo" jdbcType="VARCHAR" />
+    <result column="billDate" property="billDate" jdbcType="DATE" />
+    <result column="billType" property="billType" jdbcType="TINYINT" />
+    <result column="handleStatus" property="handleStatus" jdbcType="TINYINT" />
+    <result column="bankType" property="bankType" jdbcType="VARCHAR" />
+    <result column="channelMchId" property="channelMchId" jdbcType="VARCHAR" />
+    <result column="mistakeCount" property="mistakeCount" jdbcType="INTEGER" />
+    <result column="unhandleMistakeCount" property="unhandleMistakeCount" jdbcType="INTEGER" />
+    <result column="tradeCount" property="tradeCount" jdbcType="INTEGER" />
+    <result column="bankTradeCount" property="bankTradeCount" jdbcType="INTEGER" />
+    <result column="tradeAmount" property="tradeAmount" jdbcType="BIGINT" />
+    <result column="bankTradeAmount" property="bankTradeAmount" jdbcType="BIGINT" />
+    <result column="refundAmount" property="refundAmount" jdbcType="BIGINT" />
+    <result column="bankRefundAmount" property="bankRefundAmount" jdbcType="BIGINT" />
+    <result column="fee" property="fee" jdbcType="BIGINT" />
+    <result column="bankFee" property="bankFee" jdbcType="BIGINT" />
+    <result column="orgCheckFilePath" property="orgCheckFilePath" jdbcType="VARCHAR" />
+    <result column="releaseCheckFilePath" property="releaseCheckFilePath" jdbcType="VARCHAR" />
+    <result column="releaseStatus" property="releaseStatus" jdbcType="TINYINT" />
+    <result column="checkFailMsg" property="checkFailMsg" jdbcType="VARCHAR" />
+    <result column="bankErrMsg" property="bankErrMsg" jdbcType="VARCHAR" />
+    <result column="createTime" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="updateTime" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, batchNo, billDate, billType, handleStatus, bankType, channelMchId, mistakeCount, 
+    unhandleMistakeCount, tradeCount, bankTradeCount, tradeAmount, bankTradeAmount, refundAmount, 
+    bankRefundAmount, fee, bankFee, orgCheckFilePath, releaseCheckFilePath, releaseStatus, 
+    checkFailMsg, bankErrMsg, createTime, updateTime
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="org.xxpay.core.entity.CheckBatchExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from t_check_batch
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+    <if test="limit != null" >
+      <if test="offset != null" >
+        limit ${offset}, ${limit}
+      </if>
+      <if test="offset == null" >
+        limit ${limit}
+      </if>
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_check_batch
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from t_check_batch
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="org.xxpay.core.entity.CheckBatchExample" >
+    delete from t_check_batch
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="org.xxpay.core.entity.CheckBatch" >
+    insert into t_check_batch (id, batchNo, billDate, 
+      billType, handleStatus, bankType, 
+      channelMchId, mistakeCount, unhandleMistakeCount, 
+      tradeCount, bankTradeCount, tradeAmount, 
+      bankTradeAmount, refundAmount, bankRefundAmount, 
+      fee, bankFee, orgCheckFilePath, 
+      releaseCheckFilePath, releaseStatus, checkFailMsg, 
+      bankErrMsg, createTime, updateTime
+      )
+    values (#{id,jdbcType=BIGINT}, #{batchNo,jdbcType=VARCHAR}, #{billDate,jdbcType=DATE}, 
+      #{billType,jdbcType=TINYINT}, #{handleStatus,jdbcType=TINYINT}, #{bankType,jdbcType=VARCHAR}, 
+      #{channelMchId,jdbcType=VARCHAR}, #{mistakeCount,jdbcType=INTEGER}, #{unhandleMistakeCount,jdbcType=INTEGER}, 
+      #{tradeCount,jdbcType=INTEGER}, #{bankTradeCount,jdbcType=INTEGER}, #{tradeAmount,jdbcType=BIGINT}, 
+      #{bankTradeAmount,jdbcType=BIGINT}, #{refundAmount,jdbcType=BIGINT}, #{bankRefundAmount,jdbcType=BIGINT}, 
+      #{fee,jdbcType=BIGINT}, #{bankFee,jdbcType=BIGINT}, #{orgCheckFilePath,jdbcType=VARCHAR}, 
+      #{releaseCheckFilePath,jdbcType=VARCHAR}, #{releaseStatus,jdbcType=TINYINT}, #{checkFailMsg,jdbcType=VARCHAR}, 
+      #{bankErrMsg,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="org.xxpay.core.entity.CheckBatch" >
+    insert into t_check_batch
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="batchNo != null" >
+        batchNo,
+      </if>
+      <if test="billDate != null" >
+        billDate,
+      </if>
+      <if test="billType != null" >
+        billType,
+      </if>
+      <if test="handleStatus != null" >
+        handleStatus,
+      </if>
+      <if test="bankType != null" >
+        bankType,
+      </if>
+      <if test="channelMchId != null" >
+        channelMchId,
+      </if>
+      <if test="mistakeCount != null" >
+        mistakeCount,
+      </if>
+      <if test="unhandleMistakeCount != null" >
+        unhandleMistakeCount,
+      </if>
+      <if test="tradeCount != null" >
+        tradeCount,
+      </if>
+      <if test="bankTradeCount != null" >
+        bankTradeCount,
+      </if>
+      <if test="tradeAmount != null" >
+        tradeAmount,
+      </if>
+      <if test="bankTradeAmount != null" >
+        bankTradeAmount,
+      </if>
+      <if test="refundAmount != null" >
+        refundAmount,
+      </if>
+      <if test="bankRefundAmount != null" >
+        bankRefundAmount,
+      </if>
+      <if test="fee != null" >
+        fee,
+      </if>
+      <if test="bankFee != null" >
+        bankFee,
+      </if>
+      <if test="orgCheckFilePath != null" >
+        orgCheckFilePath,
+      </if>
+      <if test="releaseCheckFilePath != null" >
+        releaseCheckFilePath,
+      </if>
+      <if test="releaseStatus != null" >
+        releaseStatus,
+      </if>
+      <if test="checkFailMsg != null" >
+        checkFailMsg,
+      </if>
+      <if test="bankErrMsg != null" >
+        bankErrMsg,
+      </if>
+      <if test="createTime != null" >
+        createTime,
+      </if>
+      <if test="updateTime != null" >
+        updateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="batchNo != null" >
+        #{batchNo,jdbcType=VARCHAR},
+      </if>
+      <if test="billDate != null" >
+        #{billDate,jdbcType=DATE},
+      </if>
+      <if test="billType != null" >
+        #{billType,jdbcType=TINYINT},
+      </if>
+      <if test="handleStatus != null" >
+        #{handleStatus,jdbcType=TINYINT},
+      </if>
+      <if test="bankType != null" >
+        #{bankType,jdbcType=VARCHAR},
+      </if>
+      <if test="channelMchId != null" >
+        #{channelMchId,jdbcType=VARCHAR},
+      </if>
+      <if test="mistakeCount != null" >
+        #{mistakeCount,jdbcType=INTEGER},
+      </if>
+      <if test="unhandleMistakeCount != null" >
+        #{unhandleMistakeCount,jdbcType=INTEGER},
+      </if>
+      <if test="tradeCount != null" >
+        #{tradeCount,jdbcType=INTEGER},
+      </if>
+      <if test="bankTradeCount != null" >
+        #{bankTradeCount,jdbcType=INTEGER},
+      </if>
+      <if test="tradeAmount != null" >
+        #{tradeAmount,jdbcType=BIGINT},
+      </if>
+      <if test="bankTradeAmount != null" >
+        #{bankTradeAmount,jdbcType=BIGINT},
+      </if>
+      <if test="refundAmount != null" >
+        #{refundAmount,jdbcType=BIGINT},
+      </if>
+      <if test="bankRefundAmount != null" >
+        #{bankRefundAmount,jdbcType=BIGINT},
+      </if>
+      <if test="fee != null" >
+        #{fee,jdbcType=BIGINT},
+      </if>
+      <if test="bankFee != null" >
+        #{bankFee,jdbcType=BIGINT},
+      </if>
+      <if test="orgCheckFilePath != null" >
+        #{orgCheckFilePath,jdbcType=VARCHAR},
+      </if>
+      <if test="releaseCheckFilePath != null" >
+        #{releaseCheckFilePath,jdbcType=VARCHAR},
+      </if>
+      <if test="releaseStatus != null" >
+        #{releaseStatus,jdbcType=TINYINT},
+      </if>
+      <if test="checkFailMsg != null" >
+        #{checkFailMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="bankErrMsg != null" >
+        #{bankErrMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="org.xxpay.core.entity.CheckBatchExample" resultType="java.lang.Integer" >
+    select count(*) from t_check_batch
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update t_check_batch
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=BIGINT},
+      </if>
+      <if test="record.batchNo != null" >
+        batchNo = #{record.batchNo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.billDate != null" >
+        billDate = #{record.billDate,jdbcType=DATE},
+      </if>
+      <if test="record.billType != null" >
+        billType = #{record.billType,jdbcType=TINYINT},
+      </if>
+      <if test="record.handleStatus != null" >
+        handleStatus = #{record.handleStatus,jdbcType=TINYINT},
+      </if>
+      <if test="record.bankType != null" >
+        bankType = #{record.bankType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.channelMchId != null" >
+        channelMchId = #{record.channelMchId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mistakeCount != null" >
+        mistakeCount = #{record.mistakeCount,jdbcType=INTEGER},
+      </if>
+      <if test="record.unhandleMistakeCount != null" >
+        unhandleMistakeCount = #{record.unhandleMistakeCount,jdbcType=INTEGER},
+      </if>
+      <if test="record.tradeCount != null" >
+        tradeCount = #{record.tradeCount,jdbcType=INTEGER},
+      </if>
+      <if test="record.bankTradeCount != null" >
+        bankTradeCount = #{record.bankTradeCount,jdbcType=INTEGER},
+      </if>
+      <if test="record.tradeAmount != null" >
+        tradeAmount = #{record.tradeAmount,jdbcType=BIGINT},
+      </if>
+      <if test="record.bankTradeAmount != null" >
+        bankTradeAmount = #{record.bankTradeAmount,jdbcType=BIGINT},
+      </if>
+      <if test="record.refundAmount != null" >
+        refundAmount = #{record.refundAmount,jdbcType=BIGINT},
+      </if>
+      <if test="record.bankRefundAmount != null" >
+        bankRefundAmount = #{record.bankRefundAmount,jdbcType=BIGINT},
+      </if>
+      <if test="record.fee != null" >
+        fee = #{record.fee,jdbcType=BIGINT},
+      </if>
+      <if test="record.bankFee != null" >
+        bankFee = #{record.bankFee,jdbcType=BIGINT},
+      </if>
+      <if test="record.orgCheckFilePath != null" >
+        orgCheckFilePath = #{record.orgCheckFilePath,jdbcType=VARCHAR},
+      </if>
+      <if test="record.releaseCheckFilePath != null" >
+        releaseCheckFilePath = #{record.releaseCheckFilePath,jdbcType=VARCHAR},
+      </if>
+      <if test="record.releaseStatus != null" >
+        releaseStatus = #{record.releaseStatus,jdbcType=TINYINT},
+      </if>
+      <if test="record.checkFailMsg != null" >
+        checkFailMsg = #{record.checkFailMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="record.bankErrMsg != null" >
+        bankErrMsg = #{record.bankErrMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createTime != null" >
+        createTime = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateTime != null" >
+        updateTime = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update t_check_batch
+    set id = #{record.id,jdbcType=BIGINT},
+      batchNo = #{record.batchNo,jdbcType=VARCHAR},
+      billDate = #{record.billDate,jdbcType=DATE},
+      billType = #{record.billType,jdbcType=TINYINT},
+      handleStatus = #{record.handleStatus,jdbcType=TINYINT},
+      bankType = #{record.bankType,jdbcType=VARCHAR},
+      channelMchId = #{record.channelMchId,jdbcType=VARCHAR},
+      mistakeCount = #{record.mistakeCount,jdbcType=INTEGER},
+      unhandleMistakeCount = #{record.unhandleMistakeCount,jdbcType=INTEGER},
+      tradeCount = #{record.tradeCount,jdbcType=INTEGER},
+      bankTradeCount = #{record.bankTradeCount,jdbcType=INTEGER},
+      tradeAmount = #{record.tradeAmount,jdbcType=BIGINT},
+      bankTradeAmount = #{record.bankTradeAmount,jdbcType=BIGINT},
+      refundAmount = #{record.refundAmount,jdbcType=BIGINT},
+      bankRefundAmount = #{record.bankRefundAmount,jdbcType=BIGINT},
+      fee = #{record.fee,jdbcType=BIGINT},
+      bankFee = #{record.bankFee,jdbcType=BIGINT},
+      orgCheckFilePath = #{record.orgCheckFilePath,jdbcType=VARCHAR},
+      releaseCheckFilePath = #{record.releaseCheckFilePath,jdbcType=VARCHAR},
+      releaseStatus = #{record.releaseStatus,jdbcType=TINYINT},
+      checkFailMsg = #{record.checkFailMsg,jdbcType=VARCHAR},
+      bankErrMsg = #{record.bankErrMsg,jdbcType=VARCHAR},
+      createTime = #{record.createTime,jdbcType=TIMESTAMP},
+      updateTime = #{record.updateTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="org.xxpay.core.entity.CheckBatch" >
+    update t_check_batch
+    <set >
+      <if test="batchNo != null" >
+        batchNo = #{batchNo,jdbcType=VARCHAR},
+      </if>
+      <if test="billDate != null" >
+        billDate = #{billDate,jdbcType=DATE},
+      </if>
+      <if test="billType != null" >
+        billType = #{billType,jdbcType=TINYINT},
+      </if>
+      <if test="handleStatus != null" >
+        handleStatus = #{handleStatus,jdbcType=TINYINT},
+      </if>
+      <if test="bankType != null" >
+        bankType = #{bankType,jdbcType=VARCHAR},
+      </if>
+      <if test="channelMchId != null" >
+        channelMchId = #{channelMchId,jdbcType=VARCHAR},
+      </if>
+      <if test="mistakeCount != null" >
+        mistakeCount = #{mistakeCount,jdbcType=INTEGER},
+      </if>
+      <if test="unhandleMistakeCount != null" >
+        unhandleMistakeCount = #{unhandleMistakeCount,jdbcType=INTEGER},
+      </if>
+      <if test="tradeCount != null" >
+        tradeCount = #{tradeCount,jdbcType=INTEGER},
+      </if>
+      <if test="bankTradeCount != null" >
+        bankTradeCount = #{bankTradeCount,jdbcType=INTEGER},
+      </if>
+      <if test="tradeAmount != null" >
+        tradeAmount = #{tradeAmount,jdbcType=BIGINT},
+      </if>
+      <if test="bankTradeAmount != null" >
+        bankTradeAmount = #{bankTradeAmount,jdbcType=BIGINT},
+      </if>
+      <if test="refundAmount != null" >
+        refundAmount = #{refundAmount,jdbcType=BIGINT},
+      </if>
+      <if test="bankRefundAmount != null" >
+        bankRefundAmount = #{bankRefundAmount,jdbcType=BIGINT},
+      </if>
+      <if test="fee != null" >
+        fee = #{fee,jdbcType=BIGINT},
+      </if>
+      <if test="bankFee != null" >
+        bankFee = #{bankFee,jdbcType=BIGINT},
+      </if>
+      <if test="orgCheckFilePath != null" >
+        orgCheckFilePath = #{orgCheckFilePath,jdbcType=VARCHAR},
+      </if>
+      <if test="releaseCheckFilePath != null" >
+        releaseCheckFilePath = #{releaseCheckFilePath,jdbcType=VARCHAR},
+      </if>
+      <if test="releaseStatus != null" >
+        releaseStatus = #{releaseStatus,jdbcType=TINYINT},
+      </if>
+      <if test="checkFailMsg != null" >
+        checkFailMsg = #{checkFailMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="bankErrMsg != null" >
+        bankErrMsg = #{bankErrMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        createTime = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        updateTime = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.xxpay.core.entity.CheckBatch" >
+    update t_check_batch
+    set batchNo = #{batchNo,jdbcType=VARCHAR},
+      billDate = #{billDate,jdbcType=DATE},
+      billType = #{billType,jdbcType=TINYINT},
+      handleStatus = #{handleStatus,jdbcType=TINYINT},
+      bankType = #{bankType,jdbcType=VARCHAR},
+      channelMchId = #{channelMchId,jdbcType=VARCHAR},
+      mistakeCount = #{mistakeCount,jdbcType=INTEGER},
+      unhandleMistakeCount = #{unhandleMistakeCount,jdbcType=INTEGER},
+      tradeCount = #{tradeCount,jdbcType=INTEGER},
+      bankTradeCount = #{bankTradeCount,jdbcType=INTEGER},
+      tradeAmount = #{tradeAmount,jdbcType=BIGINT},
+      bankTradeAmount = #{bankTradeAmount,jdbcType=BIGINT},
+      refundAmount = #{refundAmount,jdbcType=BIGINT},
+      bankRefundAmount = #{bankRefundAmount,jdbcType=BIGINT},
+      fee = #{fee,jdbcType=BIGINT},
+      bankFee = #{bankFee,jdbcType=BIGINT},
+      orgCheckFilePath = #{orgCheckFilePath,jdbcType=VARCHAR},
+      releaseCheckFilePath = #{releaseCheckFilePath,jdbcType=VARCHAR},
+      releaseStatus = #{releaseStatus,jdbcType=TINYINT},
+      checkFailMsg = #{checkFailMsg,jdbcType=VARCHAR},
+      bankErrMsg = #{bankErrMsg,jdbcType=VARCHAR},
+      createTime = #{createTime,jdbcType=TIMESTAMP},
+      updateTime = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

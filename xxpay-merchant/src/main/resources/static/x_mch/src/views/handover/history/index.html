@@ -1,0 +1,139 @@
+<style>
+  .margin-top{margin-top:10px;}
+</style>
+<div class="layui-card layadmin-header">
+  <div class="layui-breadcrumb" lay-filter="breadcrumb">
+    <a lay-href="">主页</a>
+    <a><cite>交班记录</cite></a>
+  </div>
+</div>
+
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-tab layui-tab-brief">
+      <ul class="layui-tab-title">
+        <li class="layui-this">交班记录</li>
+      </ul>
+      <div class="layui-tab-content">
+        <div class="layui-tab-item layui-show">
+          <div class="layui-row">
+            <div class="layui-form" style="float:right;">
+              <div class="layui-form-item" style="margin:0;">
+                <div class="layui-input-inline margin-top">
+                  <input type="text" id="searchUserId" autocomplete="off" placeholder="用户ID" class="layui-input">
+                </div>
+                <div class="layui-input-inline margin-top">
+                  <input type="text" id="searchUserName" autocomplete="off" placeholder="用户名" class="layui-input">
+                </div>
+
+                <div class="layui-input-inline margin-top">
+                  <input type="text" id="searchStoreId" autocomplete="off" placeholder="门店ID" class="layui-input">
+                </div>
+
+                <div class="layui-input-inline margin-top">
+                  <input type="text" id="searchStartTime" autocomplete="off" placeholder="开始时间" class="layui-input" readonly>
+                </div>
+
+                <div class="layui-input-inline margin-top">
+                  <input type="text" id="searchEndTime" autocomplete="off" placeholder="结束时间" class="layui-input" readonly>
+                </div>
+
+                <div class="layui-input-inline margin-top">
+                  <button id="search" class="layui-btn" data-type="reload">搜索</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="layui-row">
+            <div class="layuiAdmin-btns" style="margin-bottom: 10px;">
+            </div>
+          </div>
+          <table id="XxPay_Mgr_Handover_dataAll" lay-filter="XxPay_Mgr_Handover_dataAll"></table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/html" id="xxpayBar">
+  <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+</script>
+
+<script>
+layui.use(['admin', 'table', 'util', 'laydate'], function(){
+  var $ = layui.$
+  ,admin = layui.admin
+  ,table = layui.table
+  ,element = layui.element
+  ,form = layui.form
+  ,view = layui.view
+  ,laydate = layui.laydate;
+
+  element.render('breadcrumb', 'breadcrumb');
+
+  laydate.render({elem: '#searchStartTime', type: 'datetime'});
+  laydate.render({elem: '#searchEndTime', type: 'datetime'});
+
+  //用户列表
+  table.render({
+    elem: '#XxPay_Mgr_Handover_dataAll'
+    ,url: layui.setter.baseUrl + '/handover_history/list' //用户列表接口
+    ,id: 'tableReload'
+    ,page: true
+    ,cols: [[
+      {field: 'userId', title: '员工ID'}
+      ,{field: 'userName', title: '员工名称'}
+      ,{field: 'storeId', title: '门店ID'}
+      ,{title: '工作开始时间', templet: '<div>{{ layui.util.toDateString(d.workStartTime, "yyyy-MM-dd HH:mm:ss") }}</div>' }
+      ,{title: '工作结束时间', templet: '<div>{{ layui.util.toDateString(d.workEndTime, "yyyy-MM-dd HH:mm:ss") }}</div>' }
+      ,{field: "countTotalOrder", title: '订单数量'}
+      ,{title: '实收总额（元）', templet: "<div>{{d.sumRealAmount / 100}}</div>"}
+      ,{title: '实收现金（元）', templet: "<div>{{d.sumCashAmount / 100}}</div>"}
+      ,{field: 'edit', width:260, title: '操作', toolbar: '#xxpayBar' }
+    ]]
+    ,skin: 'line'
+  });
+
+  //监听工具条
+  table.on('tool(XxPay_Mgr_Handover_dataAll)', function(obj){
+    var data = obj.data;
+    if(obj.event === 'detail'){
+      view.xxpayPopup("查看交班信息", "handover/history/view", {id: data.id}, {btn:false});
+    }
+  });
+
+
+  // 搜索
+  var $ = layui.$, active = {
+    reload: function(){
+      var userId = $('#searchUserId').val();
+      var userName = $("#searchUserName").val();
+      var storeId = $("#searchStoreId").val();
+      var workStartTime = $("#searchStartTime").val();
+      var workEndTime = $("#searchEndTime").val();
+
+      //执行重载
+      table.reload('tableReload', {
+        page: {
+          curr: 1 //重新从第 1 页开始
+        }
+        ,where: {
+          userId: userId,
+          userName: userName,
+          storeId: storeId,
+          workStartTime: workStartTime,
+          workEndTime: workEndTime
+        }
+      });
+    }
+  };
+  $('#search').on('click', function() {
+    var type = $(this).data('type');
+    active[type] ? active[type].call(this) : '';
+  });
+
+  // 渲染表单
+  form.render();
+});
+</script>

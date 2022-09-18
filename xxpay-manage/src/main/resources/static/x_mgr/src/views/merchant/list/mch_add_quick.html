@@ -1,0 +1,136 @@
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>商户管理</cite></a>
+        <a><cite>快速新建商户</cite></a>
+    </div>
+</div>
+<style>
+    .layui-form-label {
+        width:15% !important;
+        margin-left:1%;
+    }
+    .layui-input-inline {
+        width: 33% !important;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <form class="layui-form layui-form-pane">
+            <div class="layui-tab layui-tab-brief">
+                <ul class="layui-tab-title">
+                    <li class="layui-this">基本信息</li>
+                </ul>
+                <div class="layui-tab-content">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">商户名称</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="name" name="name" lay-verify="required" placeholder="输入商户名称" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">用户登录名</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="userName" name="userName" lay-verify="required" placeholder="输入用户登录名" autocomplete="off" class="layui-input">
+                        </div>
+                        <input type="checkbox" id="useDefaultPwd" lay-filter="useDefaultPwd" title="使用默认密码" checked>
+                    </div>
+                    <div class="layui-form-item layui-hide passwordDiv">
+                        <label class="layui-form-label">密码</label>
+                        <div class="layui-input-inline">
+                            <input type="password" id="password" name="password" placeholder="输入用户登录密码" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item layui-hide passwordDiv">
+                        <label class="layui-form-label">确认密码</label>
+                        <div class="layui-input-inline">
+                            <input type="password" id="password2" placeholder="再次输入用户登录密码" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">邮箱</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="email" name="email" lay-verify="email" placeholder="输入邮箱" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">备注</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="remark" name="remark" placeholder="输入备注信息" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">所属服务商ID</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="isvId" name="isvId" placeholder="输入服务商ID" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="layui-form-item">
+                    <div class="layui-input-block" style="padding-bottom: 20px;">
+                        <button type="button" class="layui-btn" lay-submit="" lay-filter="mchAdd">保存</button>
+                        <a class="layui-btn" lay-href="merchant/list/">返回</a>
+                    </div>
+                </div>
+
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    layui.use(['admin', 'form'],function(){
+        var form = layui.form
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,element = layui.element
+        ,layer = layui.layer ;
+
+        element.render('breadcrumb', 'breadcrumb');
+
+        form.on("checkbox(useDefaultPwd)", function(data){
+
+            $('#password').val("");
+            $('#password2').val("");
+            if(data.elem.checked){
+                $('.passwordDiv').addClass('layui-hide');
+            }else{
+                $('.passwordDiv').removeClass('layui-hide');
+            }
+        });
+        
+        form.on('submit(mchAdd)', function(data) {
+
+            var isUseDefaultPwd = $('#useDefaultPwd').is(':checked');
+            if(!isUseDefaultPwd){
+
+                var pwd = $("#password").val();
+                var pwd2 = $("#password2").val();
+                if(!pwd || !pwd2){
+                    return layer.alert('请输入密码！');
+                }
+                if(pwd != pwd2){
+                    return layer.alert('两次密码不一致，请修改！');
+                }
+            }
+
+            //这里可以写ajax方法提交表单
+            admin.req({
+                type: "POST",
+                url: layui.setter.baseUrl + '/mch_info/add',
+                data: data.field,
+                success: function(res){
+                    if(res.code == 0) {
+                        layer.alert(res.msg, {title: "提示"}, function(index){
+                          layer.close(index);
+                          location.href = layui.setter.baseLocal + 'merchant/list/';
+                        });
+                    }
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+        form.render();
+    })
+</script>

@@ -1,0 +1,208 @@
+<style>
+    .xxpayPopupDiv .layui-input-inline {
+        width: 320px !important;
+    }
+</style>
+
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <div class="layui-tab-content">
+                <form class="layui-form center">
+
+                    <input name="id" id="id" type="hidden">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">设备名称</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="deviceName" name="deviceName" lay-verify="required" placeholder="输入设备名称" class="layui-input" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">设备编号</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="deviceNo" name="deviceNo" lay-verify="required" placeholder="输入设备编号" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">设备类型</label>
+                            <div class="layui-input-block">
+                                <input type="radio" name="deviceType" value="1" title="微信" checked>
+                                <input type="radio" name="deviceType" value="2" title="支付宝">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">绑定商家</label>
+                        <div class="layui-input-inline">
+                            <select id="mchId" name="mchId" lay-filter="mchSelectFilter">
+                                <option value="0">全部商家</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">绑定门店</label>
+                            <div class="layui-input-inline">
+                                <select id="storeId" name="storeId" >
+                                    <option value="0">全部门店</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">状态</label>
+                            <div class="layui-input-block">
+                                <input type="radio" name="status" value="1" title="正常使用" checked>
+                                <input type="radio" name="status" value="0" title="设备停用">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">备注</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="remark" name="remark" placeholder="输入备注" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="button" class="layui-hide xxpayYesBtn" lay-submit="" lay-filter="deviceEdit">保存</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    layui.use(['form','admin','view'],function(){
+        var form = layui.form
+            ,$ = layui.$
+            ,admin = layui.admin
+            ,element = layui.element
+            ,view = layui.view
+            ,layer = layui.layer ;
+
+
+        // 导航
+        element.render('breadcrumb', 'breadcrumb');
+
+        var id = view.getOpenParams("id");
+        $("#id").val(id);
+
+
+
+        var initMchSelect = function(selectMchId){
+            //初始化所有商家列表
+            admin.req({
+                type: 'get',
+                url: layui.setter.baseUrl + '/mch_info/listAll',
+                error: function(err){
+                    layer.alert(JSON.stringify(err.field), {title: '错误提示'});
+                },
+                success: function(res){
+                    if(res.code == 0){
+                        $.each(res.data, function(){
+                            var selectedHtml = selectMchId == this.mchId ? "selected" : "";
+                            $("#mchId").append("<option "+selectedHtml+" value='"+this.mchId+"'>"+this.mchName+"</option>");
+                        });
+                        form.render();
+                    }
+                }
+            });
+        }
+
+        var initStoreSelect = function(mchId, selectStoreId){
+            admin.req({
+                type: 'get',
+                url: layui.setter.baseUrl + '/mch_store/listAll',
+                data: {mchId: mchId},
+                error: function(err){layer.alert(JSON.stringify(err.field), {title: '错误提示'});},
+                success: function(res){
+                    if(res.code == 0){
+                        $.each(res.data, function(){
+                            var selectedHtml = selectStoreId == this.storeId ? "selected" : "";
+                            $("#storeId").append("<option "+selectedHtml+" value='"+this.storeId+"'>"+this.storeName+"</option>");
+                        });
+                        form.render();
+                    }
+                }
+            });
+        }
+
+
+        //查询待修改数据
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/isv_device/get',
+            data: {id: id},
+            error: function(err){layer.alert(JSON.stringify(err.field), {title: '错误提示'});},
+            success: function(res){
+                if(res.code == 0){
+
+                    $("#deviceName").val(res.data.deviceName);
+                    $("#deviceNo").val(res.data.deviceNo);
+                    $("input[name='deviceType'][value='"+res.data.deviceType+"']").prop('checked', true);
+                    $("input[name='status'][value='"+res.data.status+"']").prop('checked', true);
+                    $("#remark").val(res.data.remark);
+
+                    //绑定商家
+                    initMchSelect(res.data.mchId);
+
+                    if(res.data.mchId != '0' ){  //非全部门店， 需要初始化店铺
+                        initStoreSelect(res.data.mchId, res.data.storeId);
+                    }
+                    form.render();
+                }
+            }
+        });
+
+        form.on("select(mchSelectFilter)", function(data){
+
+            $("#storeId option[value!='0']").remove();  //清空门店
+
+            if(data.value && data.value != '0' ){ // 查询门店
+                initStoreSelect(data.value, 0);
+            }
+        });
+
+        form.on('submit(deviceEdit)', function(data) {
+
+            data.field.mchName = ""; //清空商户名称
+            var mchId = $("#mchId").val();
+            if(mchId && mchId != '0'){
+                data.field.mchName = $("#mchId option[value='"+mchId+"']").text();
+            }
+
+
+            data.field.storeName = "";  //清空门店名称
+            var storeId = $("#storeId").val();
+            if(storeId && storeId != '0'){
+                data.field.storeName = $("#storeId option[value='"+storeId+"']").text();
+            }
+            //这里可以写ajax方法提交表单
+            admin.req({
+                type: "POST",
+                url: layui.setter.baseUrl + '/isv_device/update',
+                data: data.field,
+                success: function(res){
+                    if(res.code == 0) {
+                        layer.closeAll(); //关闭所有弹层
+                        layer.msg("更新成功");
+                        layui.table.reload('tableReload', {page: {curr: 1}}); //调用业务弹层外表格重新加载
+                    }
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+        form.render();
+
+    })
+</script>

@@ -1,0 +1,506 @@
+<style>
+  .layuiadmin-card-list p.layuiadmin-big-font{font-size:16px}
+  .dataCard{background: aliceblue;}
+  body .layui-card{border-radius:10px;}
+</style>
+<div class="layui-fluid layui-row layui-col-space15">
+
+  <!-- 数据统计卡片 -->
+  <div class="layui-col-md12">
+    <div class="layui-card">
+      <div class="layui-row layui-card-header">
+        <div style="font-size: 24px;">数据统计</div>
+      </div>
+      <div class="layui-row layui-card-header layui-form" style="padding-bottom: 20px; padding-top:10px">
+
+        <div class="layui-col-md2" style="padding-left: 20px">
+          <select id="queryStoreSelect" lay-filter="queryStoreSelectFilter">
+            <option value="">全部门店</option>
+          </select>
+        </div>
+
+        <div class="layui-col-md2" style="padding-left: 20px">
+          <select id="queryOperatorSelect" lay-filter="queryOperatorSelectFilter">
+            <option value="">全部操作员</option>
+          </select>
+        </div>
+
+        <div class="layui-col-md2" style="padding-left: 20px">
+          <select id="queryProductTypeSelect">
+            <option value="">全部支付方式</option>
+            <option value="3">微信</option>
+            <option value="4">支付宝</option>
+            <option value="2">会员卡</option>
+            <option value="1">现金收款</option>
+          </select>
+        </div>
+
+        <div class="layui-col-md2" style="padding-left: 20px">
+          <input type="text" class="layui-input" id="selectDateInputByData" placeholder="选择时间范围" readonly/>
+        </div>
+
+        <div class="layui-col-md4" style="padding-left: 20px">
+          <div class="layui-btn-group layui-inline">
+            <button type="button" class="layui-btn layui-btn-sm selectDateBtn" isSelect="true" queryDateRange="today">今天</button>
+            <button type="button" class="layui-btn layui-btn-sm layui-btn-primary selectDateBtn" queryDateRange="yesterday">昨天</button>
+            <button type="button" class="layui-btn layui-btn-sm layui-btn-primary selectDateBtn" queryDateRange="near2yesterday_3">近3天</button>
+            <button type="button" class="layui-btn layui-btn-sm layui-btn-primary selectDateBtn" queryDateRange="near2yesterday_7">近7天</button>
+            <button type="button" class="layui-btn layui-btn-sm layui-btn-primary selectDateBtn" queryDateRange="near2yesterday_30">近30天</button>
+          </div>
+          <button type="button" class="layui-btn layui-btn-sm layui-btn-normal selectDateConfirmBtn" style="margin-left:10px">查询</button>
+        </div>
+      </div>
+
+      <div class="layui-row">
+        <div class="layui-col-sm8">
+          <div class="layui-row layui-col-space15" style="padding-left:50px; padding-top:20px">
+
+            <div class="layui-col-sm6 layui-col-md2">
+              <div class="layui-card dataCard">
+                <div class="layui-card-header">订单金额</div>
+                <div class="layui-card-body layuiadmin-card-list">
+                  <p class="layuiadmin-big-font" id="sumTradeAmount">-</p>
+                  <p></p>
+                </div>
+              </div>
+            </div>
+
+            <div class="layui-col-sm6 layui-col-md2">
+              <div class="layui-card dataCard">
+                <div class="layui-card-header">退款金额</div>
+                <div class="layui-card-body layuiadmin-card-list">
+                  <p class="layuiadmin-big-font" id="sumRefundAmount">-</p>
+                  <p></p>
+                </div>
+              </div>
+            </div>
+
+            <div class="layui-col-sm6 layui-col-md2">
+              <div class="layui-card dataCard">
+                <div class="layui-card-header">实收金额</div>
+                <div class="layui-card-body layuiadmin-card-list">
+                  <p class="layuiadmin-big-font" id="sumRealAmount">-</p>
+                  <p></p>
+                </div>
+              </div>
+            </div>
+
+            <div class="layui-col-sm6 layui-col-md2">
+              <div class="layui-card dataCard">
+                <div class="layui-card-header">会员充值</div>
+                <div class="layui-card-body layuiadmin-card-list">
+                  <p class="layuiadmin-big-font" id="sumRechargeAmount">-</p>
+                  <p></p>
+                </div>
+              </div>
+            </div>
+
+            <div class="layui-col-sm6 layui-col-md2">
+              <div class="layui-card dataCard">
+                <div class="layui-card-header">赠送金额</div>
+                <div class="layui-card-body layuiadmin-card-list">
+                  <p class="layuiadmin-big-font" id="sumRechargeGiveAmount">-</p>
+                  <p></p>
+                </div>
+              </div>
+            </div>
+
+        </div>
+          <div class="layui-row layui-col-space15" style="padding-left:50px; padding-bottom: 50px">
+
+            <div class="layui-col-sm6 layui-col-md2">
+              <div class="layui-card dataCard">
+                <div class="layui-card-header">订单数</div>
+                <div class="layui-card-body layuiadmin-card-list">
+                  <p class="layuiadmin-big-font" id="countTrade">-</p>
+                  <p></p>
+                </div>
+              </div>
+            </div>
+
+            <div class="layui-col-sm6 layui-col-md2">
+              <div class="layui-card dataCard">
+                <div class="layui-card-header">退款笔数</div>
+                <div class="layui-card-body layuiadmin-card-list">
+                  <p class="layuiadmin-big-font" id="countRefund">-</p>
+                  <p></p>
+                </div>
+              </div>
+            </div>
+
+            <div class="layui-col-sm6 layui-col-md2">
+              <div class="layui-card dataCard">
+                <div class="layui-card-header">优惠金额</div>
+                <div class="layui-card-body layuiadmin-card-list">
+                  <p class="layuiadmin-big-font" id="sumDiscountAmount">-</p>
+                  <p></p>
+                </div>
+              </div>
+            </div>
+
+            <div class="layui-col-sm6 layui-col-md2">
+              <div class="layui-card dataCard">
+                <div class="layui-card-header">充值笔数</div>
+                <div class="layui-card-body layuiadmin-card-list">
+                  <p class="layuiadmin-big-font" id="countRecharge">-</p>
+                  <p></p>
+                </div>
+              </div>
+            </div>
+
+            <div class="layui-col-sm6 layui-col-md2">
+              <div class="layui-card dataCard">
+                <div class="layui-card-header">赠送积分</div>
+                <div class="layui-card-body layuiadmin-card-list">
+                  <p class="layuiadmin-big-font" id="sumGivePoints">-</p>
+                  <p></p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <div class="layui-col-sm4">
+
+          <div style="height:450px">
+            <div id="chartsByMemberTradeOrder" style="width: 100%;height:450px;"></div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 订单列表 -->
+  <div class="layui-col-md12">
+    <div class="layui-card">
+
+      <div class="layui-tab layui-tab-brief">
+        <ul class="layui-tab-title">
+          <li class="listStatusBtn layui-this" isSelect="true" statusIn="0,1,2,-1" tradeType="1">订单记录</li>  <!-- 支付成功， 支付中， 支付失败 -->
+          <li class="listStatusBtn" statusIn="4,5" tradeType="1">退款记录</li>
+          <li class="listStatusBtn" statusIn="1,2" tradeType="2">充值记录</li>
+        </ul>
+        <div class="layui-tab-content">
+          <table id="XxPay_Trade_Order_dataAll" lay-filter="XxPay_Trade_Order_dataAll"></table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<script>
+    layui.use(['admin', 'echarts', 'laydate', 'util', 'form', 'table'], function(){
+        var $ = layui.$
+            ,admin = layui.admin
+            ,element = layui.element
+            ,laydate = layui.laydate
+            ,util = layui.util
+            ,form = layui.form
+            ,table = layui.table
+            ,view = layui.view
+            ,echarts = layui.echarts;
+
+        //两个时间相差天数 兼容firefox chrome
+        var dateDifference = function(sDate1, sDate2) {    //sDate1和sDate2是2006-12-18格式
+            var dateSpan, tempDate, iDays;
+            sDate1 = Date.parse(sDate1);
+            sDate2 = Date.parse(sDate2);
+            dateSpan = sDate2 - sDate1;
+            dateSpan = Math.abs(dateSpan);
+            iDays = Math.floor(dateSpan / (24 * 3600 * 1000));
+            return iDays;
+        };
+
+        var tplStatus = function(d){
+            if(d.status == 0) {
+                return "<span style='color: blue'>订单生成</span>";
+            }else if(d.status == 1) {
+                return "<span style='color: orange'>订单处理中</span>";
+            }else if(d.status == 2) {
+                return "<span style='color: green'>支付成功</span>";
+            }else if(d.status == 4) {
+                return "<span style='color: darkgreen'>部分退款</span>";
+            }else if(d.status == 5) {
+                return "<span style='color: red'>全部退款</span>";
+            }else if(d.status == -1) {
+                return "<span style='color: red'>支付失败</span>";
+            }
+        };
+        var tplProductType = function(d){
+            if(d.productType == 1) {
+                return "<span style='color: orange'>现金收款</span>";
+            }else if(d.productType == 2) {
+                return "<span style='color: orange'>会员卡支付</span>";
+            }else if(d.productType == 3) {
+                return "<span style='color: green'>微信支付</span>";
+            }else if(d.productType == 4) {
+                return "<span style='color: blue'>支付宝支付</span>";
+            }else{
+                return "--";
+            }
+        };
+
+
+        //重置操作员列表
+        var reloadOperatorSelect = function(queryStoreId){
+
+            //查询所有该门店下的操作员
+            admin.req({
+                type: 'get',
+                url: layui.setter.baseUrl + '/subuser/list?limit=-1&storeId=' + queryStoreId,
+                error: function (err) {
+                    layer.alert(JSON.stringify(err.field), {title: '错误提示'})
+                },
+                success: function (res) {
+                    $.each(res.data, function(){
+                        $("#queryOperatorSelect").append("<option value='"+this.userId+"'>"+this.nickName+"</option>");
+                    });
+                    form.render();
+                }
+            });
+        };
+
+        // 查询当前操作员信息
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/mch/current',
+            async: false,   //同步查询， 避免初始化数据有误
+            error: function (err) {
+                layer.alert(JSON.stringify(err.field), {title: '错误提示'})
+            },
+            success: function (res) {
+
+                //查询当前操作员角色类型 //superAdmin  = 商户超管，  storeManage = 店长 ， operator = 门店操作员
+                var currentUserRoleType = res.data.currentUserRoleType;
+                var currentStoreId = res.data.storeId;
+                var currentStoreName = res.data.storeName;
+                var currentUserId = res.data.userId;
+                var currentUserNickName = res.data.nickName;
+
+                if(currentUserRoleType == 'superAdmin' ){ //超管需查询所有门店
+                    admin.req({
+                        type: 'get',
+                        url: layui.setter.baseUrl + '/store/list?limit=-1',
+                        error: function (err) {
+                            layer.alert(JSON.stringify(err.field), {title: '错误提示'})
+                        },
+                        success: function (res) {
+                            $.each(res.data, function(){
+                                $("#queryStoreSelect").append("<option value='"+this.storeId+"'>"+this.storeName+"</option>");
+                            });
+                            form.render();
+                        }
+                    });
+                }else if(currentUserRoleType == 'storeManage'){  //店长
+
+                    // 门店仅显示当前门店  & 禁用
+                    $("#queryStoreSelect").empty().append("<option value='"+currentStoreId+"'>"+currentStoreName+"</option>").prop('disabled', 'disabled');
+                    reloadOperatorSelect(currentStoreId); //重置操作员
+
+                }else{  //操作员
+
+                    // 门店仅显示当前门店  & 禁用
+                    $("#queryStoreSelect").empty().append("<option value='"+currentStoreId+"'>"+currentStoreName+"</option>").prop('disabled', 'disabled');
+
+                    // 操作员仅显示当前操作员  & 禁用
+                    $("#queryOperatorSelect").empty().append("<option value='"+currentUserId+"'>"+currentUserNickName+"</option>").prop('disabled', 'disabled');
+                }
+                form.render();
+            }
+        });
+
+        //切换门店时
+        form.on("select(queryStoreSelectFilter)", function(data){
+
+            $("#queryOperatorSelect").empty().append("<option value=''>所有操作员</option>");
+            if(!data.value){  //选择的所有门店
+                form.render();
+                return ;
+            }
+            reloadOperatorSelect(data.value); //重置操作员
+        });
+
+        //支付方式 饼状图
+        var chartsByMemberTradeOrder = echarts.init($('#chartsByMemberTradeOrder')[0],layui.echartsTheme);
+
+        /** 重新画 支付类型饼状图 **/
+        var resizeChartsByProductType = function(memberOrderCount, notMemberOrderCount){
+            chartsByMemberTradeOrder.setOption({
+                title : {text: '', subtext: ''},  //设置标题
+                tooltip : {show: true},  //当触发树状图时， 显示标题
+                legend: {data:['会员', '非会员']},  //图例组件
+                calculable : false,  //是否可拖拽
+                series : [  //数据信息
+                    { center: ['60%', '60%'], radius: '60%', name:'订单数量', type:'pie'
+                        , data: [
+                            {value: memberOrderCount, name: '会员'},
+                            {value: notMemberOrderCount, name: '非会员'}
+                        ]
+                    }
+                ]
+            }, true);  //第二个参数，true表示重新渲染
+        };
+
+
+        // 获取页面查询条件
+        var getDataQueryCondition = function(){
+
+            var dataQueryObj = {};  //数据统计 查询条件
+
+            //获取搜索门店
+            dataQueryObj.queryStoreId = $("#queryStoreSelect").val();
+
+            //获取搜索操作员
+            dataQueryObj.queryOperatorId = $("#queryOperatorSelect").val();
+
+            //获取搜索 支付方式
+            dataQueryObj.queryProductType = $("#queryProductTypeSelect").val();
+
+            //获取时间范围
+            var selectDateVal = $("#selectDateInputByData").val();
+            if(selectDateVal){
+                dataQueryObj.queryStartDate = selectDateVal.split("~")[0].trim();
+                dataQueryObj.queryEndDate = selectDateVal.split("~")[1].trim();
+            }else{  //时间范围 按钮选择框
+                dataQueryObj.queryDateRange = $(".selectDateBtn[isSelect='true']").attr("queryDateRange");
+            }
+            return dataQueryObj;
+        };
+
+
+        //刷新 列表 卡片
+        var refreshOrderListStatistics = function(){
+
+            var dataQueryObj = getDataQueryCondition();
+
+            var tableQueryObj = {};
+            tableQueryObj.ps = {statusInString: $('.listStatusBtn[isSelect="true"]').attr('statusIn')};
+            tableQueryObj.tradeType =$('.listStatusBtn[isSelect="true"]').attr('tradeType');
+            tableQueryObj.queryStartDate = dataQueryObj.queryStartDate;
+            tableQueryObj.queryEndDate = dataQueryObj.queryEndDate;
+            tableQueryObj.queryDateRange = dataQueryObj.queryDateRange;
+            tableQueryObj.storeId = dataQueryObj.queryStoreId;
+            tableQueryObj.operatorId = dataQueryObj.queryOperatorId;
+            tableQueryObj.productType = dataQueryObj.queryProductType;
+
+            //列表
+            table.render({
+                elem: '#XxPay_Trade_Order_dataAll'
+                ,url: layui.setter.baseUrl + '/trade_order/list' //列表接口
+                ,id: 'tableReload'
+                ,where : tableQueryObj
+                ,page: true
+                ,cols: [[
+                    {field: 'tradeOrderId', title: '交易单号'}
+                    ,{field: 'createTime', title: '交易时间', templet: '<div>{{ layui.util.toDateString(d.createTime, "yyyy-MM-dd HH:mm:ss") }}</div>'}
+                    ,{title: '订单金额', templet: '<div>{{ d.orderAmount/100 }}</div>'}
+                    ,{title: '优惠金额', templet: '<div>{{ d.discountAmount/100 }}</div>'}
+                    ,{title: '实付金额', templet: '<div>{{ d.amount/100 }}</div>'}
+                    ,{title: '支付方式', templet: tplProductType}
+                    ,{field: 'memberId', title: '会员ID'}
+                    ,{field: 'storeName', title: '门店名称'}
+                    ,{field: 'operatorName', title: '操作员名称'}
+                    ,{field: 'status', title: '状态', templet: tplStatus}
+                    ,{field: 'edit', title: '操作', templet: '<div><a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a></div>' }
+                ]]
+                ,skin: 'line'
+            });
+
+            //监听工具条
+            table.on('tool(XxPay_Trade_Order_dataAll)', function(obj){
+                if(obj.event === 'detail'){
+                    view.xxpayPopup("交易详情", "order/trade/view", {tradeOrderId: obj.data.tradeOrderId}, {btn:false});
+                }
+            });
+        };
+
+        //刷新统计数据 卡片
+        var refreshDataStatistics = function(){
+
+            var dataQueryObj = getDataQueryCondition();  //数据统计 查询条件
+            admin.req({
+                type: 'get',
+                url: layui.setter.baseUrl + '/data/dataStatistics',
+                data: dataQueryObj,
+                error: function (err) {
+                    layer.alert(JSON.stringify(err.field), {title: '错误提示'})
+                },
+                success: function (res) {
+                    if(res.code == 0){
+                        $("#sumTradeAmount").text("￥" + res.data.sumTradeAmount / 100);  //订单金额
+                        $("#sumRefundAmount").text("￥" + res.data.sumRefundAmount / 100); //退款金额
+                        $("#sumRealAmount").text("￥" + res.data.sumRealAmount / 100);   //实收金额
+                        $("#sumRechargeAmount").text("￥" + res.data.sumRechargeAmount / 100);  //充值金额
+                        $("#sumRechargeGiveAmount").text("￥" + res.data.sumRechargeGiveAmount / 100);  //赠送金额
+
+                        $("#countTrade").text(res.data.countTrade); //订单数
+                        $("#countRefund").text(res.data.countRefund);  //退款笔数
+                        $("#sumDiscountAmount").text("￥" + res.data.sumDiscountAmount / 100);  //优惠金额
+                        $("#countRecharge").text(res.data.countRecharge);  //充值笔数
+                        $("#sumGivePoints").text(res.data.sumGivePoints);  //赠送积分
+
+                        //重新画[会员/非会员]比例图
+                        resizeChartsByProductType(res.data.countMemberTradeOrder, res.data.countNotMemberTradeOrder);
+                    }
+                }
+            });
+
+        };
+
+
+        //【数据型的统计卡片】 按钮点击事件
+        $(".selectDateBtn").click(function(){
+
+            $(".selectDateBtn").removeClass("layui-btn-primary").addClass("layui-btn-primary").attr('isSelect', false);
+            $(this).removeClass("layui-btn-primary").attr('isSelect', true);
+            $("#selectDateInputByData").val("");   //清除时间选择框的内容
+        });
+
+        //【数据型的统计卡片】 的选择时间控件绑定事件
+        laydate.render({
+            elem: '#selectDateInputByData' //指定元素
+            ,range: "~"   //时间选择范围, ~分割
+            ,max: util.toDateString(new Date(), 'yyyy-MM-dd')  //不能超过今天
+            ,done: function(value, date, endDate){
+                //清空 / 未选择
+                if(!value){ return false; }
+                $(".selectDateBtn").removeClass("layui-btn-primary").addClass("layui-btn-primary").attr('isSelect', false);  //全部未选择
+                var startTime = value.split("~")[0].trim();
+                var endTime = value.split("~")[1].trim();
+            }
+        });
+
+        //【数据型的统计卡片】 确认[搜索] 按钮 点击事件
+        $(".selectDateConfirmBtn").click(function(){
+            refreshDataStatistics();
+            refreshOrderListStatistics();
+        });
+
+        //【订单列表】切换事件
+        $(".listStatusBtn").click(function(){
+            $(".listStatusBtn").attr('isSelect', false);
+            $(this).attr('isSelect', true);
+            refreshOrderListStatistics();
+        });
+
+
+
+
+
+        //根据窗口的大小变动图表
+        window.onresize = function(){
+            chartsByMemberTradeOrder.resize();
+        };
+
+        //默认数据查询
+        refreshDataStatistics();
+        refreshOrderListStatistics();
+
+        form.render();
+
+    });
+</script>

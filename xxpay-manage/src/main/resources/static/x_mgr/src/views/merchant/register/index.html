@@ -1,0 +1,60 @@
+
+<div class="layui-card layadmin-header">
+  <div class="layui-breadcrumb" lay-filter="breadcrumb">
+    <a lay-href="">主页</a>
+    <a><cite>商户注册地址</cite></a>
+  </div>
+</div>
+
+<style>
+    .data-view .layui-form-label {
+        width:15% !important;
+        margin-left:1%;
+    }
+    .data-view .layui-input-inline {
+        width: 33% !important;
+    }
+</style>
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-tab layui-tab-brief">
+      <ul class="layui-tab-title">
+        <li class="layui-this">商户注册地址</li>
+      </ul>
+       <div class="layui-tab-content data-view">
+	        <form class="layui-form layui-form-pane" action="">
+	              <div class="layui-form-item">
+	                  <label class="layui-form-label">运营平台所属商户注册地址</label>
+	                  <div class="layui-input-inline">
+	                      <input style='width:750px' type="text" id="urlPath" disabled="disabled" class="layui-input">
+	                  </div>
+	              </div>
+	        </form>
+        </div>
+      
+    </div>
+  </div>
+</div>
+
+<script>
+layui.use(['admin', 'util'], function(){
+  var $ = layui.$
+  ,admin = layui.admin;
+  admin.req({
+      type: 'get',
+      url:  layui.setter.baseUrl + '/mch_info/getRegisterUrl' //模拟基本信息接口,
+      ,error: function(err){
+          console.log(err)
+      },
+      success: function(res){
+          if(res.code == 0){
+              $('#urlPath').val(res.data);
+          }
+      }
+   })
+  
+});
+
+
+
+</script>

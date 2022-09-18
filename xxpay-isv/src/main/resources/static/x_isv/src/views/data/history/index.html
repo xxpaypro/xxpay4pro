@@ -1,0 +1,466 @@
+<style>
+  .layuiadmin-card-list p.layuiadmin-big-font{font-size:16px}
+  .dataCard{background: aliceblue;}
+  body .layui-card{border-radius:10px;}
+</style>
+<div class="layui-fluid layui-row layui-col-space15">
+
+  <!-- 数据统计卡片 -->
+  <div class="layui-col-md12">
+    <div class="layui-card">
+      <div class="layui-row layui-card-header">
+        <div style="font-size: 24px;">数据统计</div>
+      </div>
+      <div class="layui-row layui-card-header layui-form" style="padding-bottom: 20px; padding-top:10px">
+
+        <div class="layui-col-md2" style="padding-left: 20px">
+          <select name="provinceCode" lay-search lay-verify="required" id="provinceSelect" lay-filter="provinceSelectFilter">
+            <option value="">-- 省 --</option>
+          </select>
+        </div>
+
+        <div class="layui-col-md2" style="padding-left: 20px">
+          <select name="cityCode" lay-search lay-verify="required" id="citySelect" lay-filter="citySelectFilter">
+            <option value="">-- 市 --</option>
+          </select>
+        </div>
+
+        <div class="layui-col-md1" style="padding-left: 20px">
+          <select id="queryAgentSelect">
+            <option value="">全部代理</option>
+          </select>
+        </div>
+
+        <div class="layui-col-md1" style="padding-left: 20px">
+          <select id="queryProductTypeSelect">
+            <option value="">全部支付方式</option>
+            <option value="3">微信</option>
+            <option value="4">支付宝</option>
+            <option value="2">会员卡</option>
+            <option value="1">现金收款</option>
+          </select>
+        </div>
+
+        <div class="layui-col-md2" style="padding-left: 20px">
+          <input type="text" class="layui-input" id="selectDateInputByData" placeholder="选择时间范围" readonly/>
+        </div>
+
+        <div class="layui-col-md4" style="padding-left: 40px">
+          <div class="layui-btn-group layui-inline">
+            <button type="button" class="layui-btn layui-btn-sm selectDateBtn" isSelect="true" queryDateRange="today">今天</button>
+            <button type="button" class="layui-btn layui-btn-sm layui-btn-primary selectDateBtn" queryDateRange="yesterday">昨天</button>
+            <button type="button" class="layui-btn layui-btn-sm layui-btn-primary selectDateBtn" queryDateRange="near2now_3">近3天</button>
+            <button type="button" class="layui-btn layui-btn-sm layui-btn-primary selectDateBtn" queryDateRange="near2now_7">近7天</button>
+            <button type="button" class="layui-btn layui-btn-sm layui-btn-primary selectDateBtn" queryDateRange="near2now_30">近30天</button>
+          </div>
+          <button type="button" class="layui-btn layui-btn-sm layui-btn-normal selectDateConfirmBtn" style="margin-left:10px">查询</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 数据统计卡片2-->
+  <div class="layui-col-md12">
+    <div class="layui-card">
+
+      <div class="layui-row layui-col-space15" style="padding:20px">
+
+        <div class="layui-col-md3">
+          <div class="layui-card dataCard">
+            <div class="layui-card-header" style="font-size: 24px;text-align: center;">订单数量</div>
+            <div class="layui-card-body layuiadmin-card-list">
+              <p class="layuiadmin-big-font" style="font-size: 20px;text-align: center;" id="countTrade">-</p>
+              <p></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="layui-col-md3">
+          <div class="layui-card dataCard">
+            <div class="layui-card-header" style="font-size: 24px;text-align: center;">订单金额</div>
+            <div class="layui-card-body layuiadmin-card-list">
+              <p class="layuiadmin-big-font" style="font-size: 20px;text-align: center;" id="sumTradeAmount">-</p>
+              <p></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="layui-col-md3">
+          <div class="layui-card dataCard">
+            <div class="layui-card-header" style="font-size: 24px;text-align: center;">实收金额</div>
+            <div class="layui-card-body layuiadmin-card-list">
+              <p class="layuiadmin-big-font" style="font-size: 20px;text-align: center;" id="sumRealAmount">-</p>
+              <p></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 订单统计 平滑折线图 -->
+  <div class="layui-col-md12">
+    <div class="layui-card">
+
+      <div class="layui-row layui-card-header" style="padding-bottom: 20px; padding-top:10px">
+        <div class="" style="font-size: 24px;">订单统计</div>
+      </div>
+
+      <div style="height:450px">
+        <div id="chartsByOrderCount" style="width: 100%;height:450px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 销售额统计  平滑折线图 -->
+  <div class="layui-col-md12">
+    <div class="layui-card">
+
+      <div class="layui-row layui-card-header" style="padding-bottom: 20px; padding-top:10px">
+        <div class="" style="font-size: 24px;">销售额统计</div>
+      </div>
+
+      <div style="height:450px">
+        <div id="chartsByOrderAmount" style="width: 100%;height:450px;"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 订单列表 -->
+  <div class="layui-col-md12">
+    <div class="layui-card">
+
+      <div class="layui-tab layui-tab-brief">
+        <ul class="layui-tab-title">
+          <li class="layui-this">流水明细</li>
+        </ul>
+        <div class="layui-tab-content">
+          <table id="XxPay_Trade_Order_dataAll" lay-filter="XxPay_Trade_Order_dataAll"></table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+    layui.use(['admin', 'echarts', 'laydate', 'util', 'form', 'table'], function(){
+        var $ = layui.$
+            ,admin = layui.admin
+            ,element = layui.element
+            ,laydate = layui.laydate
+            ,util = layui.util
+            ,form = layui.form
+            ,table = layui.table
+            ,view = layui.view
+            ,echarts = layui.echarts;
+
+        //两个时间相差天数 兼容firefox chrome
+        var dateDifference = function(sDate1, sDate2) {    //sDate1和sDate2是2006-12-18格式
+            var dateSpan, tempDate, iDays;
+            sDate1 = Date.parse(sDate1);
+            sDate2 = Date.parse(sDate2);
+            dateSpan = sDate2 - sDate1;
+            dateSpan = Math.abs(dateSpan);
+            iDays = Math.floor(dateSpan / (24 * 3600 * 1000));
+            return iDays;
+        };
+
+        var tplStatus = function(d){
+            if(d.status == 0) {
+                return "<span style='color: blue'>订单生成</span>";
+            }else if(d.status == 1) {
+                return "<span style='color: orange'>订单处理中</span>";
+            }else if(d.status == 2) {
+                return "<span style='color: green'>支付成功</span>";
+            }else if(d.status == 4) {
+                return "<span style='color: darkgreen'>部分退款</span>";
+            }else if(d.status == 5) {
+                return "<span style='color: red'>全部退款</span>";
+            }else if(d.status == -1) {
+                return "<span style='color: red'>支付失败</span>";
+            }
+        };
+        var tplProductType = function(d){
+            if(d.productType == 1) {
+                return "<span style='color: orange'>现金收款</span>";
+            }else if(d.productType == 2) {
+                return "<span style='color: orange'>会员卡支付</span>";
+            }else if(d.productType == 3) {
+                return "<span style='color: green'>微信支付</span>";
+            }else if(d.productType == 4) {
+                return "<span style='color: blue'>支付宝支付</span>";
+            }else{
+                return "--";
+            }
+        };
+
+
+        //订单统计 平滑折线图
+        var chartsByOrderCount = echarts.init($('#chartsByOrderCount')[0],layui.echartsTheme);
+
+        //销售金额 平滑折线图
+        var chartsByOrderAmount = echarts.init($('#chartsByOrderAmount')[0],layui.echartsTheme);
+
+
+        //初始化所有代理商
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/agent/list',
+            error: function(err){
+                layer.alert(JSON.stringify(err.field), {title: '错误提示'})
+            },
+            success: function(res){
+                if(res.code == 0){
+                    $.each(res.data, function(){
+                        $("#queryAgentSelect").append("<option item value='"+this.agentId+"'>"+this.agentName+"</option>");
+                    });
+                    form.render();
+                }
+            }
+        });
+
+
+        // 初始化 [省] 下拉框
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/area_code/provinces',
+            error: function(err){
+                layer.alert(JSON.stringify(err.field), {title: '错误提示'})
+            },
+            success: function(res){
+                if(res.code == 0){
+                    $.each(res.data, function(){
+                        $("#provinceSelect").append("<option item value='"+this.provinceCode+"'>"+this.provinceName+"</option>");
+                    });
+                    form.render();
+                }
+            }
+        });
+
+        //监听 [省] 下拉框
+        form.on('select(provinceSelectFilter)', function(data){
+
+            //清空， 市， 区 下拉框
+            $("#citySelect option[item]").remove();
+            $("#areaSelect option[item]").remove();
+
+            var provinceCode = data.value; //省级编码
+            if(!provinceCode){
+                form.render();
+                return false; //未选择
+            }
+
+            admin.req({
+                type: 'get',
+                url: layui.setter.baseUrl + '/area_code/cities?provinceCode=' + provinceCode,
+                error: function(err){
+                    layer.alert(JSON.stringify(err.field), {title: '错误提示'})
+                },
+                success: function(res){
+                    if(res.code == 0){
+                        $.each(res.data, function(){
+                            $("#citySelect").append("<option item value='"+this.cityCode+"'>"+this.cityName+"</option>");
+                        });
+                        form.render();
+                    }
+                }
+            });
+        });
+
+        // 获取页面查询条件
+        var getDataQueryCondition = function(){
+
+            var dataQueryObj = {};  //数据统计 查询条件
+
+            //省市 查询条件
+            dataQueryObj.queryProvinceCode = $("#provinceSelect").val();
+            dataQueryObj.queryCityCode = $("#citySelect").val();
+
+            //查询代理商ID
+            dataQueryObj.queryAgentId = $("#queryAgentSelect").val();
+
+            //获取搜索 支付方式
+            dataQueryObj.queryProductType = $("#queryProductTypeSelect").val();
+
+            //获取时间范围
+            var selectDateVal = $("#selectDateInputByData").val();
+            if(selectDateVal){
+                dataQueryObj.queryStartDate = selectDateVal.split("~")[0].trim();
+                dataQueryObj.queryEndDate = selectDateVal.split("~")[1].trim();
+            }else{  //时间范围 按钮选择框
+                dataQueryObj.queryDateRange = $(".selectDateBtn[isSelect='true']").attr("queryDateRange");
+            }
+            return dataQueryObj;
+        };
+
+        //刷新 [统计数据] 卡片
+        var refreshDataStatistics = function(){
+
+            var dataQueryObj = getDataQueryCondition();  //数据统计 查询条件
+            admin.req({
+                type: 'get',
+                url: layui.setter.baseUrl + '/data/dataStatistics',
+                data: dataQueryObj,
+                error: function (err) {
+                    layer.alert(JSON.stringify(err.field), {title: '错误提示'})
+                },
+                success: function (res) {
+                    if(res.code == 0){
+                        $("#sumTradeAmount").text("￥" + res.data.sumTradeAmount / 100);  //订单金额
+                        $("#sumRealAmount").text("￥" + res.data.sumRealAmount / 100);   //实收金额
+                        $("#countTrade").text(res.data.countTrade); //订单数
+
+                        //重新画[会员/非会员]比例图
+                        //resizeChartsByProductType(res.data.countMemberTradeOrder, res.data.countNotMemberTradeOrder);
+                    }
+                }
+            });
+
+        };
+
+        //刷新 [订单统计] / [销售额] 平滑折线图 卡片
+        var refreshOrderCountAndAmountChartsStatistics = function(){
+
+            var dataQueryObj = getDataQueryCondition();  //数据统计 查询条件
+            admin.req({
+                type: 'get',
+                url: layui.setter.baseUrl + '/data/statisticsByOrderCountAndAmountCharts',
+                data: dataQueryObj,
+                error: function (err) {
+                    layer.alert(JSON.stringify(err.field), {title: '错误提示'})
+                },
+                success: function (res) {
+                    if(res.code == 0){
+                        chartsByOrderCount.setOption({
+                            title : {text: '订单数量', subtext: ''},  //设置标题
+                            tooltip : {show: true},  //当触发树状图时， 显示标题
+                            calculable : false,  //是否可拖拽
+                            xAxis: {
+                                type: 'category',
+                                boundaryGap: false,
+                                data: res.data.xTitleArray
+                            },
+                            yAxis: {type: 'value'},
+                            series: [{
+                                data:res.data.orderCountArray,
+                                type: 'line',
+                                smooth: true,
+                                areaStyle: {}
+                            }]
+                        }, true);  //第二个参数，true表示重新渲染
+
+                        chartsByOrderAmount.setOption({
+                            title : {text: '订单销售额', subtext: ''},  //设置标题
+                            tooltip : {show: true},  //当触发树状图时， 显示标题
+                            calculable : false,  //是否可拖拽
+                            xAxis: {
+                                type: 'category',
+                                boundaryGap: false,
+                                data: res.data.xTitleArray
+                            },
+                            yAxis: {type: 'value'},
+                            series: [{
+                                data:res.data.orderAmountArray,
+                                type: 'line',
+                                smooth: true,
+                                areaStyle: {}
+                            }]
+                        }, true);  //第二个参数，true表示重新渲染
+                    }
+                }
+            });
+
+        };
+
+        //刷新 [列表] 卡片
+        var refreshOrderListStatistics = function(){
+
+            var dataQueryObj = getDataQueryCondition();
+
+            var tableQueryObj = {};
+            tableQueryObj.queryStartDate = dataQueryObj.queryStartDate;
+            tableQueryObj.queryEndDate = dataQueryObj.queryEndDate;
+            tableQueryObj.queryDateRange = dataQueryObj.queryDateRange;
+            tableQueryObj.productType = dataQueryObj.queryProductType;
+            tableQueryObj.agentId = dataQueryObj.queryAgentId;
+            tableQueryObj.provinceCode = dataQueryObj.queryProvinceCode;
+            tableQueryObj.cityCode = dataQueryObj.queryCityCode;
+
+            //列表
+            table.render({
+                elem: '#XxPay_Trade_Order_dataAll'
+                ,url: layui.setter.baseUrl + '/trade_order/list' //列表接口
+                ,id: 'tableReload'
+                ,where : tableQueryObj
+                ,page: true
+                ,cols: [[
+                    {field: 'tradeOrderId', title: '交易单号'}
+                    ,{field: 'createTime', title: '交易时间', templet: '<div>{{ layui.util.toDateString(d.createTime, "yyyy-MM-dd HH:mm:ss") }}</div>'}
+                    ,{title: '订单金额', templet: '<div>{{ d.orderAmount/100 }}</div>'}
+                    ,{title: '优惠金额', templet: '<div>{{ d.discountAmount/100 }}</div>'}
+                    ,{title: '实付金额', templet: '<div>{{ d.amount/100 }}</div>'}
+                    ,{title: '支付方式', templet: tplProductType}
+                    ,{field: 'memberId', title: '会员ID'}
+                    ,{field: 'storeName', title: '门店名称'}
+                    ,{field: 'operatorName', title: '操作员名称'}
+                    ,{field: 'status', title: '状态', templet: tplStatus}
+                    ,{field: 'edit', title: '操作', templet: '<div><a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a></div>' }
+                ]]
+                ,skin: 'line'
+            });
+
+            //监听工具条
+            table.on('tool(XxPay_Trade_Order_dataAll)', function(obj){
+                if(obj.event === 'detail'){
+                    view.xxpayPopup("交易详情", "order/trade/view", {tradeOrderId: obj.data.tradeOrderId}, {btn:false});
+                }
+            });
+        };
+
+
+        //【数据型的统计卡片】 按钮点击事件
+        $(".selectDateBtn").click(function(){
+
+            $(".selectDateBtn").removeClass("layui-btn-primary").addClass("layui-btn-primary").attr('isSelect', false);
+            $(this).removeClass("layui-btn-primary").attr('isSelect', true);
+            $("#selectDateInputByData").val("");   //清除时间选择框的内容
+        });
+
+        //【数据型的统计卡片】 的选择时间控件绑定事件
+        laydate.render({
+            elem: '#selectDateInputByData' //指定元素
+            ,range: "~"   //时间选择范围, ~分割
+            ,max: util.toDateString(new Date(), 'yyyy-MM-dd')  //不能超过今天
+            ,done: function(value, date, endDate){
+                //清空 / 未选择
+                if(!value){ return false; }
+                $(".selectDateBtn").removeClass("layui-btn-primary").addClass("layui-btn-primary").attr('isSelect', false);  //全部未选择
+                var startTime = value.split("~")[0].trim();
+                var endTime = value.split("~")[1].trim();
+            }
+        });
+
+        //【数据型的统计卡片】 确认[搜索] 按钮 点击事件
+        $(".selectDateConfirmBtn").click(function(){
+            refreshDataStatistics();   //刷新数据
+            refreshOrderCountAndAmountChartsStatistics();  //刷新订单数量 平滑折线图  刷新订单销售额 平滑折线图
+            refreshOrderListStatistics();  //刷新订单列表
+        });
+
+        //根据窗口的大小变动图表
+        window.onresize = function(){
+            chartsByOrderCount.resize();
+            chartsByOrderAmount.resize();
+        };
+
+        //默认数据查询
+        refreshDataStatistics();   //刷新数据
+        refreshOrderCountAndAmountChartsStatistics();  //刷新订单数量 平滑折线图  刷新订单销售额 平滑折线图
+        refreshOrderListStatistics();  //刷新订单列表
+
+        form.render();
+
+    });
+</script>

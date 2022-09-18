@@ -1,0 +1,434 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.xxpay.service.dao.mapper.MchNotifyMapper">
+  <resultMap id="BaseResultMap" type="org.xxpay.core.entity.MchNotify">
+    <id column="OrderId" jdbcType="VARCHAR" property="orderId" />
+    <result column="MchId" jdbcType="BIGINT" property="mchId" />
+    <result column="IsvId" jdbcType="BIGINT" property="isvId" />
+    <result column="AppId" jdbcType="VARCHAR" property="appId" />
+    <result column="MchOrderNo" jdbcType="VARCHAR" property="mchOrderNo" />
+    <result column="OrderType" jdbcType="VARCHAR" property="orderType" />
+    <result column="NotifyUrl" jdbcType="VARCHAR" property="notifyUrl" />
+    <result column="NotifyCount" jdbcType="TINYINT" property="notifyCount" />
+    <result column="Result" jdbcType="VARCHAR" property="result" />
+    <result column="Status" jdbcType="TINYINT" property="status" />
+    <result column="LastNotifyTime" jdbcType="TIMESTAMP" property="lastNotifyTime" />
+    <result column="CreateTime" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="UpdateTime" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    OrderId, MchId, IsvId, AppId, MchOrderNo, OrderType, NotifyUrl, NotifyCount, Result,
+    Status, LastNotifyTime, CreateTime, UpdateTime
+  </sql>
+  <select id="selectByExample" parameterType="org.xxpay.core.entity.MchNotifyExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from t_mch_notify
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+    <if test="limit != null">
+      <if test="offset != null">
+        limit ${offset}, ${limit}
+      </if>
+      <if test="offset == null">
+        limit ${limit}
+      </if>
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_mch_notify
+    where OrderId = #{orderId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from t_mch_notify
+    where OrderId = #{orderId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="org.xxpay.core.entity.MchNotifyExample">
+    delete from t_mch_notify
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="org.xxpay.core.entity.MchNotify">
+    insert into t_mch_notify (OrderId, MchId, IsvId,
+      AppId, MchOrderNo, OrderType,
+      NotifyUrl, NotifyCount, Result,
+      Status, LastNotifyTime, CreateTime,
+      UpdateTime)
+    values (#{orderId,jdbcType=VARCHAR}, #{mchId,jdbcType=BIGINT}, #{isvId,jdbcType=BIGINT},
+      #{appId,jdbcType=VARCHAR}, #{mchOrderNo,jdbcType=VARCHAR}, #{orderType,jdbcType=VARCHAR},
+      #{notifyUrl,jdbcType=VARCHAR}, #{notifyCount,jdbcType=TINYINT}, #{result,jdbcType=VARCHAR},
+      #{status,jdbcType=TINYINT}, #{lastNotifyTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP},
+      #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="org.xxpay.core.entity.MchNotify">
+    insert into t_mch_notify
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="orderId != null">
+        OrderId,
+      </if>
+      <if test="mchId != null">
+        MchId,
+      </if>
+      <if test="isvId != null">
+        IsvId,
+      </if>
+      <if test="appId != null">
+        AppId,
+      </if>
+      <if test="mchOrderNo != null">
+        MchOrderNo,
+      </if>
+      <if test="orderType != null">
+        OrderType,
+      </if>
+      <if test="notifyUrl != null">
+        NotifyUrl,
+      </if>
+      <if test="notifyCount != null">
+        NotifyCount,
+      </if>
+      <if test="result != null">
+        Result,
+      </if>
+      <if test="status != null">
+        Status,
+      </if>
+      <if test="lastNotifyTime != null">
+        LastNotifyTime,
+      </if>
+      <if test="createTime != null">
+        CreateTime,
+      </if>
+      <if test="updateTime != null">
+        UpdateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="orderId != null">
+        #{orderId,jdbcType=VARCHAR},
+      </if>
+      <if test="mchId != null">
+        #{mchId,jdbcType=BIGINT},
+      </if>
+      <if test="isvId != null">
+        #{isvId,jdbcType=BIGINT},
+      </if>
+      <if test="appId != null">
+        #{appId,jdbcType=VARCHAR},
+      </if>
+      <if test="mchOrderNo != null">
+        #{mchOrderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="orderType != null">
+        #{orderType,jdbcType=VARCHAR},
+      </if>
+      <if test="notifyUrl != null">
+        #{notifyUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="notifyCount != null">
+        #{notifyCount,jdbcType=TINYINT},
+      </if>
+      <if test="result != null">
+        #{result,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="lastNotifyTime != null">
+        #{lastNotifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="org.xxpay.core.entity.MchNotifyExample" resultType="java.lang.Integer">
+    select count(*) from t_mch_notify
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update t_mch_notify
+    <set>
+      <if test="record.orderId != null">
+        OrderId = #{record.orderId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mchId != null">
+        MchId = #{record.mchId,jdbcType=BIGINT},
+      </if>
+      <if test="record.isvId != null">
+        IsvId = #{record.isvId,jdbcType=BIGINT},
+      </if>
+      <if test="record.appId != null">
+        AppId = #{record.appId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mchOrderNo != null">
+        MchOrderNo = #{record.mchOrderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.orderType != null">
+        OrderType = #{record.orderType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.notifyUrl != null">
+        NotifyUrl = #{record.notifyUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="record.notifyCount != null">
+        NotifyCount = #{record.notifyCount,jdbcType=TINYINT},
+      </if>
+      <if test="record.result != null">
+        Result = #{record.result,jdbcType=VARCHAR},
+      </if>
+      <if test="record.status != null">
+        Status = #{record.status,jdbcType=TINYINT},
+      </if>
+      <if test="record.lastNotifyTime != null">
+        LastNotifyTime = #{record.lastNotifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.createTime != null">
+        CreateTime = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateTime != null">
+        UpdateTime = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update t_mch_notify
+    set OrderId = #{record.orderId,jdbcType=VARCHAR},
+    MchId = #{record.mchId,jdbcType=BIGINT},
+    IsvId = #{record.isvId,jdbcType=BIGINT},
+    AppId = #{record.appId,jdbcType=VARCHAR},
+    MchOrderNo = #{record.mchOrderNo,jdbcType=VARCHAR},
+    OrderType = #{record.orderType,jdbcType=VARCHAR},
+    NotifyUrl = #{record.notifyUrl,jdbcType=VARCHAR},
+    NotifyCount = #{record.notifyCount,jdbcType=TINYINT},
+    Result = #{record.result,jdbcType=VARCHAR},
+    Status = #{record.status,jdbcType=TINYINT},
+    LastNotifyTime = #{record.lastNotifyTime,jdbcType=TIMESTAMP},
+    CreateTime = #{record.createTime,jdbcType=TIMESTAMP},
+    UpdateTime = #{record.updateTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="org.xxpay.core.entity.MchNotify">
+    update t_mch_notify
+    <set>
+      <if test="mchId != null">
+        MchId = #{mchId,jdbcType=BIGINT},
+      </if>
+      <if test="isvId != null">
+        IsvId = #{isvId,jdbcType=BIGINT},
+      </if>
+      <if test="appId != null">
+        AppId = #{appId,jdbcType=VARCHAR},
+      </if>
+      <if test="mchOrderNo != null">
+        MchOrderNo = #{mchOrderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="orderType != null">
+        OrderType = #{orderType,jdbcType=VARCHAR},
+      </if>
+      <if test="notifyUrl != null">
+        NotifyUrl = #{notifyUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="notifyCount != null">
+        NotifyCount = #{notifyCount,jdbcType=TINYINT},
+      </if>
+      <if test="result != null">
+        Result = #{result,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        Status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="lastNotifyTime != null">
+        LastNotifyTime = #{lastNotifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null">
+        CreateTime = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        UpdateTime = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where OrderId = #{orderId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.xxpay.core.entity.MchNotify">
+    update t_mch_notify
+    set MchId = #{mchId,jdbcType=BIGINT},
+      IsvId = #{isvId,jdbcType=BIGINT},
+      AppId = #{appId,jdbcType=VARCHAR},
+      MchOrderNo = #{mchOrderNo,jdbcType=VARCHAR},
+      OrderType = #{orderType,jdbcType=VARCHAR},
+      NotifyUrl = #{notifyUrl,jdbcType=VARCHAR},
+      NotifyCount = #{notifyCount,jdbcType=TINYINT},
+      Result = #{result,jdbcType=VARCHAR},
+      Status = #{status,jdbcType=TINYINT},
+      LastNotifyTime = #{lastNotifyTime,jdbcType=TIMESTAMP},
+      CreateTime = #{createTime,jdbcType=TIMESTAMP},
+      UpdateTime = #{updateTime,jdbcType=TIMESTAMP}
+    where OrderId = #{orderId,jdbcType=VARCHAR}
+  </update>
+
+  <!-- 插入通知时重复就更新 -->
+  <insert id="insertSelectiveOnDuplicateKeyUpdate" parameterType="org.xxpay.core.entity.MchNotify" >
+    insert into t_mch_notify
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="orderId != null" >
+        OrderId,
+      </if>
+      <if test="mchId != null" >
+        MchId,
+      </if>
+      <if test="isvId != null" >
+        IsvId,
+      </if>
+      <if test="appId != null" >
+        AppId,
+      </if>
+      <if test="mchOrderNo != null" >
+        MchOrderNo,
+      </if>
+      <if test="orderType != null" >
+        OrderType,
+      </if>
+      <if test="notifyUrl != null" >
+        NotifyUrl,
+      </if>
+      <if test="notifyCount != null" >
+        NotifyCount,
+      </if>
+      <if test="result != null" >
+        Result,
+      </if>
+      <if test="status != null" >
+        Status,
+      </if>
+      <if test="lastNotifyTime != null" >
+        LastNotifyTime,
+      </if>
+      <if test="createTime != null" >
+        CreateTime,
+      </if>
+      <if test="updateTime != null" >
+        UpdateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="orderId != null" >
+        #{orderId,jdbcType=VARCHAR},
+      </if>
+      <if test="mchId != null" >
+        #{mchId,jdbcType=VARCHAR},
+      </if>
+      <if test="isvId != null" >
+        #{isvId,jdbcType=VARCHAR},
+      </if>
+      <if test="appId != null" >
+        #{appId,jdbcType=VARCHAR},
+      </if>
+      <if test="mchOrderNo != null" >
+        #{mchOrderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="orderType != null" >
+        #{orderType,jdbcType=VARCHAR},
+      </if>
+      <if test="notifyUrl != null" >
+        #{notifyUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="notifyCount != null" >
+        #{notifyCount,jdbcType=TINYINT},
+      </if>
+      <if test="result != null" >
+        #{result,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="lastNotifyTime != null" >
+        #{lastNotifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+    ON DUPLICATE KEY UPDATE OrderId = #{orderId,jdbcType=VARCHAR}
+  </insert>
+</mapper>

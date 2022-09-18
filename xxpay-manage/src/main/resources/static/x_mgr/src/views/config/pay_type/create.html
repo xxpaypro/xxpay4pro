@@ -1,0 +1,98 @@
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a>支付配置</a>
+        <a><cite>新增支付类型</cite></a>
+    </span>
+</div>
+
+<style>
+    .layui-form-label {
+        width:120px !important;
+        margin-left:1%;
+    }
+    .layui-input-inline {
+        width: 80% !important;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">支付类型</li>
+            </ul>
+            <div class="layui-tab-content">
+                <form class="layui-form center">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">支付类型代码</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="payTypeCode" id="payTypeCode" placeholder="请输入支付类型代码" required lay-verify="required"  autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">支付类型名称</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="payTypeName" id="payTypeName" placeholder="请输入支付类型名称" required lay-verify="required"  autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">类别</label>
+                        <div class="layui-input-inline" >
+                            <input type="radio" name="type" title="支付" value="1" checked />
+                            <input type="radio" name="type" title="代付" value="2" />
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">状态</label>
+                        <div class="layui-input-inline" >
+                            <input type="radio" name="status" title="开启" value="1" checked />
+                            <input type="radio" name="status" title="关闭" value="0" />
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button type="button" class="layui-btn" lay-submit="" lay-filter="add">保存</button>
+                            <a lay-href = "config/pay_type/"  class="layui-btn ">返回</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['form','table','util','admin',],function(){
+        var form = layui.form
+        , $ = layui.$
+        , admin = layui.admin
+        , layer = layui.layer 
+        , element = layui.element
+        , table = layui.table;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        form.render();
+
+        // 当点击微信渠道配置按钮保存的时候
+        form.on('submit(add)', function(data){
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/config/pay_type/add', //模拟接口
+                data: data.field,
+                error: function(err){
+                    layer.alert(err.msg,{title:"请求失败"})
+                },
+                success: function(res){
+                    if(res.code == 0){
+                        layer.alert(res.msg, {title: '保存成功'},function(index){
+                            layer.close(index);
+                            location.hash = '/config/pay_type/';
+                        });
+                    }
+                }
+            })
+        })
+
+
+    })
+</script>

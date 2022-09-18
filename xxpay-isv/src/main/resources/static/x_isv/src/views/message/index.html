@@ -1,0 +1,64 @@
+
+<title>消息中心</title>
+
+<div class="layui-card layadmin-header">
+  <div class="layui-breadcrumb" lay-filter="breadcrumb">
+    <a lay-href="">主页</a>
+    <a><cite>消息中心</cite></a>
+  </div>
+</div>
+
+<div class="layui-fluid" id="LAY-app-message">
+  <div class="layui-card">
+    <div class="layui-tab layui-tab-brief">
+      <ul class="layui-tab-title">
+        <li class="layui-this">全部消息</li>
+      </ul>
+      <div class="layui-tab-content">
+        <div class="layui-tab-item layui-show">
+          <div class="LAY-app-message-btns" style="margin-bottom: 10px;"></div>
+          <table id="LAY-app-message-all" lay-filter="LAY-app-message-all"></table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+layui.use(['admin', 'table', 'util'], function(){
+  var $ = layui.$
+  ,admin = layui.admin
+  ,table = layui.table
+  ,element = layui.element;
+
+  
+  var DISABLED = 'layui-btn-disabled'
+  
+  //区分各选项卡中的表格
+  ,tabs = {
+    all: {
+      text: '全部消息'
+      ,id: 'LAY-app-message-all'
+    }
+  };
+  
+  //标题内容模板
+  var tplTitle = function(d){
+    return '<a lay-href="message/detail/id='+ d.id +'">'+ d.title;
+  };
+  
+  //全部消息
+  table.render({
+    elem: '#LAY-app-message-all'
+    ,url: layui.setter.baseUrl + '/message/list' //模拟接口
+    ,page: true
+    ,cols: [[
+      {type: 'checkbox', fixed: 'left'}
+      ,{field: 'title', title: '标题内容', minWidth: 300, templet: tplTitle}
+      // ,{field: 'createTime', title: '时间', width: 170, templet: '<div>{{ layui.util.timeAgo(d.createTime) }}</div>'}
+      ,{field: 'createTime', title: '时间', width: 170, templet: '<div>{{ layui.util.toDateString(d.createTime) }}</div>'}
+    ]]
+    ,skin: 'line'
+  });
+});
+</script>

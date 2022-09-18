@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.xxpay.service.dao.mapper.MchWxauthInfoMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="org.xxpay.core.entity.MchWxauthInfo">
+        <id column="Id" property="Id" />
+        <result column="MchId" property="mchId" />
+        <result column="IsvId" property="isvId" />
+        <result column="AuthAppId" property="authAppId" />
+        <result column="AuthRefreshToken" property="authRefreshToken" />
+        <result column="AuthFuncInfo" property="authFuncInfo" />
+        <result column="AuthStatus" property="authStatus" />
+        <result column="AuthFrom" property="authFrom" />
+        <result column="AuthType" property="authType" />
+        <result column="OpenAppId" property="openAppId" />
+        <result column="LegalPersonaName" property="legalPersonaName" />
+        <result column="LegalPersonaWechat" property="legalPersonaWechat" />
+        <result column="BussinessName" property="bussinessName" />
+        <result column="BussinessCode" property="bussinessCode" />
+        <result column="CreateTime" property="createTime" />
+        <result column="UpdateTime" property="updateTime" />
+        <result column="WxCheckFileName" property="wxCheckFileName" />
+        <result column="WxCheckFileValue" property="wxCheckFileValue" />
+        <result column="Prefix" property="prefix" />
+    </resultMap>
+
+</mapper>

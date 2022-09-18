@@ -1,0 +1,121 @@
+
+<div class=" layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>支付配置</cite></a>
+        <a><cite>修改支付类型</cite></a>
+    </div>
+</div>
+<style>
+    .layui-form-label {
+        width:120px !important;
+        margin-left:1%;
+    }
+    .layui-input-inline {
+        width: 80% !important;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">配置信息</li>
+            </ul>
+            <div class="layui-tab-content">
+
+                <form class="layui-form center">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">支付类型代码</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="payTypeCode" name="payTypeCode" readonly="readonly" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">支付类型名称</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="payTypeName" id="payTypeName" placeholder="请输入支付类型名称" required lay-verify="required" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">类别</label>
+                        <div class="layui-input-inline" >
+                            <input type="radio" name="type" title="支付" value="1" />
+                            <input type="radio" name="type" title="代付" value="2" />
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">状态</label>
+                        <div class="layui-input-inline" >
+                            <input type="radio" name="status" title="开启" value="1" />
+                            <input type="radio" name="status" title="关闭" value="0" />
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button type="button" class="layui-btn" lay-submit="" lay-filter="update">保存</button>
+                            <a lay-href = "config/pay_type/"  class="layui-btn ">返回</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    
+    layui.use(['form','table','util','admin',],function(){
+        var form = layui.form
+        , $ = layui.$
+        , admin = layui.admin
+        , layer = layui.layer 
+        , element = layui.element
+        , table = layui.table;
+        
+        element.render('breadcrumb', 'breadcrumb'); //渲染导航信息
+        
+        var router = layui.router();
+        var payTypeCode = router.search.payTypeCode;
+
+        admin.req({
+            type: 'post',
+            url: layui.setter.baseUrl + '/config/pay_type/get',
+            data: {
+                payTypeCode: payTypeCode,
+            },
+            error: function(err){
+                layer.alert(err);
+            },
+            success: function(res){
+                if(res.code == 0){
+                    $('#payTypeCode').val(res.data.payTypeCode);
+                    $('#payTypeName').val(res.data.payTypeName);
+                    $("input[name='type'][value='"+ res.data.type +"']").attr("checked",true);
+                    $("input[name='status'][value='"+ res.data.status +"']").attr("checked",true);
+                    form.render();
+                }else{
+                    layer.alert(res.msg,{title:"请求失败"})
+                }
+            }
+        });
+
+        form.on('submit(update)', function(data){
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/config/pay_type/update', //模拟接口,
+                data: data.field,
+                error: function(err){layer.alert(err.msg,{title:"请求失败"})},
+                success: function(res){
+                    if(res.code == 0){
+                        layer.alert(res.msg, {title: '保存成功'},function(index){
+                            layer.close(index);
+                            location.hash = '/config/pay_type/';
+                        });
+                    }
+                }
+            })
+            return false;
+        });
+
+    });
+    
+</script>

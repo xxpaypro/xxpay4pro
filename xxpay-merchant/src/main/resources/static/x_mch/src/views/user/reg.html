@@ -1,0 +1,191 @@
+<style>
+  .layui-form-item {
+    margin-bottom: 0;
+  }
+</style>
+<script type="text/html" template>
+  <link rel="stylesheet" href="{{ layui.setter.base }}style/login.css?v={{ layui.admin.v }}-1" media="all">
+</script>
+
+<div class="login2-flex-row">
+  <div class="login2-main" style="height:820px;margin-bottom: 60px;">
+
+    <div class="login2-flex-row" style="margin-top: 40px;">
+
+      <div style="padding-top: 5px; margin-right: 6px;">
+        <img src="/images/login2-title.png"  style="width:28px;height: 28px;"/>
+      </div>
+      <div class="login2-title">商户注册</div>
+    </div>
+    <div class="login2-flex-row" style="margin-top:8px; margin-bottom: 30px">
+      <div class="login2-slzf">小新支付</div>
+    </div>
+
+    <div class="layadmin-user-login-box layadmin-user-login-body layui-form">
+      <div class="layui-form-item">
+        <label class="layadmin-user-login-icon layui-icon layui-icon-username" for="LAY-user-login-nickname"></label>
+        <input type="text" name="mchName" id="LAY-user-login-nickname" lay-verify="required" placeholder="商户名称" class="layui-input login2-input">
+        <div class="layui-form-item login2-line login2-opacity02-1px"></div>
+      </div>
+      <div class="layui-form-item">
+        <label class="layadmin-user-login-icon layui-icon layui-icon-cellphone" for="LAY-user-login-cellphone_reg"></label>
+        <input type="text" name="mobile" id="LAY-user-login-cellphone_reg" lay-verify="phone" placeholder="手机" class="layui-input login2-input">
+        <div class="layui-form-item login2-line login2-opacity02-1px"></div>
+      </div>
+      <div class="layui-form-item">
+        <div class="layui-row">
+          <div class="layui-col-xs7">
+            <label class="layadmin-user-login-icon layui-icon layui-icon-vercode" for="LAY-user-login-vercode_reg"></label>
+            <input type="text" name="vercode" id="LAY-user-login-vercode_reg" lay-verify="required" placeholder="验证码" class="layui-input  login2-input-short  login2-input">
+            <div class="layui-form-item login2-line login2-opacity02-1px"></div>
+          </div>
+          <div class="layui-col-xs5">
+            <div style="margin-left: 10px;">
+              <button type="button" class="layui-btn layui-btn-primary layui-btn-fluid" id="LAY-user-reg-getsmscode_reg" style="width: 80%;margin-top: -5px;">获取验证码</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="layui-form-item">
+        <div class="layui-row">
+          <div class="layui-col-xs7">
+            <label class="layadmin-user-login-icon layui-icon layui-icon-username" for="LAY-user-login-isvId"></label>
+            <input type="text" name="isvId" id="LAY-user-login-isvId" lay-verify="required|number" placeholder="服务商ID" class="layui-input login2-input">
+            <div class="layui-form-item login2-line login2-opacity02-1px"></div>
+          </div>
+        <div class="layui-col-xs5">
+          <div style="margin-left: 10px;">
+            <!--<button type="button" class="layui-btn layui-btn-primary layui-btn-fluid" id="LAY-user-reg-isv" style="width: 80%;margin-top: -5px;">无服务商，前往注册</button>-->
+            <a href="https://isv.juhezhifu.com/x_isv/start/index.html#/user/reg" target="_blank" class="layadmin-link layui-hide-xs" style="height: 38px;line-height: 38px;">无服务商，前往注册</a>
+          </div>
+        </div>
+      </div>
+      </div>
+      <input type="hidden" name="type" value="1">
+      <input type="hidden" name="agentIdStr" id='agentIdStr' value="">
+      <input type="hidden" name="isPlat" id='isPlat' value="false">
+      <div class="layui-form-item">
+        <label class="layadmin-user-login-icon layui-icon layui-icon-password" for="LAY-user-login-password"></label>
+        <input type="password" name="password" id="LAY-user-login-password" lay-verify="pass" placeholder="密码" class="layui-input login2-input">
+        <div class="layui-form-item login2-line login2-opacity02-1px"></div>
+      </div>
+      <div class="layui-form-item">
+        <label class="layadmin-user-login-icon layui-icon layui-icon-password" for="LAY-user-login-repass"></label>
+        <input type="password" name="repass" id="LAY-user-login-repass" lay-verify="required" placeholder="确认密码" class="layui-input login2-input">
+        <div class="layui-form-item login2-line login2-opacity02-1px"></div>
+      </div>
+
+      <div class="layui-form-item">
+        <input type="checkbox" name="agreement" lay-skin="primary" title="同意商户协议" checked>
+      </div>
+      <div class="layui-form-item">
+        <button class="layui-btn layui-btn-fluid login2-loginbtn login2-opacity05" lay-submit lay-filter="LAY-user-reg-submit">注 册</button>
+      </div>
+      <div class="layui-trans layui-form-item layadmin-user-login-other">
+
+        <a lay-href="/user/login" class="layadmin-user-jump-change layadmin-link layui-hide-xs">用已有帐号登入</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+layui.use(['admin', 'form', 'user'], function(){
+  var $ = layui.$
+  ,setter = layui.setter
+  ,admin = layui.admin
+  ,form = layui.form
+  ,router = layui.router();
+  
+  $(function(){
+	  var agentIdStr = router.search.aid;
+	  var isPlat = router.search.isPlat;
+	  
+	  if(agentIdStr){
+		  $("#agentIdStr").val(agentIdStr);
+	  }
+	  if(isPlat == 1){
+		  $("#isPlat").val(true);
+	  }
+  });
+  
+  
+  form.render();
+  
+  $('#LAY-user-reg-getsmscode_reg').unbind().on('click', function(){
+      var elemPhone  = $("#LAY-user-login-cellphone_reg");
+      var value = elemPhone.val();
+      
+      if(!/^1\d{10}$/.test(value)){
+          elemPhone.focus();
+          return layer.msg('请输入正确的手机号')
+        };
+      admin.req({
+        url: layui.setter.baseUrl + '/auth/sms_send'
+        ,method: 'POST'
+        ,data :{bizType : 22, mobile : value}
+        ,success: function(res){
+        	if(!res.code == 0 ){
+        		return false;
+        	}
+       	  var seconds = 60
+           ,token = null
+           ,timer, countDown = function(loop){
+             var btn = $("#LAY-user-reg-getsmscode_reg")
+             seconds--;
+             if(seconds < 0){
+               btn.removeClass("layui-disabled").html('获取验证码');
+               seconds = 60;
+               clearInterval(timer);
+             } else {
+               btn.addClass("layui-disabled").html(seconds + '秒后重获');
+             }
+
+             if(!loop){
+               timer = setInterval(function(){
+                 countDown(true);
+               }, 1000);
+             }
+           };
+        	
+          layer.msg('验证码已发送至你的手机，请注意查收', {
+            icon: 1
+            ,shade: 0
+          });
+          $("#LAY-user-login-vercode_reg").focus();
+          countDown();
+        }
+      });
+    });
+
+
+  //提交
+  form.on('submit(LAY-user-reg-submit)', function(obj){
+    var field = obj.field;
+    
+    //确认密码
+    if(field.password !== field.repass){
+      return layer.msg('两次密码输入不一致');
+    }
+    
+    //是否同意用户协议
+    if(!field.agreement){
+      return layer.msg('你必须同意用户协议才能注册');
+    }
+    
+    admin.req({
+      type: 'post',
+      url: layui.setter.baseUrl + '/auth/register',
+      data: field,
+      success: function(res){
+        if(res.code == 0){
+          location.href = layui.setter.baseLocal + "user/regSuccess";
+        }
+      }
+    })
+    
+    return false;
+  });
+});
+</script>

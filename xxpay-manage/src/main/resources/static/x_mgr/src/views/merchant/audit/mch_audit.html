@@ -1,0 +1,111 @@
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>商户管理</cite></a>
+        <a><cite>审核商户</cite></a>
+    </div>
+</div>
+
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-tab layui-tab-brief">
+      <ul class="layui-tab-title">
+        <li class="layui-this">审核商户</li>
+      </ul>
+      <div class="layui-tab-content">
+          <form class="layui-form center">
+              <div class="layui-form-item">
+                  <div class="layui-inline">
+                      <label class="layui-form-label">商户ID</label>
+                      <div class="layui-input-inline">
+                          <input type="text" id="mchId" name="mchId" readonly="readonly" class="layui-input">
+                      </div>
+                  </div>
+              </div>
+              <div class="layui-form-item">
+                  <div class="layui-inline">
+                      <label class="layui-form-label">商户名称</label>
+                      <div class="layui-input-inline">
+                          <input type="text" id="name" name="name" autocomplete="off" class="layui-input" disabled="disabled">
+                      </div>
+                  </div>
+              </div>
+              <div class="layui-form-item">
+                  <div class="layui-inline">
+                      <label class="layui-form-label">状态</label>
+                      <div class="layui-input-block">
+                          <input type="radio" name="status" value="1" title="通过" checked="checked">
+                          <input type="radio" name="status" value="-2" title="拒绝">
+                      </div>
+                  </div>
+              </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button type="button" class="layui-btn" lay-submit="" lay-filter="audit">审核</button>
+                    <a class="layui-btn" lay-href="merchant/audit/">返回</a>
+                </div>
+            </div>
+          </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    layui.use(['admin', 'form'],function(){
+        var form = layui.form
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,element = layui.element
+        ,layer = layui.layer ;
+        // 导航
+        element.render('breadcrumb', 'breadcrumb');
+        var router = layui.router();
+        var mchId = router.search.mchId;
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/mch_info/get',
+            data: {
+                mchId : mchId
+            },
+            error: function(err){
+                layer.alert(JSON.stringify(err.field), {
+                    title: '错误提示'
+                })
+            },
+            success: function(res){
+                if(res.code == 0){
+                    $('#mchId').val(res.data.mchId);
+                    $('#name').val(res.data.name);
+                    $('#email').val(res.data.email);
+                    $('#mobile').val(res.data.mobile);
+                    if(res.data.type == 1) {
+                        $("input[name='type'][value='1']").attr("checked",true);
+                    }else if(res.data.type == 2) {
+                        $("input[name='type'][value='2']").attr("checked",true);
+                    }
+                    form.render();
+                }
+            }
+        })
+
+        form.on('submit(audit)', function(data) {
+            //这里可以写ajax方法提交表单
+            admin.req({
+                type: "POST",
+                url: layui.setter.baseUrl + '/mch_audit/audit',
+                data: data.field,
+                success: function(res){
+                    if(res.code == 0) {
+                        layer.alert(res.msg, {title: "审核成功"}, function(index){
+                          layer.close(index);
+                          location.href = layui.setter.baseLocal + 'merchant/audit/';
+                        });
+                    }
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+    })
+</script>

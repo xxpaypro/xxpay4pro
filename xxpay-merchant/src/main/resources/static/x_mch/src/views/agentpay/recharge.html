@@ -1,0 +1,134 @@
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a><cite>代付充值</cite></a>
+    </span>
+</div>
+<div style="display: none" id="formJump"></div>
+<form id="jumpForm" method="post" target="_blank" style="display: none"></form>
+<div class="layui-fluid" id="LAY-app-message">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">在线充值</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-form-item">
+                    <blockquote class="layui-elem-quote" id="amountTip"></blockquote>
+                </div>
+                <div class="layui-tab-item layui-show">
+                    <form id="rechargeForm" class="layui-form center" method="post" target="_blank">
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">充值产品</label>
+                            <div class="layui-input-block">
+                                <select name="productId" id="productId" lay-verify="required" lay-filter="productIdFilter">
+                                    <option value="">选择产品</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">充值金额(元)</label>
+                            <div class="layui-input-block">
+                                <input type="text" required  id="amount" name="amount"  lay-verify="required|number" placeholder="请输入充值金额" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item ">
+                            <div class="layui-input-block">
+                                <button type="button" id="recharge_btn" class="layui-btn layui-btn-danger" lay-submit="" lay-filter="btnRecharge">立即充值</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    layui.use(['form','util','admin'], function(){
+       var form = layui.form
+       ,$ = layui.$
+       ,admin = layui.admin
+       ,upload = layui.upload
+       ,element = layui.element;
+
+       element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/account/get',
+            error: function(err){
+                layer.alert(err.msg,{title:'请求失败'})
+            },
+            success:function(res){
+                if(res.code == 0 && res.data != null){
+                    $('#amountTip').html("代付余额: <span style='color: red'>" + res.data.agpayAmount / 100 + "</span> 元 " +" 不可用代付余额: <span style='color: red'>" + res.data.agpayUnAmount / 100 + "</span> 元" );
+                }
+            }
+        });
+
+        // 加载支接口类型
+        admin.req({
+            type: 'post',
+            url: layui.setter.baseUrl + '/common/pay_product_all?productType=2',
+            error: function(err){
+                layer.alert(err);
+            },
+            success: function(res){
+                if(res.code == 0){
+                    var payProductList = res.data;
+                    //遍历赋值
+                    for(var i in payProductList){
+                        $("#productId").append('<option value= '+payProductList[i].id+'>'+ payProductList[i].productName+'</option>');
+                    }
+                    form.render('select');
+                }
+            }
+        });
+
+       form.on('submit(btnRecharge)', function(data){
+            var amount = $("#amount").val();
+            var productId = $("#productId").val();
+            layer.confirm("充值金额:"+amount+"元,确定充值么?", function(index){
+                $("#recharge_btn").attr("disabled", true);
+                var load = layer.msg('正在创建订单...', {
+                    icon: 16
+                    ,shade: 0.01
+                    ,time: 9999999999
+                });
+
+               admin.req({
+                   type: 'post',
+                   url: layui.setter.baseUrl + '/recharge/pay',
+                   data: data.field,
+                   success: function(res){
+                       layer.close(index);
+                       layer.close(load);
+                       $("#recharge_btn").attr("disabled", false);
+                       if(res.code == 0) {
+                           var payUrl = res.data.payUrl;
+                           $("#jumpForm").attr("action", payUrl);
+                           $("#jumpForm").submit();
+                           layer.alert(
+                                   "订单已创建,充值结果查看交易记录"
+                                   ,{title: "创建完成"}
+                                   ,function(){
+                                       location.hash = '/agentpay/recharge_record';
+                                   });
+                       }
+                   },
+                   error: function(res){
+                       $("#recharge_btn").attr("disabled", false);
+                       layer.close(index);
+                       layer.close(load);
+                   }
+               });
+            });
+            return false;//阻止跳转
+        });
+        form.render();
+
+    })
+</script>

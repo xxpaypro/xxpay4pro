@@ -1,0 +1,185 @@
+
+<div class="layui-card layadmin-header">
+  <div class="layui-breadcrumb" lay-filter="breadcrumb">
+    <a lay-href="">主页</a>
+    <a><cite>硬件设备管理</cite></a>
+  </div>
+</div>
+
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-tab layui-tab-brief">
+      <ul class="layui-tab-title">
+        <li class="layui-this">硬件设备管理</li>
+      </ul>
+      <div class="layui-tab-content">
+        <div class="layui-tab-item layui-show">
+          <div class="layui-row">
+            <div class="layui-form" style="float:right;">
+              <div class="layui-form-item" style="margin:0;">
+                <div class="layui-input-inline">
+                  <input type="text" id="searchDeviceName" autocomplete="off" placeholder="设备名称" class="layui-input">
+                </div>
+                <div class="layui-input-inline">
+                  <input type="text" id="searchDeviceNo" autocomplete="off" placeholder="设备编号" class="layui-input">
+                </div>
+                <div class="layui-input-inline">
+                  <select name="type" id="searchDeviceType">
+                    <option value="">设备类型</option>
+                    <option value="1">微信</option>
+                    <option value="2">支付宝</option>
+                  </select>
+                </div>
+                <div class="layui-input-inline">
+                  <select name="type" id="searchStatus">
+                    <option value="">状态</option>
+                    <option value="1">正常使用</option>
+                    <option value="0">设备停用</option>
+                  </select>
+                </div>
+                <button id="search" class="layui-btn" data-type="reload">搜索</button>
+              </div>
+            </div>
+          </div>
+          <div class="layui-row">
+            <div class="layuiAdmin-btns" style="margin-bottom: 10px;">
+              <a class="layui-btn" data-type="all" data-events="create">新增</a>
+            </div>
+          </div>
+          <table id="XxPay_Mgr_Device_dataAll" lay-filter="XxPay_Mgr_Device_dataAll"></table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/html" id="xxpayBar">
+  <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
+<script>
+layui.use(['admin', 'table', 'util','view'], function(){
+  var $ = layui.$
+  ,admin = layui.admin
+  ,table = layui.table
+  ,element = layui.element
+  ,view = layui.view
+  ,form = layui.form;
+  
+  element.render('breadcrumb', 'breadcrumb');
+
+  var tplStatus = function(d){
+      if(d.status == '1'){
+          return "<span style='color:green'>正常使用</span>";
+      }else{
+          return "<span style='color:red'>设备停用</span>";
+      }
+  };
+
+  var tplOrderCount = function(d){
+      if(d.ps && d.ps.orderCount) {
+          return "<div>" + d.ps.orderCount + "</div>";
+      }
+      return "<div>0</div>";
+  };
+
+    var tplOrderTotalAmount = function(d){
+        if(d.ps && d.ps.orderTotalAmount) {
+            return "<div>" + d.ps.orderTotalAmount / 100 + "</div>";
+        }
+        return "<div>0</div>";
+    };
+
+
+  //用户列表
+  table.render({
+    elem: '#XxPay_Mgr_Device_dataAll'
+    ,url: layui.setter.baseUrl + '/isv_device/list' //列表接口
+    ,id: 'tableReload'
+    ,page: true
+    ,cols: [[
+      {field: 'deviceName', title: '设备名称'}
+      ,{field: 'deviceNo', title: '设备编号'}
+      ,{title: '设备类型', templet: "<div>{{d.deviceType == '1' ? '微信' : '支付宝' }}</div>"}
+      ,{title: '订单数量', templet: tplOrderCount}
+      ,{title: '收款金额', templet: tplOrderTotalAmount}
+      ,{field: 'mchName', title: '绑定商家'}
+      ,{field: 'storeName', title: '绑定门店'}
+      ,{field: 'status', title: '状态', templet: tplStatus}
+      ,{field: 'remark', title: '备注'}
+      ,{field: 'createTime', title: '创建时间', templet: '<div>{{ layui.util.toDateString(d.createTime, "yyyy-MM-dd HH:mm:ss") }}</div>'}
+      ,{field: 'edit', width:160, title: '操作', toolbar: '#xxpayBar' }
+    ]]
+    ,skin: 'line'
+  });
+
+  //监听工具条
+  table.on('tool(XxPay_Mgr_Device_dataAll)', function(obj){
+    var data = obj.data;
+    if(obj.event === 'del'){
+      layer.confirm('确认删除？', function(index){
+        admin.req({
+          type: 'get',
+          url: layui.setter.baseUrl + '/isv_device/delete',
+          data: {id: data.id},
+          success: function(res){
+            if(res.code == 0) {
+              layer.msg('删除成功', {icon: 1});
+              table.reload("tableReload");
+            }
+          }
+        });
+      });
+    } else if(obj.event === 'edit'){
+      view.xxpayPopup("修改设备", "device_config/device_config/edit", {id: data.id}, {area: ["60%", "75%"]});
+    }
+  });
+
+
+  // 搜索
+  var $ = layui.$, active = {
+    reload: function(){
+      var searchDeviceName = $('#searchDeviceName').val();
+      var searchDeviceNo = $("#searchDeviceNo").val().trim();
+      var searchStatus = $("#searchStatus").val();
+      var searchDeviceType = $("#searchDeviceType").val();
+
+
+      //执行重载
+      table.reload('tableReload', {
+        page: {
+          curr: 1 //重新从第 1 页开始
+        }
+        ,where: {
+          deviceName: searchDeviceName,
+          deviceNo: searchDeviceNo,
+          status : searchStatus,
+          deviceType: searchDeviceType
+        }
+      });
+    }
+  };
+  $('#search').on('click', function() {
+    var type = $(this).data('type');
+    active[type] ? active[type].call(this) : '';
+  });
+
+
+  // 事件处理
+  var events = {
+    create: function () {
+      view.xxpayPopup("新增", "device_config/device_config/add", null, {area: ["60%", "75%"]});
+    }
+  };
+  $('.layuiAdmin-btns .layui-btn').on('click', function(){
+    var othis = $(this)
+            ,thisEvent = othis.data('events')
+            ,type = othis.data('type');
+    events[thisEvent] && events[thisEvent].call(this, othis, type);
+  });
+  // 渲染表单
+  form.render();
+});
+</script>

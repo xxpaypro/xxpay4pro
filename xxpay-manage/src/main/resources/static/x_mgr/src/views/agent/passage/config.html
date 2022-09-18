@@ -1,0 +1,205 @@
+
+<div class=" layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a>代理商管理</a>
+        <a><cite>支付通道</cite></a>
+    </div>
+</div>
+
+<style>
+    .layui-form-label {
+        width:120px !important;
+        margin-left:1%;
+    }
+    .layui-input-inline {
+        width: 80% !important;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">通道配置</li>
+            </ul>
+            <div class="layui-tab-content">
+                <form class="layui-form center">
+                    <input type="hidden" id="id" name="id">
+                    <input type="hidden" id="refProductId" name="refProductId">
+                    <input type="hidden" id="infoId" name="infoId">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">产品名称</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="productName" required lay-verify="required" autocomplete="off" class="layui-input" readonly="readonly">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item layui-hide" id="parentAgentFeeDiv">
+                        <label class="layui-form-label">上级代理商费率(%)</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="parentAgentFee"class="layui-input" readonly>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">设置代理费率(%)</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="currentSetFee" name="fee" placeholder="请输入代理商费率" lay-verify="required" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    
+                    <div class="layui-form-item" id="passageDiv">
+                        <label class="layui-form-label">可见支付通道</label>
+                        <div class="layui-input-inline" >
+                            <table id="XxPay_Mgr_Passage_dataAll" lay-filter="XxPay_Mgr_Passage_dataAll"></table>
+                        </div>
+                    </div>
+                    
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">状态</label>
+                        <div class="layui-input-inline" >
+                            <input type="radio" name="status" title="开启" value="1" checked />
+                            <input type="radio" name="status" title="关闭" value="0" />
+                        </div>
+                    </div>
+                    
+                    <div class="layui-form-item">
+                        <div class="layui-input-inline">
+                            <button type="button" class="layui-btn" lay-submit="" lay-filter="update">保存</button>
+                            <button type="button" id="btnBack" class="layui-btn">返回</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    layui.use(['form','table','util','admin',],function(){
+        var form = layui.form
+                , $ = layui.$
+                , admin = layui.admin
+                , layer = layui.layer
+                , element = layui.element
+                , table = layui.table;
+
+        element.render('breadcrumb', 'breadcrumb'); //渲染导航信息
+
+        var router = layui.router();
+        var agentId = router.search.agentId;
+        var productId = router.search.productId;
+
+        $('#infoId').val(agentId);
+        $('#refProductId').val(productId);
+
+        admin.req({
+            type: 'post',
+            url: layui.setter.baseUrl + '/agent_passage/get',
+            async: false,
+            data: {
+                agentId: agentId,
+                productId: productId
+            },
+            error: function(err){
+                layer.alert(err);
+            },
+            success: function(res){
+                if(res.code == 0){
+                    $('#id').val(res.data.id);
+                    $('#productName').val(res.data.ps.productName);
+                    $('#currentSetFee').val(res.data.fee);
+                    $("input[name='status'][value='"+res.data.status+"']").attr("checked",true);
+
+                    if(res.data.ps.parentAgentFee != null){
+                        $('#parentAgentFee').val(res.data.ps.parentAgentFee);
+                        $('#parentAgentFeeDiv').removeClass('layui-hide');
+                    }
+
+
+                    var extConfigVO = res.data.extConfigVO ? res.data.extConfigVO : {};
+                    var visiblePassageList = extConfigVO.visiblePassageList ? extConfigVO.visiblePassageList : [];
+                    admin.req({
+                        type: 'post',
+                        url: layui.setter.baseUrl + '/config/pay_passage/can_set_passage_list',
+                        data: {infoType: 2, infoId: agentId, payProductId : productId},
+                        error: function(err){layer.alert(err.msg,{title:"请求失败"})},
+                        success: function(res1){
+                            if(res1.code == 0){
+
+                                var tableData = [];
+                                $.each(res1.data, function(){
+                                   if(visiblePassageList.indexOf(this.id) >= 0 ){
+                                       this.LAY_CHECKED = true;
+                                   }
+                                    tableData.push(this);
+                                });
+                                table.render({
+                                    elem: '#XxPay_Mgr_Passage_dataAll'
+                                    ,id: 'tableReload'
+                                    ,page: false
+                                    ,cols: [[
+                                        {field: 'ok', type: 'checkbox', fixed: 'left', }
+                                        ,{field: 'id', title: '通道ID', width: 180}
+                                        ,{field: 'passageName', title: '通道名称', width: 250}
+                                        ,{title: '通道费率', width: 250, templet: "<span>{{ d.passageRate }}%</span>"}
+                                    ]]
+                                    ,skin: 'nob',
+                                    data : tableData
+                                });
+                            }
+                        }
+                    });
+                    form.render();
+                }
+            }
+        });
+
+        form.on('submit(update)', function(data){
+        	
+        	// 获取表格选中行的数据
+            var checkDatas = table.checkStatus('tableReload');
+            if(checkDatas.data.length <= 0) {
+                layer.alert("请选择支付通道",{title: '提示'});
+                return false;
+            }
+
+            if($("#currentSetFee").val() <= 0) {
+                return layer.alert("请输入正确的费率值",{title: '提示'});
+            }
+            
+            var visiblePassageList = [];
+            $.each(checkDatas.data, function(){
+                visiblePassageList.push("P#" + this.id + "#");
+            });
+
+            var extConfig = {};
+            extConfig.visiblePassageList = visiblePassageList;
+            
+            data.field.extConfig = JSON.stringify(extConfig);
+            
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/agent_passage/addOrUpd',
+                data: data.field,
+                error: function(err){layer.alert(err.msg,{title:"请求失败"})},
+                success: function(res){
+                    if(res.code == 0){
+                        layer.alert(res.msg, {title: '保存成功'},function(index){
+                            layer.close(index);
+                            location.hash = '/agent/passage/list/agentId=' + agentId;
+                        });
+                    }
+                }
+            });
+            return false;
+        });
+
+        $('#btnBack').on('click', function() {
+            location.hash = '/agent/passage/list/agentId=' + agentId;
+        });
+
+
+    });
+
+</script>

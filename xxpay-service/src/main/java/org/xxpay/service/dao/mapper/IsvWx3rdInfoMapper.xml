@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.xxpay.service.dao.mapper.IsvWx3rdInfoMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="org.xxpay.core.entity.IsvWx3rdInfo">
+        <id column="IsvId" property="IsvId" />
+        <result column="ConfigAuthHost" property="configAuthHost" />
+        <result column="ConfigTestMpAccount" property="configTestMpAccount" />
+        <result column="ConfigAuthMsgUrl" property="configAuthMsgUrl" />
+        <result column="ConfigMsgToken" property="configMsgToken" />
+        <result column="ConfigAesKey" property="configAesKey" />
+        <result column="ConfigNormalMsgUrl" property="configNormalMsgUrl" />
+        <result column="ConfigMiniHost" property="configMiniHost" />
+        <result column="ConfigMiniBizHost" property="configMiniBizHost" />
+        <result column="ConfigWhiteIp" property="configWhiteIp" />
+        <result column="ConfigWxCheckFileName" property="configWxCheckFileName" />
+        <result column="ConfigWxCheckFileValue" property="configWxCheckFileValue" />
+        <result column="ComponentAppId" property="componentAppId" />
+        <result column="ComponentAppSecret" property="componentAppSecret" />
+        <result column="ComponentVerifyTicket" property="componentVerifyTicket" />
+        <result column="Status" property="status" />
+        <result column="CreateTime" property="createTime" />
+        <result column="UpdateTime" property="updateTime" />
+    </resultMap>
+
+</mapper>

@@ -1,0 +1,19 @@
+server:
+  port: 8080
+  context-path: /
+
+spring:
+  profiles:
+     active: prod
+
+logging:
+  file: ./log/demo.log
+
+# 支付配置 （注意yml格式中 k/v之间的空格）
+config:
+  #商户ID
+  mchId: 20000076
+  #商户秘钥
+  mchKey: 1111111
+  #支付网关地址
+  payHost: https://pay.juhezhifu.com

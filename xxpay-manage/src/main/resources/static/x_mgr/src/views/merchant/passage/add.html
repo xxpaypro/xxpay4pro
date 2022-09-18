@@ -1,0 +1,137 @@
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>商户通道</cite></a>
+        <a><cite>新建商户通道</cite></a>
+    </div>
+</div>
+
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-tab layui-tab-brief">
+      <ul class="layui-tab-title">
+        <li class="layui-this">新建商户通道</li>
+      </ul>
+      <div class="layui-tab-content">
+          <form class="layui-form center">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">商户ID</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="mchId" name="mchId" readonly="readonly" class="layui-input">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-inline">
+                <label class="layui-form-label">选择通道</label>
+                <div class="layui-input-inline">
+                    <div id="passageDiv"></div>
+                </div>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-inline">
+                  <label class="layui-form-label">商户费率(%)</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="mchRate" name="mchRate" lay-verify="required" placeholder="输入商户费率" autocomplete="off" class="layui-input">
+                  </div>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-inline">
+                  <label class="layui-form-label">状态</label>
+                  <div class="layui-input-block">
+                      <input type="radio" name="status" value="1" title="开启" checked="checked">
+                      <input type="radio" name="status" value="0" title="关闭">
+                  </div>
+              </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button type="button" class="layui-btn" lay-submit="" lay-filter="mchPassageAdd">保存</button>
+                    <button type="button" id="btnBack" class="layui-btn">返回</button>
+                </div>
+            </div>
+          </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    layui.use('form',function(){
+        var form = layui.form
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,element = layui.element
+        ,layer = layui.layer ;
+
+        element.render('breadcrumb', 'breadcrumb');
+
+        var router = layui.router();
+        var mchId = router.search.mchId;
+        $('#mchId').val(mchId);
+
+        $('#btnBack').on('click', function() {
+            location.hash = '/merchant/passage//mchId=' + mchId;
+        });
+
+        form.on('submit(mchPassageAdd)', function(data) {
+
+            if(!data.field.passageId) {
+                layer.alert("选择通道",{title: '提示'});
+                return;
+            }
+
+            //这里可以写ajax方法提交表单
+            admin.req({
+                type: "POST",
+                url: layui.setter.baseUrl + '/mch_passage/add',
+                data: data.field,
+                success: function(res){
+                    if(res.code == 0) {
+                        layer.alert(res.msg, {title: "保存成功"}, function(index){
+                          layer.close(index);
+                          location.hash = '/merchant/passage//mchId=' + mchId;
+                        });
+                    }else {
+                        layer.alert(res.msg, {
+                            title: '保存失败'
+                        }); 
+                    }
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+        form.render();
+
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/mch_passage/list_passage',
+            data: {
+                mchId : mchId
+            },
+            error: function(err){
+                layer.alert(err, {
+                    title: 'error'
+                })
+            },
+            success: function(res){
+                if(res.code == 0){
+                    var str = "<select id='passageId' name='passageId' >";
+                    for (var i = 0; i < res.data.length; i++) {
+                        var d = res.data[i];
+                        str+="<option value='"+ d.id +"'>" + "[" + d.id + "] " + d.name + "</option>";
+                    }
+                    str += "</select>";
+                    $("#passageDiv").append(str);
+                    form.render('select');
+                }else {
+                    layer.alert(res.msg,{title: '请求通道失败'})
+                }
+            }
+        });
+    })
+</script>

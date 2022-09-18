@@ -1,0 +1,112 @@
+<style>
+    .btn-group-bottom{
+        position: absolute;
+        bottom: 10px;
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+                <table id="rulesList" lay-filter="rulesList"></table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="layui-row btn-group-bottom">
+    <div class="layuiAdmin-btns" style="margin-bottom: 10px;">
+        <a class="layui-btn layui-btn-normal" data-type="all" data-events="add">确认添加</a>
+        <a class="layui-btn layui-btn-primary" data-type="all" data-events="cancel">取消</a>
+    </div>
+</div>
+<script>
+
+    var tplStatus = function(d){
+        if(d.status == 0) {
+            return '<span class="layui-badge layui-bg-red">暂停使用</span>';
+        }else if(d.status == 1) {
+            return '<span class="layui-badge layui-bg-green">正常使用</span>';
+        }
+    };
+
+    var ruleType = function(d){
+        if(d.ruleType == 1) {
+            return '赠余额';
+        }else if(d.ruleType == 2) {
+            return '赠积分';
+        }else if(d.ruleType == 3) {
+            return '赠优惠券';
+        }
+    };
+
+    var givePoints = function(d){
+        if(d.ruleType == 1) {
+            return d.givePoints/100;
+        }else if(d.ruleType == 2) {
+            return d.givePoints;
+        }else if(d.ruleType == 3) {
+            return '';
+        }
+    };
+
+    layui.use(['form','admin', 'table', 'view'], function(){
+        var form = layui.form
+        ,$ = layui.$
+        ,table = layui.table
+        ,view = layui.view
+        ,element = layui.element;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        var jumpUrl = view.getOpenParams('jumpUrl');
+
+        table.render({
+            elem: '#rulesList'
+            ,id: "tableReload"
+            ,url: layui.setter.baseUrl + '/member_recharge_rule/list'
+            ,cols: [[
+                {type: 'checkbox', fixed: 'left'}
+                ,{field: 'ruleId', title: '规则ID'}
+                ,{field: 'rechargeAmount', title: '充值金额', templet: '<div>{{ (d.rechargeAmount)/100 }}</div>'}
+                ,{field: 'ruleType',title: '赠送规则', templet: ruleType}
+                ,{field: 'givePoints', title: '赠送返点', templet: givePoints}
+                ,{field: 'giveCouponId', title: '赠送优惠券ID'}
+                ,{field: 'status',title: '状态',templet: tplStatus}
+            ]]
+            ,page: true
+            ,skin: 'line'
+        });
+
+        // 事件处理
+        var events = {
+            add: function(othis, type){
+                var checkStatus = table.checkStatus("tableReload")
+                    ,data = checkStatus.data; //获得选中的数据
+                if(data.length === 0) return layer.msg('请选择数据');
+                if(data.length > 1) return layer.msg('只能选择一个充值规则');
+                var subGoodsId = "";
+                $.each(data, function(i, n){
+                    subGoodsId = n.ruleId;
+                });
+                $("#jumpUrl").val(jumpUrl + "?ruleId=" + subGoodsId);
+                layer.closeAll(); //关闭所有弹层
+            },
+            cancel: function () {
+                layer.closeAll(); //关闭所有弹层
+            }
+        };
+
+        $('.layuiAdmin-btns .layui-btn').on('click', function(){
+            var othis = $(this)
+                ,thisEvent = othis.data('events')
+                ,type = othis.data('type');
+            events[thisEvent] && events[thisEvent].call(this, othis, type);
+        });
+
+    });
+
+</script>

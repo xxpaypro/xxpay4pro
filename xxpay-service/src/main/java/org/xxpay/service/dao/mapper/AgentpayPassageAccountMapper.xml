@@ -1,0 +1,418 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.xxpay.service.dao.mapper.AgentpayPassageAccountMapper" >
+  <resultMap id="BaseResultMap" type="org.xxpay.core.entity.AgentpayPassageAccount" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="AccountName" property="accountName" jdbcType="VARCHAR" />
+    <result column="AgentpayPassageId" property="agentpayPassageId" jdbcType="INTEGER" />
+    <result column="IfCode" property="ifCode" jdbcType="VARCHAR" />
+    <result column="IfTypeCode" property="ifTypeCode" jdbcType="VARCHAR" />
+    <result column="Param" property="param" jdbcType="VARCHAR" />
+    <result column="Status" property="status" jdbcType="TINYINT" />
+    <result column="PollWeight" property="pollWeight" jdbcType="INTEGER" />
+    <result column="PassageMchId" property="passageMchId" jdbcType="VARCHAR" />
+    <result column="RiskMode" property="riskMode" jdbcType="TINYINT" />
+    <result column="MaxDayAmount" property="maxDayAmount" jdbcType="BIGINT" />
+    <result column="TradeStartTime" property="tradeStartTime" jdbcType="VARCHAR" />
+    <result column="TradeEndTime" property="tradeEndTime" jdbcType="VARCHAR" />
+    <result column="RiskStatus" property="riskStatus" jdbcType="TINYINT" />
+    <result column="Remark" property="remark" jdbcType="VARCHAR" />
+    <result column="CreateTime" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="UpdateTime" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, AccountName, AgentpayPassageId, IfCode, IfTypeCode, Param, Status, PollWeight, 
+    PassageMchId, RiskMode, MaxDayAmount, TradeStartTime, TradeEndTime, RiskStatus, Remark, 
+    CreateTime, UpdateTime
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="org.xxpay.core.entity.AgentpayPassageAccountExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from t_agentpay_passage_account
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+    <if test="limit != null" >
+      <if test="offset != null" >
+        limit ${offset}, ${limit}
+      </if>
+      <if test="offset == null" >
+        limit ${limit}
+      </if>
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_agentpay_passage_account
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_agentpay_passage_account
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="org.xxpay.core.entity.AgentpayPassageAccountExample" >
+    delete from t_agentpay_passage_account
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="org.xxpay.core.entity.AgentpayPassageAccount" >
+    insert into t_agentpay_passage_account (id, AccountName, AgentpayPassageId, 
+      IfCode, IfTypeCode, Param, 
+      Status, PollWeight, PassageMchId, 
+      RiskMode, MaxDayAmount, TradeStartTime, 
+      TradeEndTime, RiskStatus, Remark, 
+      CreateTime, UpdateTime)
+    values (#{id,jdbcType=INTEGER}, #{accountName,jdbcType=VARCHAR}, #{agentpayPassageId,jdbcType=INTEGER}, 
+      #{ifCode,jdbcType=VARCHAR}, #{ifTypeCode,jdbcType=VARCHAR}, #{param,jdbcType=VARCHAR}, 
+      #{status,jdbcType=TINYINT}, #{pollWeight,jdbcType=INTEGER}, #{passageMchId,jdbcType=VARCHAR}, 
+      #{riskMode,jdbcType=TINYINT}, #{maxDayAmount,jdbcType=BIGINT}, #{tradeStartTime,jdbcType=VARCHAR}, 
+      #{tradeEndTime,jdbcType=VARCHAR}, #{riskStatus,jdbcType=TINYINT}, #{remark,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="org.xxpay.core.entity.AgentpayPassageAccount" >
+    insert into t_agentpay_passage_account
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="accountName != null" >
+        AccountName,
+      </if>
+      <if test="agentpayPassageId != null" >
+        AgentpayPassageId,
+      </if>
+      <if test="ifCode != null" >
+        IfCode,
+      </if>
+      <if test="ifTypeCode != null" >
+        IfTypeCode,
+      </if>
+      <if test="param != null" >
+        Param,
+      </if>
+      <if test="status != null" >
+        Status,
+      </if>
+      <if test="pollWeight != null" >
+        PollWeight,
+      </if>
+      <if test="passageMchId != null" >
+        PassageMchId,
+      </if>
+      <if test="riskMode != null" >
+        RiskMode,
+      </if>
+      <if test="maxDayAmount != null" >
+        MaxDayAmount,
+      </if>
+      <if test="tradeStartTime != null" >
+        TradeStartTime,
+      </if>
+      <if test="tradeEndTime != null" >
+        TradeEndTime,
+      </if>
+      <if test="riskStatus != null" >
+        RiskStatus,
+      </if>
+      <if test="remark != null" >
+        Remark,
+      </if>
+      <if test="createTime != null" >
+        CreateTime,
+      </if>
+      <if test="updateTime != null" >
+        UpdateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="accountName != null" >
+        #{accountName,jdbcType=VARCHAR},
+      </if>
+      <if test="agentpayPassageId != null" >
+        #{agentpayPassageId,jdbcType=INTEGER},
+      </if>
+      <if test="ifCode != null" >
+        #{ifCode,jdbcType=VARCHAR},
+      </if>
+      <if test="ifTypeCode != null" >
+        #{ifTypeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="param != null" >
+        #{param,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="pollWeight != null" >
+        #{pollWeight,jdbcType=INTEGER},
+      </if>
+      <if test="passageMchId != null" >
+        #{passageMchId,jdbcType=VARCHAR},
+      </if>
+      <if test="riskMode != null" >
+        #{riskMode,jdbcType=TINYINT},
+      </if>
+      <if test="maxDayAmount != null" >
+        #{maxDayAmount,jdbcType=BIGINT},
+      </if>
+      <if test="tradeStartTime != null" >
+        #{tradeStartTime,jdbcType=VARCHAR},
+      </if>
+      <if test="tradeEndTime != null" >
+        #{tradeEndTime,jdbcType=VARCHAR},
+      </if>
+      <if test="riskStatus != null" >
+        #{riskStatus,jdbcType=TINYINT},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="org.xxpay.core.entity.AgentpayPassageAccountExample" resultType="java.lang.Integer" >
+    select count(*) from t_agentpay_passage_account
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update t_agentpay_passage_account
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.accountName != null" >
+        AccountName = #{record.accountName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.agentpayPassageId != null" >
+        AgentpayPassageId = #{record.agentpayPassageId,jdbcType=INTEGER},
+      </if>
+      <if test="record.ifCode != null" >
+        IfCode = #{record.ifCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ifTypeCode != null" >
+        IfTypeCode = #{record.ifTypeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.param != null" >
+        Param = #{record.param,jdbcType=VARCHAR},
+      </if>
+      <if test="record.status != null" >
+        Status = #{record.status,jdbcType=TINYINT},
+      </if>
+      <if test="record.pollWeight != null" >
+        PollWeight = #{record.pollWeight,jdbcType=INTEGER},
+      </if>
+      <if test="record.passageMchId != null" >
+        PassageMchId = #{record.passageMchId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.riskMode != null" >
+        RiskMode = #{record.riskMode,jdbcType=TINYINT},
+      </if>
+      <if test="record.maxDayAmount != null" >
+        MaxDayAmount = #{record.maxDayAmount,jdbcType=BIGINT},
+      </if>
+      <if test="record.tradeStartTime != null" >
+        TradeStartTime = #{record.tradeStartTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.tradeEndTime != null" >
+        TradeEndTime = #{record.tradeEndTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.riskStatus != null" >
+        RiskStatus = #{record.riskStatus,jdbcType=TINYINT},
+      </if>
+      <if test="record.remark != null" >
+        Remark = #{record.remark,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createTime != null" >
+        CreateTime = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateTime != null" >
+        UpdateTime = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update t_agentpay_passage_account
+    set id = #{record.id,jdbcType=INTEGER},
+      AccountName = #{record.accountName,jdbcType=VARCHAR},
+      AgentpayPassageId = #{record.agentpayPassageId,jdbcType=INTEGER},
+      IfCode = #{record.ifCode,jdbcType=VARCHAR},
+      IfTypeCode = #{record.ifTypeCode,jdbcType=VARCHAR},
+      Param = #{record.param,jdbcType=VARCHAR},
+      Status = #{record.status,jdbcType=TINYINT},
+      PollWeight = #{record.pollWeight,jdbcType=INTEGER},
+      PassageMchId = #{record.passageMchId,jdbcType=VARCHAR},
+      RiskMode = #{record.riskMode,jdbcType=TINYINT},
+      MaxDayAmount = #{record.maxDayAmount,jdbcType=BIGINT},
+      TradeStartTime = #{record.tradeStartTime,jdbcType=VARCHAR},
+      TradeEndTime = #{record.tradeEndTime,jdbcType=VARCHAR},
+      RiskStatus = #{record.riskStatus,jdbcType=TINYINT},
+      Remark = #{record.remark,jdbcType=VARCHAR},
+      CreateTime = #{record.createTime,jdbcType=TIMESTAMP},
+      UpdateTime = #{record.updateTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="org.xxpay.core.entity.AgentpayPassageAccount" >
+    update t_agentpay_passage_account
+    <set >
+      <if test="accountName != null" >
+        AccountName = #{accountName,jdbcType=VARCHAR},
+      </if>
+      <if test="agentpayPassageId != null" >
+        AgentpayPassageId = #{agentpayPassageId,jdbcType=INTEGER},
+      </if>
+      <if test="ifCode != null" >
+        IfCode = #{ifCode,jdbcType=VARCHAR},
+      </if>
+      <if test="ifTypeCode != null" >
+        IfTypeCode = #{ifTypeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="param != null" >
+        Param = #{param,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        Status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="pollWeight != null" >
+        PollWeight = #{pollWeight,jdbcType=INTEGER},
+      </if>
+      <if test="passageMchId != null" >
+        PassageMchId = #{passageMchId,jdbcType=VARCHAR},
+      </if>
+      <if test="riskMode != null" >
+        RiskMode = #{riskMode,jdbcType=TINYINT},
+      </if>
+      <if test="maxDayAmount != null" >
+        MaxDayAmount = #{maxDayAmount,jdbcType=BIGINT},
+      </if>
+      <if test="tradeStartTime != null" >
+        TradeStartTime = #{tradeStartTime,jdbcType=VARCHAR},
+      </if>
+      <if test="tradeEndTime != null" >
+        TradeEndTime = #{tradeEndTime,jdbcType=VARCHAR},
+      </if>
+      <if test="riskStatus != null" >
+        RiskStatus = #{riskStatus,jdbcType=TINYINT},
+      </if>
+      <if test="remark != null" >
+        Remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        CreateTime = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        UpdateTime = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.xxpay.core.entity.AgentpayPassageAccount" >
+    update t_agentpay_passage_account
+    set AccountName = #{accountName,jdbcType=VARCHAR},
+      AgentpayPassageId = #{agentpayPassageId,jdbcType=INTEGER},
+      IfCode = #{ifCode,jdbcType=VARCHAR},
+      IfTypeCode = #{ifTypeCode,jdbcType=VARCHAR},
+      Param = #{param,jdbcType=VARCHAR},
+      Status = #{status,jdbcType=TINYINT},
+      PollWeight = #{pollWeight,jdbcType=INTEGER},
+      PassageMchId = #{passageMchId,jdbcType=VARCHAR},
+      RiskMode = #{riskMode,jdbcType=TINYINT},
+      MaxDayAmount = #{maxDayAmount,jdbcType=BIGINT},
+      TradeStartTime = #{tradeStartTime,jdbcType=VARCHAR},
+      TradeEndTime = #{tradeEndTime,jdbcType=VARCHAR},
+      RiskStatus = #{riskStatus,jdbcType=TINYINT},
+      Remark = #{remark,jdbcType=VARCHAR},
+      CreateTime = #{createTime,jdbcType=TIMESTAMP},
+      UpdateTime = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!-- 查询账户基本信息  -->
+  <select id="selectAccBaseInfo" parameterType="org.xxpay.core.entity.AgentpayPassageAccountExample" resultMap="BaseResultMap">
+    select id, AccountName from t_agentpay_passage_account
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+
+</mapper>

@@ -1,0 +1,206 @@
+<style>
+    .margin-top{margin-top:10px;}
+</style>
+<style>
+    .layui-form-label {
+        width:20% !important;
+        margin-left:1%;
+    }
+    .layui-input-inline {
+        width: 20% !important;
+    }
+</style>
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>商城管理</cite></a>
+        <a><cite>餐饮</cite></a>
+        <a><cite>配送信息</cite></a>
+    </span>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <form class="layui-form layui-form-pane" action="">
+            <input type="text" class="layui-hide" name="id" id="id">
+            <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">营业信息</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">营业</label>
+                    <div class="layui-input-inline">
+                        <input type="radio" name="isOpen" value="1" title="营业" checked="checked">
+                        <input type="radio" name="isOpen" value="0" title="休息">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">营业时间</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="shopOpenTime" name="shopOpenTime" readonly placeholder="输入营业时间" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">服务</label>
+                    <div class="layui-input-inline">
+                        <input type="radio" name="serviceItem" value="0" title="堂食&外卖" checked="checked">
+                        <input type="radio" name="serviceItem" value="1" title="堂食">
+                        <input type="radio" name="serviceItem" value="2" title="外卖">
+                    </div>
+                </div>
+            </div>
+                <div class="layui-tab layui-tab-brief">
+                    <ul class="layui-tab-title">
+                        <li class="layui-this">配送信息</li>
+                    </ul>
+                    <div class="layui-tab-content">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">起送费用</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="deliveryCost" name="deliveryCost" placeholder="请输入起送费用" class="layui-input" autocomplete="off">
+                                <span style="color: red;font-size: x-small">最低购物消费金额，不填写信息表示无限制</span>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">配送费用</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="distributionCost" name="distributionCost" placeholder="请输入配送费用" class="layui-input" autocomplete="off">
+                                <span style="color: red;font-size: x-small">商品配送需要收取的费用，不填写表示无限制</span>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">免费配送</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="freeDistribution" name="freeDistribution" placeholder="请输入免费配送" class="layui-input" autocomplete="off">
+                                <span style="color: red;font-size: x-small">消费金额达到设定值后免费配送商品，不填写表示所有商品配送都会收取配送费</span>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">配送范围</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="distributionScope" name="distributionScope" placeholder="请输入配送范围" class="layui-input" autocomplete="off">
+                                <span style="color: red;font-size: x-small">配送最大半径距离单位KM，不填写表示无限制</span>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">送达时间</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="distributionTime" name="distributionTime" placeholder="请输入送达时间" class="layui-input" autocomplete="off">
+                                <span style="color: red;font-size: x-small">单位分钟。举例：送达时间为30分钟，顾客11:00下单，则显示预计送达时间为11:30</span>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">配送平台</label>
+                            <div class="layui-input-inline">
+                                <input type="radio" name="distributioPlatform" value="1" title="自配送"  checked="checked">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-input-block" style="padding-bottom: 20px; padding-left: 10%">
+                                <button type="button" class="layui-btn" lay-submit="" lay-filter="saveOrUpdate">保存</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+
+	 layui.config({
+	    base: '/x_mch/src/lib/extend/',
+	 });
+     layui.use(['table', 'view', 'admin', 'form','laydate'], function(){
+        var table = layui.table
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,element = layui.element
+        ,view = layui.view
+        ,laydate = layui.laydate
+        ,form = layui.form;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        //首先让页面中获取到原来的数据
+         admin.req({
+             type: 'get',
+             url: layui.setter.baseUrl + '/mchStoreTakeout/get',
+             error: function(err){
+                 layer.alert(err);
+             },
+             success: function(res){
+                 if(res.code == 0){
+                     if(res.data){
+                         $('#id').val(res.data.id);
+                         $('#shopOpenTime').val(res.data.shopOpenTime);
+                         $('#deliveryCost').val(res.data.deliveryCost/100);
+                         $('#distributionCost').val(res.data.distributionCost/100);
+                         $('#freeDistribution').val(res.data.freeDistribution/100);
+                         $('#distributionScope').val(res.data.distributionScope);
+                         $('#distributionTime').val(res.data.distributionTime);
+                         if (res.data.isOpen == 0) {
+                             $("input[name='isOpen'][value='0']").attr("checked",true);
+                         } else {
+                             $("input[name='isOpen'][value='1']").attr("checked",true);
+                         }
+                         if(res.data.serviceItem == 0) {
+                             $("input[name='serviceItem'][value='0']").attr("checked",true);
+                         }else if(res.data.serviceItem == 1) {
+                             $("input[name='serviceItem'][value='1']").attr("checked",true);
+                         }else if(res.data.serviceItem == 2) {
+                             $("input[name='serviceItem'][value='2']").attr("checked",true);
+                         }
+
+                         if (res.data.distributioPlatform == 1){
+                             $("input[name='distributioPlatform'][value='1']").attr("checked",true);
+                         }
+                         $('#remark').val(res.data.remark);
+                         form.render();
+                     }
+                 }else {
+                     layer.alert(res.msg,{title: '请求失败'})
+                 }
+                 form.render();
+             }
+
+         });
+         //监听工具条
+         form.on('submit(saveOrUpdate)', function(data){
+             if (data.field.deliveryCost != "") {
+                 data.field.deliveryCost = data.field.deliveryCost*100;
+             }
+             if (data.field.distributionCost != "") {
+                 data.field.distributionCost = data.field.distributionCost*100;
+             }
+             if (data.field.freeDistribution != "") {
+                 data.field.freeDistribution = data.field.freeDistribution*100;
+             }
+             data.field.shopOpenTime = $("#shopOpenTime").val();
+             admin.req({
+                 type: 'post',
+                 url: layui.setter.baseUrl + '/mchStoreTakeout/add',
+                 data: data.field,
+                 success: function(res){
+                     if(res.code == 0){
+                         layer.alert(res.msg,{title: "保存成功"},function(index){
+                             layer.close(index);
+                         })
+                     }
+                 }
+             });
+             return false;//阻止跳转
+         });
+        //时间选择
+         laydate.render({
+             elem: '#shopOpenTime'
+             ,type: 'time'
+             ,range: '~'
+             ,trigger: 'click'
+         });
+
+         // 渲染表单
+         form.render();
+        
+     })
+</script>

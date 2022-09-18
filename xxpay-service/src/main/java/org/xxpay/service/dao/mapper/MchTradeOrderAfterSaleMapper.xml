@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.xxpay.service.dao.mapper.MchTradeOrderAfterSaleMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="org.xxpay.core.entity.MchTradeOrderAfterSale">
+        <id column="AfterSaleId" property="AfterSaleId" />
+        <result column="TradeOrderId" property="tradeOrderId" />
+        <result column="MemberId" property="memberId" />
+        <result column="GoodsDesc" property="goodsDesc" />
+        <result column="AfterSaleAmount" property="afterSaleAmount" />
+        <result column="AfterSaleType" property="afterSaleType" />
+        <result column="AuthFrom" property="authFrom" />
+        <result column="Status" property="status" />
+        <result column="AuditTime" property="auditTime" />
+        <result column="AuditRemark" property="auditRemark" />
+        <result column="Reason" property="reason" />
+        <result column="AfterSaleDesc" property="afterSaleDesc" />
+        <result column="AfterSaleImg" property="afterSaleImg" />
+        <result column="AddressInfo" property="addressInfo" />
+        <result column="BackTransportNo" property="backTransportNo" />
+        <result column="BackTransportTime" property="backTransportTime" />
+        <result column="TransportNo" property="transportNo" />
+        <result column="TransportTime" property="transportTime" />
+        <result column="CompleteTime" property="completeTime" />
+        <result column="RefundAmount" property="refundAmount" />
+        <result column="MchId" property="mchId" />
+        <result column="IsvId" property="isvId" />
+        <result column="CreateTime" property="createTime" />
+        <result column="UpdateTime" property="updateTime" />
+        <result column="AddressId" property="addressId" />
+    </resultMap>
+
+</mapper>

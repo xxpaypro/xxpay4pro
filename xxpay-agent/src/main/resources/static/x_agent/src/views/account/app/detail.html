@@ -1,0 +1,92 @@
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a><cite>应用详情</cite></a>
+    </span>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">应用列表详情</li>
+            </ul>
+            <div class="layui-tab-content">
+                <table class="layui-table" id="apList"></table>
+                <a lay-href="account/app/list"  class="layui-btn" style="margin-left:10%;">返回</a>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+     table{
+        text-align: center;
+    }
+    .leftT {
+        text-align: left;
+    }
+</style>
+
+<script>
+    layui.use(['table','util','admin',], function(){
+        var table = layui.table
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,element = layui.element;
+        
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        var router = layui.router();
+        var creId = router.search.appId;
+
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/app/get',
+            data: {
+                appId: creId,
+            },
+            error: function(err){
+                layer.alert(err);
+            },
+            success: function(res){
+                if(res.code == 0){
+                    var html = '';
+                   
+                    html += `
+                        <table>
+                            <colgroup>
+                                <col width="25%">
+                                <col>
+                                <col width="25%">
+                                <col>
+                            </colgroup>
+                            <tbody>
+                                <tr>
+                                    <td>应用ID</td>
+                                    <td class="leftT">${res.data.appId}</td>
+                                    <td>应用名称</td>
+                                    <td class="leftT">${res.data.appName}</td>
+                                </tr>
+                                <tr>
+                                    <td>应用状态</td>
+                                    <td class="leftT">${(res.data.status == 0)?"停止使用":"使用中"}</td>
+                                    <td>备注</td>
+                                    <td class="leftT">${res.data.remark}</td>
+                                </tr>
+                                <tr>
+                                    <td>创建时间</td>
+                                    <td class="leftT">${ layui.util.toDateString(res.data.createTime) }</td>
+                                    <td>修改时间</td>
+                                    <td class="leftT">${ layui.util.toDateString(res.data.updateTime) }</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    `
+                    $('#apList').html(html);
+                }else {
+                    layer.alert('请求数据失败');
+                }
+            }
+        })
+
+    });
+</script>

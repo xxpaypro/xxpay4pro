@@ -1,0 +1,117 @@
+
+<div class="layui-card layadmin-header">
+  <div class="layui-breadcrumb" lay-filter="breadcrumb">
+    <a lay-href="">主页</a>
+    <a><cite>用户账户</cite></a>
+  </div>
+</div>
+
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-tab layui-tab-brief">
+      <ul class="layui-tab-title">
+        <li class="layui-this">账户列表</li>
+      </ul>
+      <div class="layui-tab-content">
+        <div class="layui-tab-item layui-show">
+          <div class="layui-row">
+            <div class="layui-form" style="float:right; margin-bottom: 10px;">
+              <div class="layui-form-item" style="margin:0;">
+                <div class="layui-input-inline">
+                  <input type="text" name="userId" placeholder="用户ID" id="userId" autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-input-inline">
+                  <select name="state" id="state" lay-search="">
+                    <option value="-99">状态</option>
+                    <option value="0">冻结</option>
+                    <option value="1">正常</option>
+                  </select>
+                </div>
+                <button id="search" class="layui-btn" data-type="reload">搜索</button>
+              </div>
+            </div>
+          </div>
+          <table id="XxPay_Mch_UAccount_dataAll" lay-filter="XxPay_Mch_UAccount_dataAll"></table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/html" id="xxpayBar">
+  <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="view">查看</a>
+  <a class="layui-btn layui-btn-xs" lay-event="detail">明细</a>
+</script>
+
+<script>
+layui.use(['admin', 'table', 'util'], function(){
+  var $ = layui.$
+  ,admin = layui.admin
+  ,table = layui.table
+  ,element = layui.element
+  ,form = layui.form;
+  
+  element.render('breadcrumb', 'breadcrumb');
+
+  var tplState = function(d){
+    if(d.state == 0) {
+      return "<span style='color: orangered'>冻结</span>";
+    }else if(d.state == 1) {
+      return "<span style='color: darkgreen'>正常</span>";
+    }
+  };
+
+  //列表
+  table.render({
+    elem: '#XxPay_Mch_UAccount_dataAll'
+    ,url: layui.setter.baseUrl + '/uaccount/list' //列表接口
+    ,id: 'tableReload'
+    ,page: true
+    ,cols: [[
+      {type: 'checkbox', fixed: 'left'}
+      ,{field: 'userId', title: '用户ID'}
+      ,{field: 'balance', title: '账户余额', templet: '<div>{{ d.balance/100 }}</div>'}
+      ,{field: 'useableBalance', title: '可用余额', templet: '<div>{{ d.useableBalance/100 }}</div>'}
+      ,{field: 'state', title: '状态', templet: tplState}
+      ,{field: 'createTime', title: '创建时间', templet: '<div>{{ layui.util.toDateString(d.createTime, "yyyy-MM-dd HH:mm:ss") }}</div>'}
+      ,{field: 'edit', title: '操作', toolbar: '#xxpayBar' }
+    ]]
+    ,skin: 'line'
+  });
+
+  //监听工具条
+  table.on('tool(XxPay_Mch_UAccount_dataAll)', function(obj){
+    var data = obj.data;
+    if(obj.event === 'view'){
+      location.hash = "/account/uaccount/view/userId=" + data.userId;
+    }else if(obj.event === 'detail') {
+      location.hash = "/account/uaccount/detail_list/userId=" + data.userId;
+    }
+  });
+
+  // 搜索
+  var $ = layui.$, active = {
+    reload: function(){
+      var userId = $('#userId').val();
+      var state = $("#state").val();
+      //执行重载
+      table.reload('tableReload', {
+        page: {
+          curr: 1 //重新从第 1 页开始
+        }
+        ,where: {
+          userId: userId,
+          state: state
+        }
+      });
+    }
+  };
+  $('#search').on('click', function() {
+    var type = $(this).data('type');
+    active[type] ? active[type].call(this) : '';
+  });
+  // 渲染表单
+  form.render();
+});
+</script>

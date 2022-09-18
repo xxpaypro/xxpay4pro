@@ -1,0 +1,132 @@
+<style>
+    .layui-input-inline{margin-top:10px;}
+</style>
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>积分商品</cite></a>
+    </span>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">积分商品列表</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-row">
+                   <form action="" id="exportForm" method="post">
+                       <div class="layui-form" style="float:right; margin-bottom: 10px;">
+                           <div id="timeDiv" class="layui-form-item" style="margin:0;">
+                               <div class="layui-input-inline">
+                                   <input type="text" name="memberId" id="memberId" placeholder="会员ID" autocomplete="off" class="layui-input">
+                               </div>
+                               <div class="layui-input-inline">
+                                   <input type="text" name="memberNo" id="memberNo" placeholder="会员卡号" autocomplete="off" class="layui-input">
+                               </div>
+                               <div class="layui-input-inline">
+                                   <select name="status" id="status" lay-search="">
+                                       <option value="">状态</option>
+                                       <option value="0">未兑换</option>
+                                       <option value="1">已兑换</option>
+                                       <option value="2">已作废</option>
+                                   </select>
+                               </div>
+                               <div class="layui-input-inline">
+                                   <button id="search" class="layui-btn" data-type="reload">搜索</button>
+                               </div>
+                           </div>
+                       </div>
+                   </form>
+                </div>
+                <table id="goodsRecord" lay-filter="goodsRecord"></table>
+                <div class="layui-form-item">
+                    <div class="layui-input-inline">
+                        <a class="layui-btn" lay-href="/account/points_goods/">返回</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+     var tplStatus = function(d){
+         if(d.status == 0) {
+             return '<span class="layui-badge layui-bg-orange">未兑换</span>';
+         }else if(d.status == 1) {
+             return '<span class="layui-badge layui-bg-green">已兑换</span>';
+         }else if(d.status == 2) {
+             return '<span class="layui-badge layui-bg-red">已作废</span>';
+         }
+     };
+
+	 layui.config({
+	    base: '/x_mch/src/lib/extend/',
+	 });
+     layui.use(['table','util','admin'], function(){
+        var table = layui.table
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,element = layui.element
+        ,form = layui.form;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+        var goodsId = layui.router().search.goodsId;
+
+        table.render({
+            elem: '#goodsRecord'
+            ,id: "tableReload"
+            ,url: layui.setter.baseUrl + '/points_goods/goodsRecord'
+            ,where: {
+                goodsId: goodsId
+            }
+            ,cols: [[
+                {field: 'exchangeId', title: '兑换ID'}
+                ,{field: 'exchangeNo', title: '提货码'}
+                ,{field: 'memberId',title: '会员ID'}
+                ,{field: 'memberNo', title: '会员卡号'}
+                ,{field: 'goodsId', title: '商品ID'}
+                ,{field: 'goodsName', title: '商品名称'}
+                ,{field: 'points', title: '使用积分'}
+                ,{field: 'status',title: '状态', templet: tplStatus}
+                ,{field: 'operatorId',title: '操作员ID'}
+                ,{field: 'operatorName',title: '操作员名称'}
+                ,{field: 'exchangeTime',  title: '兑换时间', width: 180, templet: '<div>{{ layui.util.toDateString(d.exchangeTime) }}</div>' }
+                ,{field: 'createTime',  title: '时间', width: 180, templet: '<div>{{ layui.util.toDateString(d.createTime) }}</div>' }
+            ]]
+            ,page: true
+            ,skin: 'line'
+        });
+
+         // 搜索
+         var $ = layui.$, active = {
+             reload: function(){
+                 var memberId = $('#memberId').val().trim();
+                 var memberNo = $('#memberNo').val().trim();
+                 var status = $("#status").val();
+                 //执行重载
+                 table.reload('tableReload', {
+                     page: {
+                         curr: 1 //重新从第 1 页开始
+                     }
+                     ,where: {
+                         memberId: memberId,
+                         status: status,
+                         goodsId: goodsId,
+                         memberNo: memberNo
+
+                     }
+                 });
+             }
+         };
+         $('#search').on('click', function() {
+             var type = $(this).data('type');
+             active[type] ? active[type].call(this) : '';
+             return false;
+         });
+
+         // 渲染表单
+         form.render();
+        
+     })
+</script>

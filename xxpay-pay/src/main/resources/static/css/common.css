@@ -1,0 +1,158 @@
+*,
+*:after,
+*:before {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box
+}
+
+body,
+dl,
+dd,
+h1,
+h2,
+h3,
+h4,
+h5,
+p,
+figure,
+form,
+ul,
+ol {
+    margin: 0
+}
+
+ul,
+ol,
+input,
+button {
+    padding: 0
+}
+
+ul,
+ol,
+li {
+    list-style: none
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+    font-size: 100%
+}
+
+input {
+    border: 0;
+    margin: 0
+}
+
+a,
+button,
+input,
+optgroup,
+select,
+textarea,
+img {
+    outline: none;
+    -webkit-tap-highlight-color: transparent
+}
+
+a,
+img {
+    -webkit-touch-callout: none;
+    border: 0
+}
+
+html {
+    overflow-x: hidden
+}
+
+input,
+textarea,
+img,
+button {
+    vertical-align: middle;
+    outline: none;
+    -webkit-appearance: none
+}
+
+body {
+    font-family: '\5FAE\8F6F\96C5\9ED1', Helvetica, STHeiTi, sans-serif;
+    color: #333;
+    -webkit-font-smoothing: antialiased;
+    font-smoothing: antialiased
+}
+
+a {
+    text-decoration: none;
+    color: #333
+}
+
+a:hover {
+    text-decoration: none
+}
+
+.fl {
+    float: left
+}
+
+.fr {
+    float: right
+}
+
+.clearfix {
+    zoom: 1
+}
+
+.clearfix:before,
+.clearfix:after {
+    content: "";
+    display: table
+}
+
+.clearfix:after {
+    clear: both
+}
+
+.nodis {
+    display: none
+}
+
+@media all and (min-width: 320px) {
+    html {
+        font-size: 10px
+    }
+}
+
+@media all and (min-width: 360px) {
+    html {
+        font-size: 11.25px
+    }
+}
+
+@media all and (min-width: 375px) {
+    html {
+        font-size: 11.7188px
+    }
+}
+
+@media all and (min-width: 480px) {
+    html {
+        font-size: 15px
+    }
+}
+
+@media all and (min-width: 640px) {
+    html {
+        font-size: 20px
+    }
+}
+
+@media all and (min-width: 720px) {
+    html {
+        font-size: 22.5px
+    }
+}
+
+/*# sourceMappingURL=../js/common.map*/

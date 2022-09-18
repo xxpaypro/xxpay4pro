@@ -1,0 +1,154 @@
+<style>
+    .xxpayPopupDiv .layui-form-label {
+        width:120px !important;
+        margin-left:1%;
+    }
+    .xxpayPopupDiv .layui-input-inline {
+        width: 80% !important;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <div class="layui-tab-content">
+                <form class="layui-form center">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">接口类型</label>
+                        <div class="layui-input-inline" >
+                            <select name="ifTypeCode" id="ifTypeCode" lay-filter="ifTypeCodeFilter">
+                                <option value="">选择接口类型</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">接口代码</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="ifCode" id="ifCode" placeholder="请输入接口代码" required lay-verify="required"  autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">接口名称</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="ifName" id="ifName" placeholder="请输入接口名称" required lay-verify="required"  autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">支付类型</label>
+                        <div class="layui-input-inline" >
+                            <select name="payType" id="payType" lay-filter="payTypeFilter">
+                                <option value="">选择支付类型</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">应用场景</label>
+                        <div class="layui-input-inline" >
+                            <input type="radio" name="scene" title="移动APP" value="1" checked>
+                            <input type="radio" name="scene" title="移动网页" value="2" >
+                            <input type="radio" name="scene" title="PC网页" value="3" >
+                            <input type="radio" name="scene" title="微信公众平台" value="4" >
+                            <input type="radio" name="scene" title="手机扫码" value="5" >
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">扩展参数</label>
+                        <div class="layui-input-inline">
+                            <textarea name="extra" id="extra" placeholder="当支付类型为网银支付时,可配置支持的银行列表.格式如:[{'bank':'zhonghang','code':'300008'},{'bank':'nonghang','code':'300009'}]" class="layui-textarea"></textarea>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">状态</label>
+                        <div class="layui-input-inline" >
+                            <input type="radio" name="status" title="开启" value="1" checked />
+                            <input type="radio" name="status" title="关闭" value="0" />
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">备注信息</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="remark" placeholder="请输入备注信息" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-inline">
+                            <button type="button" class="layui-hide xxpayYesBtn" lay-submit="" lay-filter="add">保存</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['form','table','util','admin',],function(){
+        var form = layui.form
+        , $ = layui.$
+        , admin = layui.admin
+        , layer = layui.layer 
+        , element = layui.element
+        , table = layui.table;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        // 加载支接口类型
+        admin.req({
+            type: 'post',
+            url: layui.setter.baseUrl + '/config/common/pay_interface_type_all',
+            error: function(err){
+                layer.alert(err);
+            },
+            success: function(res){
+                if(res.code == 0){
+                    var ifTypeList = res.data;
+                    //遍历赋值
+                    for(var i in ifTypeList){
+                        $("#ifTypeCode").append('<option value= '+ifTypeList[i].ifTypeCode+'>'+ '[' +ifTypeList[i].ifTypeCode + '] ' + ifTypeList[i].ifTypeName+'</option>');
+                    }
+                    form.render('select');
+                }
+            }
+        });
+
+        // 加载支付类型
+        admin.req({
+            type: 'post',
+            url: layui.setter.baseUrl + '/config/common/pay_type_all',
+            error: function(err){
+                layer.alert(err);
+            },
+            success: function(res){
+                if(res.code == 0){
+                    var payTypeList = res.data;
+                    //遍历赋值
+                    for(var i in payTypeList){
+                        $("#payType").append('<option value= '+payTypeList[i].payTypeCode+'>'+payTypeList[i].payTypeName+'</option>');
+                    }
+                    form.render('select');
+                }
+            }
+        });
+
+        form.render();
+
+        // 当点击微信渠道配置按钮保存的时候
+        form.on('submit(add)', function(data){
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/config/pay_interface/add', //模拟接口
+                data: data.field,
+                error: function(err){
+                    layer.alert(err.msg,{title:"请求失败"})
+                },
+                success: function(res){
+                    if(res.code == 0){
+                        layer.closeAll(); //关闭所有弹层
+                        layer.msg("新增成功");
+                        layui.table.reload('tableReload', {page: {curr: 1}}); //调用业务弹层外表格重新加载
+                    }
+                }
+            })
+        })
+
+
+    })
+</script>

@@ -1,0 +1,476 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.xxpay.service.dao.mapper.SysUserMapper">
+  <resultMap id="BaseResultMap" type="org.xxpay.core.entity.SysUser">
+    <id column="UserId" jdbcType="BIGINT" property="userId" />
+    <result column="NickName" jdbcType="VARCHAR" property="nickName" />
+    <result column="LoginUserName" jdbcType="VARCHAR" property="loginUserName" />
+    <result column="Email" jdbcType="VARCHAR" property="email" />
+    <result column="Mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="LoginPassword" jdbcType="VARCHAR" property="loginPassword" />
+    <result column="Status" jdbcType="TINYINT" property="status" />
+    <result column="IsSuperAdmin" jdbcType="TINYINT" property="isSuperAdmin" />
+    <result column="BelongInfoId" jdbcType="BIGINT" property="belongInfoId" />
+    <result column="BelongInfoType" jdbcType="TINYINT" property="belongInfoType" />
+    <result column="Avatar" jdbcType="VARCHAR" property="avatar" />
+    <result column="Sex" jdbcType="TINYINT" property="sex" />
+    <result column="StoreId" jdbcType="BIGINT" property="storeId" />
+    <result column="WorkStatus" jdbcType="TINYINT" property="workStatus" />
+    <result column="WorkStartTime" jdbcType="TIMESTAMP" property="workStartTime" />
+    <result column="CreateUserId" jdbcType="BIGINT" property="createUserId" />
+    <result column="LastLoginTime" jdbcType="TIMESTAMP" property="lastLoginTime" />
+    <result column="LastLoginIp" jdbcType="VARCHAR" property="lastLoginIp" />
+    <result column="LastPasswordResetTime" jdbcType="TIMESTAMP" property="lastPasswordResetTime" />
+    <result column="CreateTime" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="UpdateTime" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    UserId, NickName, LoginUserName, Email, Mobile, LoginPassword, Status, IsSuperAdmin,
+    BelongInfoId, BelongInfoType, Avatar, Sex, StoreId, WorkStatus, WorkStartTime, CreateUserId,
+    LastLoginTime, LastLoginIp, LastPasswordResetTime, CreateTime, UpdateTime
+  </sql>
+  <select id="selectByExample" parameterType="org.xxpay.core.entity.SysUserExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from t_mgr_sys_user
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+    <if test="limit != null">
+      <if test="offset != null">
+        limit ${offset}, ${limit}
+      </if>
+      <if test="offset == null">
+        limit ${limit}
+      </if>
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_mgr_sys_user
+    where UserId = #{userId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from t_mgr_sys_user
+    where UserId = #{userId,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="org.xxpay.core.entity.SysUserExample">
+    delete from t_mgr_sys_user
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="org.xxpay.core.entity.SysUser">
+    insert into t_mgr_sys_user (UserId, NickName, LoginUserName,
+      Email, Mobile, LoginPassword,
+      Status, IsSuperAdmin, BelongInfoId,
+      BelongInfoType, Avatar, Sex,
+      StoreId, WorkStatus, WorkStartTime,
+      CreateUserId, LastLoginTime, LastLoginIp,
+      LastPasswordResetTime, CreateTime,
+      UpdateTime)
+    values (#{userId,jdbcType=BIGINT}, #{nickName,jdbcType=VARCHAR}, #{loginUserName,jdbcType=VARCHAR},
+      #{email,jdbcType=VARCHAR}, #{mobile,jdbcType=VARCHAR}, #{loginPassword,jdbcType=VARCHAR},
+      #{status,jdbcType=TINYINT}, #{isSuperAdmin,jdbcType=TINYINT}, #{belongInfoId,jdbcType=BIGINT},
+      #{belongInfoType,jdbcType=TINYINT}, #{avatar,jdbcType=VARCHAR}, #{sex,jdbcType=TINYINT},
+      #{storeId,jdbcType=BIGINT}, #{workStatus,jdbcType=TINYINT}, #{workStartTime,jdbcType=TIMESTAMP},
+      #{createUserId,jdbcType=BIGINT}, #{lastLoginTime,jdbcType=TIMESTAMP}, #{lastLoginIp,jdbcType=VARCHAR},
+      #{lastPasswordResetTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP},
+      #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="org.xxpay.core.entity.SysUser">
+    <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="userId">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into t_mgr_sys_user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        UserId,
+      </if>
+      <if test="nickName != null">
+        NickName,
+      </if>
+      <if test="loginUserName != null">
+        LoginUserName,
+      </if>
+      <if test="email != null">
+        Email,
+      </if>
+      <if test="mobile != null">
+        Mobile,
+      </if>
+      <if test="loginPassword != null">
+        LoginPassword,
+      </if>
+      <if test="status != null">
+        Status,
+      </if>
+      <if test="isSuperAdmin != null">
+        IsSuperAdmin,
+      </if>
+      <if test="belongInfoId != null">
+        BelongInfoId,
+      </if>
+      <if test="belongInfoType != null">
+        BelongInfoType,
+      </if>
+      <if test="avatar != null">
+        Avatar,
+      </if>
+      <if test="sex != null">
+        Sex,
+      </if>
+      <if test="storeId != null">
+        StoreId,
+      </if>
+      <if test="workStatus != null">
+        WorkStatus,
+      </if>
+      <if test="workStartTime != null">
+        WorkStartTime,
+      </if>
+      <if test="createUserId != null">
+        CreateUserId,
+      </if>
+      <if test="lastLoginTime != null">
+        LastLoginTime,
+      </if>
+      <if test="lastLoginIp != null">
+        LastLoginIp,
+      </if>
+      <if test="lastPasswordResetTime != null">
+        LastPasswordResetTime,
+      </if>
+      <if test="createTime != null">
+        CreateTime,
+      </if>
+      <if test="updateTime != null">
+        UpdateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="nickName != null">
+        #{nickName,jdbcType=VARCHAR},
+      </if>
+      <if test="loginUserName != null">
+        #{loginUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null">
+        #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="loginPassword != null">
+        #{loginPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="isSuperAdmin != null">
+        #{isSuperAdmin,jdbcType=TINYINT},
+      </if>
+      <if test="belongInfoId != null">
+        #{belongInfoId,jdbcType=BIGINT},
+      </if>
+      <if test="belongInfoType != null">
+        #{belongInfoType,jdbcType=TINYINT},
+      </if>
+      <if test="avatar != null">
+        #{avatar,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null">
+        #{sex,jdbcType=TINYINT},
+      </if>
+      <if test="storeId != null">
+        #{storeId,jdbcType=BIGINT},
+      </if>
+      <if test="workStatus != null">
+        #{workStatus,jdbcType=TINYINT},
+      </if>
+      <if test="workStartTime != null">
+        #{workStartTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUserId != null">
+        #{createUserId,jdbcType=BIGINT},
+      </if>
+      <if test="lastLoginTime != null">
+        #{lastLoginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastLoginIp != null">
+        #{lastLoginIp,jdbcType=VARCHAR},
+      </if>
+      <if test="lastPasswordResetTime != null">
+        #{lastPasswordResetTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="org.xxpay.core.entity.SysUserExample" resultType="java.lang.Long">
+    select count(*) from t_mgr_sys_user
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update t_mgr_sys_user
+    <set>
+      <if test="record.userId != null">
+        UserId = #{record.userId,jdbcType=BIGINT},
+      </if>
+      <if test="record.nickName != null">
+        NickName = #{record.nickName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.loginUserName != null">
+        LoginUserName = #{record.loginUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.email != null">
+        Email = #{record.email,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mobile != null">
+        Mobile = #{record.mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="record.loginPassword != null">
+        LoginPassword = #{record.loginPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="record.status != null">
+        Status = #{record.status,jdbcType=TINYINT},
+      </if>
+      <if test="record.isSuperAdmin != null">
+        IsSuperAdmin = #{record.isSuperAdmin,jdbcType=TINYINT},
+      </if>
+      <if test="record.belongInfoId != null">
+        BelongInfoId = #{record.belongInfoId,jdbcType=BIGINT},
+      </if>
+      <if test="record.belongInfoType != null">
+        BelongInfoType = #{record.belongInfoType,jdbcType=TINYINT},
+      </if>
+      <if test="record.avatar != null">
+        Avatar = #{record.avatar,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sex != null">
+        Sex = #{record.sex,jdbcType=TINYINT},
+      </if>
+      <if test="record.storeId != null">
+        StoreId = #{record.storeId,jdbcType=BIGINT},
+      </if>
+      <if test="record.workStatus != null">
+        WorkStatus = #{record.workStatus,jdbcType=TINYINT},
+      </if>
+      <if test="record.workStartTime != null">
+        WorkStartTime = #{record.workStartTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.createUserId != null">
+        CreateUserId = #{record.createUserId,jdbcType=BIGINT},
+      </if>
+      <if test="record.lastLoginTime != null">
+        LastLoginTime = #{record.lastLoginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.lastLoginIp != null">
+        LastLoginIp = #{record.lastLoginIp,jdbcType=VARCHAR},
+      </if>
+      <if test="record.lastPasswordResetTime != null">
+        LastPasswordResetTime = #{record.lastPasswordResetTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.createTime != null">
+        CreateTime = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateTime != null">
+        UpdateTime = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update t_mgr_sys_user
+    set UserId = #{record.userId,jdbcType=BIGINT},
+    NickName = #{record.nickName,jdbcType=VARCHAR},
+    LoginUserName = #{record.loginUserName,jdbcType=VARCHAR},
+    Email = #{record.email,jdbcType=VARCHAR},
+    Mobile = #{record.mobile,jdbcType=VARCHAR},
+    LoginPassword = #{record.loginPassword,jdbcType=VARCHAR},
+    Status = #{record.status,jdbcType=TINYINT},
+    IsSuperAdmin = #{record.isSuperAdmin,jdbcType=TINYINT},
+    BelongInfoId = #{record.belongInfoId,jdbcType=BIGINT},
+    BelongInfoType = #{record.belongInfoType,jdbcType=TINYINT},
+    Avatar = #{record.avatar,jdbcType=VARCHAR},
+    Sex = #{record.sex,jdbcType=TINYINT},
+    StoreId = #{record.storeId,jdbcType=BIGINT},
+    WorkStatus = #{record.workStatus,jdbcType=TINYINT},
+    WorkStartTime = #{record.workStartTime,jdbcType=TIMESTAMP},
+    CreateUserId = #{record.createUserId,jdbcType=BIGINT},
+    LastLoginTime = #{record.lastLoginTime,jdbcType=TIMESTAMP},
+    LastLoginIp = #{record.lastLoginIp,jdbcType=VARCHAR},
+    LastPasswordResetTime = #{record.lastPasswordResetTime,jdbcType=TIMESTAMP},
+    CreateTime = #{record.createTime,jdbcType=TIMESTAMP},
+    UpdateTime = #{record.updateTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="org.xxpay.core.entity.SysUser">
+    update t_mgr_sys_user
+    <set>
+      <if test="nickName != null">
+        NickName = #{nickName,jdbcType=VARCHAR},
+      </if>
+      <if test="loginUserName != null">
+        LoginUserName = #{loginUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        Email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null">
+        Mobile = #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="loginPassword != null">
+        LoginPassword = #{loginPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        Status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="isSuperAdmin != null">
+        IsSuperAdmin = #{isSuperAdmin,jdbcType=TINYINT},
+      </if>
+      <if test="belongInfoId != null">
+        BelongInfoId = #{belongInfoId,jdbcType=BIGINT},
+      </if>
+      <if test="belongInfoType != null">
+        BelongInfoType = #{belongInfoType,jdbcType=TINYINT},
+      </if>
+      <if test="avatar != null">
+        Avatar = #{avatar,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null">
+        Sex = #{sex,jdbcType=TINYINT},
+      </if>
+      <if test="storeId != null">
+        StoreId = #{storeId,jdbcType=BIGINT},
+      </if>
+      <if test="workStatus != null">
+        WorkStatus = #{workStatus,jdbcType=TINYINT},
+      </if>
+      <if test="workStartTime != null">
+        WorkStartTime = #{workStartTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUserId != null">
+        CreateUserId = #{createUserId,jdbcType=BIGINT},
+      </if>
+      <if test="lastLoginTime != null">
+        LastLoginTime = #{lastLoginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastLoginIp != null">
+        LastLoginIp = #{lastLoginIp,jdbcType=VARCHAR},
+      </if>
+      <if test="lastPasswordResetTime != null">
+        LastPasswordResetTime = #{lastPasswordResetTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null">
+        CreateTime = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        UpdateTime = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where UserId = #{userId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.xxpay.core.entity.SysUser">
+    update t_mgr_sys_user
+    set NickName = #{nickName,jdbcType=VARCHAR},
+      LoginUserName = #{loginUserName,jdbcType=VARCHAR},
+      Email = #{email,jdbcType=VARCHAR},
+      Mobile = #{mobile,jdbcType=VARCHAR},
+      LoginPassword = #{loginPassword,jdbcType=VARCHAR},
+      Status = #{status,jdbcType=TINYINT},
+      IsSuperAdmin = #{isSuperAdmin,jdbcType=TINYINT},
+      BelongInfoId = #{belongInfoId,jdbcType=BIGINT},
+      BelongInfoType = #{belongInfoType,jdbcType=TINYINT},
+      Avatar = #{avatar,jdbcType=VARCHAR},
+      Sex = #{sex,jdbcType=TINYINT},
+      StoreId = #{storeId,jdbcType=BIGINT},
+      WorkStatus = #{workStatus,jdbcType=TINYINT},
+      WorkStartTime = #{workStartTime,jdbcType=TIMESTAMP},
+      CreateUserId = #{createUserId,jdbcType=BIGINT},
+      LastLoginTime = #{lastLoginTime,jdbcType=TIMESTAMP},
+      LastLoginIp = #{lastLoginIp,jdbcType=VARCHAR},
+      LastPasswordResetTime = #{lastPasswordResetTime,jdbcType=TIMESTAMP},
+      CreateTime = #{createTime,jdbcType=TIMESTAMP},
+      UpdateTime = #{updateTime,jdbcType=TIMESTAMP}
+    where UserId = #{userId,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.xxpay.service.dao.mapper.AccountBalanceMapper" >
+  <resultMap id="BaseResultMap" type="org.xxpay.core.entity.AccountBalance" >
+    <id column="Id" property="id" jdbcType="BIGINT" />
+    <result column="InfoId" property="infoId" jdbcType="BIGINT" />
+    <result column="InfoType" property="infoType" jdbcType="TINYINT" />
+    <result column="InfoName" property="infoName" jdbcType="VARCHAR" />
+    <result column="AccountType" property="accountType" jdbcType="TINYINT" />
+    <result column="Amount" property="amount" jdbcType="BIGINT" />
+    <result column="UnAmount" property="unAmount" jdbcType="BIGINT" />
+    <result column="FrozenAmount" property="frozenAmount" jdbcType="BIGINT" />
+    <result column="SettAmount" property="settAmount" jdbcType="BIGINT" />
+    <result column="TotalAddAmount" property="totalAddAmount" jdbcType="BIGINT" />
+    <result column="TotalSubAmount" property="totalSubAmount" jdbcType="BIGINT" />
+    <result column="Status" property="status" jdbcType="TINYINT" />
+    <result column="SafeKey" property="safeKey" jdbcType="VARCHAR" />
+    <result column="UpdateTime" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    Id, InfoId, InfoType, InfoName, AccountType, Amount, UnAmount, FrozenAmount, SettAmount,
+    TotalAddAmount, TotalSubAmount, Status, SafeKey, UpdateTime
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="org.xxpay.core.entity.AccountBalanceExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from t_account_balance
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+    <if test="limit != null" >
+      <if test="offset != null" >
+        limit ${offset}, ${limit}
+      </if>
+      <if test="offset == null" >
+        limit ${limit}
+      </if>
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select
+    <include refid="Base_Column_List" />
+    from t_account_balance
+    where Id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from t_account_balance
+    where Id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="org.xxpay.core.entity.AccountBalanceExample" >
+    delete from t_account_balance
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="org.xxpay.core.entity.AccountBalance" >
+    insert into t_account_balance (Id, InfoId, InfoType,
+      InfoName, AccountType, Amount,
+      UnAmount, FrozenAmount, SettAmount,
+      TotalAddAmount, TotalSubAmount, Status,
+      SafeKey, UpdateTime)
+    values (#{id,jdbcType=BIGINT}, #{infoId,jdbcType=BIGINT}, #{infoType,jdbcType=TINYINT},
+      #{infoName,jdbcType=VARCHAR}, #{accountType,jdbcType=TINYINT}, #{amount,jdbcType=BIGINT},
+      #{unAmount,jdbcType=BIGINT}, #{frozenAmount,jdbcType=BIGINT}, #{settAmount,jdbcType=BIGINT},
+      #{totalAddAmount,jdbcType=BIGINT}, #{totalSubAmount,jdbcType=BIGINT}, #{status,jdbcType=TINYINT},
+      #{safeKey,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="org.xxpay.core.entity.AccountBalance" >
+    insert into t_account_balance
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        Id,
+      </if>
+      <if test="infoId != null" >
+        InfoId,
+      </if>
+      <if test="infoType != null" >
+        InfoType,
+      </if>
+      <if test="infoName != null" >
+        InfoName,
+      </if>
+      <if test="accountType != null" >
+        AccountType,
+      </if>
+      <if test="amount != null" >
+        Amount,
+      </if>
+      <if test="unAmount != null" >
+        UnAmount,
+      </if>
+      <if test="frozenAmount != null" >
+        FrozenAmount,
+      </if>
+      <if test="settAmount != null" >
+        SettAmount,
+      </if>
+      <if test="totalAddAmount != null" >
+        TotalAddAmount,
+      </if>
+      <if test="totalSubAmount != null" >
+        TotalSubAmount,
+      </if>
+      <if test="status != null" >
+        Status,
+      </if>
+      <if test="safeKey != null" >
+        SafeKey,
+      </if>
+      <if test="updateTime != null" >
+        UpdateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="infoId != null" >
+        #{infoId,jdbcType=BIGINT},
+      </if>
+      <if test="infoType != null" >
+        #{infoType,jdbcType=TINYINT},
+      </if>
+      <if test="infoName != null" >
+        #{infoName,jdbcType=VARCHAR},
+      </if>
+      <if test="accountType != null" >
+        #{accountType,jdbcType=TINYINT},
+      </if>
+      <if test="amount != null" >
+        #{amount,jdbcType=BIGINT},
+      </if>
+      <if test="unAmount != null" >
+        #{unAmount,jdbcType=BIGINT},
+      </if>
+      <if test="frozenAmount != null" >
+        #{frozenAmount,jdbcType=BIGINT},
+      </if>
+      <if test="settAmount != null" >
+        #{settAmount,jdbcType=BIGINT},
+      </if>
+      <if test="totalAddAmount != null" >
+        #{totalAddAmount,jdbcType=BIGINT},
+      </if>
+      <if test="totalSubAmount != null" >
+        #{totalSubAmount,jdbcType=BIGINT},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="safeKey != null" >
+        #{safeKey,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="org.xxpay.core.entity.AccountBalanceExample" resultType="java.lang.Integer" >
+    select count(*) from t_account_balance
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update t_account_balance
+    <set >
+      <if test="record.id != null" >
+        Id = #{record.id,jdbcType=BIGINT},
+      </if>
+      <if test="record.infoId != null" >
+        InfoId = #{record.infoId,jdbcType=BIGINT},
+      </if>
+      <if test="record.infoType != null" >
+        InfoType = #{record.infoType,jdbcType=TINYINT},
+      </if>
+      <if test="record.infoName != null" >
+        InfoName = #{record.infoName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.accountType != null" >
+        AccountType = #{record.accountType,jdbcType=TINYINT},
+      </if>
+      <if test="record.amount != null" >
+        Amount = #{record.amount,jdbcType=BIGINT},
+      </if>
+      <if test="record.unAmount != null" >
+        UnAmount = #{record.unAmount,jdbcType=BIGINT},
+      </if>
+      <if test="record.frozenAmount != null" >
+        FrozenAmount = #{record.frozenAmount,jdbcType=BIGINT},
+      </if>
+      <if test="record.settAmount != null" >
+        SettAmount = #{record.settAmount,jdbcType=BIGINT},
+      </if>
+      <if test="record.totalAddAmount != null" >
+        TotalAddAmount = #{record.totalAddAmount,jdbcType=BIGINT},
+      </if>
+      <if test="record.totalSubAmount != null" >
+        TotalSubAmount = #{record.totalSubAmount,jdbcType=BIGINT},
+      </if>
+      <if test="record.status != null" >
+        Status = #{record.status,jdbcType=TINYINT},
+      </if>
+      <if test="record.safeKey != null" >
+        SafeKey = #{record.safeKey,jdbcType=VARCHAR},
+      </if>
+      <if test="record.updateTime != null" >
+        UpdateTime = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update t_account_balance
+    set Id = #{record.id,jdbcType=BIGINT},
+    InfoId = #{record.infoId,jdbcType=BIGINT},
+    InfoType = #{record.infoType,jdbcType=TINYINT},
+    InfoName = #{record.infoName,jdbcType=VARCHAR},
+    AccountType = #{record.accountType,jdbcType=TINYINT},
+    Amount = #{record.amount,jdbcType=BIGINT},
+    UnAmount = #{record.unAmount,jdbcType=BIGINT},
+    FrozenAmount = #{record.frozenAmount,jdbcType=BIGINT},
+    SettAmount = #{record.settAmount,jdbcType=BIGINT},
+    TotalAddAmount = #{record.totalAddAmount,jdbcType=BIGINT},
+    TotalSubAmount = #{record.totalSubAmount,jdbcType=BIGINT},
+    Status = #{record.status,jdbcType=TINYINT},
+    SafeKey = #{record.safeKey,jdbcType=VARCHAR},
+    UpdateTime = #{record.updateTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="org.xxpay.core.entity.AccountBalance" >
+    update t_account_balance
+    <set >
+      <if test="infoId != null" >
+        InfoId = #{infoId,jdbcType=BIGINT},
+      </if>
+      <if test="infoType != null" >
+        InfoType = #{infoType,jdbcType=TINYINT},
+      </if>
+      <if test="infoName != null" >
+        InfoName = #{infoName,jdbcType=VARCHAR},
+      </if>
+      <if test="accountType != null" >
+        AccountType = #{accountType,jdbcType=TINYINT},
+      </if>
+      <if test="amount != null" >
+        Amount = #{amount,jdbcType=BIGINT},
+      </if>
+      <if test="unAmount != null" >
+        UnAmount = #{unAmount,jdbcType=BIGINT},
+      </if>
+      <if test="frozenAmount != null" >
+        FrozenAmount = #{frozenAmount,jdbcType=BIGINT},
+      </if>
+      <if test="settAmount != null" >
+        SettAmount = #{settAmount,jdbcType=BIGINT},
+      </if>
+      <if test="totalAddAmount != null" >
+        TotalAddAmount = #{totalAddAmount,jdbcType=BIGINT},
+      </if>
+      <if test="totalSubAmount != null" >
+        TotalSubAmount = #{totalSubAmount,jdbcType=BIGINT},
+      </if>
+      <if test="status != null" >
+        Status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="safeKey != null" >
+        SafeKey = #{safeKey,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        UpdateTime = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where Id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.xxpay.core.entity.AccountBalance" >
+    update t_account_balance
+    set InfoId = #{infoId,jdbcType=BIGINT},
+      InfoType = #{infoType,jdbcType=TINYINT},
+      InfoName = #{infoName,jdbcType=VARCHAR},
+      AccountType = #{accountType,jdbcType=TINYINT},
+      Amount = #{amount,jdbcType=BIGINT},
+      UnAmount = #{unAmount,jdbcType=BIGINT},
+      FrozenAmount = #{frozenAmount,jdbcType=BIGINT},
+      SettAmount = #{settAmount,jdbcType=BIGINT},
+      TotalAddAmount = #{totalAddAmount,jdbcType=BIGINT},
+      TotalSubAmount = #{totalSubAmount,jdbcType=BIGINT},
+      Status = #{status,jdbcType=TINYINT},
+      SafeKey = #{safeKey,jdbcType=VARCHAR},
+      UpdateTime = #{updateTime,jdbcType=TIMESTAMP}
+    where Id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <select id="selectLineByInfoId" resultType="java.util.Map" parameterType="java.util.Map" >
+    select
+    sum(if(b.AccountType = 1,Amount, null)) as balanceAmount,
+    sum(if(b.AccountType = 1,UnAmount, null)) as balanceUnAmount,
+    sum(if(b.AccountType = 1,FrozenAmount, null)) as balanceFrozenAmount,
+    sum(if(b.AccountType = 1,SettAmount, null)) as balanceSettAmount,
+    sum(if(b.AccountType = 1,TotalAddAmount, null)) as balanceTotalAddAmount,
+    sum(if(b.AccountType = 1,TotalSubAmount, null)) as balanceTotalSubAmount,
+    sum(if(b.AccountType = 2,Amount, null)) as agpayAmount,
+    sum(if(b.AccountType = 2,UnAmount, null)) as agpayUnAmount,
+    sum(if(b.AccountType = 2,FrozenAmount, null)) as agpayFrozenAmount,
+    sum(if(b.AccountType = 2,TotalAddAmount, null)) as agpayTotalAddAmount,
+    sum(if(b.AccountType = 2,TotalSubAmount, null)) as agpayTotalSubAmount,
+    sum(if(b.AccountType = 3,Amount, null)) as bailAmount
+    from t_account_balance b where InfoType=#{infoType} and InfoId = #{infoId}
+
+  </select>
+
+
+
+
+</mapper>

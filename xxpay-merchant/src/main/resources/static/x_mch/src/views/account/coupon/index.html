@@ -1,0 +1,198 @@
+<style>
+    .margin-top{margin-top:10px;}
+</style>
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>卡券营销</cite></a>
+    </span>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">卡券列表</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-row">
+                   <form action="" id="exportForm" method="post">
+                       <div class="layui-form" style="float:right; margin-bottom: 10px;">
+                           <div id="timeDiv" class="layui-form-item" style="margin:0;">
+                               <div class="layui-input-inline margin-top">
+                                   <input type="text" name="searchCouponId" id="searchCouponId" placeholder="优惠券ID" autocomplete="off" class="layui-input">
+                               </div>
+                               <div class="layui-input-inline margin-top">
+                                   <input type="text" name="searchCouponName" id="searchCouponName" placeholder="优惠券名称" autocomplete="off" class="layui-input">
+                               </div>
+                               <div class="layui-input-inline margin-top">
+                                   <select name="searchStatus" id="searchStatus" lay-search="">
+                                       <option value="">状态</option>
+                                       <option value="0">暂停发放</option>
+                                       <option value="1">正常发放</option>
+                                       <option value="1">已结束</option>
+                                   </select>
+                               </div>
+                               <div class="layui-input-inline margin-top">
+                                   <select name="searchValidateType" id="searchValidateType" lay-search="">
+                                       <option value="">有效期类型</option>
+                                       <option value="1">领取后天数</option>
+                                       <option value="2">按活动日期</option>
+                                   </select>
+                               </div>
+                               <div class="layui-input-inline margin-top">
+                                   <select name="searchStoreLimitType" id="searchStoreLimitType" lay-search="">
+                                       <option value="">是否限制门店</option>
+                                       <option value="0">不限</option>
+                                       <option value="1">限制</option>
+                                   </select>
+                               </div>
+                               <div class="layui-input-inline margin-top">
+                                   <button id="search" class="layui-btn" data-type="reload">搜索</button>
+                               </div>
+                           </div>
+                       </div>
+                   </form>
+                </div>
+                <div class="layui-row">
+                    <div class="layuiAdmin-btns" style="margin-bottom: 10px;">
+                        <a lay-href="account/coupon/create" class="layui-btn" data-type="all" data-events="create">新增优惠券</a>
+                    </div>
+                </div>
+                <table id="couponList" lay-filter="couponList"></table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+     //标题内容模板
+     var tplTitle = function(d){
+         return '<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a> ' +
+                '<a class="layui-btn layui-btn-xs" lay-event="edit" >修改</a> ' +
+                '<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="receive_record">领取记录</a>'
+     };
+
+     var tplStatus = function(d){
+         if(d.status == 0) {
+             return '<span class="layui-badge layui-bg-orange">暂停发放</span>';
+         } else if(d.status == 1) {
+             return '<span class="layui-badge layui-bg-green">正常发放</span>';
+         } else if(d.status == 2) {
+             return '<span class="layui-badge layui-bg-red">已结束</span>';
+         }
+     };
+
+     var validateType = function(d){
+         if(d.validateType == 1) {
+             return '领取后天数';
+         }else if(d.validateType == 2) {
+             return '按活动日期';
+         }
+     };
+
+     var stockLimitType = function(d){
+         if(d.stockLimitType == -1) {
+             return '不限';
+         }else {
+             return '限制';
+         }
+     };
+
+     var storeLimit = function(d){
+         if(d.storeLimitType == 0) {
+             return '不限';
+         }else if (d.storeLimitType == 1) {
+             return '限制';
+         }
+     };
+
+     var syncWX = function(d){
+         if(d.syncWX == 0) {
+             return '否';
+         }else if (d.syncWX == 1) {
+             return '是';
+         }
+     };
+
+	 layui.config({
+	    base: '/x_mch/src/lib/extend/',
+	 });
+     layui.use(['table','util','admin','view'], function(){
+        var table = layui.table
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,element = layui.element
+        ,view = layui.view
+        ,form = layui.form;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        table.render({
+            elem: '#couponList'
+            ,id: "tableReload"
+            ,url: layui.setter.baseUrl + '/coupon/list'
+            ,cols: [[
+                {field: 'couponId', title: '优惠券ID'}
+                ,{field: 'couponName',title: '优惠券名称'}
+                ,{field: 'status',title: '状态', templet: tplStatus}
+                ,{field: 'validateType',title: '有效期类型', templet: validateType}
+                ,{field: 'stockLimitType',title: '是否限制库存', templet: stockLimitType}
+                ,{field: 'storeLimitType',title: '限制门店', templet: storeLimit}
+                ,{field: 'syncWX',title: '同步微信卡包', templet: syncWX}
+                ,{field: 'createTime',  title: '时间', width: 180, templet: '<div>{{ layui.util.toDateString(d.createTime) }}</div>' }
+                ,{field: 'edit', title: '操作', width: 320, templet: tplTitle }
+            ]]
+            ,page: true
+            ,skin: 'line'
+        });
+
+         // 搜索
+         var $ = layui.$, active = {
+             reload: function(){
+                 var couponId = $('#searchCouponId').val().trim();
+                 var couponName = $('#searchCouponName').val().trim();
+                 var status = $('#searchStatus').val();
+                 var validateType = $('#searchValidateType').val();
+                 var stockLimitType = $('#searchStockLimitType').val();
+                 var storeLimitType = $('#searchStoreLimitType').val();
+                 //执行重载
+                 table.reload('tableReload', {
+                     page: {
+                         curr: 1 //重新从第 1 页开始
+                     }
+                     ,where: {
+                         couponId: couponId,
+                         couponName: couponName,
+                         status: status,
+                         validateType: validateType,
+                         stockLimitType: stockLimitType,
+                         storeLimitType: storeLimitType
+                     }
+                 });
+             }
+         };
+
+         $('#search').on('click', function() {
+             var type = $(this).data('type');
+             active[type] ? active[type].call(this) : '';
+             return false;
+         });
+
+         //监听工具条
+         table.on('tool(couponList)', function(obj){
+             var data = obj.data;
+             var layEvent = obj.event;
+
+             if(layEvent === 'edit'){
+                 location.hash="/account/coupon/update/couponId=" + data.couponId;
+             } else if(obj.event === 'detail'){
+                 view.xxpayPopup("优惠券详情", "account/coupon/detail", {couponId: data.couponId}, {btn:false});
+             } else if(obj.event === 'receive_record'){
+                 location.hash="/account/coupon/receive_record/couponId=" + data.couponId;
+             }
+         });
+
+         // 渲染表单
+         form.render();
+        
+     })
+</script>

@@ -1,0 +1,286 @@
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>会员管理</cite></a>
+        <a><cite>编辑金刚区</cite></a>
+    </span>
+</div>
+<style>
+    .layui-form-label {
+        width:15% !important;
+        margin-left:1%;
+    }
+    .layui-input-inline {
+        width: 33% !important;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <form class="layui-form layui-form-pane">
+            <div class="layui-tab layui-tab-brief">
+                <div class="layui-tab-content">
+                    <input type="text" name="vajraId" id="vajraId" class="layui-hide">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">金刚区名称</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="vajraName" name="vajraName" lay-verify="required" placeholder="输入金刚区名称" autocomplete="off" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">显示位置</label>
+                        <div class="layui-input-inline">
+                            <!--<input type="radio" name="authFrom" value="1" title="点餐小程序首页">-->
+                            <input type="radio" name="authFrom" value="2" title="商城小程序首页" checked="checked">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">金刚区</label>
+                        <div class="layui-input-inline">
+                            <input type="hidden" name="mediaPath" id="mediaPath" class="layui-hide imgVal">
+                            <img class="uploadImg layui-hide" style="height:38px; margin-left:30px;cursor: pointer;" title="点击放大" />
+                            <button class="uploadImgBtn layui-btn layui-btn-sm" type="button" style="margin-left: 20px;margin-top: 5px;">上传图片</button>
+                            <button class="delImgBtn layui-btn layui-btn-sm layui-btn-danger layui-hide" style="margin-top: 5px;" type="button">删除图片</button>
+                        </div>
+                        <label class="layui-form-label">排序值</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="sortNum" name="sortNum" lay-verify="number" placeholder="输入排序值" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">状态</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="status" value="0" title="停止使用">
+                            <input type="radio" name="status" value="1" title="正常使用" checked="checked">
+                        </div>
+                        <label class="layui-form-label">备注</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="remark" name="remark" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item layui-hide">
+                        <label class="layui-form-label">跳转链接类型</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="jumpUrlType" value="1" title="内部链接" lay-filter="jumpUrlTypeFilter">
+                            <input type="radio" name="jumpUrlType" value="2" title="外部链接" lay-filter="jumpUrlTypeFilter" checked="checked">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">选择跳转页面</label>
+                        <div class="layui-input-inline">
+                            <select id="jumpUrlPrefixSelect" lay-search=""  lay-filter="jumpUrlPrefixSelectFilter">
+                                <option value="">请选择</option>
+                                <option value="1">直播列表</option>
+                                <option value="2">商品列表</option>
+                                <option value="3">商品详情</option>
+                                <option value="4">充值优惠活动页</option>
+                                <option value="5">充值活动详情页</option>
+                                <option value="6">我的优惠券列表页</option>
+                                <option value="7">领取优惠券列表页</option>
+                                <option value="8">优惠券详情页</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">跳转链接</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="jumpUrl" id="jumpUrl" disabled="disabled" placeholder="跳转地址" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block" style="padding-bottom: 20px;">
+                        <button type="button" class="layui-btn" lay-submit="" lay-filter="vajraUpdate">保存</button>
+                        <a class="layui-btn" lay-href="/mall/vajra/">返回</a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    layui.use(['form','util','admin','laydate','upload','setter'], function(){
+        var form = layui.form
+            ,$ = layui.$
+            ,admin = layui.admin
+            ,element = layui.element
+            ,view = layui.view
+            ,upload = layui.upload
+            ,setter = layui.setter
+            ,laydate = layui.laydate;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        //监听内部链接下拉框
+        form.on('select(jumpUrlPrefixSelectFilter)', function(data){
+            var authFrom = $("input[name='authFrom']:checked").val();
+            var jumpUrl;
+            switch (data.value) {
+                case "1":
+                    $("#jumpUrl").val("/pages/index/directRoom/directRoom");
+                    break;
+                case "2":
+                    jumpUrl = "/pages/classify/productDisplay/productDisplay";
+                    view.xxpayPopup("选择商品查询条件", "mall/vajra/add_category", {authFrom: authFrom, jumpUrl: jumpUrl});
+                    break;
+                case "3":
+                    jumpUrl = "/pages/classify/productDetails/productDetails";
+                    view.xxpayPopup("选择商品", "mall/vajra/add_goods", {authFrom: authFrom, jumpUrl: jumpUrl});
+                    break;
+                case "4":
+                    $("#jumpUrl").val("/packageUser/user/mywallet/rech/rech");
+                    break;
+                case "5":
+                    jumpUrl = "/packageUser/user/mywallet/rechdatil/rechdatil";
+                    view.xxpayPopup("选择充值规则ID", "mall/vajra/add_rule", {jumpUrl: jumpUrl});
+                    break;
+                case "6":
+                    $("#jumpUrl").val("/packageUser/user/mydicout/mydicout");
+                    break;
+                case "7":
+                    $("#jumpUrl").val("/packageUser/user/dicout/dicout");
+                    break;
+                case "8":
+                    jumpUrl = "/packageUser/user/dicout/dicdat/dicdat";
+                    view.xxpayPopup("选择优惠券ID", "mall/vajra/add_coupon", {jumpUrl: jumpUrl});
+                    break;
+                default:
+                    $("#jumpUrl").val("");
+                    break;
+            }
+        });
+
+
+        var vajraId = layui.router().search.vajraId;
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/mini_vajra/get',
+            data: {
+                vajraId : vajraId
+            },
+            error: function(err){
+                layer.alert(JSON.stringify(err.field), {
+                    title: '错误提示'
+                })
+            },
+            success: function(res){
+                if(res.code == 0){
+                    $('#vajraId').val(res.data.vajraId);
+                    $('#vajraName').val(res.data.vajraName);
+
+                    setImgValFunc("mediaPath", res.data.mediaPath);
+
+                    // $('#mediaPath').val(res.data.mediaPath);
+                    $('#sortNum').val(res.data.sortNum);
+                    $('#isvId').val(res.data.isvId);
+                    if(res.data.status == 0) {
+                        $("input[name='status'][value='0']").attr("checked",true);
+                    }else if(res.data.status == 1) {
+                        $("input[name='status'][value='1']").attr("checked",true);
+                    }
+                    if(res.data.jumpUrlType == 1) {
+                        $("#outer").addClass("layui-hide");
+                        $("#inner").removeClass("layui-hide");
+                        $("input[name='jumpUrlType'][value='1']").attr("checked",true);
+                        $('#jumpUrlSuffix').val(res.data.jumpUrl);
+                    }else if(res.data.jumpUrlType == 2) {
+                        $("input[name='jumpUrlType'][value='2']").attr("checked",true);
+                        $('#jumpUrl').val(res.data.jumpUrl);
+                    }
+                    if(res.data.authFrom) {
+                        $("input[name='authFrom'][value="+res.data.authFrom+"]").attr("checked",true);
+                    }else {
+                        $('#authFrom').val("");
+                    }
+                    $('#remark').val(res.data.remark);
+
+                    form.render();
+                }
+            }
+        })
+
+        //监听提交
+        form.on('submit(vajraUpdate)', function(data){
+            if (data.field.jumpUrlType == 1) {
+                data.field.jumpUrl = data.field.jumpUrlSuffix
+            }
+            // 在这个回调函数里面写ajax提交
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/mini_vajra/update',
+                data: data.field,
+                success: function(res){
+                    if(res.code == 0){
+                        layer.alert(res.msg,{title: "保存成功"},function(index){
+                            layer.close(index);
+                            location.hash = '/mall/vajra/';
+                        })
+                    }
+                }
+            });
+            return false;//阻止跳转
+        });
+
+        var headers = {};
+        headers[setter.request.tokenName] = layui.data(setter.tableName)[setter.request.tokenName];
+        var uploadInst = upload.render({
+            elem: '.uploadImgBtn'
+            , url: layui.setter.baseUrl + '/upload/mini'
+            , headers: headers
+            , size: 2048  //仅支持2M图片上传
+            ,before: function (obj) {
+                obj.preview(function(index, file, result) {
+                    $('#img').attr('src', result);
+                })
+            },done: function(res){
+                //如果上传失败
+                if(res.code != 0){
+                    return layer.msg('上传失败['+res.msg+']', {icon: 2});
+                }
+                //上传成功
+                $("#mediaPath").val(res.data);
+                var divElem = $(this.item).parent();
+                divElem.find('.uploadImg').attr("src", res.data).removeClass('layui-hide');
+                divElem.find('.delImgBtn').removeClass('layui-hide');
+                divElem.find('.uploadImgBtn').text('重新上传');
+            }
+        });
+
+        var setImgValFunc = function(inputName, src){
+            var divElem = $("input[name='"+inputName+"']").parent();
+            divElem.find('.imgVal').val(src); //图片真实路径
+            divElem.find('.uploadImg').attr("src", src).removeClass('layui-hide');
+            divElem.find('.delImgBtn').removeClass('layui-hide');
+            divElem.find('.uploadImgBtn').text('重新上传');
+        };
+
+        //点击[图片] 按钮， 事件
+        $('.uploadImg').click(function(){
+            var imgSrc = $(this).attr('src');
+            layer.photos({photos: {
+                    "title": "查看上传图片", //相册标题
+                    "id": 1, //相册id
+                    "start": 0, //初始显示的图片序号，默认0
+                    "data": [   //相册包含的图片，数组格式
+                        {
+                            "alt": "图片",
+                            "pid": 1, //图片id
+                            "src": imgSrc, //原图地址
+                            "thumb": "" //缩略图地址
+                        }
+                    ]
+                } ,anim: 5});
+        });
+
+        //点击[删除图片] 按钮， 事件
+        $('.delImgBtn').click(function(){
+
+            var divElem = $(this).parent();
+            divElem.find('.imgVal').val(""); //清空图片真实路径
+            divElem.find('.uploadImgBtn').text("上传图片");
+            divElem.find('.uploadImg').attr("src", "").addClass('layui-hide');
+            divElem.find('.delImgBtn').addClass('layui-hide');
+            form.render();
+        });
+        form.render();
+
+    });
+</script>
+

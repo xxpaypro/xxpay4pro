@@ -1,0 +1,252 @@
+<style>
+  .layui-input-inline{margin-top:10px;}
+</style>
+<div class="layui-card layadmin-header">
+  <div class="layui-breadcrumb" lay-filter="breadcrumb">
+    <a lay-href="">主页</a>
+    <a><cite>商城管理</cite></a>
+    <a><cite>售后管理</cite></a>
+  </div>
+</div>
+
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-tab layui-tab-brief">
+      <ul class="layui-tab-title">
+        <li class="layui-this">售后单</li>
+      </ul>
+      <div class="layui-tab-content">
+        <div class="layui-tab-item layui-show">
+          <div class="layui-row">
+            <div class="layui-form" style="float:right; margin-bottom: 10px;">
+              <div id="timeDiv" class="layui-form-item" style="margin:0;">
+                <div class="layui-input-inline">
+                  <input type="text" name="searchTradeOrderId" id="searchTradeOrderId" placeholder="交易单号" autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-input-inline">
+                  <input type="text" name="searchMemberId" id="searchMemberId" placeholder="会员ID" autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-input-inline">
+                  <select name="searchAfterSaleType" id="searchAfterSaleType" lay-search="">
+                    <option value="">售后类型</option>
+                    <option value="1">退款</option>
+                    <option value="2">退货</option>
+                    <option value="3">维修</option>
+                  </select>
+                </div>
+                <div class="layui-input-inline">
+                  <select name="searchAuthFrom" id="searchAuthFrom" lay-search="">
+                    <option value="">所属小程序</option>
+                    <option value="1">点餐</option>
+                    <option value="2">商城</option>
+                  </select>
+                </div>
+                <div class="layui-input-inline">
+                  <select name="searchStatus" id="searchStatus" lay-search="">
+                    <option value="">售后状态</option>
+                    <option value="-2">审核未通过</option>
+                    <option value="-1">待审核</option>
+                    <option value="1">审核通过</option>
+                    <option value="2">待发货</option>
+                    <option value="3">已发货</option>
+                    <option value="4">商家已收货</option>
+                    <option value="5">商家已寄回</option>
+                    <option value="6">售后单完成</option>
+                  </select>
+                </div>
+                <div class="layui-input-inline">
+                  <button id="search" class="layui-btn" data-type="reload">搜索</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <table id="XxPay_Mgr_Trade_After_dataAll" lay-filter="XxPay_Mgr_Trade_After_dataAll"></table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/html" id="xxpayBar">
+
+</script>
+
+<script>
+layui.use(['admin', 'table', 'util', 'timePick'], function(){
+  var $ = layui.$
+  ,admin = layui.admin
+  ,table = layui.table
+  ,element = layui.element
+  ,timePick = layui.timePick
+  ,view = layui.view
+  ,form = layui.form;
+
+  element.render('breadcrumb', 'breadcrumb');
+  timePick.init();  //第一个参数表示开始时间   第二个表示结束时间   0,0今天   -1,-1昨天   -7,0近一周   以此类推
+
+  var tplPost = function(d){
+
+    var postDetail = '';
+      if (d.status == -1 || d.status == -2) {
+        postDetail += '<a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="audit">审核订单</a>';
+      } else {
+        postDetail += '<a class="layui-btn layui-btn-xs layui-btn-warm" lay-event="transport">商品寄回买家</a>';
+        postDetail += '<a class="layui-btn layui-btn-xs " lay-event="complete">售后完成</a>';
+        postDetail += '<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="refund">退款</a>';
+      }
+
+      return '<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">详情</a>' + postDetail;
+  };
+
+  var tplStatus = function(d){
+    if(d.status == -2) {
+      return "<span style='color: red'>审核不通过</span>";
+    }else if(d.status == -1) {
+      return "<span style='color: orange'>待审核</span>";
+    }else if(d.status == 1) {
+      return "<span style='color: green'>审核通过</span>";
+    }else if(d.status == 2) {
+      return "<span style='color: blue'>待发货</span>";
+    }else if(d.status == 3) {
+      return "<span style='color: orange'>已发货</span>";
+    }else if(d.status == 4) {
+      return "<span style='color: blue'>商家已收货</span>";
+    }else if(d.status == 5) {
+      return "<span style='color: orange'>已寄回买家</span>";
+    }else if(d.status == 6) {
+      return "<span style='color: green'>售后单完成</span>";
+    }else {
+        return "其他";
+    }
+  };
+
+  var tplName = function(d) {
+      if (d.goodsDesc) {
+          var goodsDesc = JSON.parse(d.goodsDesc)[0];
+          return goodsDesc.goodsName;
+      }else {
+          return "";
+      }
+  };
+
+  var tplAfterSaleType = function(d) {
+      if (d.afterSaleType == 1) {
+          return "退款";
+      }else if (d.afterSaleType == 2) {
+          return "退货";
+      }else if (d.afterSaleType == 3) {
+        return "维修";
+      }else {
+          return "";
+      }
+  };
+
+  var tplAuthFrom = function(d) {
+      if (d.authFrom == 1) {
+          return "点餐";
+      }else if (d.authFrom == 2) {
+          return "商城";
+      }else {
+          return "";
+      }
+  };
+
+  var createTimeStart = $('#createTimeStart').val();
+  var createTimeEnd = $('#createTimeEnd').val();
+  //列表
+  table.render({
+    elem: '#XxPay_Mgr_Trade_After_dataAll'
+    ,url: layui.setter.baseUrl + '/after_sale/list' //列表接口
+    ,where: {
+        queryStartDateTime:createTimeStart,
+        queryEndDateTime:createTimeEnd
+    }
+    ,id: 'tableReloadSale'
+    ,page: true
+    ,cols: [[
+      {field: 'tradeOrderId', title: '交易单号', width: 230}
+      ,{field: 'memberId', title: '会员ID'}
+      ,{title: '商品名称', templet: tplName}
+      ,{title: '售后总金额', templet: '<div>{{ d.afterSaleAmount?d.afterSaleAmount/100:"" }}</div>'}
+      ,{field: 'afterSaleType', title: '售后类型', templet: tplAfterSaleType}
+     /* ,{field: 'authFrom', title: '所属小程序', templet: tplAuthFrom}*/
+      ,{field: 'status', title: '售后状态', templet: tplStatus}
+      ,{field: 'reason', title: '申请原因'}
+      ,{field: 'refundAmount', title: '退款金额', templet: '<div>{{ d.refundAmount==null?"":d.refundAmount/100 }}</div>'}
+      ,{field: 'createTime', width: 200, title: '创建时间', templet: '<div>{{ layui.util.toDateString(d.createTime, "yyyy-MM-dd HH:mm:ss") }}</div>'}
+      ,{field: 'edit', title: '操作', width: 300, templet: tplPost }
+    ]]
+    ,skin: 'line'
+  });
+
+  //监听工具条
+  table.on('tool(XxPay_Mgr_Trade_After_dataAll)', function(obj){
+    var data = obj.data;
+    if(obj.event === 'detail'){
+      view.xxpayPopup("订单详情", "mall/after/view", {afterSaleId: data.afterSaleId}, {btn:false});
+    }else if(obj.event === 'audit'){
+      view.xxpayPopup("审核商户", "mall/after/audit", {afterSaleId: data.afterSaleId});
+    }else if (obj.event === 'transport'){
+      view.xxpayPopup("商品寄回买家", "mall/after/transport", {afterSaleId: data.afterSaleId});
+    }else if (obj.event === 'complete'){
+      layer.confirm('确认完成么', function(index){
+        admin.req({
+          type: 'get',
+          url: layui.setter.baseUrl + '/after_sale/complete',
+          data: {
+            afterSaleId: data.afterSaleId
+          },
+          success: function(res){
+            if(res.code == 0) {
+              layer.msg('删除成功', {
+                icon: 1
+              });
+              table.reload("tableReloadSale");
+            }
+          }
+        });
+        layer.close(index);
+      });
+    }else if (obj.event === 'refund'){
+      view.xxpayPopup("退款", "mall/after/refund", {afterSaleId: data.afterSaleId});
+    }
+  });
+
+  // 搜索
+  var $ = layui.$, active = {
+    reload: function(){
+      var createTimeStart = $('#createTimeStart').val();
+      var createTimeEnd = $('#createTimeEnd').val();
+      var tradeOrderId = $('#searchTradeOrderId').val();
+      var memberId = $("#searchMemberId").val();
+      var afterSaleType = $("#searchAfterSaleType").val();
+      var authFrom = $("#searchAuthFrom").val();
+      var status = $("#searchStatus").val();
+      //执行重载
+      table.reload('tableReloadSale', {
+        page: {
+          curr: 1 //重新从第 1 页开始
+        }
+        ,where: {
+          status : status,
+          memberId: memberId,
+          authFrom : authFrom,
+          tradeOrderId: tradeOrderId,
+          afterSaleType: afterSaleType,
+          queryStartDateTime : createTimeStart,
+          queryEndDateTime : createTimeEnd
+        }
+      });
+    }
+  };
+  $('#search').on('click', function() {
+    var type = $(this).data('type');
+    active[type] ? active[type].call(this) : '';
+    return false;
+  });
+
+  // 渲染表单
+  form.render();
+});
+</script>

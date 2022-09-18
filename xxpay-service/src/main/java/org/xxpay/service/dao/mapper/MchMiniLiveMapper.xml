@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.xxpay.service.dao.mapper.MchMiniLiveMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="org.xxpay.core.entity.MchMiniLive">
+        <id column="RoomId" property="RoomId" />
+        <result column="Name" property="name" />
+        <result column="CoverImg" property="coverImg" />
+        <result column="StartTime" property="startTime" />
+        <result column="EndTime" property="endTime" />
+        <result column="AnchorName" property="anchorName" />
+        <result column="AnchorWechat" property="anchorWechat" />
+        <result column="AnchorImg" property="anchorImg" />
+        <result column="Type" property="type" />
+        <result column="ScreenType" property="screenType" />
+        <result column="CloseLike" property="closeLike" />
+        <result column="CloseGoods" property="closeGoods" />
+        <result column="CloseComment" property="closeComment" />
+        <result column="AuthFrom" property="authFrom" />
+        <result column="MchId" property="mchId" />
+        <result column="IsvId" property="isvId" />
+        <result column="CreateTime" property="createTime" />
+        <result column="UpdateTime" property="updateTime" />
+    </resultMap>
+
+</mapper>

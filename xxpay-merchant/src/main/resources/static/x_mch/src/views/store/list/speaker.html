@@ -1,0 +1,167 @@
+<style>
+    .xxpayPopupDiv .layui-form-label {
+        width:20% !important;
+        margin-left:1%;
+    }
+    .xxpayPopupDiv .layui-input-inline {
+        width: 45% !important;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <form class="layui-form layui-form-pane">
+            <div class="layui-tab layui-tab-brief">
+                <div class="layui-tab-content">
+
+                    <input type="hidden" id="storeId" name="storeId" />
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">喇叭ID</label>
+                        <div class="layui-input-inline">
+                            <input type="text" required id="speakerId" name="speakerId" placeholder="输入喇叭ID" lay-verify="required" placeholder="输入门店编号" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">验证金额</label>
+                        <div class="layui-input-inline">
+                            <input type="text" required id="codeMoney" name="codeMoney" placeholder="输入验证金额" autocomplete="off" class="layui-input">
+                        </div>
+                        <div class="layui-input-inline" style="width: 30% !important;">
+                            <input class="layui-btn" type="button" id="sendCodeMoney" value="点击发送验证金额" lay-submit lay-filter="sendCodeMoney">
+                        </div>
+                     </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">状态</label>
+                        <div class="layui-input-inline">
+                            <input type="text" class="layui-input" id="status" name="status" disabled>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">操作</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="relieve" value="1" title="绑定">
+                            <input type="radio" name="relieve" value="0" title="解绑">
+                        </div>
+                    </div>
+                    <button type="button" lay-submit lay-filter="btnUP" class="layui-hide xxpayYesBtn">保存</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    layui.use(['form','util','admin'], function(){
+        var form = layui.form
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,view = layui.view
+        ,element = layui.element;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+        
+        var storeId = view.getOpenParams('storeId');
+
+        $("#storeId").val(storeId);
+
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/mch_store_speaker/get',
+            data: {
+                storeId: storeId
+            },
+            error: function(err){
+                layer.alert(err);
+            },
+            success: function(res){
+                if(res.code == 0 && res.data != null){
+                    $('#speakerId').val(res.data.speakerId);
+                    if(res.data.status == 1) {
+                        $("#status").val("已绑定");
+                        $("input[name='relieve'][value='0']").attr("checked",true);
+                    }else if (res.data.status == 2) {
+                        $("#status").val("已解绑");
+                        $("input[name='relieve'][value='1']").attr("checked",true);
+                    }else {
+                        $("#status").val("未绑定");
+                        $("input[name='relieve'][value='1']").attr("checked",true);
+                    }
+                }
+                form.render();
+            }
+
+        });
+
+
+        //提交修改后的数据
+        //监听提交
+        form.on('submit(btnUP)', function(data){
+
+            if (data.field.codeMoney == "") {
+                layer.alert("验证金额不能为空！");
+                return false;
+            }
+
+            var regex = new RegExp("^(([1-9]{1}\\d*)|(0{1}))(\\.\\d{2})$");
+            if(!regex.test(data.field.codeMoney)){
+                layer.alert("请输入正确的金额（包含两位小数）！");
+                return false;
+            }
+
+            // 在这个回调函数里面写ajax提交
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/mch_store_speaker/binding_speaker',
+                data: data.field,
+                success: function(res){
+                    if(res.code == 0){
+                        layer.closeAll(); //关闭所有弹层
+                        layer.msg("操作成功");
+                        layui.table.reload('tableReload', {page: {curr: 1}}); //调用业务弹层外表格重新加载
+                    }
+                }
+            });
+            return false;//阻止跳转
+        });
+
+
+        //发送验证金额
+        form.on('submit(sendCodeMoney)', function(data){
+            settime($("#sendCodeMoney"));
+            // 在这个回调函数里面写ajax提交
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/mch_store_speaker/confirm_speaker',
+                data: data.field,
+                success: function(res){
+                    if(res.code == 0){
+                        layer.msg("请输入云喇叭播报的金额");
+                    }
+                }
+            });
+            return false;//阻止跳转
+        });
+
+        var countdown = 30;
+        function settime(obj) { //发送验证金额倒计时
+            if(countdown == 0) {
+                obj.removeClass('layui-btn-disabled');
+                obj.attr('disabled', false);
+                //obj.removeattr("disabled");
+                obj.val("点击发送验证金额");
+                countdown = 30;
+                return;
+            } else {
+                obj.addClass('layui-btn-disabled');
+                obj.attr('disabled', true);
+                obj.val("(" + countdown + ")秒后可重新发送");
+                countdown--;
+            }
+            setTimeout(function() {
+                settime(obj)
+            }, 1000)
+        }
+
+
+        form.render();
+
+    })
+</script>

@@ -1,0 +1,115 @@
+<style>
+    .xxpayPopupDiv .layui-form-label {
+        width:12% !important;
+    }
+    .xxpayPopupDiv .layui-input-inline {
+        width: 35% !important;
+        min-height: 1px;  /** 避免没有内容时无法占位的问题 **/
+    }
+    .xxpayPopupDiv .qrcode-jump-prefix{
+        background: #f2f2f2;
+    }
+    .xxpayPopupDiv .qrcode-jump-desc{color: #576b95;cursor: pointer}
+    .xxpayPopupDiv .qrcode-jump-desc:hover{border-bottom: 1px solid #576b95}
+</style>
+<div class="layui-fluid">
+    <div class="layui-tab layui-tab-brief">
+        <div class="layui-tab-content">
+            <form class="layui-form center">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">二维码规则</label>
+                    <div class="layui-input-inline" style="display: flex">
+                        <input type="hidden" value="1" name="isEdit">
+                        <input type="text" name="prefix" lay-verify="required" readonly placeholder="请输入二维码规则" autocomplete="off" class="layui-input qrcode-jump-prefix">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">小程序功能页面</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="path" lay-verify="required" readonly placeholder="请输入小程序功能页面" autocomplete="off" class="layui-input" style="background: #f2f2f2;">
+                    </div>
+                    <div class="layui-form-mid layui-word-aux">请填写扫码后跳转的小程序功能页面，如：pages/index/index</div>
+                </div>
+                <div class="layui-form-item" style="display: flex;flex-direction: column">
+                    <div>
+                        <label class="layui-form-label">测试范围</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="openVersion" value="1" title="开发版">
+                            <input type="radio" name="openVersion" value="2" title="体验版">
+                            <input type="radio" name="openVersion" value="3" title="线上版本" checked>
+                        </div>
+                    </div>
+                    <div class="layui-form-mid layui-word-aux"><label class="layui-form-label"></label>功能测试只在指定版本生效，微信扫码后跳转至小程序页面，开发版(配置只对开发者生效)，体验版(配置对管理员、体验者生效，正式版(配置对开发者、管理员和体验者生效)</div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">测试链接</label>
+                    <div class="layui-input-inline" style="display: flex">
+                        <input type="text" name="prefix1" readonly class="layui-input qrcode-jump-prefix">
+                        <input type="text" name="debugUrl" placeholder="请输入测试链接" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item layui-hide">
+                    <div class="layui-input-block">
+                        <button type="button" class="layui-hide xxpayYesBtn" lay-submit="" lay-filter="qrcodeAdd">确认</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    layui.use(['form', 'admin', 'view'],function(){
+        var form = layui.form
+            ,$ = layui.$
+            ,admin = layui.admin
+            ,element = layui.element
+            ,view = layui.view
+            ,layer = layui.layer ;
+
+        element.render('breadcrumb', 'breadcrumb');
+
+        var mchId = view.getOpenParams('mchId');  //商户ID
+        var authFrom = view.getOpenParams('authFrom');  //来源
+        var qrcodeData = view.getOpenParams('qrcodeData');  //二维码规则数据
+
+        $("input[name='path']").val(qrcodeData.path);
+        $("input[name='openVersion'][value='" + qrcodeData.open_version + "']").attr("checked", true);
+
+        admin.req({
+            type: "POST",
+            url: layui.setter.baseUrl + '/wx_mini/getRule',
+            data: {mchId: mchId, authFrom: authFrom},
+            success: function(res){
+                if(res.code == 0) {
+                    $(".qrcode-jump-prefix").val(res.data);
+                }
+            }
+        });
+
+        form.on('submit(qrcodeAdd)', function(data) {
+            data.field.mchId = mchId;
+            data.field.authFrom = authFrom;
+
+            if (data.field.debugUrl){
+                data.field.debugUrl = data.field.prefix + data.field.debugUrl;
+            }
+
+            //这里可以写ajax方法提交表单
+            admin.req({
+                type: "POST",
+                url: layui.setter.baseUrl + '/wx_mini/qrcode_jump_add',
+                data: data.field,
+                success: function(res){
+                    if(res.code == 0) {
+                        layer.closeAll(); //关闭所有弹层
+                        layer.msg("添加成功");
+                        layui.table.reload('tableReload3'); //调用业务弹层外表格重新加载
+                    }
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+        form.render();
+    })
+</script>

@@ -1,0 +1,91 @@
+<style>
+    .xxpayPopupDiv .layui-form-label {
+        width:20% !important;
+        margin-left:1%;
+    }
+    .xxpayPopupDiv .layui-input-inline {
+        width: 50% !important;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <div class="layui-tab-content">
+                <form class="layui-form layui-form-pane" action="">
+                    <div class="layui-form-item" style="margin-top: 10px">
+                        <label class="layui-form-label"><span style="color: red">*</span>区域名</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="areaName" name="areaName" value="" required placeholder="请输入区域名" class="layui-input" required autocomplete="off">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label"><span style="color: red">*</span>所属门店</label>
+                        <div class="layui-input-inline">
+                            <select name="storeId" lay-search lay-verify="required" id="storeSelect" lay-filter="storeSelectFilter">
+                                <option value="">请选择</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block" style="padding-bottom: 20px;">
+                            <button type="button" class="layui-hide xxpayYesBtn" lay-submit="" lay-filter="areaAdd">保存</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    layui.use(['admin','form'],function(){
+        var form = layui.form
+            ,$ = layui.$
+            ,admin = layui.admin
+            ,element = layui.element
+            ,layer = layui.layer ;
+        // 导航
+        element.render('breadcrumb', 'breadcrumb');
+
+        // 初始化【门店】下拉框
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/store/list',
+            data: {page: 1, limit: -1},
+            error: function(err){
+                layer.alert(JSON.stringify(err.field), {title: '错误提示'})
+            },
+            success: function(res){
+                if(res.code == 0){
+                    $.each(res.data, function(){
+                        $("#storeSelect").append("<option item value='"+this.storeId+"'>"+this.storeName+' [' + this.storeId + ']'+"</option>");
+                    });
+                    form.render();
+                }
+            }
+        });
+
+        //监听提交
+        form.on('submit(areaAdd)', function(data){
+
+            // 在这个回调函数里面写ajax提交
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/mchStoreAreaManage/addOne',
+                data: data.field,
+                success: function(res){
+                    if(res.code == 0){
+                        layer.closeAll(); //关闭所有弹层
+                        layer.msg("创建成功");
+                        layui.table.reload('tableReload', {page: {curr: 1}}); //调用业务弹层外表格重新加载
+                    }
+                }
+            });
+
+            return false;//阻止跳转
+        });
+
+        form.render();
+
+    })
+</script>

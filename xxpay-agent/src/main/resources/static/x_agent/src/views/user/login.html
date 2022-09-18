@@ -1,0 +1,254 @@
+<style>
+
+  .login2-flex-row{ /** flex布局， 行 **/
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .login2-main{
+    width:460px;
+    height:580px;
+    background:rgba(255,255,255,1);
+    box-shadow:0px 6px 15px rgba(0,0,0,0.05);
+    opacity:1;
+    border-radius:10px;
+    margin-top: 60px;
+  }
+
+  .login2-title{
+    width:140px;
+    height:40px;
+    font-size:28px;
+    font-family:PingFang SC;
+    font-weight:400;
+    line-height:40px;
+    color:rgba(255,88,1,1);
+    opacity:1;
+  }
+
+  .login2-slzf{
+    width:72px;
+    height:25px;
+    font-size:18px;
+    font-family:PingFang SC;
+    font-weight:400;
+    line-height:25px;
+    color:rgba(0,0,0,1);
+    opacity:0.6;
+  }
+
+  .login2-input{
+    border: 0px;
+    width:400px;
+  }
+
+  .login2-input-short{
+    border: 0px;
+    width:230px;
+  }
+
+  .login2-line{
+    width:400px;
+    background:rgba(0,0,0,1);
+    margin-bottom: 40px;
+  }
+
+  .login2-line-short{
+    width:230px;
+    background:rgba(0,0,0,1);
+    margin-bottom: 40px;
+  }
+
+  .login2-opacity02-1px{
+    opacity:0.2;
+    height:1px;
+  }
+  .login2-opacity07-2px{
+    opacity:0.7;
+    height:2px;
+  }
+
+  .login2-opacity05{
+    opacity:0.5;
+  }
+  .login2-opacity09{
+    opacity:0.9;
+  }
+
+  .login2-loginbtn{
+    width:400px;
+    height:62px;
+    background:rgba(255,88,1,1);
+    border-radius:6px;
+    margin-left: 8px;
+    margin-top: 20px;
+    font-size: 18px;
+  }
+
+  .login2-vercodeimg{
+    width: 140px;
+    margin-left: 10px;
+    height: 36px;
+  }
+
+
+  /*媒体查询 */
+  @media screen and (max-width: 768px) {
+    .login2-main{width: 350px;}
+    .login2-input{width: 330px;}
+    .login2-line{width: 330px;}
+    .login2-input-short{width: 160px;}
+    .login2-line-short{width:160px;}
+    .login2-loginbtn{width:317px; height: 40px}
+  }
+
+
+</style>
+<script type="text/html" template>
+  <link rel="stylesheet" href="{{ layui.setter.base }}style/login.css?v={{ layui.admin.v }}-1" media="all">
+</script>
+
+<div class="login2-flex-row">
+  <div class="login2-main">
+
+    <div class="login2-flex-row" style="margin-top: 40px;">
+
+      <div style="padding-top: 5px; margin-right: 6px;">
+        <img src="/images/login2-title.png"  style="width:28px;height: 28px;"/>
+      </div>
+      <div class="login2-title">代理商登录</div>
+    </div>
+    <div class="login2-flex-row" style="margin-top:8px; margin-bottom: 30px">
+      <div class="login2-slzf">小新支付</div>
+    </div>
+
+    <form class="layadmin-user-login-box layadmin-user-login-body layui-form">
+      <input name="vercodeRandomStr" id="vercodeRandomStr" type='hidden'>
+      <input name="loginType" id="loginType" value="web" type='hidden'>
+      <div class="layui-form-item">
+        <label class="layadmin-user-login-icon layui-icon layui-icon-username" for="login2-username"></label>
+        <input type="text" name="username" id="login2-username" lay-verify="required" placeholder="用户名" class="layui-input login2-input">
+        <div class="layui-form-item login2-line login2-opacity02-1px"></div>
+      </div>
+
+      <div class="layui-form-item">
+        <label class="layadmin-user-login-icon layui-icon layui-icon-password" for="login2-password"></label>
+        <input type="password" name="password" id="login2-password" lay-verify="required" placeholder="密码" class="layui-input login2-input">
+        <div class="layui-form-item login2-line login2-opacity02-1px"></div>
+      </div>
+
+      <div class="layui-form-item">
+        <div class="layui-row">
+          <div class="layui-col-sm7 layui-col-xs6">
+            <label class="layadmin-user-login-icon layui-icon layui-icon-vercode" for="login2-vercode"></label>
+            <input type="text" name="vercode" lay-verify="required" id="login2-vercode"  placeholder="图形验证码" class="layui-input login2-input login2-input-short">
+            <div class="layui-form-item login2-line-short login2-opacity02-1px"></div>
+          </div>
+          <div class="layui-col-sm5 layui-col-xs6">
+            <img src="" class="login2-vercodeimg" id="LAY-user-get-vercode">
+          </div>
+        </div>
+      </div>
+      <div class="layui-form-item">
+        <button class="layui-btn layui-btn-fluid login2-loginbtn login2-opacity05" id="login2-loginbtn" lay-submit lay-filter="LAY-user-login-submit" onclick="return false;">确认登录</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+layui.use(['admin', 'form', 'user'], function(){
+  var $ = layui.$
+  ,setter = layui.setter
+  ,admin = layui.admin
+  ,form = layui.form
+  ,router = layui.router()
+  ,search = router.search;
+
+  form.render();
+
+  $.loginOk = function(res) {
+    //请求成功后，写入 access_token
+    layui.data(setter.tableName, {
+      key: setter.request.tokenName
+      ,value: res.data.access_token
+    });
+
+    //登入成功的提示与跳转
+    layer.msg('登入成功', {
+      offset: '15px'
+      ,icon: 1
+      ,time: 1000
+    }, function(){
+      location.hash = search.redirect ? decodeURIComponent(search.redirect) : '/';
+    });
+  };
+
+  //提交
+  form.on('submit(LAY-user-login-submit)', function(obj){
+
+    //请求登入接口
+    admin.req({
+      url: layui.setter.baseUrl + '/auth' //实际使用请改成服务端真实接口
+      ,data: obj.field
+      ,done: function(res){
+    		  $.loginOk(res);
+      }
+    });
+  });
+
+  $.randomString = function (len) {
+	　　len = len || 32;
+	　　var $chars = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678';    /****默认去掉了容易混淆的字符oOLl,9gq,Vv,Uu,I1****/
+	　　var maxPos = $chars.length;
+	　　var pwd = '';
+	　　for (i = 0; i < len; i++) {
+	　　　　pwd += $chars.charAt(Math.floor(Math.random() * maxPos));
+	　　}
+	　　return pwd;
+  };
+  
+  $('body').off('click', "#LAY-user-get-vercode").on('click', "#LAY-user-get-vercode", function(){
+	  var vercodeRandomStr = $.randomString(6) + new Date().getTime();
+	  $("#vercodeRandomStr").val(vercodeRandomStr);
+	  $("#LAY-user-get-vercode").attr('src', layui.setter.baseUrl + '/auth/vercode?vercodeRandomStr=' + vercodeRandomStr); 
+  });
+  
+  $("#LAY-user-get-vercode").click();
+
+    //--- login2页面的绑定事件
+    $(".login2-input").keyup(function(){
+        if($(this).val()){  //如果当前输入框存在值， 则将下划线改为2px
+            $(this).next().removeClass('login2-opacity02-1px').addClass("login2-opacity07-2px");
+        }else{
+            $(this).next().removeClass('login2-opacity07-2px').addClass("login2-opacity02-1px");
+        }
+
+        //如果三个输入框都存在值， 则按钮不在置灰
+        if($("#login2-username").val().length > 0 && $("#login2-password").val().length > 0 && $("#login2-vercode").val().length > 0){
+            $('#login2-loginbtn').removeClass('login2-opacity05').addClass('login2-opacity09');
+        }else{
+            $('#login2-loginbtn').removeClass('login2-opacity09').addClass('login2-opacity05');
+        }
+    });
+
+    //绑定聚焦事件
+    $(".login2-input").focus(function(){
+        //左边距为10px, 隐藏icon图标
+        $(this).css('padding-left', '10px').prev().addClass("layui-hide");
+    });
+
+    //绑定离焦事件
+    $(".login2-input").blur(function(){
+
+        //如果当前输入框 没有值， 则恢复原状
+        if(!$(this).val()){
+            $(this).css('padding-left', '').prev().removeClass("layui-hide");
+        }
+    });
+    //--- login2页面的绑定事件
+  
+  
+});
+</script>

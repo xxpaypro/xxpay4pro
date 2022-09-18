@@ -1,0 +1,98 @@
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-tab layui-tab-brief">
+      <div class="layui-tab-content">
+          <form class="layui-form center">
+            <div class="layui-form-item">
+              <div class="layui-inline">
+                <label class="layui-form-label">登录用户名</label>
+                <div class="layui-input-inline">
+                  <input type="text" id="loginUserName" name="loginUserName" lay-verify="required" placeholder="输入用户名" autocomplete="off" class="layui-input">
+                </div>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-inline">
+                <label class="layui-form-label">用户昵称</label>
+                <div class="layui-input-inline">
+                  <input type="text" id="nickName" name="nickName" lay-verify="required" placeholder="输入用户昵称" autocomplete="off" class="layui-input">
+                </div>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">密码</label>
+              <div class="layui-input-inline">
+                <input type="password" id="loginPassword" name="loginPassword" lay-verify="pass" placeholder="输入密码" autocomplete="off" class="layui-input">
+              </div>
+              <div class="layui-form-mid layui-word-aux">请填写8到16位密码</div>
+            </div>           
+            <div class="layui-form-item">
+              <div class="layui-inline">
+                <label class="layui-form-label">邮箱</label>
+                <div class="layui-input-inline">
+                  <input type="text" id="email" name="email" lay-verify="email" placeholder="输入邮箱" autocomplete="off" class="layui-input">
+                </div>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-inline">
+                <label class="layui-form-label">手机号</label>
+                <div class="layui-input-inline">
+                  <input type="tel" id="mobile" name="mobile" lay-verify="phone" placeholder="输入手机号" autocomplete="off" class="layui-input">
+                </div>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-inline">
+                  <label class="layui-form-label">状态</label>
+                  <div class="layui-input-block">
+                      <input type="radio" name="status" value="1" title="启用" checked="checked">
+                      <input type="radio" name="status" value="0" title="停止">
+                  </div>
+              </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button type="button" class="layui-hide xxpayYesBtn" lay-submit="" lay-filter="userAdd">保存</button>
+                </div>
+            </div>
+          </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    layui.use(['form','admin'],function(){
+        var form = layui.form
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,element = layui.element
+        ,layer = layui.layer ;
+
+        element.render('breadcrumb', 'breadcrumb');
+        
+        /* 自定义验证规则 */
+        form.verify({
+            pass: [/(.+){8,16}$/, '密码必须8到16位']
+        });
+
+        form.on('submit(userAdd)', function(data) {
+            //这里可以写ajax方法提交表单
+            admin.req({
+                type: "POST",
+                url: layui.setter.baseUrl + '/subuser/add',
+                data: "params=" + JSON.stringify(data.field),
+                success: function(res){
+                    if(res.code == 0) {
+                        layer.closeAll(); //关闭所有弹层
+                        layer.msg("保存成功");
+                        layui.table.reload('tableReload', {page: {curr: 1}}); //调用业务弹层外表格重新加载
+                    }
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+        form.render();
+    })
+</script>

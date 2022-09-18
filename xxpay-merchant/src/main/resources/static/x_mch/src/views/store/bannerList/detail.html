@@ -1,0 +1,129 @@
+<style>
+    .xxpayPopupDiv .layui-form-label {
+        width:15% !important;
+        margin-left:1%;
+    }
+    .xxpayPopupDiv .layui-input-inline {
+        width: 33% !important;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <form class="layui-form layui-form-pane">
+            <div class="layui-tab layui-tab-brief">
+                <div class="layui-tab-content">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">轮播图名称</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="bannerName" name="bannerName" disabled="disabled" placeholder="输入轮播图名称" autocomplete="off" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">显示位置</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="showType" name="showType" disabled="disabled" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">所属小程序</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="authFrom" name="authFrom" disabled="disabled" autocomplete="off" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">轮播图</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="mediaPath" name="mediaPath" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">跳转地址</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="advertUrl" name="advertUrl" disabled="disabled" placeholder="输入跳转地址" autocomplete="off" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">排序值</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="sortNum" name="sortNum" disabled="disabled" placeholder="输入排序值" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">状态</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="status" name="status" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">投放门店</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="putStoreLimitType" name="putStoreLimitType" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">备注</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="remark" name="remark" autocomplete="off" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">创建时间</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="createTime" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">更新时间</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="updateTime" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    layui.use(['form','util','admin','laydate','upload','setter'], function(){
+        var form = layui.form
+            ,$ = layui.$
+            ,admin = layui.admin
+            ,element = layui.element
+            ,view = layui.view;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        var bannerId = view.getOpenParams('bannerId');
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/store_banner/get',
+            data: {
+                bannerId : bannerId
+            },
+            error: function(err){
+                layer.alert(JSON.stringify(err.field), {
+                    title: '错误提示'
+                })
+            },
+            success: function(res){
+                if(res.code == 0){
+                    $('#bannerName').val(res.data.bannerName);
+
+                    $('#couponName').val(res.data.couponName);
+                    $('#authFrom').val(res.data.authFrom==1?"点餐":res.data.authFrom==2?"商城":"");
+                    $('#showType').val(res.data.showType==1?"小程序首页":res.data.showType==2?"直播列表页顶部":"");
+                    $('#mediaPath').val(res.data.mediaPath);
+                    $('#advertUrl').val(res.data.advertUrl);
+                    $('#sortNum').val(res.data.sortNum);
+                    $('#totalNum').val(res.data.totalNum);
+                    $('#receiveNum').val(res.data.receiveNum);
+                    $('#useTimeConfig').val(res.data.useTimeConfig);
+                    $('#mchId').val(res.data.mchId);
+                    $('#status').val(res.data.status==0?"停止使用":res.data.status==1?"正常使用":"");
+                    $('#putStoreLimitType').val(res.data.putStoreLimitType==0?"全部门店":res.data.putStoreLimitType==1?"部分门店":"");
+                    $('#remark').val(res.data.remark);
+
+                    if(res.data.createTime != "" && res.data.createTime != null) {
+                        $('#createTime').val(layui.util.toDateString(res.data.createTime));
+                    }
+                    if(res.data.updateTime != "" && res.data.updateTime != null) {
+                        $('#updateTime').val(layui.util.toDateString(res.data.updateTime));
+                    }
+                    form.render();
+                }
+            }
+        })
+
+    });
+</script>
+

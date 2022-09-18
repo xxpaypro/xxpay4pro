@@ -1,0 +1,193 @@
+
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-tab layui-tab-brief">
+      <div class="layui-tab-content">
+          <form class="layui-form layui-form-pane" action="">
+              <div class="layui-row">
+                  <div class="layui-col-xs6">
+                      <div class="layui-form-item">
+                          <label class="layui-form-label">交易单号</label>
+                          <div class="layui-input-block">
+                              <input type="text" id="tradeOrderId" disabled="disabled" class="layui-input">
+                          </div>
+                      </div>
+                      <div class="layui-form-item">
+                          <label class="layui-form-label">支付订单号</label>
+                          <div class="layui-input-block">
+                              <input type="text" id="payOrderId" disabled="disabled" class="layui-input">
+                          </div>
+                      </div>
+                      <div class="layui-form-item">
+                          <label class="layui-form-label">交易金额</label>
+                          <div class="layui-input-block">
+                              <input type="text" id="amount" disabled="disabled" class="layui-input">
+                          </div>
+                      </div>
+                      <div class="layui-form-item">
+                          <label class="layui-form-label">交易状态</label>
+                          <div class="layui-input-block">
+                              <input type="text" id="status" disabled="disabled" class="layui-input">
+                          </div>
+                      </div>
+                      <div class="layui-form-item">
+                          <label class="layui-form-label">会员ID</label>
+                          <div class="layui-input-block">
+                              <input type="text" id="memberId" disabled="disabled" class="layui-input">
+                          </div>
+                      </div>
+                      <div class="layui-form-item">
+                          <label class="layui-form-label">会员手机号</label>
+                          <div class="layui-input-block">
+                              <input type="text" id="memberTel" disabled="disabled" class="layui-input">
+                          </div>
+                      </div>
+                      <div class="layui-form-item">
+                          <label class="layui-form-label">操作员ID</label>
+                          <div class="layui-input-block">
+                              <input type="text" id="operatorId" disabled="disabled" class="layui-input">
+                          </div>
+                      </div>
+                      <div class="layui-form-item">
+                          <label class="layui-form-label">操作员名称</label>
+                          <div class="layui-input-block">
+                              <input type="text" id="operatorName" disabled="disabled" class="layui-input">
+                          </div>
+                      </div>
+                      <div class="layui-form-item">
+                          <label class="layui-form-label">创建时间</label>
+                          <div class="layui-input-block">
+                              <input type="text" id="createTime" disabled="disabled" class="layui-input">
+                          </div>
+                      </div>
+                  </div>
+                  <div class="layui-col-xs6">
+                      <div class="layui-form-item">
+                          <label class="layui-form-label">门店ID</label>
+                          <div class="layui-input-block">
+                              <input type="text" id="storeId" disabled="disabled" class="layui-input">
+                          </div>
+                      </div>
+                      <div class="layui-form-item">
+                          <label class="layui-form-label">门店编号</label>
+                          <div class="layui-input-block">
+                              <input type="text" id="storeNo" disabled="disabled" class="layui-input">
+                          </div>
+                      </div>
+                      <div class="layui-form-item">
+                          <label class="layui-form-label">门店名称</label>
+                          <div class="layui-input-block">
+                              <input type="text" id="storeName" disabled="disabled" class="layui-input">
+                          </div>
+                      </div>
+                      <div class="layui-form-item">
+                          <label class="layui-form-label">商品ID</label>
+                          <div class="layui-input-block">
+                              <input type="text" id="goodsId" disabled="disabled" class="layui-input">
+                          </div>
+                      </div>
+                      <div class="layui-form-item">
+                          <label class="layui-form-label">商品名称</label>
+                          <div class="layui-input-block">
+                              <input type="text" id="subject" disabled="disabled" class="layui-input">
+                          </div>
+                      </div>
+                      <div class="layui-form-item">
+                          <label class="layui-form-label">优惠券核销码</label>
+                          <div class="layui-input-block">
+                              <input type="text" id="couponId" disabled="disabled" class="layui-input">
+                          </div>
+                      </div>
+                      <div class="layui-form-item">
+                          <label class="layui-form-label">消费赠送积分</label>
+                          <div class="layui-input-block">
+                              <input type="text" id="givePoints" disabled="disabled" class="layui-input">
+                          </div>
+                      </div>
+                      <div class="layui-form-item">
+                          <label class="layui-form-label">支付成功时间</label>
+                          <div class="layui-input-block">
+                              <input type="text" id="tradeSuccTime" disabled="disabled" class="layui-input">
+                          </div>
+                      </div>
+                      <div class="layui-form-item">
+                          <label class="layui-form-label">修改时间</label>
+                          <div class="layui-input-block">
+                              <input type="text" id="updateTime" disabled="disabled" class="layui-input">
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    layui.use(['admin','form'],function(){
+        var form = layui.form
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,element = layui.element
+        ,view = layui.view
+        ,layer = layui.layer ;
+        // 导航
+        element.render('breadcrumb', 'breadcrumb');
+        var tradeOrderId = view.getOpenParams('tradeOrderId');
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/trade_order/get',
+            data: {
+                tradeOrderId : tradeOrderId
+            },
+            error: function(err){
+                layer.alert(JSON.stringify(err.field), {
+                    title: '错误提示'
+                })
+            },
+
+            success: function(res){
+                if(res.code == 0){
+                    $('#tradeOrderId').val(res.data.tradeOrderId);
+                    $('#payOrderId').val(res.data.payOrderId);
+                    $('#couponId').val(res.data.couponId);
+                    $('#storeId').val(res.data.storeId);
+                    $('#storeNo').val(res.data.storeNo);
+                    $('#storeName').val(res.data.storeName);
+                    $('#goodsId').val(res.data.goodsId);
+                    $('#subject').val(res.data.subject);
+                    $('#amount').val(res.data.amount/100);
+                    $('#operatorId').val(res.data.operatorId);
+                    $('#operatorName').val(res.data.operatorName);
+                    $('#memberId').val(res.data.memberId);
+                    $('#memberTel').val(res.data.memberTel);
+                    $('#givePoints').val(res.data.givePoints);
+                    if(res.data.status == 0) {
+                        $('#status').val("订单生成");
+                    }else if(res.data.status == 1) {
+                        $('#status').val("订单处理中");
+                    }else if(res.data.status == 2) {
+                        $('#status').val("支付成功");
+                    }else if(res.data.status == 4) {
+                        $('#status').val("部分退款");
+                    }else if(res.data.status == 5) {
+                        $('#status').val("全部退款");
+                    }else if(res.data.status == -1) {
+                        $('#status').val("处理失败");
+                    }
+                    if(res.data.tradeSuccTime != "" && res.data.tradeSuccTime != null) {
+                        $('#tradeSuccTime').val(layui.util.toDateString(res.data.tradeSuccTime));
+                    }
+                    if(res.data.createTime != "" && res.data.createTime != null) {
+                        $('#createTime').val(layui.util.toDateString(res.data.createTime));
+                    }
+                    if(res.data.updateTime != "" && res.data.updateTime != null) {
+                        $('#updateTime').val(layui.util.toDateString(res.data.updateTime));
+                    }
+                    form.render();
+                }
+            }
+        })
+    })
+</script>

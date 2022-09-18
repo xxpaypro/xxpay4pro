@@ -1,0 +1,227 @@
+<style>
+    .xxpayPopupDiv .layui-form-label {
+        width:15% !important;
+        margin-left:1%;
+    }
+    .xxpayPopupDiv .layui-input-inline {
+        width: 33% !important;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <form class="layui-form layui-form-pane">
+            <div class="layui-tab layui-tab-brief">
+                <ul class="layui-tab-title">
+                    <li class="layui-this">任务信息</li>
+                </ul>
+                <div class="layui-tab-content">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">跑批任务ID</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="taskId" autocomplete="off" class="layui-input" disabled="disabled">
+                        </div>
+                        <label class="layui-form-label">服务商ID</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="isvId" autocomplete="off" class="layui-input" disabled="disabled">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">代理商名称</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="agentName" autocomplete="off" class="layui-input" disabled="disabled">
+                        </div>
+                        <label class="layui-form-label">结算代理商ID</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="agentId" autocomplete="off" class="layui-input" disabled="disabled">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">结算代理商父ID</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="agentPid" autocomplete="off" class="layui-input" disabled="disabled">
+                        </div>
+                        <label class="layui-form-label">服务商结算配置快照</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="settConfigSnapshot" autocomplete="off" class="layui-input" disabled="disabled">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+
+                        <label class="layui-form-label">交易最早时间</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="tradeFirstDate" autocomplete="off" class="layui-input" disabled="disabled">
+                        </div>
+                        <label class="layui-form-label">交易最晚时间</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="tradeLastDate" autocomplete="off" class="layui-input" disabled="disabled">
+                        </div>
+                    </div>
+
+                    <ul class="layui-tab-title"></ul>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">全部交易总金额</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="allTradeAmount" class="layui-input" disabled="disabled">
+                        </div>
+                        <label class="layui-form-label">全部交易总返佣金额</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="allTradeProfitAmount" class="layui-input" disabled="disabled">
+                        </div>
+
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">全部交易总笔数</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="allTradeCount" autocomplete="off" class="layui-input" disabled="disabled">
+                        </div>
+                    </div>
+
+                    <ul class="layui-tab-title"></ul>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">微信交易总金额</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="wxTradeAmount" autocomplete="off" class="layui-input" disabled="disabled">
+                        </div>
+                        <label class="layui-form-label">微信交易总返佣金额</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="wxTradeProfitAmount" autocomplete="off" class="layui-input" disabled="disabled">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">微信交易总笔数</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="wxTradeCount" autocomplete="off" class="layui-input" disabled="disabled">
+                        </div>
+                    </div>
+
+                    <ul class="layui-tab-title"></ul>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">支付宝交易总金额</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="alipayTradeAmount" autocomplete="off" class="layui-input" disabled="disabled">
+                        </div>
+                        <label class="layui-form-label">支付宝交易总返佣金额</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="alipayTradeProfitAmount" autocomplete="off" class="layui-input" disabled="disabled">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">支付宝交易总笔数</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="alipayTradeCount" autocomplete="off" class="layui-input" disabled="disabled">
+                        </div>
+                    </div>
+
+                    <ul class="layui-tab-title"></ul>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">结算状态</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="settStatus" autocomplete="off" class="layui-input" disabled="disabled">
+                        </div>
+                        <label class="layui-form-label">结算时间</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="settDate" autocomplete="off" class="layui-input" disabled="disabled">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">结算支付凭证图片</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="settImg" autocomplete="off" class="layui-input" disabled="disabled">
+                        </div>
+                        <label class="layui-form-label">创建时间</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="createTime" autocomplete="off" class="layui-input" disabled="disabled">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">更新时间</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="updateTime" autocomplete="off" class="layui-input" disabled="disabled">
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    layui.use(['admin', 'form'],function(){
+        var form = layui.form
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,element = layui.element
+        ,layer = layui.layer
+            ,view = layui.view;
+        // 导航
+        element.render('breadcrumb', 'breadcrumb');
+
+        var taskId = view.getOpenParams('taskId');
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/sub_order_profit/get',
+            data: { taskId : taskId },
+            error: function(err){
+                layer.alert(JSON.stringify(err.field));
+            },
+            success: function(res){
+
+                if(res.code == 0){
+
+                    $('#taskId').val(res.data.taskId);
+                    $('#isvId').val(res.data.isvId);
+                    $('#agentId').val(res.data.agentId);
+                    $('#agentPid').val(res.data.agentPid);
+                    $('#agentName').val(res.data.agentName);
+
+                    if(res.data.tradeFirstDate) {
+                        $('#tradeFirstDate').val(layui.util.toDateString(res.data.tradeFirstDate));
+                    }
+
+                    if(res.data.tradeLastDate) {
+                        $('#tradeLastDate').val(layui.util.toDateString(res.data.tradeLastDate));
+                    }
+
+                    $('#settConfigSnapshot').val(res.data.settConfigSnapshot);
+                    $('#allTradeCount').val(res.data.allTradeCount);
+                    $('#allTradeAmount').val(res.data.allTradeAmount / 100);
+                    $('#allTradeProfitAmount').val(res.data.allTradeProfitAmount / 100);
+                    $('#wxTradeCount').val(res.data.wxTradeCount);
+                    $('#wxTradeAmount').val(res.data.wxTradeAmount / 100);
+                    $('#wxTradeProfitAmount').val(res.data.wxTradeProfitAmount / 100);
+                    $('#alipayTradeCount').val(res.data.alipayTradeCount);
+                    $('#alipayTradeAmount').val(res.data.alipayTradeAmount / 100);
+                    $('#alipayTradeProfitAmount').val(res.data.alipayTradeProfitAmount / 100);
+                    $('#settStatus').val(res.data.settStatus == -1 ? "无需结算" : res.data.settStatus == 1 ? "已结算": '待结算');
+
+                    if(res.data.settDate) {
+                        $('#settDate').val(layui.util.toDateString(res.data.settDate));
+                    }
+
+                    $('#settImg').val(res.data.settImg);
+                    if(res.data.createTime) {
+                        $('#createTime').val(layui.util.toDateString(res.data.createTime));
+                    }
+
+                    if(res.data.updateTime) {
+                        $('#updateTime').val(layui.util.toDateString(res.data.updateTime));
+                    }
+                    form.render();
+                }
+            }
+        });
+
+    })
+</script>

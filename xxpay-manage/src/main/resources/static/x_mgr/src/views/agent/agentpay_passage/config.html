@@ -1,0 +1,254 @@
+
+<div class=" layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a>代理商管理</a>
+        <a><cite>代付通道</cite></a>
+    </div>
+</div>
+
+<style>
+    .layui-form-label {
+        width:180px !important;
+        margin-left:1%;
+    }
+    .layui-input-inline {
+        width: 80% !important;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">通道配置</li>
+            </ul>
+            <div class="layui-tab-content">
+                <form class="layui-form center">
+                    <input type="hidden" id="id" name="id">
+                    <input type="hidden" id="agentId" name="infoId">
+                    <input type='hidden' id='refProductId' name='refProductId' />
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">代付通道</label>
+                        <div class="layui-input-inline" >
+                            <input class='layui-input' id='agpayInfo' readonly />
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item layui-hide" id='parentAgentFeeDiv'>
+                        <label class="layui-form-label">上级代理商费用</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="parentAgentFee" class="layui-input" readonly="readonly" disabled="disabled">
+                        </div>
+                    </div>
+
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">指定代付子账户</label>
+                        <div class="layui-input-inline">
+                            <select id="setCurPayAccSelect"><option value="">请选择</option></select>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">代付单笔限额(元)</label>
+                        <div class="layui-input-inline">
+                            <input type="tel" id="maxEveryAmount" name="feeRiskConfig[maxEveryAmount]" lay-verify="required|number" placeholder="输入代付单笔限额" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item" id="mchFeeEveryId">
+                        <label class="layui-form-label">代付手续费(元/笔)</label>
+                        <div class="layui-input-inline">
+                            <input type="tel" id="currentSetFee" name="fee" lay-verify="required|number" placeholder="输入代付每笔手续费" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">默认</label>
+                        <div class="layui-input-inline" >
+                            <input type="radio" name="isDefault" title="是" value="1" />
+                            <input type="radio" name="isDefault" title="否" value="0" checked="checked"/>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item" id="passageDiv">
+                        <label class="layui-form-label">可配置下级通道子账户</label>
+                        <div class="layui-input-inline" >
+                            <table id="XxPay_Mgr_Passage_dataAll" lay-filter="XxPay_Mgr_Passage_dataAll"></table>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">状态</label>
+                        <div class="layui-input-inline" >
+                            <input type="radio" name="status" title="开启" value="1" checked/>
+                            <input type="radio" name="status" title="关闭" value="0" />
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-inline">
+                            <button type="button" class="layui-btn" lay-submit="" lay-filter="update">保存</button>
+                            <button type="button" id="btnBack" class="layui-btn">返回</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    layui.use(['form','table','util','admin',],function(){
+        var form = layui.form
+                , $ = layui.$
+                , admin = layui.admin
+                , layer = layui.layer
+                , element = layui.element
+                , table = layui.table;
+
+        element.render('breadcrumb', 'breadcrumb'); //渲染导航信息
+
+        var router = layui.router();
+        var agentId = router.search.agentId;
+        var agentpayPassageId = router.search.agentpayPassageId;
+        
+        $('#agentId').val(agentId);
+        $('#refProductId').val(agentpayPassageId);
+
+        admin.req({
+            type: 'post',
+            url: layui.setter.baseUrl + '/agent_agentpay_passage/get',
+            data: {
+                agentId: agentId,
+                agentpayPassageId: agentpayPassageId
+            },
+            error: function(err){
+                layer.alert(err);
+            },
+            success: function(res){
+                if(res.code == 0){
+
+                    var extConfigVO = res.data.extConfigVO ?  res.data.extConfigVO : {};
+                    var visibleAccList = extConfigVO.visibleAccList ? extConfigVO.visibleAccList: []; //可配置子账户列表
+                    var curPayPollParam = extConfigVO.curPayPollParam ? extConfigVO.curPayPollParam : []; //当前角色代付指定账户
+
+                    $('#id').val(res.data.id);
+                    $('#currentSetFee').val(res.data.fee == null ? "" : res.data.fee/100);
+                    $("input[name='status'][value='"+res.data.status+"']").attr("checked", true);
+
+                    $('#maxEveryAmount').val(res.data.feeRiskConfig == null || res.data.feeRiskConfig.maxEveryAmount == null ? "" :res.data.feeRiskConfig.maxEveryAmount/100);
+                    $("input[name='isDefault'][value='"+res.data.isDefault+"']").attr("checked", true);
+
+                    $("#agpayInfo").val("通道名称：["+res.data.ps.passageName+"]    -     费用：["+res.data.ps.passageFee/100+"元/笔]")
+                        .attr('passageFee', res.data.ps.passageFee/100);
+
+                    if(res.data.ps.parentAgentFee != null){
+                        $('#parentAgentFee').val(res.data.ps.parentAgentFee /100 );
+                        $('#parentAgentFeeDiv').removeClass('layui-hide');
+                    }
+
+
+                    admin.req({
+                        type: 'post',
+                        url: layui.setter.baseUrl + '/config/agentpay_passage_account/get_account_list',
+                        data: {infoType: 2, infoId: agentId, passageId: agentpayPassageId},
+                        error: function (err) {
+                            layer.alert(err);
+                        },
+                        success: function (res) {
+                            if(res.code == 0){
+
+                                var accountTableData = [];
+                                $.each(res.data, function(){
+
+                                    var selectedHtml = '';
+                                    if(curPayPollParam.indexOf(this.id) >= 0 ){selectedHtml = "selected"; }
+                                    $("#setCurPayAccSelect").append('<option '+selectedHtml+' value= '+this.id+'>'+this.accountName+'</option>');
+
+                                    if(visibleAccList.indexOf(this.id) >= 0){
+                                        this.LAY_CHECKED = true;
+                                    }
+                                    accountTableData.push(this);
+                                });
+
+                                // 通道轮询
+                                table.render({
+                                    elem: '#XxPay_Mgr_Passage_dataAll'
+                                    ,id: 'tableReload'
+                                    ,page: false
+                                    ,cols: [[
+                                        {field: 'ok', type: 'checkbox', fixed: 'left', }
+                                        ,{field: 'id', title: '账户ID', width: 180}
+                                        ,{field: 'accountName', title: '账户名称', width: 250}
+                                    ]]
+                                    ,skin: 'nob'
+                                    ,data : accountTableData
+                                });
+                                form.render();
+                            }
+                        }
+                    });
+                }
+            }
+        })
+
+        form.on('submit(update)', function(data){
+           
+        	// 获取表格选中行的数据
+            var checkDatas = table.checkStatus('tableReload');
+            if(checkDatas.data.length <= 0) {
+            	return layer.alert("请选择代付通道子账户",{title: '提示'});
+            }
+            
+            if(isNaN(data.field.fee)){
+            	return layer.alert("请输入正确的代付手续费",{title: '提示'});
+            }
+            
+            if( (data.field.fee * 1 ) < ($("#agpayInfo").attr('passageFee') * 1)){
+            	return layer.alert("代付手续费不得低于当前通道费用",{title: '提示'});
+            }
+            
+
+            var extConfig = {};
+            var visibleAccList = []; //可配置子账户列表
+            var curPayPollParam = []; //当前角色代付指定账户
+
+
+            $.each(checkDatas.data, function(index){
+                visibleAccList.push("A#"+ this.id + "#");
+            });
+
+            var setCurPayAccId = $('#setCurPayAccSelect').val();
+            if(setCurPayAccId){ curPayPollParam.push("A#"+setCurPayAccId+"#");}
+
+            extConfig.visibleAccList = visibleAccList;
+            extConfig.curPayPollParam = curPayPollParam;
+
+            data.field.extConfig = JSON.stringify(extConfig);
+
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/agent_agentpay_passage/addOrUpd',
+                data: data.field,
+                error: function(err){layer.alert(err.msg,{title:"请求失败"})},
+                success: function(res){
+                    if(res.code == 0){
+                        layer.alert(res.msg, {title: '保存成功'},function(index){
+                            layer.close(index);
+                            location.hash = '/agent/agentpay_passage/list/agentId=' + agentId;
+                        });
+                    }
+                }
+            })
+            return false;
+        });
+
+        $('#btnBack').on('click', function() {
+            location.hash = '/agent/agentpay_passage/list/agentId=' + agentId;
+        });
+
+
+    });
+
+</script>

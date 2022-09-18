@@ -1,0 +1,734 @@
+<style>
+     .layui-form-label {
+        width:15% !important;
+    }
+     .layui-input-inline {
+        width: 33% !important;
+    }
+    .modifyBtn {
+        width: 10%;
+    }
+     .layui-table-view .layui-table{width: 100%;}
+
+    .layui-btn+.layui-btn{margin: 0;}
+    .version{padding: 20px 30px 10px 30px; margin-bottom: 30px;background: #ffffff;border-radius: 5px;box-shadow: 0 1px 2px rgba(150, 150, 150, 0.3)}
+    .version-title{margin-bottom: 30px;font-size: 22px;color: #353535;width: 300px;display: flex;flex-direction: row;justify-content: space-between;align-items: center}
+    .version-body-no-data{width: 100%;height:100px;display: flex;flex-direction: row;justify-content: center;align-items: center}
+    .version-body{width: 100%;display: flex;flex-direction: row;justify-content: space-between;align-items: center}
+    .version-body-left{width: 80%;display: flex;flex-direction: row;justify-content: flex-start;}
+    .version-body-left-v{width: 150px;}
+    .version-body-left-v p:first-child{color: #9a9a9a;font-size: 14px;}
+    .version-body-left-v p:last-child{color: #353535;font-size: 22px;padding-top: 5px;}
+    .version-body-left-desc{font-size: 14px;width: 80%;}
+    .version-body-left-desc .desc-item1{color: #9a9a9a;display: flex;flex-direction: row;justify-content: flex-start;padding-bottom: 20px;}
+    .version-body-left-desc .desc-item1 p:first-child{width: 90px;}
+    .version-body-left-desc .desc-item2{color: #353535;margin-left: 20px;}
+    .version-body-right{width:150px;height:110px;display: flex;flex-direction: row;justify-content: space-between;align-items: flex-start;flex-wrap: nowrap;position: relative}
+    .wx-btn{background: #07c160;width: 100px;padding: 0}
+    .wx-btn-down{background: #07c160;width: 40px;padding: 0}
+    .layui-btn-disabled{background: #FBFBFB}
+    .commit-more{position: absolute;right: 0;top: 45px;background: #ffffff;box-shadow: 0 1px 20px 0 rgba(0,0,0,.1);border-radius: 2px;z-index: 1000}
+    .commit-more-items{background: #ffffff;box-shadow: 0 1px 20px 0 rgba(0,0,0,.1);position: absolute;right: 0;padding: 4px 0}
+    .commit-more-item{width: 120px;height: 35px;line-height: 35px;text-align: center;cursor: pointer;background: #ffffff;color: #353535;padding: 1px;}
+    .commit-more-item:hover{color: #000000;background: #f2f2f2}
+     .version-body-left-desc .text-red{color: red}
+     .version-body-left-desc .text-green{color: #07c160}
+     .version-body-left-desc .text-blue{color: blue}
+     .qrcodeJumpNum{font-size: 14px;color: #9a9a9a}
+
+    .layui-card{margin-bottom: 0;background: #F7FAFC;}
+</style>
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a><cite>首页</cite></a>
+        <a lay-href="/biz/merchant/index"><cite>商户列表</cite></a>
+        <a><cite>小程序模板库</cite></a>
+    </span>
+</div>
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-tab layui-tab-brief" lay-filter="tab_template">
+      <ul class="layui-tab-title" style="border-bottom-color: #f2f2f2">
+        <li class="layui-this">草稿箱</li>
+        <li>小程序模板库</li>
+          <li>小程序版本管理</li>
+        <li>小程序设置</li>
+      </ul>
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+                <table id="miniMgrDraft" lay-filter="miniMgrDraft"></table>
+            </div>
+
+           <div class="layui-tab-item">
+              <table id="miniMgr" lay-filter="miniMgr"></table>
+           </div>
+
+            <div class="layui-tab-item layui-row">
+                <div class="layui-col-md12 version">
+                    <div class="version-title">线上版本</div>
+                    <div class="version-body-no-data mini-3-noData">你暂无已发布的线上版本</div>
+                    <div class="version-body mini-3 layui-hide">
+                        <div class="version-body-left">
+                            <div class="version-body-left-v">
+                                <p>版本号</p>
+                                <p class="mini-3-miniVersion"></p>
+                            </div>
+                            <div class="version-body-left-desc">
+                                <div class="desc-item1"><p>开发者</p><p class="desc-item2 mini-3-develop"></p></div>
+                                <div class="desc-item1"><p>发布时间</p><p class="desc-item2 mini-3-releaseTime"></p></div>
+                                <div class="desc-item1"><p>项目备注</p><p class="desc-item2 mini-3-miniDesc"></p></div>
+                            </div>
+                        </div>
+                        <!--<div class="version-body-right">
+                            <button class="layui-btn wx-btn" data-type="all" data-events="miniDetail">详情</button>
+                            <button class="layui-btn wx-btn-down"><i class="layui-icon" style="color: #ffffff;font-size: 14px;margin-right: 0;">&#xe61a;</i></button>
+                        </div>-->
+                    </div>
+                </div>
+                <div class="layui-col-md12 version">
+                    <div class="version-title">审核版本<a class="layui-btn wx-btn mini-2" data-type="all" data-events="audit_more_getStatus">查询审核状态</a></div>
+                    <div class="version-body-no-data mini-2-noData">你暂无提交审核的版本或者版本已发布上线</div>
+                    <div class="version-body mini-2  layui-hide">
+                        <div class="version-body-left">
+                            <div class="version-body-left-v">
+                                <p>版本号</p>
+                                <p class="mini-2-miniVersion"></p>
+                            </div>
+                            <div class="version-body-left-desc">
+                                <div class="desc-item1"><p>状态</p><p class="desc-item2 mini-2-auditStatus"></p></div>
+                                <div class="desc-item1"><p>失败原因</p><p class="desc-item2 mini-2-refusedReason layui-hide"></p></div>
+                                <div class="desc-item1"><p>开发者</p><p class="desc-item2 mini-2-develop"></p></div>
+                                <div class="desc-item1"><p>提交审核时间</p><p class="desc-item2 mini-2-auditTime"></p></div>
+                                <div class="desc-item1"><p>项目备注</p><p class="desc-item2 mini-2-miniDesc"></p></div>
+                            </div>
+                        </div>
+                        <div class="version-body-right">
+                            <button class="layui-btn wx-btn audit_operate_release layui-btn-disabled" data-type="all" data-events="miniRelease">提交发布</button>
+                            <button class="layui-btn wx-btn audit_operate_reAudit layui-hide" data-type="reAudit" data-events="miniAudit">重新提交审核</button>
+                            <button class="layui-btn wx-btn-down" data-type="all" data-events="audit_moreOperator">
+                                <i class="layui-icon" style="color: #ffffff;font-size: 14px;margin-right: 0;">&#xe61a;</i>
+                            </button>
+                            <div class="commit-more layui-hide" id="audit_more">
+                                <div class="commit-more-items">
+                                    <button class="layui-btn commit-more-item" data-type="all" data-events="audit_more_cancel">撤回审核</button>
+                                    <button class="layui-btn commit-more-item" data-type="all" data-events="audit_more_speedup">加急审核</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md12 version">
+                    <div class="version-title">开发版本<a class="layui-btn wx-btn" data-type="all" data-events="qrCode">体验版二维码</a></div>
+                    <div class="version-body-no-data mini-1-noData">你暂无可提交审核的版本，请先上传代码</div>
+                    <div class="version-body mini-1 layui-hide">
+                        <div class="version-body-left">
+                            <div class="version-body-left-v">
+                                <p>版本号</p>
+                                <p class="mini-1-miniVersion"></p>
+                            </div>
+                            <div class="version-body-left-desc">
+                                <div class="desc-item1"><p>开发者</p><p class="desc-item2 mini-1-develop"></p></div>
+                                <div class="desc-item1"><p>代码上传时间</p><p class="desc-item2 mini-1-commitTime"></p></div>
+                                <div class="desc-item1"><p>项目备注</p><p class="desc-item2 mini-1-miniDesc"></p></div>
+                            </div>
+                        </div>
+                        <div class="version-body-right">
+                            <button class="layui-btn wx-btn" data-type="audit" data-events="miniAudit">提交审核</button>
+                            <button class="layui-btn wx-btn-down" data-type="all" data-events="commit_moreOperator">
+                                <i class="layui-icon" style="color: #ffffff;font-size: 14px;margin-right: 0;">&#xe61a;</i>
+                            </button>
+                            <div class="commit-more layui-hide" id="commit_more">
+                                <div class="commit-more-items">
+                                    <input class="commit-more-item layui-hide mini-1-id" type="hidden">
+                                    <button class="layui-btn commit-more-item" data-type="all" data-events="commit_more_del">删除</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-tab-item layui-row">
+                <!--<form class="layui-form layui-form-pane">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">服务器域名</label>
+                        <div class="layui-input-inline">
+                            <input name="domin" lay-verify="required" placeholder="输入服务器域名，多个请以,隔开" autocomplete="off" class="layui-input">
+                        </div>
+                        <button class="layui-btn modifyBtn">修改</button>
+                    </div>
+                </form>-->
+                <div class="layui-col-md12 version">
+                    <div class="version-title" style="width: 100%">扫普通链接二维码打开小程序
+                        <div>
+                            <span class="qrcodeJumpNum"></span>
+                            <a class="layui-btn wx-btn" data-type="all" data-events="qrcodeJumpAdd">添加</a>
+                        </div>
+                    </div>
+                    <table id="qrcodeJumpGet" lay-filter="qrcodeJumpGet"></table>
+                </div>
+            </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+    //草稿箱  操作
+    var tplTitleDraft = function(d){
+        return '<a class="layui-btn layui-btn-xs" lay-event="add2Template" >添加到模板库</a> '
+    };
+    //模版列表 操作
+    var tplTitle = function(d){
+        return '<a class="layui-btn layui-btn-xs" lay-event="commit" >上传代码</a> '
+            + '<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>'
+    };
+    //二维码规则列表  操作
+    var tplTitleQrcode = function(d){
+        return '<a class="layui-btn layui-btn-xs" lay-event="qrcodeJumpPublish" >发布</a> '
+            + '<a class="layui-btn layui-btn-xs" lay-event="qrcodeJumpEdit">修改</a> '
+            + '<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="qrcodeJumpDel">删除</a>'
+    };
+
+  layui.use(['table','util','view'], function(){
+    var $ = layui.$
+            ,admin = layui.admin
+            ,table = layui.table
+            ,view = layui.view
+            ,element = layui.element;
+
+    element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+    var router = layui.router();
+    var mchId = router.search.mchId;
+    var authFrom = router.search.authFrom;
+    var quotaTotal;
+    var quotaSpeedup;
+
+      //一些事件监听
+      element.on('tab(tab_template)', function(data){
+          if (data.index == 3){
+              /**
+               * 二维码规则列表
+               */
+              table.render({
+                  elem: '#qrcodeJumpGet'
+                  ,id: "tableReload3"
+                  ,url: layui.setter.baseUrl + '/wx_mini/qrcode_jump_get'
+                  ,where: {
+                      mchId: mchId,
+                      authFrom: authFrom
+                  }
+                  ,cols: [[
+                      {field: 'prefix', title: '二维码规则', width:400}
+                      ,{field: 'path',title: '小程序页面', width:200}
+                      ,{field: 'state',title: '是否已发布', templet: '<div>{{d.state == 1?"未发布":d.state == 2?"已发布":""}}</div>'}
+                      ,{field: 'open_version',title: '测试范围', templet: '<div>{{d.open_version == 1?"开发版":d.open_version == 2?"体验版":d.open_version == 3?"正式版":""}}</div>'}
+                      ,{field: 'debug_url', title: '测试连接', width:400}
+                      ,{field: 'edit', title: '操作', templet: tplTitleQrcode }
+                  ]]
+                  ,page: false
+                  ,skin: 'line'
+                  ,done: function(res, curr, count){
+                      $(".qrcodeJumpNum").text("还可添加" + parseInt(10-count) + "个，本月还可发布" + res.extData.qrcodejump_pub_quota + "次。");
+                  }
+              });
+          }
+      });
+
+      //监听工具条
+      table.on('tool(qrcodeJumpGet)', function(obj){
+          var data = obj.data;
+          var layEvent = obj.event;
+
+          if(layEvent === 'qrcodeJumpPublish'){ //发布二维码规则
+              layer.confirm('确认发布么', function(index){
+                  //请求后台， 添加到模板库
+                  admin.req({
+                      type: 'get',
+                      url: layui.setter.baseUrl + '/wx_mini/qrcode_jump_publish',
+                      data: {
+                          mchId: mchId,
+                          authFrom: authFrom,
+                          prefix: data.prefix
+                      },
+                      error: function(err){ layer.alert(JSON.stringify(err.field), { title: '错误提示' }) },
+                      success: function(res){
+                          if(res.code == 0){
+                              layer.msg("发布成功");
+                              table.reload("tableReload3");
+                          }
+                      }
+                  });
+                  layer.close(index);
+              })
+          }else if(layEvent === 'qrcodeJumpDel'){ //删除二维码规则
+              layer.confirm('确认删除么', function(index){
+                  //请求后台， 添加到模板库
+                  admin.req({
+                      type: 'get',
+                      url: layui.setter.baseUrl + '/wx_mini/qrcode_jump_delete',
+                      data: {
+                          mchId: mchId,
+                          authFrom: authFrom,
+                          prefix: data.prefix
+                      },
+                      error: function(err){ layer.alert(JSON.stringify(err.field), { title: '错误提示' }) },
+                      success: function(res){
+                          if(res.code == 0){
+                              layer.msg("删除成功");
+                              table.reload("tableReload3");
+                          }
+                      }
+                  });
+                  layer.close(index);
+              })
+          }else if(layEvent === 'qrcodeJumpEdit') { //删除二维码规则
+              view.xxpayPopup("修改普通链接二维码规则", "biz/wx_openauth/mini_qrcodeJump_edit", {mchId: mchId, authFrom: authFrom, qrcodeData: data});
+          }
+      });
+
+      //查询服务商的当月提审限额（quota）和加急次数
+      admin.req({
+          type: 'get',
+          url: layui.setter.baseUrl + '/wx_mini/query_quota',
+          data: {
+              mchId: mchId,
+              authFrom: authFrom
+          },
+          success: function(res){
+              if(res.code == 0) {
+                  quotaTotal = res.data.rest;
+                  quotaSpeedup = res.data.speedup_rest;
+              }
+          }
+      });
+
+      /**
+       * 草稿箱
+       */
+      table.render({
+          elem: '#miniMgrDraft'
+          ,id: "tableReload"
+          ,url: layui.setter.baseUrl + '/wx_mini/miniTemplateDraftList'
+          ,cols: [[
+              {field: 'draft_id', title: '草稿ID', width:120}
+              ,{field: 'user_version',title: '版本号', width:120}
+              ,{field: 'source_miniprogram',title: '来源小程序', width:180}
+              ,{field: 'developer',title: '开发者', width:180}
+              ,{field: 'user_desc',title: '描述', minWidth: 300}
+              ,{field: 'create_time',  title: '添加到模板库时间', minWidth: 180, templet: '<div>{{ layui.util.toDateString(d.create_time*1000) }}</div>' }
+              ,{field: 'edit', title: '操作', templet: tplTitleDraft }
+          ]]
+          ,page: false
+          ,skin: 'line'
+      });
+
+      //监听工具条
+      table.on('tool(miniMgrDraft)', function(obj){
+          var data = obj.data;
+          var layEvent = obj.event;
+
+          if(layEvent === 'add2Template'){ //添加到模板库
+              //请求后台， 添加到模板库
+              var loadIndex2 = layer.load(2);
+              admin.req({
+                  type: 'get',
+                  url: layui.setter.baseUrl + '/wx_mini/add2Template',
+                  data: {
+                      draftId: data.draft_id
+                  },
+                  error: function(err){ layer.close(loadIndex2);layer.alert(JSON.stringify(err.field), { title: '错误提示' }) },
+                  success: function(res){
+                      layer.close(loadIndex2);
+                      if(res.code == 0){
+                          layer.msg("添加成功");
+                          table.reload("tableReload");
+                          table.reload("tableReload2");
+                      }
+                  }
+              });
+          }
+      });
+
+      /**
+       * 小程序模版管理
+       */
+      table.render({
+          elem: '#miniMgr'
+          ,id: "tableReload2"
+          ,url: layui.setter.baseUrl + '/wx_mini/miniTemplateList'
+          ,cols: [[
+              {field: 'template_id', title: '模版ID', width:120}
+              ,{field: 'user_version',title: '版本号', width:120}
+              ,{field: 'source_miniprogram',title: '来源小程序', width:180}
+              ,{field: 'developer',title: '开发者', width:180}
+              ,{field: 'user_desc',title: '描述', minWidth: 300}
+              ,{field: 'create_time',  title: '添加到模板库时间', minWidth: 180, templet: '<div>{{ layui.util.toDateString(d.create_time*1000) }}</div>' }
+              ,{field: 'edit', title: '操作', templet: tplTitle }
+          ]]
+          ,page: false
+          ,skin: 'line'
+      });
+
+      //监听工具条
+      table.on('tool(miniMgr)', function(obj){
+          var data = obj.data;
+          var layEvent = obj.event;
+
+          if(layEvent === 'commit'){ //上传代码
+              //请求后台， 给商户小程序上传代码
+              var loadIndex = layer.load(2);
+              admin.req({
+                  type: 'get',
+                  url: layui.setter.baseUrl + '/wx_mini/miniCommit',
+                  data: {
+                      mchId : mchId,
+                      authFrom: authFrom,
+                      versionData: data
+                  },
+                  error: function(err){ layer.close(loadIndex);layer.alert(JSON.stringify(err.field), { title: '错误提示' }) },
+                  success: function(res){
+                      layer.close(loadIndex);
+                      if(res.code == 0){
+                          layer.msg("上传成功");
+                          getMiniVersion(1);//获取开发版本小程序
+                          table.reload("tableReload2");
+                      }
+                  }
+              });
+          } else if(obj.event === 'del'){
+              layer.confirm('确认删除么', function(index){
+                  admin.req({
+                      type: 'get',
+                      url: layui.setter.baseUrl + '/wx_mini/delTemplate',
+                      data: {
+                          templateId: data.template_id
+                      },
+                      success: function(res){
+                          if(res.code == 0) {
+                              layer.msg('删除成功', {
+                                  icon: 1
+                              });
+                              table.reload("tableReload2");
+                          }
+                      }
+                  });
+                  layer.close(index);
+              });
+          }
+      });
+
+      // 事件处理
+      var events = {
+          qrCode: function(othis, type){//获取体验二维码
+              layer.open({
+                  type: 1,
+                  title: '体验二维码',
+                  scrollbar: false,//浏览器滚动条已锁
+                  closeBtn: 1, //不显示关闭按钮
+                  area: ['450px','450px'],
+                  content:
+                      `<div class="layui-wrap-content" style="text-align: center;">
+                                    <div>
+                                        <div style="margin:15px auto;">扫描二维码体验小程序</div>
+                                        <img src=` + layui.setter.baseUrl + `/wx_mini/miniGetQrcode?mchId=` + mchId + `&authFrom=` + authFrom + ` style="width: 300px;height: 300px"/>
+                                    </div>
+                                   </div>`
+              });
+          },
+          miniAudit: function (othis, type) {//提交审核
+              if (quotaTotal){
+                  layer.confirm('当月提审次数剩余' + quotaTotal + '次，确定提交审核吗？', function(index) {
+                      layer.close(index);
+                      view.xxpayPopup("提交审核", "biz/wx_openauth/mini_audit", {mchId: mchId, authFrom: authFrom, type: type});
+                  })
+              }else {
+                  view.xxpayPopup("提交审核", "biz/wx_openauth/mini_audit", {mchId: mchId, authFrom: authFrom, type: type});
+              }
+          },
+          qrcodeJumpAdd: function (othis, type) {//添加或修改二维码规则
+              view.xxpayPopup("配置普通链接二维码规则", "biz/wx_openauth/mini_qrcodeJump", {mchId: mchId, authFrom: authFrom});
+          },
+          miniRelease: function (othis, type) {//提交发布
+              layer.confirm('确认提交发布吗', function(index) {
+                  admin.req({
+                      type: 'get',
+                      url: layui.setter.baseUrl + '/wx_mini/release',
+                      data: {
+                          mchId: mchId,
+                          authFrom: authFrom
+                      },
+                      success: function(res){
+                          if(res.code == 0) {
+                              layer.msg("发布成功");
+                              getMiniVersion(2);//获取审核版本小程序
+                              getMiniVersion(3);//获取审核版本小程序
+                          }
+                      }
+                  });
+                  layer.close(index);
+              });
+          },
+          commit_moreOperator: function (othis, type) {//开发版本下拉箭头
+              if ($("#commit_more").hasClass("layui-hide")){
+                  $("#commit_more").removeClass("layui-hide");
+              }else{
+                  $("#commit_more").addClass("layui-hide");
+              }
+          },
+          commit_more_del: function (othis, type) {//开发版本删除
+              layer.confirm('确认删除么', function(index) {
+                  var id = $(othis).parent().find(".mini-1-id").val();
+                  admin.req({
+                      type: 'get',
+                      url: layui.setter.baseUrl + '/wx_mini/delCommitVersion',
+                      data: {
+                          id: id
+                      },
+                      success: function (res) {
+                          if (res.code == 0) {
+                              $(".mini-1").addClass("layui-hide");
+                              $(".mini-1-noData").removeClass("layui-hide");
+                              layer.msg("删除成功");
+                          }
+                      }
+                  });
+                  layer.close(index);
+              })
+          },
+          audit_moreOperator: function (othis, type) {//审核版本下拉
+              if ($("#audit_more").hasClass("layui-hide")){
+                  $("#audit_more").removeClass("layui-hide");
+              }else{
+                  $("#audit_more").addClass("layui-hide");
+              }
+          },
+          audit_more_getStatus: function (othis, type) {//获取最后一次提交审核状态
+              getAuditStatus();
+          },
+          audit_more_speedup: function (othis, type) {//加急审核
+              if (quotaSpeedup > 0){
+                  layer.confirm('当月加急审核次数剩余' + quotaSpeedup + '次，仍要加急吗？', function(index) {
+                      admin.req({
+                          type: 'get',
+                          url: layui.setter.baseUrl + '/wx_mini/speedup_audit',
+                          data: {
+                              mchId: mchId,
+                              authFrom: authFrom
+                          },
+                          success: function (res) {
+                              if (res.code == 0) {
+                                  layer.msg("已加急");
+                              }
+                          }
+                      });
+                      layer.close(index);
+                  })
+              }else if (quotaSpeedup <= 0){
+                  layer.msg("加急次数已用完!");
+              }else {
+                  layer.confirm('确认加急么', function(index) {
+                      admin.req({
+                          type: 'get',
+                          url: layui.setter.baseUrl + '/wx_mini/speedup_audit',
+                          data: {
+                              mchId: mchId,
+                              authFrom: authFrom
+                          },
+                          success: function (res) {
+                              if (res.code == 0) {
+                                  layer.msg("已加急");
+                              }
+                          }
+                      });
+                      layer.close(index);
+                  })
+              }
+          },
+          audit_more_cancel: function (othis, type) {//撤回审核
+              layer.confirm('确认撤回么', function(index) {
+                  admin.req({
+                      type: 'get',
+                      url: layui.setter.baseUrl + '/wx_mini/undocode_audit',
+                      data: {
+                          mchId: mchId,
+                          authFrom: authFrom
+                      },
+                      success: function (res) {
+                          if (res.code == 0) {
+                              layer.msg("撤回成功");
+                              getMiniVersion(2);//获取审核版本小程序
+                          }
+                      }
+                  });
+                  layer.close(index);
+              })
+          },
+          revert_code_release: function (othis, type) {//版本回退
+              layer.confirm('确认回到上个版本吗', function(index) {
+                  admin.req({
+                      type: 'get',
+                      url: layui.setter.baseUrl + '/wx_mini/revert_code_release',
+                      data: {
+                          mchId: mchId,
+                          authFrom: authFrom
+                      },
+                      success: function (res) {
+                          if (res.code == 0) {
+                              layer.msg("回退成功");
+                              getMiniVersion(3);//获取审核版本小程序
+                          }
+                      }
+                  });
+                  layer.close(index);
+              })
+          }
+      };
+
+      $('.layui-btn').on('click', function(){
+          var othis = $(this)
+              ,thisEvent = othis.data('events')
+              ,type = othis.data('type');
+          events[thisEvent] && events[thisEvent].call(this, othis, type);
+      });
+
+      getMiniVersion(1);//获取开发版本小程序
+      getMiniVersion(2);//获取审核版本小程序
+      getMiniVersion(3);//获取线上版本小程序
+
+      /**
+       * 获取小程序版本信息
+       */
+      function getMiniVersion(versionStatus) {
+          admin.req({
+              type: 'get',
+              url: layui.setter.baseUrl + '/wx_mini/get_miniVersion',
+              data: {
+                  mchId: mchId,
+                  authFrom: authFrom,
+                  versionStatus: versionStatus
+              },
+              success: function(res){
+                  if(res.code == 0) {
+                      if(res.data) {
+                          $(".mini-" + versionStatus + "-id").val(res.data.id);
+                          $(".mini-" + versionStatus).removeClass("layui-hide");
+                          $(".mini-" + versionStatus + "-noData").addClass("layui-hide");
+                          $(".mini-" + versionStatus + "-develop").text(res.data.develop);
+                          $(".mini-" + versionStatus + "-miniVersion").text(res.data.miniVersion);
+                          $(".mini-" + versionStatus + "-miniDesc").text(res.data.miniDesc);
+                          if (versionStatus == 1){
+                              $(".mini-" + versionStatus + "-commitTime").text(layui.util.toDateString(res.data.commitTime));
+                          }else if (versionStatus == 2){
+                              updateAuditStatusDesc(res.data.auditStatus);
+                              $(".mini-" + versionStatus + "-auditTime").text(layui.util.toDateString(res.data.auditTime));
+                              if (res.data.auditStatus == 1){
+                                  $(".mini-" + versionStatus + "-refusedReason").html(res.data.refusedReason);
+                                  $(".mini-" + versionStatus + "-refusedReason").removeClass("layui-hide");
+                              }
+                          }else if (versionStatus == 3){
+                              $(".mini-" + versionStatus + "-releaseTime").text(layui.util.toDateString(res.data.releaseTime));
+                          }
+                      }else {
+                          $(".mini-" + versionStatus).addClass("layui-hide");
+                          $(".mini-" + versionStatus + "-noData").removeClass("layui-hide");
+                      }
+                  }
+              }
+          });
+      }
+
+
+      /**
+       * 小程序设置
+       */
+      $('.modifyBtn').on('click', function () {
+          var modifyVal = $(this).parent().find(".layui-input").val();
+
+          admin.req({
+              type: 'get',
+              url: layui.setter.baseUrl + '/wx_mini/modify_domain',
+              data: {
+                  domain: modifyVal
+              },
+              success: function(res){
+                  if(res.code == 0) {
+                      layer.msg('修改成功', {
+                          icon: 1
+                      });
+                  }
+              }
+          });
+      });
+
+      //查询审核状态
+      function getAuditStatus() {
+          getStatusWithAlert();
+      }
+
+      function getStatusWithAlert() {
+          admin.req({
+              type: 'get',
+              url: layui.setter.baseUrl + '/wx_mini/get_latest_auditstatus',
+              data: {
+                  mchId: mchId,
+                  authFrom: authFrom
+              },
+              success: function(res){
+                  if(res.code == 0) {
+                      if (res.data.status == 0){
+                          layer.alert("审核成功");
+                      }else if (res.data.status == 1){
+                          layer.alert("审核失败");
+                      }else if (res.data.status == 2){
+                          layer.alert("审核中");
+                      }else if (res.data.status == 3){
+                          layer.alert("已撤回");
+                      }else if (res.data.status == 4){
+                          layer.alert("审核延后");
+                      }
+                      getMiniVersion(2);//获取审核版本小程序
+                  }
+              }
+          });
+      }
+
+      //更新审核状态
+      function updateAuditStatusDesc(e) {
+          if (e == 0){
+              $(".mini-2-auditStatus").text("审核成功");
+              $(".mini-2-auditStatus").addClass("text-green");
+              $(".audit_operate_release").removeClass("layui-hide");
+              $(".audit_operate_reAudit").addClass("layui-hide");
+              $(".audit_operate_release").removeClass("layui-btn-disabled");
+          }else if (e == 1){
+              $(".mini-2-auditStatus").text("审核失败");
+              $(".mini-2-auditStatus").addClass("text-red");
+              $(".audit_operate_reAudit").removeClass("layui-hide");
+              $(".audit_operate_release").addClass("layui-hide");
+              $(".audit_operate_release").removeClass("layui-btn-disabled");
+          }else if (e == 2){
+              $(".mini-2-auditStatus").text("审核中");
+              $(".mini-2-auditStatus").addClass("text-blue");
+              $(".audit_operate_release").text("审核中");
+              $(".audit_operate_release").removeClass("layui-hide");
+              $(".audit_operate_reAudit").addClass("layui-hide");
+              $(".audit_operate_release").addClass("layui-btn-disabled");
+          }else if (e == 3){
+              $(".mini-2-auditStatus").text("已撤回");
+              $(".audit_operate_reAudit").removeClass("layui-hide");
+              $(".audit_operate_release").addClass("layui-hide");
+              $(".audit_operate_release").removeClass("layui-btn-disabled");
+          }else if (e == 4){
+              $(".mini-2-auditStatus").text("审核延后");
+              $(".mini-2-auditStatus").addClass("text-blue");
+              $(".audit_operate_release").removeClass("layui-hide");
+              $(".audit_operate_reAudit").addClass("layui-hide");
+              $(".audit_operate_release").text("审核延后");
+              $(".audit_operate_release").addClass("layui-btn-disabled");
+          }
+      }
+
+  });
+
+</script>

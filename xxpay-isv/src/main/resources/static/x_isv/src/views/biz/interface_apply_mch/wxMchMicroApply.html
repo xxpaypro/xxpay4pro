@@ -1,0 +1,681 @@
+<style>
+    .xxpayPopupDiv .layui-form-label {
+        width:15% !important;
+        margin-left:1%;
+    }
+    .xxpayPopupDiv .layui-input-inline {
+        width: 33% !important;
+        min-height: 1px;  /** 避免没有内容时无法占位的问题 **/
+    }
+
+    .mchProgressDiv{width:20%; float: left; text-align: right}
+    .mchInfoExtDiv{margin-top: 30px;}
+    .requiredSpan{color:red}
+
+
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <div class="layui-tab-content">
+
+                <form class="layui-form layui-form-pane">
+                    <input id="mchId" name="mchId" type="hidden" />
+                    <input id="applyNo" name="applyNo" type="hidden" />
+                    <input id="applyType" name="applyType" value="2" type="hidden" />
+                    <div class="layui-tab layui-tab-brief">
+                        <div class="layui-tab-content">
+
+                            <div class="layui-form-item">
+                                <span>当前商户微信入驻状态：</span><span class="statusSpan">未入驻</span>
+                                <button class="layui-btn layui-btn-xs layui-btn refreshBtn layui-hide" onclick="return false;">
+                                    <i class="layui-icon">&#xe669;</i> 查询微信审核状态
+                                </button>
+                            </div>
+                            <div class="layui-form-item mchQrDiv layui-hide">
+                                <span>请商户扫码二维码进行签约操作：</span>
+                                 <img class="uploadImg mchQrImg" style="height:38px; margin-left:30px;cursor: pointer;" title="点击放大" />
+                            </div>
+
+                            <div class="layui-form-item layui-hide auditInfoDiv">
+                                <span>错误信息：</span><span class="auditInfoSpan requiredSpan">未入驻</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-tab layui-tab-brief">
+                        <ul class="layui-tab-title">
+                            <li class="layui-this">联系人信息</li>
+                            <li class="">
+                                <button class="layui-btn layui-btn-xs layui-btn-normal autoFillInfoBtn" onclick="return false;">
+                                    <i class="layui-icon">&#xe601;</i> 根据 &nbsp;[进件资料]&nbsp; 自动填入信息
+                                </button>
+                            </li>
+                        </ul>
+
+                        <div class="layui-tab-content">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label"><span class="requiredSpan">* </span>商户简称</label>
+                                <div class="layui-input-inline">
+                                    <input name="merchantShortName" lay-verify="required" class="layui-input">
+                                </div>
+                                <label class="layui-form-label"><span class="requiredSpan">* </span>超级管理员类型</label>
+                                <div class="layui-input-inline">
+                                    <select name="contactType" lay-verify="required">
+                                        <option value="65">法人/经营者</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label"><span class="requiredSpan">* </span>超级管理员姓名</label>
+                                <div class="layui-input-inline">
+                                    <input name="contact" lay-verify="required" class="layui-input">
+                                </div>
+                                <label class="layui-form-label"><span class="requiredSpan">* </span>超级管理员身份证号</label>
+                                <div class="layui-input-inline">
+                                    <input name="contactIdCardNo" lay-verify="required" class="layui-input">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label"><span class="requiredSpan">* </span>手机号码</label>
+                                <div class="layui-input-inline">
+                                    <input name="contactPhone" class="layui-input">
+                                </div>
+                                <label class="layui-form-label"><span class="requiredSpan">* </span>联系邮箱</label>
+                                <div class="layui-input-inline">
+                                    <input name="contactEmail" class="layui-input">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="layui-tab layui-tab-brief">
+                        <ul class="layui-tab-title">
+                            <li class="layui-this">主体资料</li>
+                        </ul>
+
+                        <div class="layui-tab-content">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label"><span class="requiredSpan">* </span>主体类型</label>
+                                <div class="layui-input-inline">
+                                    <select name="organizationType" lay-verify="required">
+                                        <option value="2401" selected>小微商户</option>
+                                    </select>
+                                </div>
+                                <label class="layui-form-label"><span class="requiredSpan">* </span>法人身份证姓名</label>
+                                <div class="layui-input-inline">
+                                    <input name="idCardName" lay-verify="required" class="layui-input">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label"><span class="requiredSpan">* </span>法人身份证号码</label>
+                                <div class="layui-input-inline">
+                                    <input name="idCardNumber" lay-verify="required" class="layui-input">
+                                </div>
+                                <label class="layui-form-label"><span class="requiredSpan">* </span>法人身份证有效期结束时间</label>
+                                <div class="layui-input-inline">
+                                    <input readonly name="idCardValidEndTime" lay-verify="required" class="layui-input" id="idCardValidEndTime">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label"><span class="requiredSpan">* </span>法人身份证人像面照片</label>
+                                <div class="layui-input-inline">
+                                    <input class="imgVal" type="hidden" lay-verify="required" name="idCardCopy" />
+                                    <img class="uploadImg layui-hide" style="height:38px; margin-left:30px;cursor: pointer;" title="点击放大" />
+                                    <button class="uploadImgBtn layui-btn layui-btn-sm" type="button" style="margin-left: 20px;">上传图片</button>
+                                    <button class="delImgBtn layui-btn layui-btn-sm layui-btn-danger layui-hide" type="button">删除图片</button>
+                                </div>
+                                <label class="layui-form-label"><span class="requiredSpan">* </span>法人身份证国徽面照片</label>
+                                <div class="layui-input-inline">
+                                    <input class="imgVal" type="hidden" lay-verify="required" name="idCardNational" />
+                                    <img class="uploadImg layui-hide" style="height:38px; margin-left:30px;cursor: pointer;" title="点击放大" />
+                                    <button class="uploadImgBtn layui-btn layui-btn-sm" type="button" style="margin-left: 20px;">上传图片</button>
+                                    <button class="delImgBtn layui-btn layui-btn-sm layui-btn-danger layui-hide" type="button">删除图片</button>
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label"><span class="requiredSpan">* </span>店铺名称</label>
+                                <div class="layui-input-inline">
+                                    <input name="storeName" lay-verify="required" class="layui-input">
+                                </div>
+                                <label class="layui-form-label"><span class="requiredSpan">* </span>店铺链接</label>
+                                <div class="layui-input-inline">
+                                    <input name="storeUrl" lay-verify="required" class="layui-input">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="layui-tab layui-tab-brief">
+                        <ul class="layui-tab-title">
+                            <li class="layui-this">结算账号</li>
+                        </ul>
+                        <div class="layui-tab-content">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label"><span class="requiredSpan">* </span>账号类型</label>
+                                <div class="layui-input-inline" id="bankAccountType">
+                                    <input type="radio" name="bankAccountType" value="75" title="对私" id="bank_personal" checked>
+                                    <!--<input type="radio" name="bankAccountType" value="74" title="对公" checked id="bank_corporate">-->
+                                </div>
+                                <label class="layui-form-label"><span class="requiredSpan">* </span>银行账号</label>
+                                <div class="layui-input-inline">
+                                    <input name="accountNumber" lay-verify="required" class="layui-input">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label"><span class="requiredSpan">* </span>开户名称</label>
+                                <div class="layui-input-inline">
+                                    <input name="accountName" lay-verify="required" class="layui-input">
+                                </div>
+                                <label class="layui-form-label"><span class="requiredSpan">* </span>开户银行</label>
+                                <div class="layui-input-inline">
+                                    <select name="accountBank" lay-filter="accountBankSelectFilter" lay-verify="required">
+                                        <option value="">-- 请选择开户银行 --</option>
+                                        <option value="工商银行">工商银行</option>
+                                        <option value="交通银行">交通银行</option>
+                                        <option value="招商银行">招商银行</option>
+                                        <option value="民生银行">民生银行</option>
+                                        <option value="中信银行">中信银行</option>
+                                        <option value="浦发银行">浦发银行</option>
+                                        <option value="兴业银行">兴业银行</option>
+                                        <option value="光大银行">光大银行</option>
+                                        <option value="广发银行">广发银行</option>
+                                        <option value="平安银行">平安银行</option>
+                                        <option value="北京银行">北京银行</option>
+                                        <option value="华夏银行">华夏银行</option>
+                                        <option value="农业银行">农业银行</option>
+                                        <option value="建设银行">建设银行</option>
+                                        <option value="邮政储蓄银行">邮政储蓄银行</option>
+                                        <option value="中国银行">中国银行</option>
+                                        <option value="宁波银行">宁波银行</option>
+                                        <option value="其他银行">其他银行</option>
+                                    </select>
+                                    <span class="requiredSpan accountBankText"></span>
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label"><span class="requiredSpan">* </span>开户银行省市编码</label>
+                                <div class="layui-input-inline">
+                                    <input name="bankAddressCode" lay-verify="required" class="layui-input">
+                                </div>
+                                <label class="layui-form-label">开户银行全称（含支行）</label>
+                                <div class="layui-input-inline">
+                                    <input name="bankName" class="layui-input">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="layui-tab layui-tab-brief">
+                        <ul class="layui-tab-title">
+                            <li class="layui-this">其他微信补充材料</li>
+                        </ul>
+
+                        <div class="layui-tab-content">
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">补充说明</label>
+                                <div class="layui-input-inline">
+                                    <input name="businessAdditionDesc" class="layui-input">
+                                </div>
+                                <label class="layui-form-label">补充材料</label>
+                                <div class="layui-input-inline">
+                                    <input class="imgVal" type="hidden" name="businessAdditionPics" />
+                                    <img class="uploadImg layui-hide" style="height:38px; margin-left:30px;cursor: pointer;" title="点击放大" />
+                                    <button class="uploadImgBtn layui-btn layui-btn-sm" type="button" style="margin-left: 20px;">上传图片</button>
+                                    <button class="delImgBtn layui-btn layui-btn-sm layui-btn-danger layui-hide" type="button">删除图片</button>
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">特殊资质</label>
+                                <div class="layui-input-inline">
+                                    <input class="multiple_img_val" type="hidden" name="qualifications" id="qualifications" value="" />
+                                    <div class="layui-upload-list" style="display: inline" id="div-slide_show"></div>
+                                    <button class="multiple_img_upload layui-btn layui-btn-sm" type="button" style="margin-left: 20px;">上传图片</button>
+                                    <button class="multiple_img_del layui-btn layui-btn-sm layui-btn-danger layui-hide" type="button">删除图片</button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                    <button type="button" class="layui-hide xxpayYesBtn" lay-submit="" lay-filter="apply"></button>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    layui.use(['form','table','util','admin','view',  'upload', 'setter', 'laydate'],function(){
+        var form = layui.form
+            , $ = layui.$
+            , admin = layui.admin
+            , layer = layui.layer
+            , element = layui.element
+            , view = layui.view
+            , table = layui.table
+            , upload = layui.upload
+            , setter = layui.setter
+            ,laydate = layui.laydate;
+
+        element.render('breadcrumb', 'breadcrumb'); //渲染导航信息
+
+        //监听时间控件
+        laydate.render({elem: '#idCardValidEndTime'});
+
+        var mchId = view.getOpenParams('mchId');  //商户ID
+        $("#mchId").val(mchId);
+
+        var wxMchSnapshot = null;
+
+
+        //初始化信息
+        var initWxInfo = function(){
+
+            $(".refreshBtn").addClass("layui-hide");
+            $(".auditInfoDiv").addClass("layui-hide");
+            $(".mchQrDiv").addClass("layui-hide");
+
+            admin.req({
+                type: 'get',
+                url: layui.setter.baseUrl + '/wx_mch_applyment/get',
+                data: { mchId : mchId },
+                error: function(err){ layer.alert(JSON.stringify(err.field), { title: '错误提示' }) },
+                success: function(res){
+                    wxMchSnapshot = res.data;
+                    if(res.data){
+                        $("#applyNo").val(res.data.applyNo); //申请单编号
+
+                        //当前状态
+                        var applyMicroStatus = res.data.applyStatus;  //0-未入驻, 1-小微商户审核中, 2-小微商户审核通过, 3-待商户签约, 4-请求异常/微信驳回, 5-待账户验证, 6-已作废, 7-编辑中
+
+                        if(applyMicroStatus == '0'){
+
+                        }else if(applyMicroStatus == '1'){  //1-小微商户审核中
+                            $(".statusSpan").text("审核中");
+                            $(".refreshBtn").removeClass("layui-hide");
+                            console.log(res.data.wxApplymentMchQrImg)
+                            if(res.data.wxApplymentMchQrImg){
+                                $(".mchQrDiv").removeClass("layui-hide");
+                                $(".mchQrImg").attr("src", res.data.wxApplymentMchQrImg);
+                            }
+
+                        }else if(applyMicroStatus == '2'){  //2-小微商户审核通过
+                            $(".statusSpan").text("审核通过");
+                            $(".wxMchId").text(res.data.wxMchId);
+
+                        }else if(applyMicroStatus == '3'){  //3-待签约
+
+                            $(".refreshBtn").removeClass("layui-hide");
+                            $(".statusSpan").text("待商户签约");
+                            if(res.data.wxApplymentMchQrImg){
+                                $(".mchQrDiv").removeClass("layui-hide");
+                                $(".mchQrImg").attr("src", res.data.wxApplymentMchQrImg);
+                            }
+
+                        }else if(applyMicroStatus == '4'){  //4-异常/驳回
+                            $(".statusSpan").text("请求异常/微信驳回");
+                            $(".auditInfoDiv").removeClass('layui-hide');
+                            $(".auditInfoSpan").text(res.data.auditInfo);
+
+                        }else if(applyMicroStatus == '5'){  //5-待账户验证
+                            $(".statusSpan").text("待账户验证");
+                            $(".refreshBtn").removeClass("layui-hide");
+                            if(res.data.wxApplymentMchQrImg){
+                                $(".mchQrDiv").removeClass("layui-hide");
+                                $(".mchQrImg").attr("src", res.data.wxApplymentMchQrImg);
+                            }
+
+                        }
+                        else if(applyMicroStatus == '6'){  //6-已作废
+                            $(".statusSpan").text("已作废");
+
+                        }
+                        else if(applyMicroStatus == '7'){  //7-编辑中
+                            $(".statusSpan").text("编辑中");
+                            $(".refreshBtn").removeClass("layui-hide");
+
+                        }
+
+                        $('input[name="merchantShortName"]').val(res.data.merchantShortName);    //商户简称
+                        $('input[name="contact"]').val(res.data.contact);    //超级管理员姓名
+                        $('input[name="contactIdCardNo"]').val(res.data.contactIdCardNo);    //超级管理员身份证号
+                        $('input[name="contactPhone"]').val(res.data.contactPhone);    //手机号码
+                        $('input[name="contactEmail"]').val(res.data.contactEmail);    //联系邮箱
+
+                        $('input[name="storeName"]').val(res.data.storeName);    //店铺名称
+                        $('input[name="storeUrl"]').val(res.data.storeUrl);    //店铺链接
+
+                        $('input[name="idCardName"]').val(res.data.idCardName);    //身份证姓名
+                        $('input[name="idCardNumber"]').val(res.data.idCardNumber);    //身份证号码
+                        $('input[name="idCardValidEndTime"]').val(res.data.idCardValidEndTime);    //身份证有效期结束
+
+                        setImgValFunc("idCardCopy", res.data.idCardCopy, true);  //身份证照片
+                        setImgValFunc("idCardNational", res.data.idCardNational, true);  //身份证国徽面照片
+
+                        $('input[name="accountName"]').val(res.data.accountName);    //开户名称
+                        $('input[name="accountNumber"]').val(res.data.accountNumber);    //银行账号
+                        $('select[name="accountBank"] option[value="'+res.data.accountBank+'"]').prop('selected', true);    //开户银行
+                        $('input[name="bankAddressCode"]').val(res.data.bankAddressCode);    //开户银行省市编码
+                        $('input[name="bankName"]').val(res.data.bankName);    //开户银行全称（含支行）
+
+                        $('input[name="businessAdditionDesc"]').val(res.data.businessAdditionDesc);    //补充说明
+                        setImgValFunc("businessAdditionPics", res.data.businessAdditionPics, true);  //补充材料
+                        //特殊资质
+                        if (res.data.qualifications) {
+                            $('.multiple_img_val').val(res.data.qualifications);
+                            $('.multiple_img_del').removeClass("layui-hide");
+                            if (typeof (res.data.qualifications) === 'string') {
+                                res.data.qualifications = res.data.qualifications.split(",");
+                            }
+                            res.data.qualifications.forEach(item => {
+                                $('#div-slide_show').append('<img class="uploadImg"  title="点击放大" style="height:38px; margin-left:10px;cursor: pointer;" src="'+ item +'">')
+                            })
+                        }
+
+                        $("#bank_personal").attr("disabled", true);
+
+                        form.render();
+                    }
+                }
+            });
+        }
+
+        initWxInfo();
+
+        //监听主体选择
+        form.on('select(organizationType)', function(data){
+            admin.req({
+                type: 'get',
+                url: layui.setter.baseUrl + '/wx_mch_applyment/wxIndustry',
+                data: { parentCode : 1 },
+                error: function(err){ layer.alert(JSON.stringify(err.field), { title: '错误提示' }) },
+                success: function(res){
+                    if(res.code == 0 && res.data){
+
+                    }
+                }
+            });
+            form.render();
+        });
+
+        $(".autoFillInfoBtn").click(function(){
+
+            var layerShadeId = layer.msg('请稍后...',{time: 0, shade: 0.1});
+
+            //查询商户信息- 基本信息
+            admin.req({
+                type: 'get',
+                url: layui.setter.baseUrl + '/mch_info/get',
+                data: { mchId : mchId },
+                error: function(err){ layer.alert(JSON.stringify(err.field), { title: '错误提示' }) },
+                success: function(res){
+                    if(res.code == 0){
+                        $('input[name="businessMerchantName"]').val(res.data.mchName);    //营业执照上的商户名称
+                        $('input[name="storeName"]').val(res.data.mchName);    //门店名称
+                        $('input[name="merchantShortName"]').val(res.data.mchShortName);    //商户简称
+                        $('input[name="contact"]').val(res.data.contactRealName);    //超级管理员姓名
+                        $('input[name="contactPhone"]').val(res.data.loginMobile);    //手机号码
+                        $('input[name="contactEmail"]').val(res.data.loginEmail);    //联系邮箱
+
+                        //查询商户进件信息
+                        admin.req({
+                            type: 'get',
+                            url: layui.setter.baseUrl + '/mch_info_ext/get',
+                            data: { mchId : mchId },
+                            error: function(err){ layer.alert(JSON.stringify(err.field), { title: '错误提示' }) },
+                            success: function(res2){
+                                if(res2.code == 0 && res2.data){
+                                    $('input[name="idCardName"]').val(res2.data.legalPersonName);    //身份证姓名
+                                    $('input[name="idCardNumber"]').val(res2.data.legalPersonIdCardNo);    //身份证号码
+                                    $('input[name="contactIdCardNo"]').val(res2.data.legalPersonIdCardNo);    //超级管理员身份证号
+
+                                    //身份证有效期
+                                    var legalPersonIdCardDate = res2.data.legalPersonIdCardDate.split("_");
+
+                                    legalPersonIdCardDate[1] = legalPersonIdCardDate[1] == '0' ? "长期" : legalPersonIdCardDate[1];
+                                    $('input[name="idCardValidEndTime"]').val(legalPersonIdCardDate[1]);    //身份证有效期结束
+                                    setImgValFunc("idCardCopy", res2.data.legalIdCard1Img, true);   //身份证人像面照片
+                                    setImgValFunc("idCardNational", res2.data.legalIdCard2Img, true);  //身份证国徽面照片
+                                    $('input[name="accountName"]').val(res2.data.settAccName);    //开户名称
+                                    $('input[name="accountNumber"]').val(res2.data.settAccNo);    //银行账号
+
+                                    // 选中开户银行
+                                    $('.accountBankText').text("商户进件资料中填写的开户银行为：[ " + res2.data.settBankName + " ]");    //银行账号
+                                    $('select[name="accountBank"] option[value="'+res2.data.settBankName+'"]').prop('selected', true);
+
+
+                                    $('input[name="bankAddressCode"]').val(res2.data.settBankAreaCode);    //开户银行省市编码
+                                    $('input[name="bankName"]').val(res2.data.settBankNetName);    //开户银行全称（含支行）
+
+                                    //特殊资质
+                                    if (res2.data.qualifications) {
+                                        $('.multiple_img_val').val(res2.data.qualifications);
+                                        $('.multiple_img_del').removeClass("layui-hide");
+                                        if (typeof (res2.data.qualifications) === 'string') {
+                                            res2.data.qualifications = res2.data.qualifications.split(",");
+                                        }
+                                        res2.data.qualifications.forEach(item => {
+                                            $('#div-slide_show').append('<img class="uploadImg"  title="点击放大" style="height:38px; margin-left:10px;cursor: pointer;" src="'+ item +'">')
+                                        })
+                                    }
+                                    form.render();
+                                }
+                                layer.close(layerShadeId);
+                            }
+                            ,error:function(){
+                                layer.close(layerShadeId);
+                            }
+                        });
+                    }
+                }
+            });
+
+            return false;
+        });
+
+
+        form.on('submit(apply)', function(data){
+
+            var fields = data.field;
+
+            if(fields.accountBank == '其他银行' && !fields.bankName){
+                layer.alert('选中其他银行时，需填入银行全称（含支行）！');
+                return false;
+            }
+
+            if(wxMchSnapshot){
+                if(wxMchSnapshot.applyStatus == 1){
+                    layer.alert('当前状态为[审核中]， 无需再次发起！');
+                    return false;
+                }
+                if(wxMchSnapshot.applyStatus == 3){
+                    layer.alert('当前状态为[待签约]， 无需再次发起！');
+                    return false;
+                }
+                if(wxMchSnapshot.applyStatus == 2){
+                    layer.alert('当前状态为[完成]， 无需再次发起！');
+                    return false;
+                }
+            }
+
+            layer.confirm("确认发起微信小微商户入驻请求？", function(){
+
+                var layerShadeId = layer.msg('请稍后...',{time: 0, shade: 0.1});
+
+                admin.req({
+                    type: 'post',
+                    url: layui.setter.baseUrl + '/wx_mch_applyment/microApply',
+                    data: fields,
+                    error: function(err){layer.alert(err.msg,{title:"请求失败"})},
+                    success: function(res){
+                        if(res.code == 0){
+
+                            //更新当前页面
+                            // initWxInfo();
+
+                            //关闭当前弹层 & 调用外层的刷新事件
+                            layer.closeAll();
+                            admin.events.refresh();
+                        }
+                    },complete:function(){
+                        layer.close(layerShadeId);
+                    }
+                });
+            });
+            return false;
+        });
+
+
+        //上传图片接口
+        var headers = {};
+        headers[setter.request.tokenName] = layui.data(setter.tableName)[setter.request.tokenName];
+        upload.render({
+            url: layui.setter.baseUrl + '/upload/mch_apply'
+            ,elem: '.uploadImgBtn'
+            , headers: headers
+            , size: 2048  //仅支持2M图片上传
+            ,done: function(res, index, upload){
+
+                //如果上传失败
+                if(res.code != 0){
+                    return layer.msg('上传失败['+res.msg+']', {icon: 2});
+                }
+
+                var divElem = $(this.item).parent();
+                divElem.find('.imgVal').val(res.data); //图片真实路径
+                divElem.find('.uploadImg').attr("src", res.data).removeClass('layui-hide');
+                divElem.find('.delImgBtn').removeClass('layui-hide');
+                divElem.find('.uploadImgBtn').text('重新上传');
+                form.render();
+            }
+        });
+
+        //点击[删除图片] 按钮， 事件
+        $('.delImgBtn').click(function(){
+
+            var divElem = $(this).parent();
+            divElem.find('.imgVal').val(""); //清空图片真实路径
+            divElem.find('.uploadImgBtn').text("上传图片");
+            divElem.find('.uploadImg').attr("src", "").addClass('layui-hide');
+            divElem.find('.delImgBtn').addClass('layui-hide');
+            form.render();
+        });
+
+        //点击[图片] 按钮， 事件
+        $('body').on('click', '.uploadImg', function(){
+            var imgSrc = $(this).attr('src');
+            layer.photos({photos: {
+                    "title": "查看上传图片", //相册标题
+                    "id": 1, //相册id
+                    "start": 0, //初始显示的图片序号，默认0
+                    "data": [   //相册包含的图片，数组格式
+                        {
+                            "alt": "图片",
+                            "pid": 1, //图片id
+                            "src": imgSrc, //原图地址
+                            "thumb": "" //缩略图地址
+                        }
+                    ]
+                } ,anim: 5});
+        });
+
+
+        var setImgValFunc = function(inputName, src, allowReload){
+
+            if(!src) {return false;}
+            var divElem = $("input[name='"+inputName+"']").parent();
+            divElem.find('.imgVal').val(src); //图片真实路径
+            divElem.find('.uploadImg').attr("src", src).removeClass('layui-hide');
+            if(allowReload){
+                divElem.find('.delImgBtn').removeClass('layui-hide');
+                divElem.find('.uploadImgBtn').text('重新上传');
+            }
+        }
+
+        //多图片上传
+        var qualifications = [];
+        upload.render({
+            elem: '.multiple_img_upload'
+            ,url: layui.setter.baseUrl + '/upload/mch_apply'
+            ,headers: headers
+            ,multiple: true
+            ,number: 5
+            ,size: 2048  //仅支持2M图片上传
+            ,done: function(res){
+                var divElem = $(this.item).parent();
+                divElem.find('.multiple_img_del').removeClass('layui-hide');
+                form.render();
+                //如果上传成功
+                if (res.code == 0) {
+                    // 判断当前多图个数是否高于4个
+                    if (qualifications.length <= 4) {
+                        $('#div-slide_show').append('<img class="uploadImg"  title="点击放大" style="height:38px; margin-left:10px;cursor: pointer;" src="'+ res.data +'">')
+                        //追加图片成功追加文件名至图片容器
+                        qualifications.push(res.data);
+                        $('.multiple_img_val').val(qualifications);
+                        form.render();
+                    }else {
+                        layer.msg("特殊资质最多上传5张图片！");
+                        return false;
+                    }
+                }
+            }
+        });
+
+        //多图  点击[删除图片] 按钮， 事件
+        $('.multiple_img_del').click(function(){
+            var divElem = $(this).parent();
+            divElem.find('.multiple_img_val').val(""); //清空图片真实路径
+            divElem.find('.multiple_img_del').addClass('layui-hide');
+            divElem.find('#div-slide_show').empty();
+            qualifications = [];
+            form.render();
+        });
+
+
+        //点击 【查询微信审核状态】 按钮
+        $(".refreshBtn").click(function(){
+
+            if(!wxMchSnapshot){
+                layer.alert("请稍后再试！");
+                return false;
+            }
+
+            if(wxMchSnapshot.applyStatus != '1' && wxMchSnapshot.applyStatus != '3'){
+                layer.alert("当前状态无需查询！");
+                return false;
+            }
+
+            var layerShadeId = layer.msg('请稍后...',{time: 0, shade: 0.1});
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/wx_mch_applyment/queryMicroApplyStatus',
+                data: {applyNo: wxMchSnapshot.applyNo},
+                error: function(err){layer.alert(err.msg,{title:"请求失败"})},
+                success: function(res){
+                    if(res.code == 0){
+                        layer.msg("查询成功！");
+                        initWxInfo();
+                    }
+                },complete:function(){
+                    layer.close(layerShadeId);
+                }
+            });
+
+        });
+
+
+        form.render();
+
+    });
+</script>

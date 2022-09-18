@@ -1,0 +1,32 @@
+server:
+  port: 8205
+
+dubbo:
+  registry:
+    address: @zookeeper.url@
+    file: ${user.home}/dubbo-cache/${spring.application.name}/dubbo.cache
+
+spring:
+  application:
+    name: xxpay-task
+  profiles:
+    active: prod
+  mvc:
+    static-path-pattern: /mch_bill_down/**
+  resources:
+    static-locations: file:${config.mchBillPath}
+
+config:
+  downBillUrl: @reconciliation.site.url@/mch_bill_down
+  ali:
+    billPath: @bill.root.path@/alipay/
+  platBillPath: @bill.root.path@/plat #平台生成的对账文件路径/ 包括商户 和 代理商的对账单
+  mchPayBillPath: /pay/mch  #商户-支付 对账单路径(相对于platBillPath)
+  mchAgpayBillPath: /agpay/mch #商户-代付 对账单路径(相对于platBillPath)
+  agentAgpayBillPath: /agpay/agent #代理商-代付 对账单路径(相对于platBillPath)
+
+sqlit:
+  file:
+    path: jdbc:sqlite:@sqlit.file.path@
+
+

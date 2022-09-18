@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.xxpay.service.dao.mapper.MchInfoExtMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="org.xxpay.core.entity.MchInfoExt">
+        <id column="MchId" property="MchId" />
+        <result column="AgentId" property="agentId" />
+        <result column="IsvId" property="isvId" />
+        <result column="LegalPersonName" property="legalPersonName" />
+        <result column="LegalPersonPhone" property="legalPersonPhone" />
+        <result column="LegalPersonIdCardNo" property="legalPersonIdCardNo" />
+        <result column="LegalPersonIdCardDate" property="legalPersonIdCardDate" />
+        <result column="BusinessLicenseNo" property="businessLicenseNo" />
+        <result column="BusinessLicenseDate" property="businessLicenseDate" />
+        <result column="ServicePhone" property="servicePhone" />
+        <result column="IndustryCode" property="industryCode" />
+        <result column="SettAccAttr" property="settAccAttr" />
+        <result column="SettAccNo" property="settAccNo" />
+        <result column="SettAccName" property="settAccName" />
+        <result column="SettBankName" property="settBankName" />
+        <result column="SettBankNetName" property="settBankNetName" />
+        <result column="SettBankProvinceCode" property="settBankProvinceCode" />
+        <result column="SettBankCityCode" property="settBankCityCode" />
+        <result column="SettBankAreaCode" property="settBankAreaCode" />
+        <result column="SettBankAreaInfo" property="settBankAreaInfo" />
+        <result column="StoreOuterImg" property="storeOuterImg" />
+        <result column="StoreInnerImg" property="storeInnerImg" />
+        <result column="CashierImg" property="cashierImg" />
+        <result column="LegalIdCard1Img" property="legalIdCard1Img" />
+        <result column="LegalIdCard2Img" property="legalIdCard2Img" />
+        <result column="OpenAccountImg" property="openAccountImg" />
+        <result column="BusinessLicenseImg" property="businessLicenseImg" />
+        <result column="Qualifications" property="qualifications" />
+        <result column="SettIdCard1Img" property="settIdCard1Img" />
+        <result column="SettIdCard2Img" property="settIdCard2Img" />
+        <result column="SettIdCard3Img" property="settIdCard3Img" />
+        <result column="AuthorizeImg" property="authorizeImg" />
+        <result column="LeaseImg" property="leaseImg" />
+        <result column="BankCardImg" property="bankCardImg" />
+        <result column="Other1Img" property="other1Img" />
+        <result column="Other2Img" property="other2Img" />
+        <result column="ApplyRateInfo" property="applyRateInfo" />
+        <result column="CreateTime" property="createTime" />
+        <result column="UpdateTime" property="updateTime" />
+    </resultMap>
+
+</mapper>

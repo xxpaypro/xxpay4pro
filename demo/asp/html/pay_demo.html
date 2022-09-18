@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>支付Demo</title>
+</head>
+<body>
+<div style="display:none" id="formJump"></div>
+<div class="container">
+	<div class="row" style="padding:15px;">
+		<div class="col-md-12">
+			<hr/><hr/>
+			<h2>支付测试</h2>
+			商户订单号：<input id='payMchOrderNo' /> <button  onclick='randomOrderNo()'> 随机生成订单号</button><br /><br />
+			支付产品ID ：
+			<select id="productId" style="height:28px">
+				<option value="8021">支付宝条码支付 [8021] </option>
+				<option value="8020">微信条码支付 [8020] </option>
+				<option value="8008">支付宝服务窗支付 [8008] </option>
+				<option value="8004">微信公众号支付 [8004] </option>
+			</select><br /><br />
+			应用ID ：<input id='appId' value='' /> <br /><br />
+			支付金额（元）： <input id='amount' value='1' /> <br /><br />
+			扩展参数： <input id='extra' value='' /> <br /><br />
+			渠道用户ID： <input id='channelUserId' value='' /> <br /><br />
+			<button type="button" class="btn btn-success btn-lg" onclick='payTest()'>支付测试</button><br /><br />
+
+			接口响应结果： <textarea readonly id="createOrderResult" style="width:90%; height:120px; color:darkblue; font-size:14px"></textarea>
+
+			<hr/>
+			<hr/>
+			<h2>订单查询</h2>
+			商户订单编号 ：<input id='queryMchOrderNo' />
+			<button type="button" class="btn btn-success btn-lg" onclick='queryOrder()'>查询</button><br /><br />
+			接口响应结果： <textarea readonly id="queryOrderResult" style="width:90%; height:120px; color:darkblue; font-size:14px"></textarea>
+
+			<hr/>
+			<hr/>
+
+			<hr/><hr/>
+			<h2>退款测试</h2>
+			商户退款订单号：<input id='refundMchOrderNo' /> <button  onclick='randomRefundOrderNo()'> 随机生成退款订单号</button><br /><br />
+			原始商户订单号：<input id='refundOriginMchOrderNo' /><br /><br />
+			退款金额（元）： <input id='refundAmount' value='1' /> <br /><br />
+			<button type="button" class="btn btn-success btn-lg" onclick='refundTest()'>发起退款</button><br /><br />
+
+			接口响应结果： <textarea readonly id="refundCreateOrderResult" style="width:90%; height:120px; color:darkblue; font-size:14px"></textarea>
+
+			<hr/>
+			<hr/>
+			<h2>退款订单查询</h2>
+			商户退款订单编号 ：<input id='refundQueryMchOrderNo' />
+			<button type="button" class="btn btn-success btn-lg" onclick='refundQueryOrder()'>查询</button><br /><br />
+			接口响应结果： <textarea readonly id="refundQueryOrderResult" style="width:90%; height:120px; color:darkblue; font-size:14px"></textarea>
+
+			<hr/>
+			<hr/>
+
+
+			<h4>说明：</h4>
+			<span>1.首次测试，请修改[api/_Config.asp]文件内的商户ID、秘钥、支付网关地址的配置；</span><br />
+			<span>2.由于项目根据业务进行了文件夹划分，请设置[ IIS 点击站点->ASP->行为->启用父路径（选择True）]；</span><br />
+			<span>3.js脚本中[ mainHost ]变量，请配置为demo项目后端接口的请求地址，默认为 http://localhost；</span><br />
+			<span>4.[api/pay/CreateOrder.asp] ：调起[统一收款]支付接口，并返回原样数据；</span><br />
+			<span>5.[api/pay/QueryOrder.asp] ：调起[查询订单]支付接口，并返回原样数据；</span><br />
+			<span>6.[api/pay/Notify.asp] ：接收支付网关的支付结果异步通知。</span><br />
+			<span>7.[api/refund/Apply.asp] ：调起[退款]支付接口，并返回原样数据；</span><br />
+			<span>8.[api/refund/QueryOrder.asp] ：调起[退款查单]支付接口，并返回原样数据；</span><br />
+			<span>9.[api/refund/Notify.asp] ：接收支付网关的退款结果异步通知。</span>
+
+			<hr/><hr/>
+
+		</div>
+	</div>
+</div>
+<script src="js/jquery-1.12.4.min.js"></script>
+
+<script>
+
+    var mainHost = 'http://localhost';   //ajax 请求后端接口域名地址
+
+    //点击【支付】按钮 事件
+    function payTest(){
+
+        $("#createOrderResult").text("");
+
+        var productId = $('#productId').val();
+
+        if(!productId){
+            alert('请输入产品ID');return;
+        }
+        if(!$('#amount').val() || isNaN($('#amount').val())){
+            alert('请输入正确的金额');return;
+        }
+        if(!$('#payMchOrderNo').val() ){
+            alert('请输入订单号');return;
+        }
+
+        if( productId == '8020' || productId == '8021' ){  //条码支付
+            if(!$('#extra').val() ){
+                alert('请输入扩展参数(用户支付条码)');return;
+            }
+        }
+
+        if( productId == '8004' || productId == '8008' ){  //js支付
+            if(!$('#channelUserId').val() ){
+                alert('请输入用户 UserId 或 openId ');return;
+            }
+        }
+
+        $.ajax({
+            url : mainHost + '/api/pay/CreateOrder.asp',
+            data: { 'appId': $("#appId").val(),
+                'amount': $('#amount').val(),
+                'productId': $('#productId').val(),
+                'mchOrderNo': $('#payMchOrderNo').val(),
+                'channelUserId': $('#channelUserId').val(),
+                'extra': $('#extra').val()
+            },
+            type: 'post',
+            success: function(data){
+                $("#createOrderResult").text(data);
+            },error: function(){
+                alert('接口服务异常');
+            }
+        });
+
+        return false;
+
+    }
+
+    //点击【查询】按钮 点击事件
+    function queryOrder(){
+
+        if(!$('#queryMchOrderNo').val()){
+            alert('请输入订单编号！');return;
+        }
+
+        var queryMchOrderNo = $('#queryMchOrderNo').val();
+
+        $('#queryOrderResult').text("");
+        $.ajax({
+
+            url : mainHost + '/api/pay/QueryOrder.asp',
+            data: {'mchOrderNo':queryMchOrderNo},
+            type: 'post',
+            success: function(data){
+
+                $('#queryOrderResult').text(data);
+
+            },error: function(){
+                alert('接口服务异常');
+            }
+        });
+
+        return false;
+    }
+
+    //点击【发起退款】按钮 事件
+    function refundTest(){
+
+        $("#refundCreateOrderResult").text("");
+
+        if(!$('#refundAmount').val() || isNaN($('#refundAmount').val())){
+            alert('请输入正确的金额');return;
+        }
+        if(!$('#refundMchOrderNo').val() ){
+            alert('请输入商户退款订单号');return;
+        }
+        if(!$('#refundOriginMchOrderNo').val() ){
+            alert('请输入商户原始订单号');return;
+        }
+
+        $.ajax({
+            url : mainHost + '/api/refund/Apply.asp',
+            data: {
+                'amount': $('#refundAmount').val(),
+                'mchOrderNo': $('#refundOriginMchOrderNo').val(),
+                'mchRefundNo': $('#refundMchOrderNo').val()
+            },
+            type: 'post',
+            success: function(data){
+                $("#refundCreateOrderResult").text(data);
+            },error: function(){
+                alert('接口服务异常');
+            }
+        });
+
+        return false;
+
+    }
+
+    //点击【退款查询】按钮 点击事件
+    function refundQueryOrder(){
+
+        if(!$('#refundQueryMchOrderNo').val()){
+            alert('请输入订单编号！');return;
+        }
+
+        var refundQueryMchOrderNo = $('#refundQueryMchOrderNo').val();
+
+        $('#refundQueryOrderResult').text("");
+        $.ajax({
+
+            url : mainHost + '/api/refund/QueryOrder.asp',
+            data: {'mchRefundOrder':refundQueryMchOrderNo},
+            type: 'post',
+            success: function(data){
+
+                $('#refundQueryOrderResult').text(data);
+
+            },error: function(){
+                alert('接口服务异常');
+            }
+        });
+
+        return false;
+    }
+
+
+
+    //随机订单号
+    function randomOrderNo(){
+        $('#payMchOrderNo').val("TEST" + new Date().getTime());
+    }
+
+    //随机退款订单号
+    function randomRefundOrderNo(){
+        $('#refundMchOrderNo').val("TREFUND" + new Date().getTime());
+    }
+
+</script>
+</body>
+</html>

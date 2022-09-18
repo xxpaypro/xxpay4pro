@@ -1,0 +1,149 @@
+<style>
+    .layui-input-inline{margin-top:10px;}
+</style>
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a>结算</a>
+        <a><cite>打款记录</cite></a>
+    </div>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">打款记录</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-tab-item layui-show" style="margin-bottom:1%;">
+                    <div class="layui-row">
+                        <div class="layui-form" style="float:right;">
+                            <div id="timeDiv" class="layui-form-item" style="margin:0;">
+                                <div class="layui-input-inline">
+                                    <input type="text" name="infoId" id="infoId" placeholder="结算商ID" autocomplete="off" class="layui-input">
+                                </div>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="accountName" id="accountName" placeholder="账户名" autocomplete="off" class="layui-input">
+                                </div>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="settOrderId" id="settOrderId" placeholder="结算单号" autocomplete="off" class="layui-input">
+                                </div>
+                                <div class="layui-input-inline">
+                                    <select name="settStatus" id="settStatus" lay-search="">
+                                        <option value="-99">状态</option>
+                                        <option value="2">已审核</option>
+                                        <option value="4">打款中</option>
+                                    </select>
+                                </div>
+                                <div class="layui-input-inline">
+                                    <button id="search" class="layui-btn" data-type="reload">搜索</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <table id="remitList"></table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    
+    //标题内容模板
+    var tplTitle = function(d){
+        return '<a class="layui-btn layui-btn-primary layui-btn-xs" lay-href="sett/detail/id='+ d.id +'">查看</a> <a class="layui-btn layui-btn-xs" lay-href="sett/remit/remitD/id='+ d.id +'">打款</a>'
+    };
+    var tplStatus = function(d){
+        if(d.settStatus == 1) {
+            return "<span style='color: red'>等待审核</span>";
+        }else if(d.settStatus == 2) {
+            return "<span style='color: darkgreen'>已审核</span>";
+        }else if(d.settStatus == 3) {
+            return "<span style='color: indigo'>审核不通过</span>";
+        }else if(d.settStatus == 4) {
+            return "<span style='color: blue'>打款中</span>";
+        }else if(d.settStatus == 5) {
+            return "<span style='color: brown'>打款成功</span>";
+        }else if(d.settStatus == 6) {
+            return "<span style='color: #122b40'>打款失败</span>";
+        }
+    };
+    
+    layui.config({
+	    base: '/x_mgr/src/lib/extend/',
+	});
+
+    layui.use(['table','util','element', 'form', 'laydate', 'timePick'], function(){
+        var table = layui.table
+        ,$ = layui.$
+        ,form = layui.form
+        ,laydate = layui.laydate
+        ,timePick = layui.timePick
+        ,element = layui.element;
+
+		timePick.init();  //第一个参数表示开始时间   第二个表示结束时间   0,0今天   -1,-1昨天   -7,0近一周   以此类推
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+		var createTimeStart = $('#createTimeStart').val();
+        var createTimeEnd = $('#createTimeEnd').val();
+        table.render({
+            elem: '#remitList'
+            ,url: layui.setter.baseUrl + '/sett/remit_list'
+            ,where: {
+                
+                createTimeStart : createTimeStart,
+                createTimeEnd : createTimeEnd
+            }
+            ,id: 'tableReload'
+            ,cols: [[
+                {field:'settOrderId', width: 220, title: '结算单号', sort: true }
+                ,{field:'infoType', title: '结算商类型', templet: '<div>{{d.infoType == 1?"商户":d.infoType == 2?"代理商":""}}</div>' }
+                ,{field:'infoId', title: '结算商ID' }
+                /*,{field: 'settType',title: '结算类型',templet: '<div>{{d.settType == 1?"手工结算":d.settType == 2?"自动结算":""}}</div>'}*/
+                ,{field:'accountName', title: '账户名' }
+                ,{field:'settAmount', title: '结算金额',templet: '<div>{{d.settAmount/100}}</div>' }
+                ,{field:'settFee', title: '手续费',templet: '<div>{{d.settFee/100}}</div>' }
+                ,{field:'remitAmount', title: '打款金额',templet: '<div>{{d.remitAmount/100}}</div>' }
+                ,{field: 'settStatus',title: '结算状态',templet: tplStatus}
+                ,{field: 'settDate',title: '结算日期',templet: '<div>{{ layui.util.toDateString(d.settDate, "yyyy-MM-dd") }}</div>'}
+                ,{field:'edit', title: '操作', templet: tplTitle }
+            ]]
+            ,page: true
+            ,skin: 'line'
+        });
+        
+        // 搜索
+        var $ = layui.$, active = {
+            reload: function(){
+                var createTimeStart = $('#createTimeStart').val();
+                var createTimeEnd = $('#createTimeEnd').val();
+                var settOrderId = $('#settOrderId').val();
+                var infoId = $("#infoId").val();
+                var accountName = $('#accountName').val().trim();;
+                var settStatus = $("#settStatus").val();
+                //执行重载
+                table.reload('tableReload', {
+                    page: {
+                        curr: 1 //重新从第 1 页开始
+                    }
+                    ,where: {
+                        settOrderId: settOrderId,
+                        infoId : infoId,
+                        accountName: accountName,
+                        createTimeStart : createTimeStart,
+                        createTimeEnd : createTimeEnd,
+                        settStatus : settStatus
+                    }
+                });
+            }
+        };
+        $('#search').on('click', function() {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+
+        // 渲染表单
+        form.render();
+    })
+
+</script>

@@ -1,0 +1,625 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.xxpay.service.dao.mapper.AccountHistoryMapper" >
+  <resultMap id="BaseResultMap" type="org.xxpay.core.entity.AccountHistory" >
+    <id column="Id" property="id" jdbcType="BIGINT" />
+    <result column="InfoId" property="infoId" jdbcType="BIGINT" />
+    <result column="InfoType" property="infoType" jdbcType="TINYINT" />
+    <result column="ChangeAmount" property="changeAmount" jdbcType="BIGINT" />
+    <result column="Balance" property="balance" jdbcType="BIGINT" />
+    <result column="AfterBalance" property="afterBalance" jdbcType="BIGINT" />
+    <result column="BizOrderId" property="bizOrderId" jdbcType="VARCHAR" />
+    <result column="BizChannelOrderNo" property="bizChannelOrderNo" jdbcType="VARCHAR" />
+    <result column="BizOrderAmount" property="bizOrderAmount" jdbcType="BIGINT" />
+    <result column="BizOrderFee" property="bizOrderFee" jdbcType="BIGINT" />
+    <result column="FundDirection" property="fundDirection" jdbcType="TINYINT" />
+    <result column="BizType" property="bizType" jdbcType="TINYINT" />
+    <result column="BizItem" property="bizItem" jdbcType="VARCHAR" />
+    <result column="ChangeAccountType" property="changeAccountType" jdbcType="TINYINT" />
+    <result column="Remark" property="remark" jdbcType="VARCHAR" />
+    <result column="CreateTime" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="UpdateTime" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    Id, InfoId, InfoType, ChangeAmount, Balance, AfterBalance, BizOrderId, BizChannelOrderNo,
+    BizOrderAmount, BizOrderFee, FundDirection, BizType, BizItem, ChangeAccountType,
+    Remark, CreateTime, UpdateTime
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="org.xxpay.core.entity.AccountHistoryExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from t_account_history
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+    <if test="limit != null" >
+      <if test="offset != null" >
+        limit ${offset}, ${limit}
+      </if>
+      <if test="offset == null" >
+        limit ${limit}
+      </if>
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select
+    <include refid="Base_Column_List" />
+    from t_account_history
+    where Id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from t_account_history
+    where Id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="org.xxpay.core.entity.AccountHistoryExample" >
+    delete from t_account_history
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="org.xxpay.core.entity.AccountHistory" >
+    insert into t_account_history (Id, InfoId, InfoType,
+      ChangeAmount, Balance, AfterBalance,
+      BizOrderId, BizChannelOrderNo, BizOrderAmount,
+      BizOrderFee, FundDirection, BizType,
+      BizItem, ChangeAccountType, Remark,
+      CreateTime, UpdateTime)
+    values (#{id,jdbcType=BIGINT}, #{infoId,jdbcType=BIGINT}, #{infoType,jdbcType=TINYINT},
+      #{changeAmount,jdbcType=BIGINT}, #{balance,jdbcType=BIGINT}, #{afterBalance,jdbcType=BIGINT},
+      #{bizOrderId,jdbcType=VARCHAR}, #{bizChannelOrderNo,jdbcType=VARCHAR}, #{bizOrderAmount,jdbcType=BIGINT},
+      #{bizOrderFee,jdbcType=BIGINT}, #{fundDirection,jdbcType=TINYINT}, #{bizType,jdbcType=TINYINT},
+      #{bizItem,jdbcType=VARCHAR}, #{changeAccountType,jdbcType=TINYINT}, #{remark,jdbcType=VARCHAR},
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="org.xxpay.core.entity.AccountHistory" >
+    insert into t_account_history
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        Id,
+      </if>
+      <if test="infoId != null" >
+        InfoId,
+      </if>
+      <if test="infoType != null" >
+        InfoType,
+      </if>
+      <if test="changeAmount != null" >
+        ChangeAmount,
+      </if>
+      <if test="balance != null" >
+        Balance,
+      </if>
+      <if test="afterBalance != null" >
+        AfterBalance,
+      </if>
+      <if test="bizOrderId != null" >
+        BizOrderId,
+      </if>
+      <if test="bizChannelOrderNo != null" >
+        BizChannelOrderNo,
+      </if>
+      <if test="bizOrderAmount != null" >
+        BizOrderAmount,
+      </if>
+      <if test="bizOrderFee != null" >
+        BizOrderFee,
+      </if>
+      <if test="fundDirection != null" >
+        FundDirection,
+      </if>
+      <if test="bizType != null" >
+        BizType,
+      </if>
+      <if test="bizItem != null" >
+        BizItem,
+      </if>
+      <if test="changeAccountType != null" >
+        ChangeAccountType,
+      </if>
+      <if test="remark != null" >
+        Remark,
+      </if>
+      <if test="createTime != null" >
+        CreateTime,
+      </if>
+      <if test="updateTime != null" >
+        UpdateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="infoId != null" >
+        #{infoId,jdbcType=BIGINT},
+      </if>
+      <if test="infoType != null" >
+        #{infoType,jdbcType=TINYINT},
+      </if>
+      <if test="changeAmount != null" >
+        #{changeAmount,jdbcType=BIGINT},
+      </if>
+      <if test="balance != null" >
+        #{balance,jdbcType=BIGINT},
+      </if>
+      <if test="afterBalance != null" >
+        #{afterBalance,jdbcType=BIGINT},
+      </if>
+      <if test="bizOrderId != null" >
+        #{bizOrderId,jdbcType=VARCHAR},
+      </if>
+      <if test="bizChannelOrderNo != null" >
+        #{bizChannelOrderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="bizOrderAmount != null" >
+        #{bizOrderAmount,jdbcType=BIGINT},
+      </if>
+      <if test="bizOrderFee != null" >
+        #{bizOrderFee,jdbcType=BIGINT},
+      </if>
+      <if test="fundDirection != null" >
+        #{fundDirection,jdbcType=TINYINT},
+      </if>
+      <if test="bizType != null" >
+        #{bizType,jdbcType=TINYINT},
+      </if>
+      <if test="bizItem != null" >
+        #{bizItem,jdbcType=VARCHAR},
+      </if>
+      <if test="changeAccountType != null" >
+        #{changeAccountType,jdbcType=TINYINT},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="org.xxpay.core.entity.AccountHistoryExample" resultType="java.lang.Integer" >
+    select count(*) from t_account_history
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update t_account_history
+    <set >
+      <if test="record.id != null" >
+        Id = #{record.id,jdbcType=BIGINT},
+      </if>
+      <if test="record.infoId != null" >
+        InfoId = #{record.infoId,jdbcType=BIGINT},
+      </if>
+      <if test="record.infoType != null" >
+        InfoType = #{record.infoType,jdbcType=TINYINT},
+      </if>
+      <if test="record.changeAmount != null" >
+        ChangeAmount = #{record.changeAmount,jdbcType=BIGINT},
+      </if>
+      <if test="record.balance != null" >
+        Balance = #{record.balance,jdbcType=BIGINT},
+      </if>
+      <if test="record.afterBalance != null" >
+        AfterBalance = #{record.afterBalance,jdbcType=BIGINT},
+      </if>
+      <if test="record.bizOrderId != null" >
+        BizOrderId = #{record.bizOrderId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.bizChannelOrderNo != null" >
+        BizChannelOrderNo = #{record.bizChannelOrderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.bizOrderAmount != null" >
+        BizOrderAmount = #{record.bizOrderAmount,jdbcType=BIGINT},
+      </if>
+      <if test="record.bizOrderFee != null" >
+        BizOrderFee = #{record.bizOrderFee,jdbcType=BIGINT},
+      </if>
+      <if test="record.fundDirection != null" >
+        FundDirection = #{record.fundDirection,jdbcType=TINYINT},
+      </if>
+      <if test="record.bizType != null" >
+        BizType = #{record.bizType,jdbcType=TINYINT},
+      </if>
+      <if test="record.bizItem != null" >
+        BizItem = #{record.bizItem,jdbcType=VARCHAR},
+      </if>
+      <if test="record.changeAccountType != null" >
+        ChangeAccountType = #{record.changeAccountType,jdbcType=TINYINT},
+      </if>
+      <if test="record.remark != null" >
+        Remark = #{record.remark,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createTime != null" >
+        CreateTime = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateTime != null" >
+        UpdateTime = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update t_account_history
+    set Id = #{record.id,jdbcType=BIGINT},
+    InfoId = #{record.infoId,jdbcType=BIGINT},
+    InfoType = #{record.infoType,jdbcType=TINYINT},
+    ChangeAmount = #{record.changeAmount,jdbcType=BIGINT},
+    Balance = #{record.balance,jdbcType=BIGINT},
+    AfterBalance = #{record.afterBalance,jdbcType=BIGINT},
+    BizOrderId = #{record.bizOrderId,jdbcType=VARCHAR},
+    BizChannelOrderNo = #{record.bizChannelOrderNo,jdbcType=VARCHAR},
+    BizOrderAmount = #{record.bizOrderAmount,jdbcType=BIGINT},
+    BizOrderFee = #{record.bizOrderFee,jdbcType=BIGINT},
+    FundDirection = #{record.fundDirection,jdbcType=TINYINT},
+    BizType = #{record.bizType,jdbcType=TINYINT},
+    BizItem = #{record.bizItem,jdbcType=VARCHAR},
+    ChangeAccountType = #{record.changeAccountType,jdbcType=TINYINT},
+    Remark = #{record.remark,jdbcType=VARCHAR},
+    CreateTime = #{record.createTime,jdbcType=TIMESTAMP},
+    UpdateTime = #{record.updateTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="org.xxpay.core.entity.AccountHistory" >
+    update t_account_history
+    <set >
+      <if test="infoId != null" >
+        InfoId = #{infoId,jdbcType=BIGINT},
+      </if>
+      <if test="infoType != null" >
+        InfoType = #{infoType,jdbcType=TINYINT},
+      </if>
+      <if test="changeAmount != null" >
+        ChangeAmount = #{changeAmount,jdbcType=BIGINT},
+      </if>
+      <if test="balance != null" >
+        Balance = #{balance,jdbcType=BIGINT},
+      </if>
+      <if test="afterBalance != null" >
+        AfterBalance = #{afterBalance,jdbcType=BIGINT},
+      </if>
+      <if test="bizOrderId != null" >
+        BizOrderId = #{bizOrderId,jdbcType=VARCHAR},
+      </if>
+      <if test="bizChannelOrderNo != null" >
+        BizChannelOrderNo = #{bizChannelOrderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="bizOrderAmount != null" >
+        BizOrderAmount = #{bizOrderAmount,jdbcType=BIGINT},
+      </if>
+      <if test="bizOrderFee != null" >
+        BizOrderFee = #{bizOrderFee,jdbcType=BIGINT},
+      </if>
+      <if test="fundDirection != null" >
+        FundDirection = #{fundDirection,jdbcType=TINYINT},
+      </if>
+      <if test="bizType != null" >
+        BizType = #{bizType,jdbcType=TINYINT},
+      </if>
+      <if test="bizItem != null" >
+        BizItem = #{bizItem,jdbcType=VARCHAR},
+      </if>
+      <if test="changeAccountType != null" >
+        ChangeAccountType = #{changeAccountType,jdbcType=TINYINT},
+      </if>
+      <if test="remark != null" >
+        Remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        CreateTime = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        UpdateTime = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where Id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.xxpay.core.entity.AccountHistory" >
+    update t_account_history
+    set InfoId = #{infoId,jdbcType=BIGINT},
+      InfoType = #{infoType,jdbcType=TINYINT},
+      ChangeAmount = #{changeAmount,jdbcType=BIGINT},
+      Balance = #{balance,jdbcType=BIGINT},
+      AfterBalance = #{afterBalance,jdbcType=BIGINT},
+      BizOrderId = #{bizOrderId,jdbcType=VARCHAR},
+      BizChannelOrderNo = #{bizChannelOrderNo,jdbcType=VARCHAR},
+      BizOrderAmount = #{bizOrderAmount,jdbcType=BIGINT},
+      BizOrderFee = #{bizOrderFee,jdbcType=BIGINT},
+      FundDirection = #{fundDirection,jdbcType=TINYINT},
+      BizType = #{bizType,jdbcType=TINYINT},
+      BizItem = #{bizItem,jdbcType=VARCHAR},
+      ChangeAccountType = #{changeAccountType,jdbcType=TINYINT},
+      Remark = #{remark,jdbcType=VARCHAR},
+      CreateTime = #{createTime,jdbcType=TIMESTAMP},
+      UpdateTime = #{updateTime,jdbcType=TIMESTAMP}
+    where Id = #{id,jdbcType=BIGINT}
+  </update>
+
+
+
+  <!-- 以下为mchAccountHistoryMapper 原方法 -->
+
+  <!-- 查询商户单日结算汇总数据 -->
+  <select id="selectSettDailyCollect4Mch" resultType="java.util.Map" parameterType="java.util.Map" >
+    select
+    MchId,
+    sum(case when FundDirection = 1 then Amount else -Amount end) as "totalMchIncome",
+    sum(case when FundDirection = 1 then PlatProfit else -PlatProfit end) as "totalPlatProfit",
+    sum(case when FundDirection = 1 then OrderAmount else -OrderAmount end) as "totalOrderAmount",
+    sum(case when FundDirection = 1 then ChannelCost else -ChannelCost end) as "totalChannelCost",
+    sum(case when FundDirection = 1 then AgentProfit else -AgentProfit end) as "totalAgentProfit",
+    count(1) as "totalCount",
+    CONCAT(#{collDate},'') as "collectDate"
+    from t_account_history
+    where
+    MchId = #{mchId}
+    and MchSettStatus = 0
+    and IsAllowSett = 1
+    <if test="fundDirection != null"> and FundDirection = #{fundDirection} </if>
+    and <![CDATA[date(CreateTime) <= DATE_ADD(#{collDate}, INTERVAL -#{riskDay} DAY)]]>
+    group by MchId;
+  </select>
+
+  <!-- 更新账户风险预存期外的商户账户历史记录记为结算完成 -->
+  <update id="updateCompleteSett4Mch" parameterType="java.util.Map">
+    update t_account_history
+    set MchSettStatus = 1
+    where
+    MchId = #{mchId}
+    and MchSettStatus = 0
+    and IsAllowSett = 1
+    and <![CDATA[date(CreateTime) <= DATE_ADD(#{collDate}, INTERVAL -#{riskDay} DAY)]]>
+  </update>
+
+  <!-- 查询代理商单日结算汇总数据 -->
+  <select id="selectSettDailyCollect4Agent" resultType="java.util.Map" parameterType="java.util.Map" >
+    select
+    AgentId,
+    sum(Amount) as "totalMchIncome",
+    sum(OrderAmount) as "totalOrderAmount",
+    sum(PlatProfit) as "totalPlatProfit",
+    sum(ChannelCost) as "totalChannelCost",
+    sum(AgentProfit) as "totalAgentProfit",
+    count(1) as "totalCount",
+    CONCAT(#{collDate},'') as "collectDate"
+    from t_account_history
+    where
+    AgentId = #{agentId}
+    and AgentSettStatus = 0
+    and IsAllowSett = 1
+    <if test="bizType != null"> and BizType = #{bizType} </if>
+    <if test="bizItem != null"> and BizItem = #{bizItem} </if>
+    <if test="fundDirection != null"> and FundDirection = #{fundDirection} </if>
+    and <![CDATA[date(CreateTime) <= DATE_ADD(#{collDate}, INTERVAL -#{riskDay} DAY)]]>
+    group by AgentId;
+  </select>
+
+  <!-- 更新账户风险预存期外的代理商账户历史记录记为结算完成 -->
+  <update id="updateCompleteSett4Agent" parameterType="java.util.Map">
+    update t_account_history
+    set AgentSettStatus = 1
+    where
+    AgentId = #{agentId}
+    and AgentSettStatus = 0
+    and IsAllowSett = 1
+    <if test="bizType != null"> and BizType = #{bizType} </if>
+    <if test="bizItem != null"> and BizItem = #{bizItem} </if>
+    and <![CDATA[date(CreateTime) <= DATE_ADD(#{collDate}, INTERVAL -#{riskDay} DAY)]]>
+  </update>
+
+  <!-- 查询代理未结算数据 -->
+  <select id="selectNotSettCollect4Agent" resultMap="BaseResultMap" parameterType="java.util.Map" >
+    select
+    Id, MchId, Amount,
+    Balance, AfterBalance, AgentId,
+    OrderAmount, Fee, AgentProfit,
+    PlatProfit, ChannelCost, FundDirection,
+    IsAllowSett, MchSettStatus, AgentSettStatus,
+    OrderId, ChannelOrderNo, BizType,
+    RiskDay, Remark, CreateTime,
+    UpdateTime, BizItem, AgentRiskDay
+    from t_account_history
+    where
+    AgentId = #{agentId}
+    and AgentSettStatus = 0
+    and IsAllowSett = 1
+    and <![CDATA[date(CreateTime) <= DATE_ADD(#{collDate}, INTERVAL -AgentRiskDay DAY)]]>
+    limit 5000;
+  </select>
+
+  <!-- 统计数据   TODO  金额应从 orderProfitDetail 表取值-->
+  <select id="count4Data" resultType="java.util.Map" parameterType="java.util.Map" >
+    SELECT
+    ifnull(sum(1),0) AS totalCount,
+    ifnull(sum(OrderAmount),0) AS totalAmount,
+    ifnull(sum(Fee),0) AS totalFee,
+    ifnull(sum(OrderAmount),0) totalAgentProfit,
+    ifnull(sum(OrderAmount),0) totalPlatProfit
+    FROM t_account_history
+    WHERE 1=1
+    <if test="bizType != null"> and BizType = #{bizType} </if>
+    ;
+  </select>
+
+  <select id="count4Data3" resultType="java.util.Map" >
+    SELECT topd.BizType,
+    ifnull(SUM(topd.IncomeAmount),0) AS totalPlatProfit,
+    ifnull(SUM(tmah.BizOrderAmount),0) AS totalAmount,
+    ifnull(COUNT(DISTINCT topd.BizOrderId),0) AS totalCount
+    FROM `t_order_profit_detail` topd
+    Left JOIN t_account_history tmah ON tmah.BizOrderId = topd.BizOrderId
+    WHERE topd.ReferInfoType = 3 and tmah.InfoType = 3
+    GROUP BY topd.BizType;
+  </select>
+
+  <!-- 统计数据   TODO  金额应从 orderProfitDetail 表取值-->
+  <select id="count4Data2" resultType="java.util.Map" parameterType="java.util.Map" >
+    SELECT
+    ifnull(sum(1),0) AS totalCount,
+    ifnull(sum(OrderAmount),0) AS totalAmount,
+    ifnull(sum(Fee),0) AS totalFee,
+    ifnull(sum(OrderAmount),0) totalAgentProfit,
+    ifnull(sum(OrderAmount),0) totalPlatProfit
+    FROM t_account_history
+    WHERE 1=1
+    <if test="mchId != null"> and MchId = #{mchId} </if>
+    <if test="agentId != null"> and AgentId = #{agentId} </if>
+    <if test="orderId != null"> and OrderId = #{orderId} </if>
+    <if test="bizType != null"> and BizType = #{bizType} </if>
+    <if test="createTimeStart != null"> AND CreateTime &gt;= #{createTimeStart} </if>
+    <if test="createTimeEnd != null"> AND CreateTime &lt;= #{createTimeEnd} </if>
+    ;
+  </select>
+
+  <!-- 代理商分润排行 -->
+  <select id="count4AgentProfitTop" resultType="java.util.Map" parameterType="java.util.Map" >
+    SELECT tai.AgentId AS agentId, tai.AgentName AS agentName, tpo.totalAmount,
+    tpo.totalAgentProfit, tpo.totalPlatProfit,
+    tpo.totalChannelCost, tpo.totalCount FROM t_agent_info tai LEFT JOIN (
+    SELECT AgentId,bizType,
+    SUM(Amount) AS totalAmount,
+    SUM(AgentProfit) AS totalAgentProfit,
+    SUM(PlatProfit) AS totalPlatProfit,
+    SUM(ChannelCost) AS totalChannelCost,
+    COUNT(1) AS totalCount
+    FROM t_account_history
+    WHERE 1=1
+    <if test="agentId != null"> AND agentId = #{agentId} </if>
+    <if test="bizType != null"> AND bizType = #{bizType} </if>
+    <if test="createTimeStart != null"> AND CreateTime &gt;= #{createTimeStart} </if>
+    <if test="createTimeEnd != null"> AND CreateTime &lt;= #{createTimeEnd} </if>
+    GROUP BY AgentId ORDER BY totalAgentProfit DESC, mchId ASC
+    ) tpo ON tai.AgentId = tpo.AgentId
+    WHERE 1=1
+    <if test="agentId != null"> AND tai.agentId = #{agentId} </if>;
+  </select>
+
+
+  <!-- 以下为agentAccountHistoryMapper 原方法 -->
+
+  <!-- 统计代理商分润 -->
+  <select id="count4AgentProfit" resultType="java.util.Map" parameterType="java.util.Map" >
+    SELECT ifnull(COUNT(1), 0) AS totalCount,
+    ifnull(SUM(ChangeAmount), 0) AS totalProfit,
+    BizItem As bizItem
+    FROM t_account_history
+    WHERE InfoType= 2 and  BizType = 1
+    <if test="agentId != null"> and InfoId = #{agentId} </if>
+    GROUP BY BizItem;
+  </select>
+
+  <!--代理商资金流水-->
+  <select id="selectListHistory" resultType="java.util.Map" parameterType="java.util.Map" >
+    SELECT id,InfoId,balance,amount,afterBalance,fundDirection,bizType,bizItem,orderId,createTime
+    FROM t_account_history
+    WHERE InfoType= 2
+    <if test="agentId != null"> AND InfoId = #{agentId} </if>
+    <if test="orderId != null"> AND BizOrderId = #{orderId} </if>
+    <if test="fundDirection != null"> AND FundDirection = #{fundDirection} </if>
+    <if test="bizType != null"> AND BizType = #{bizType} </if>
+    <if test="createTimeStart != null"> AND CreateTime &gt;= #{createTimeStart} </if>
+    <if test="createTimeEnd != null"> AND CreateTime &lt;= #{createTimeEnd} </if>
+    ORDER BY CreateTime DESC
+    <if test="limit != null" >
+      <if test="offset != null" >
+        limit ${offset}, ${limit}
+      </if>
+      <if test="offset == null" >
+        limit ${limit}
+      </if>
+    </if>;
+  </select>
+
+  <select id="countListHistory" resultType="java.util.Map" parameterType="java.util.Map" >
+    SELECT
+    COUNT(distinct InfoId) AS totalCount
+    FROM t_account_history
+    WHERE InfoType= 2
+    <if test="agentId != null"> AND InfoId = #{agentId} </if>
+    <if test="orderId != null"> AND OrderId = #{orderId} </if>
+    <if test="fundDirection != null"> AND FundDirection = #{fundDirection} </if>
+    <if test="bizType != null"> AND bizType = #{bizType} </if>
+    <if test="createTimeStart != null"> AND CreateTime &gt;= #{createTimeStart} </if>
+    <if test="createTimeEnd != null"> AND CreateTime &lt;= #{createTimeEnd} </if>
+    ORDER BY CreateTime DESC;
+  </select>
+
+
+
+
+
+
+
+</mapper>

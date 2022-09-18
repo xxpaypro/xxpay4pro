@@ -1,0 +1,572 @@
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a><cite>商户列表</cite></a>
+        <a><cite>接口进件</cite></a>
+    </span>
+</div>
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-tab layui-tab-brief">
+      <ul class="layui-tab-title">
+        <li class="layui-this">接口进件</li>
+      </ul>
+      <div class="layui-tab-content">
+
+
+          <table lay-filter="applyMchTable">
+              <thead>
+              <tr>
+                  <th lay-data="{field:'f1'}">接口类型</th>
+                  <th lay-data="{field:'f2'}">当前状态</th>
+                  <th lay-data="{field:'f3'}">审核信息</th>
+                  <th lay-data="{field:'f4'}">进件资料</th>
+                  <th lay-data="{field:'f5', width: 500}">操作</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                  <td>微信</td>
+                  <td><span class="wxStatusSpan"> - </span><span class="wxUpgradeStatusSpan"></span></td>
+                  <td><span class="wxAuditInfoSpan"></span></td>
+                  <td><span class="wxMchInfoSpan"></span>
+                        <img style="height:35px" class="uploadImg layui-hiden wxMchQrImg">
+                  </td>
+                  <td>
+                      <div>
+                        <button class="layui-btn layui-btn-xs layui-btn-normal layui-hide" lay-event="wxMchApplyQuery" >更新特约商户进件状态</button>
+                          <button class="layui-btn layui-btn-xs layui-btn-normal layui-hide" lay-event="wxMchMicroApplyQuery" >更新收付通小微进件状态</button>
+                        <button class="layui-btn layui-btn-xs layui-btn-danger" lay-event="wxMchApply">发起/查看特约商户进件</button>
+                          <button class="layui-btn layui-btn-xs layui-btn-danger" lay-event="wxMchMicroApply">发起/查看收付通小微进件</button>
+                        <!--<button class="layui-btn layui-btn-xs layui-btn-warm layui-hide" lay-event="wxMchApplyUpdate" >发起/查看商户升级</button>-->
+                      </div>
+                  </td>
+              </tr>
+              <tr>
+                  <td>支付宝</td>
+                  <!--<td>暂不支持接口进件</td>-->
+                  <td><span class="alipayStatusSpan"> - </span></td>
+                  <td><span class="alipayAuditInfoSpan"></span></td>
+                  <td><span class="alipayMchInfoSpan"></span>
+                      <button class="layui-btn layui-btn-xs layui-btn-normal layui-hide alipayMchQrImg" lay-event="alipayMchQrImg">扫码确认</button>
+                  </td>
+                  <td>
+                      <div>
+                          <button class="layui-btn layui-btn-xs layui-btn-normal layui-hide" lay-event="alipayMchApplyQuery" >更新状态</button>
+                          <button class="layui-btn layui-btn-xs layui-btn-danger" lay-event="alipayMchApply">发起/查看小微信息</button>
+
+                          <!--<a class="layui-btn layui-btn-xs" target="_blank" href="https://openhome.alipay.com/isv/settling/addAgentMerchant.htm#/">打开支付宝进件地址</a>-->
+                    </div>
+                  </td>
+              </tr>
+              <tr>
+                  <td>随行付</td>
+                  <td><span class="sxfStatusSpan"> - </span></td>
+                  <td><span class="sxfAuditInfoSpan"></span></td>
+                  <td><span class="sxfMchInfoSpan"></span></td>
+                  <td>
+                      <div>
+                          <button class="layui-btn layui-btn-xs layui-btn-normal layui-hide" lay-event="sxfMchApplyQuery" >更新状态</button>
+                          <button class="layui-btn layui-btn-xs layui-btn-danger" lay-event="sxfMchApply">发起/查看进件信息</button>
+                      </div>
+                  </td>
+              </tr>
+              </tbody>
+          </table>
+
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  layui.use(['table','util','view'], function(){
+    var $ = layui.$
+            ,admin = layui.admin
+            ,table = layui.table
+            ,element = layui.element
+            ,view = layui.view
+            ,form = layui.form;
+
+    element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+    var router = layui.router();
+    var mchId = router.search.mchId;
+
+    //转换静态表格
+    table.init('applyMchTable', {skin: 'line'});
+
+
+    //初始化操作
+      var wxMchSnapshot = null;
+      var wxMchUpgradeSnapshot = null;
+      var alipayMchSnapshot = null;
+      var applyAlipayStatus = null;
+      var sxfMchSnapshot = null;
+      var applySxfStatus = null;
+
+      //初始化页面， 查询微信进件快照信息（不触发上游查询接口）
+      var initWxFunc = function(){
+
+          //查询微信进件快照
+          admin.req({
+              type: 'get',
+              url: layui.setter.baseUrl + '/wx_mch_applyment/get',
+              data: { mchId : mchId },
+              error: function(err){ layer.alert(JSON.stringify(err.field), { title: '错误提示' }) },
+              success: function(res){
+                  wxMchSnapshot = res.data;
+                  if(wxMchSnapshot){
+
+                      //当前状态
+                      var applyMicroStatus = res.data.applyStatus;  //0-未入驻, 1-小微商户审核中, 2-小微商户审核通过, 3-待商户签约, 4-请求异常/微信驳回, 5-待账户验证, 6-已作废, 7-编辑中, 8-已冻结
+                      var applyType = res.data.applyType;  //1-特约商户进件，2-收付通小微进件
+                      var applyMicroStatusDesc = "";
+
+                      //根据第一次申请的进件类型  隐藏另一个按钮
+                      if(applyType == '1'){
+                          $('button[lay-event="wxMchMicroApply"]').addClass('layui-hide');
+                      }else if(applyType == '2'){
+                          $('button[lay-event="wxMchApply"]').addClass('layui-hide');
+                      }
+
+                      if(applyMicroStatus == '0'){
+
+
+                      }else if(applyMicroStatus == '1'){  //1-小微商户审核中
+
+                          applyMicroStatusDesc = "审核中";
+
+                          if(applyType == '1'){
+                              $('button[lay-event="wxMchApplyQuery"]').removeClass('layui-hide'); //可查询
+                          }else if(applyType == '2'){
+                              $('button[lay-event="wxMchMicroApplyQuery"]').removeClass('layui-hide'); //可查询
+                          }
+
+                      }else if(applyMicroStatus == '2'){  //2-小微商户审核通过
+
+                          applyMicroStatusDesc = "审核通过";
+                          $(".wxMchInfoSpan").text("微信商户编号： [" + wxMchSnapshot.wxMchId + "]");
+                          $('button[lay-event="wxMchApplyUpdate"]').removeClass('layui-hide'); //可升级
+
+
+                      }else if(applyMicroStatus == '3'){  //3-待签约
+
+                          applyMicroStatusDesc = "待商户签约";
+
+                          if(applyType == '1'){
+                              $('button[lay-event="wxMchApplyQuery"]').removeClass('layui-hide'); //可查询
+                          }else if(applyType == '2'){
+                              $('button[lay-event="wxMchMicroApplyQuery"]').removeClass('layui-hide'); //可查询
+                          }
+
+                          $(".wxMchQrImg").removeClass('layui-hide').attr('src', wxMchSnapshot.wxApplymentMchQrImg);
+
+                      }else if(applyMicroStatus == '4'){  //4-异常/驳回
+                          applyMicroStatusDesc = "请求异常/微信驳回";
+                          $('.wxAuditInfoSpan').text(wxMchSnapshot.auditInfo);
+
+                      }
+
+                      $(".wxStatusSpan").text("【小微：" + applyMicroStatusDesc + "】");
+
+                  }else{  //未查询到信息
+
+                      $(".wxStatusSpan").text("未入驻");
+                  }
+              }
+          });
+
+          //查询微信商户升级快照
+          admin.req({
+              type: 'get',
+              url: layui.setter.baseUrl + '/wx_mch_applyment/getUpgrade',
+              data: { mchId : mchId },
+              error: function(err){ layer.alert(JSON.stringify(err.field), { title: '错误提示' }) },
+              success: function(res){
+                  wxMchUpgradeSnapshot = res.data;
+                  if(wxMchUpgradeSnapshot){
+
+                      //当前状态
+                      var applyStatus = res.data.applyStatus;  //普通商户状态：0-未升级, 1-微信审核中, 2-普通商户升级完成, 3-待签约, 4-待账户验证, 5-请求异常/微信驳回
+
+                      var applyStatusDesc = "";
+                      if(applyStatus == '0'){
+
+                      }else if(applyStatus == '1'){  //1-小微商户升级审核中
+
+                          applyStatusDesc = "审核中";
+                          $('button[lay-event="wxMchApplyQuery"]').removeClass('layui-hide'); //可查询
+
+
+                      }else if(applyStatus == '2'){  //2-升级完成
+
+                          applyStatusDesc = "审核通过";
+
+                      }else if(applyStatus == '3'){  //3-待签约
+
+                          applyStatusDesc = "待商户签约";
+                          $('button[lay-event="wxMchApplyQuery"]').removeClass('layui-hide'); //可查询
+                          $(".wxMchQrImg").removeClass('layui-hide').attr('src', wxMchUpgradeSnapshot.wxApplymentMchQrImg);
+                      }else if(applyStatus == '4'){  //4-待验证商户账号
+
+                          applyStatusDesc = "待验证账号";
+                          $('button[lay-event="wxMchApplyQuery"]').removeClass('layui-hide'); //可查询
+                          $('.wxAuditInfoSpan').text(wxMchUpgradeSnapshot.accountVerifyInfo);
+
+                      }else if(applyStatus == '5'){  //4-异常/驳回
+                          applyStatusDesc = "请求异常/微信驳回";
+                          $('.wxAuditInfoSpan').text(wxMchUpgradeSnapshot.auditInfo);
+                      }
+
+                      $(".wxUpgradeStatusSpan").text("【升级状态：" + applyStatusDesc + "】");
+
+                  }
+              }
+          });
+      }
+
+      var confirmUrl = "";
+
+      //初始化页面， 查询支付宝进件快照信息（不触发上游查询接口）
+      var initAlipayFunc = function() {
+          // 查询支付宝进件快照
+          admin.req({
+              type: 'get',
+              url: layui.setter.baseUrl + '/alipay_mch_applyment/get',
+              data: {mchId: mchId},
+              error: function (err) {
+                  layer.alert(JSON.stringify(err.field), {title: '错误提示'})
+              },
+              success: function (res) {
+                  alipayMchSnapshot = res.data;
+                  if (alipayMchSnapshot) {
+
+                      //当前状态
+                      applyAlipayStatus = res.data.applyStatus;  //0-未入驻, 1-暂存, 2-审核中, 3-待确认, 4-确认成功, 5-超时未确认, 6-审核失败或商户拒绝',
+                      var applyMicroStatusDesc = "";
+                      if (applyAlipayStatus == '0') {
+
+
+                      } else if (applyAlipayStatus == '1') {  //1-暂存
+                          applyMicroStatusDesc = "暂住";
+
+                      } else if (applyAlipayStatus == '2') {  //2-审核中
+                          applyMicroStatusDesc = "审核中";
+                          $(".alipayMchInfoSpan").text("支付宝商户编号： [" + alipayMchSnapshot.mchId + "]");
+                          $('button[lay-event="alipayMchApplyQuery"]').removeClass('layui-hide'); //可查询
+
+                      } else if (applyAlipayStatus == '3') {  //3-待确认
+
+                          applyMicroStatusDesc = "待确认";
+                          $('button[lay-event="alipayMchApplyQuery"]').removeClass('layui-hide'); //可查询
+                          $(".alipayMchQrImg").removeClass('layui-hide').attr('src', alipayMchSnapshot.confirmUrl);
+
+                      } else if (applyAlipayStatus == '4') {  //4-确认成功
+                          applyMicroStatusDesc = "确认成功";
+
+                      } else if (applyAlipayStatus == '5') {  //5-超时未确认
+                          applyMicroStatusDesc = "超时未确认";
+                          $('.alipayAuditInfoSpan').text(alipayMchSnapshot.auditInfo);
+
+                      } else if (applyAlipayStatus == '6') {  //5-审核失败或商户拒绝
+                          applyMicroStatusDesc = "审核失败或商户拒绝";
+                          $('button[lay-event="alipayMchApplyQuery"]').removeClass('layui-hide'); //可查询
+                          $('.alipayAuditInfoSpan').text(alipayMchSnapshot.auditInfo);
+
+                      }
+                      confirmUrl = alipayMchSnapshot.confirmUrl;
+                      $(".alipayStatusSpan").text("【" + applyMicroStatusDesc + "】");
+
+                  } else {  //未查询到信息
+
+                      $(".alipayStatusSpan").text("未入驻");
+                  }
+              }
+          });
+      }
+
+      //初始化页面， 查询随行付进件快照信息（不触发上游查询接口）
+      var initSxfFunc = function() {
+          // 查询支付宝进件快照
+          admin.req({
+              type: 'get',
+              url: layui.setter.baseUrl + '/sxf_mch_applyment/get',
+              data: {mchId: mchId},
+              error: function (err) {
+                  layer.alert(JSON.stringify(err.field), {title: '错误提示'})
+              },
+              success: function (res) {
+                  sxfMchSnapshot = res.data;
+                  if (sxfMchSnapshot) {
+
+                      //当前状态
+                      applySxfStatus = res.data.applyStatus;  // -1-未入驻，0-审核中，1-入驻通过，2-入驻驳回，3-入驻图片驳回
+                      var applyMicroStatusDesc = "";
+                      if (applySxfStatus == '-1') {
+
+
+                      } else if (applySxfStatus == 0) {  // 0 审核中
+
+                          applyMicroStatusDesc = "审核中";
+                          $(".sxfMchInfoSpan").text("随行付进件申请ID： [" + sxfMchSnapshot.applicationId + "]");
+                          $('button[lay-event="alipayMchApplyQuery"]').removeClass('layui-hide'); //可查询
+
+                      } else if (applySxfStatus == '1') {  //1 入驻通过
+
+                          applyMicroStatusDesc = "入驻通过";
+
+                      } else if (applySxfStatus == '2') {  //2 入驻驳回
+
+                          applyMicroStatusDesc = "入驻驳回";
+                          $('.sxfAuditInfoSpan').text(sxfMchSnapshot.auditInfo);
+
+                      } else if (applySxfStatus == '3') {  //3 入驻图片驳回
+
+                          applyMicroStatusDesc = "入驻图片驳回";
+                          $('.sxfAuditInfoSpan').text(sxfMchSnapshot.auditInfo);
+
+                      }
+                      $(".sxfStatusSpan").text("【" + applyMicroStatusDesc + "】");
+
+                  } else {  //未查询到信息
+
+                      $(".sxfStatusSpan").text("未入驻");
+                  }
+              }
+          });
+      }
+
+      //初始化信息
+      initWxFunc();
+      initAlipayFunc();
+      initSxfFunc();
+
+      //监听工具条
+    table.on('tool(applyMchTable)', function(obj){
+        if (obj.event === 'wxMchApply'){
+            view.xxpayPopup("微信接口入驻", "biz/interface_apply_mch/wxMchApply", {mchId: mchId});
+
+        }else if (obj.event === 'wxMchMicroApply'){
+            view.xxpayPopup("微信小微入驻", "biz/interface_apply_mch/wxMchMicroApply", {mchId: mchId});
+
+        }else if (obj.event === 'wxMchApplyUpdate'){
+            view.xxpayPopup("微信小微商户升级", "biz/interface_apply_mch/wxMchApplyUpdate", {mchId: mchId});
+
+        }else if (obj.event === 'wxMchApplyQuery'){  //微信查询
+
+            if(!wxMchSnapshot){
+                return layer.msg('请稍后再试！');
+            }
+
+            //升级状态为： 审核中， 待签约， 待验证时， 查询升级接口
+            if(wxMchUpgradeSnapshot &&
+                (wxMchUpgradeSnapshot.applyStatus == '1' || wxMchUpgradeSnapshot.applyStatus == '3' || wxMchUpgradeSnapshot.applyStatus == '4' )){
+
+
+                var layerShadeId = layer.msg('请稍后...',{time: 0, shade: 0.1});
+                admin.req({
+                    type: 'post',
+                    url: layui.setter.baseUrl + '/wx_mch_applyment/queryMicroApplyStatusUpgrade',
+                    data: {applyNo: wxMchUpgradeSnapshot.applyNo},
+                    error: function(err){layer.alert(err.msg,{title:"请求失败"})},
+                    success: function(res){
+                        if(res.code == 0){
+
+                            var applyStatus = res.data.applyStatus;
+                            var statusDesc = "";
+
+                            if(applyStatus == '0'){
+                            }else if(applyStatus == '1'){  //1-升级商户审核中
+
+                                statusDesc = "升级审核中, 审核详情：["+res.data.applymentStateDesc+"]";
+
+                            }else if(applyStatus == '2'){  //2-升级审核通过
+
+                                statusDesc = "升级审核通过";
+
+                            }else if(applyStatus == '3'){  //3-待签约
+
+                                statusDesc = "待商户签约, 请商户扫码二维码进行签约";
+
+                            }else if(applyStatus == '4'){  //4-待账户验证
+                                statusDesc = "待账户验证";
+
+                            }else if(applyStatus == '5'){  //5-请求异常/微信驳回
+                                statusDesc = "请求异常/微信驳回";
+                            }
+
+                            layer.alert("查询成功！当前最新状态为：" + statusDesc, function(){
+                                // admin.events.refresh();  //刷新当前页面
+                                initWxFunc();
+                            });
+                        }
+                    },complete:function(){
+                        layer.close(layerShadeId);
+                    }
+                });
+
+
+
+            }else{
+
+                var layerShadeId = layer.msg('请稍后...',{time: 0, shade: 0.1});
+
+                admin.req({
+                    type: 'post',
+                    url: layui.setter.baseUrl + '/wx_mch_applyment/querySubApplyStatus',
+                    data: {applyNo: wxMchSnapshot.applyNo},
+                    error: function(err){layer.alert(err.msg,{title:"请求失败"})},
+                    success: function(res){
+                        if(res.code == 0){
+
+                            var applyMicroStatus = res.data.applyStatus;
+                            var statusDesc = "";
+
+                            if(applyMicroStatus == '0'){
+                            }else if(applyMicroStatus == '1'){  //1-小微商户审核中
+
+                                statusDesc = "审核中, 审核详情：["+res.data.applymentStateDesc+"]";
+
+                            }else if(applyMicroStatus == '2'){  //2-小微商户审核通过
+
+                                statusDesc = "审核通过";
+
+                            }else if(applyMicroStatus == '3'){  //3-待签约
+
+                                statusDesc = "待商户签约, 商户扫码二维码进行签约";
+
+                            }else if(applyMicroStatus == '4'){  //4-异常/驳回
+                                statusDesc = "请求异常/微信驳回";
+                            }
+
+                            layer.alert("查询成功！当前最新状态为：" + statusDesc, function(){
+                                admin.events.refresh();  //刷新当前页面
+                            });
+                        }
+                    },complete:function(){
+                        layer.close(layerShadeId);
+                    }
+                });
+            }
+
+        }else if (obj.event === 'wxMchMicroApplyQuery'){  //微信小微查询
+
+            if(!wxMchSnapshot){
+                return layer.msg('请稍后再试！');
+            }
+
+            var layerShadeId = layer.msg('请稍后...',{time: 0, shade: 0.1});
+
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/wx_mch_applyment/queryMicroApplyStatus',
+                data: {applyNo: wxMchSnapshot.applyNo},
+                error: function(err){layer.alert(err.msg,{title:"请求失败"})},
+                success: function(res){
+                    if(res.code == 0){
+
+                        var applyMicroStatus = res.data.applyStatus;
+                        var statusDesc = "";
+
+                        if(applyMicroStatus == '0'){
+                        }else if(applyMicroStatus == '1'){  //1-小微商户审核中
+
+                            statusDesc = "审核中, 审核详情：["+res.data.applymentStateDesc+"]";
+
+                        }else if(applyMicroStatus == '2'){  //2-小微商户审核通过
+
+                            statusDesc = "审核通过";
+
+                        }else if(applyMicroStatus == '3'){  //3-待签约
+
+                            statusDesc = "待商户签约, 商户扫码二维码进行签约";
+
+                        }else if(applyMicroStatus == '4'){  //4-异常/驳回
+                            statusDesc = "请求异常/微信驳回";
+
+                        }else if(applyMicroStatus == '5'){  //5-待账户验证
+                            statusDesc = "待账户验证";
+
+                        }else if(applyMicroStatus == '6'){  //6-已作废
+                            statusDesc = "已作废";
+
+                        }else if(applyMicroStatus == '7'){  //7-资料校验中
+                            statusDesc = "资料校验中";
+
+                        }else if(applyMicroStatus == '8'){  //8-已冻结
+                            statusDesc = "已冻结";
+                        }
+
+                        layer.alert("查询成功！当前最新状态为：" + statusDesc, function(){
+                            admin.events.refresh();  //刷新当前页面
+                        });
+                    }
+                },complete:function(){
+                    layer.close(layerShadeId);
+                }
+            });
+
+        }else if (obj.event === 'alipayMchApply'){
+            view.xxpayPopup("支付宝接口入驻", "biz/interface_apply_mch/alipayMchApply", {mchId: mchId}, {btn: ['申请入驻', '取消']});
+        }else if (obj.event === "alipayMchApplyQuery") {
+            if (!alipayMchSnapshot) {
+                return layer.msg('请稍后再试！');
+            }
+            if (applyAlipayStatus == '2' || applyAlipayStatus == '3') {
+                layer.alert("当前状态无需查询！");
+                return false;
+            }
+
+            var layerShadeId = layer.msg('请稍后...', {time: 0, shade: 0.1});
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/alipay_mch_applyment/queryApplyStatus',
+                data: {applyNo: alipayMchSnapshot.applyNo},
+                error: function (err) {
+                    layer.alert(err.msg, {title: "请求失败"})
+                },
+                success: function (res) {
+                    if (res.code == 0) {
+                        layer.msg("查询成功！");
+                        admin.events.refresh();  //刷新当前页面
+                    }
+                }, complete: function () {
+                    layer.close(layerShadeId);
+                }
+            });
+        }else if (obj.event === "alipayMchQrImg") {
+            console.log(confirmUrl);
+            layer.open({
+                title: "扫描二维码签约",
+                type: 1,
+                anim: 1,
+                content: "<img width='200' height='200' src='" +  confirmUrl + "' />"
+            });
+        }else if (obj.event === 'sxfMchApply'){
+            view.xxpayPopup("随行付接口入驻", "biz/interface_apply_mch/sxfMchApply", {mchId: mchId}, {btn: ['申请入驻', '取消']});
+        }
+    });
+
+      //点击[图片] 按钮， 事件
+      $('.uploadImg').click(function(){
+          var imgSrc = $(this).attr('src');
+          layer.photos({photos: {
+                  "title": "查看上传图片", //相册标题
+                  "id": 1, //相册id
+                  "start": 0, //初始显示的图片序号，默认0
+                  "data": [   //相册包含的图片，数组格式
+                      {
+                          "alt": "图片",
+                          "pid": 1, //图片id
+                          "src": imgSrc, //原图地址
+                          "thumb": "" //缩略图地址
+                      }
+                  ]
+              } ,anim: 5});
+      });
+
+
+
+  });
+
+</script>

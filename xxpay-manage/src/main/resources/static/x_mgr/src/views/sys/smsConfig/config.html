@@ -1,0 +1,154 @@
+<div class=" layui-card layadmin-header">
+	<div class="layui-breadcrumb" lay-filter="breadcrumb">
+		<a lay-href="">首页</a>
+		<a>系统管理</a>
+		<a>系统设置</a>
+		<a><cite>短信通道配置</cite></a>
+	</div>
+</div>
+
+<style>
+	.layui-form-label {
+		width: 120px !important;
+		margin-left: 1%;
+	}
+	
+	.layui-input-inline {
+		width: 80% !important;
+	}
+</style>
+<div class="layui-fluid">
+	<div class="layui-card">
+		<div class="layui-tab layui-tab-brief">
+			<ul class="layui-tab-title">
+				<li class="layui-this">短信通道配置</li>
+			</ul>
+			<div class="layui-tab-content">
+				<form class="layui-form center">
+					<input type="hidden" id="smsCode" name="code" />
+					<input type="hidden" id="smsType" name="type" />
+					<div class="layui-form-item">
+						<label class="layui-form-label">accessKeyId</label>
+						<div class="layui-input-inline">
+							<input type="text" id="accessKeyId" name="accessKeyId" required autocomplete="off" class="layui-input" />
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">accessKeySecret</label>
+						<div class="layui-input-inline">
+							<input type="text" id="accessKeySecret" name="accessKeySecret" required autocomplete="off" class="layui-input" />
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">短信签名(signName)</label>
+						<div class="layui-input-inline">
+							<input type="text" id="signName" name="signName" required autocomplete="off" class="layui-input" />
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">模板(templats)</label>
+						<div class="layui-input-inline">
+							<table id="XxPay_SmsConfig_Poll_dataAll" lay-filter="XxPay_SmsConfig_Poll_dataAll"></table>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<div class="layui-input-inline">
+							<button type="button" class="layui-btn" lay-submit="" lay-filter="update" style="margin-left: 180px;">保存</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+	layui.use(['form', 'table', 'util', 'admin', ], function() {
+		var form = layui.form,
+			$ = layui.$,
+			admin = layui.admin,
+			layer = layui.layer,
+			element = layui.element,
+			table = layui.table;
+
+		element.render('breadcrumb', 'breadcrumb'); //渲染导航信息
+
+		admin.req({
+			type: 'post',
+			url: layui.setter.baseUrl + '/sys/config/getSmsConfig',
+			data: {
+				code: 'smsConfig'
+			},
+			error: function(err) {
+				layer.alert(err);
+			},
+			success: function(res) {
+				if(res.code == 0) {
+					$("#smsCode").val(res.data.code);
+					$("#smsType").val(res.data.type);
+					$("#accessKeyId").val(res.data.accessKeyId);
+					$("#accessKeySecret").val(res.data.accessKeySecret);
+					$("#signName").val(res.data.signName);
+
+					// 通道轮询
+					table.render({
+						elem: '#XxPay_SmsConfig_Poll_dataAll',
+						id: 'tableReload',
+						cols: [
+							[{
+								field: 'bizType',
+								title: '业务代码',
+								width: 120
+							}, {
+								field: 'bizName',
+								title: '业务名称'
+							}, {
+								field: 'templateParam',
+								edit: 'text',
+								title: '模板内容'
+							}, {
+								field: 'templateCode',
+								edit: 'text',
+								title: '模板code'
+							}]
+						],
+						page: false,
+						limit: 100,
+						skin: 'line',
+						data: res.data.ps.smsConfig
+					});
+				}
+			}
+		});
+
+		form.on('submit(update)', function(data) {
+			var accessKeyId = $.trim($('#accessKeyId').val());
+			var accessKeySecret = $.trim($('#accessKeySecret').val());
+			var signName = $.trim($('#signName').val());
+
+			var tableDatas = table.cache['tableReload'];
+
+			// 转成json
+			var templats = JSON.stringify(tableDatas);
+			data.field.templats = templats;
+
+			admin.req({
+				type: 'post',
+				url: layui.setter.baseUrl + '/sys/config/updateSmsConfig',
+				data: data.field,
+				error: function(err) {
+					layer.alert(err.msg, {
+						title: "请求失败"
+					})
+				},
+				success: function(res) {
+					if(res.code == 0) {
+						layer.alert(res.msg, {
+							title: '保存成功'
+						});
+					}
+				}
+			})
+			return false;
+		});
+	});
+</script>

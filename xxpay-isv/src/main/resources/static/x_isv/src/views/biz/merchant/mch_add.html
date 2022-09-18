@@ -1,0 +1,258 @@
+<style>
+    .xxpayPopupDiv .layui-form-label {
+        width:20% !important;
+        margin-left:1%;
+    }
+    .xxpayPopupDiv .layui-input-inline {
+        width: 33% !important;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <form class="layui-form layui-form-pane">
+
+            <div class="layui-tab layui-tab-brief">
+                <ul class="layui-tab-title">
+                    <li class="layui-this">商户基本信息</li>
+                </ul>
+                <div class="layui-tab-content">
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">商户名称全称</label>
+                        <div class="layui-input-inline">
+                            <input name="mchName" lay-verify="required" placeholder="输入商户名称全称" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">商户名称简称</label>
+                        <div class="layui-input-inline">
+                            <input name="mchShortName" lay-verify="required" placeholder="输入商户名称简称" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">商户位置选择省、市、县</label>
+                        <div style="width: 280px; display: inline-block;">
+                            <select name="provinceCode" lay-search lay-verify="required" id="provinceSelect" lay-filter="provinceSelectFilter">
+                                <option value="">-- 省 --</option>
+                            </select>
+                        </div>
+                        <div style="width: 280px; display: inline-block;">
+                            <select name="cityCode" lay-search lay-verify="required" id="citySelect" lay-filter="citySelectFilter">
+                                <option value="">-- 市 --</option>
+                            </select>
+                        </div>
+                        <div style="width: 280px; display: inline-block;">
+                            <select name="areaCode" lay-verify="required" lay-search id="areaSelect" lay-filter="areaSelectFilter">
+                                <option value="">-- 区 / 县 --</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">商户位置详细地址</label>
+                        <div class="layui-input-inline">
+                            <input name="address" lay-verify="required" placeholder="输入商户位置详细地址" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-tab layui-tab-brief">
+                <ul class="layui-tab-title">
+                    <li class="layui-this">商户联系人及登录信息</li>
+                </ul>
+                <div class="layui-tab-content">
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">联系人真实姓名</label>
+                        <div class="layui-input-inline">
+                            <input name="contactRealName" lay-verify="required" placeholder="输入联系人真实姓名" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">商户登录名</label>
+                        <div class="layui-input-inline">
+                            <input name="loginUserName" lay-verify="required" placeholder="输入商户登录名" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">联系人手机号（登录手机号）</label>
+                        <div class="layui-input-inline">
+                            <input type="tel" name="loginMobile" lay-verify="phone" placeholder="联系人手机号（登录手机号）" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">联系人邮箱（登录邮箱）</label>
+                        <div class="layui-input-inline">
+                            <input name="loginEmail" lay-verify="emailOrNull" placeholder="联系人邮箱（登录邮箱）" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="layui-tab layui-tab-brief">
+                <ul class="layui-tab-title">
+                    <li class="layui-this">商户权限</li>
+                </ul>
+                <div class="layui-tab-content">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">是否允许押金模式</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="depositModeStatus" value="0" title="禁用" checked />
+                            <input type="radio" name="depositModeStatus" value="1" title="允许" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button type="button" class="layui-hide xxpayYesBtn" lay-submit="" lay-filter="userAdd">保存</button>
+
+
+        </form>
+    </div>
+</div>
+
+<script>
+    layui.use(['admin', 'form','view','upload','setter'],function(){
+        var form = layui.form
+            ,$ = layui.$
+            ,admin = layui.admin
+            ,upload = layui.upload
+            ,element = layui.element
+            ,setter = layui.setter
+            ,layer = layui.layer
+            ,laydate = layui.laydate;
+
+        element.render('breadcrumb', 'breadcrumb');
+
+
+        // 初始化 [省] 下拉框
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/area_code/provinces',
+            error: function(err){
+                layer.alert(JSON.stringify(err.field), {title: '错误提示'})
+            },
+            success: function(res){
+                if(res.code == 0){
+                    $.each(res.data, function(){
+                        $("#provinceSelect").append("<option item value='"+this.provinceCode+"'>"+this.provinceName+"</option>");
+                    });
+                    form.render();
+                }
+            }
+        });
+
+        //监听 [省] 下拉框
+        form.on('select(provinceSelectFilter)', function(data){
+
+            //清空， 市， 区 下拉框
+            $("#citySelect option[item]").remove();
+            $("#areaSelect option[item]").remove();
+
+            var provinceCode = data.value; //省级编码
+            if(!provinceCode){
+                form.render();
+                return false; //未选择
+            }
+
+            admin.req({
+                type: 'get',
+                url: layui.setter.baseUrl + '/area_code/cities?provinceCode=' + provinceCode,
+                error: function(err){
+                    layer.alert(JSON.stringify(err.field), {title: '错误提示'})
+                },
+                success: function(res){
+                    if(res.code == 0){
+                        $.each(res.data, function(){
+                            $("#citySelect").append("<option item value='"+this.cityCode+"'>"+this.cityName+"</option>");
+                        });
+                        form.render();
+                    }
+                }
+            });
+        });
+
+        //监听 [市] 下拉框
+        form.on('select(citySelectFilter)', function(data){
+
+            //清空 区 下拉框
+            $("#areaSelect option[item]").remove();
+
+            var cityCode = data.value; //市级编码
+            if(!cityCode){
+                form.render();
+                return false; //未选择
+            }
+            admin.req({
+                type: 'get',
+                url: layui.setter.baseUrl + '/area_code/areas?cityCode=' + cityCode,
+                error: function(err){
+                    layer.alert(JSON.stringify(err.field), {title: '错误提示'})
+                },
+                success: function(res){
+                    if(res.code == 0){
+                        $.each(res.data, function(){
+                            $("#areaSelect").append("<option item value='"+this.areaCode+"'>"+this.areaName+"</option>");
+                        });
+                        form.render();
+                    }
+                }
+            });
+        });
+
+
+        //自定义验证格式
+        form.verify({
+            emailOrNull: function(value, item) { //value：表单的值、item：表单的DOM对象
+                var emailArray = form.config.verify.email;
+                if (value && !new RegExp(emailArray[0]).test(value)) {
+                    return emailArray[1];
+                }
+            }
+        });
+
+        //点击【提交】事件
+        form.on('submit(userAdd)', function(data) {
+
+            var reqData = data.field;  //请求参数
+
+            if(/^\d*$/.test(reqData.loginUserName)){  //登录名不允许全部是数字
+                layer.alert('用户登录名不允许全部是数字');
+                return false;
+            }
+
+
+            //验证 必填信息
+
+            if(!reqData.provinceCode || !reqData.cityCode || !reqData.areaCode){return layer.alert('请选择商户位置信息！'); }
+
+            //封装位置描述信息
+            reqData.areaInfo = $("#provinceSelect option[value='"+reqData.provinceCode+"']").text() + " " +
+                $("#citySelect option[value='"+reqData.cityCode+"']").text() + " " +
+                $("#areaSelect option[value='"+reqData.areaCode+"']").text();
+
+            admin.req({
+                type: "POST",
+                url: layui.setter.baseUrl + '/mch_info/add',
+                data: reqData,
+                success: function(res){
+                    if(res.code == 0) {
+                        layer.closeAll(); //关闭所有弹层
+                        layer.msg("保存成功");
+                        layui.table.reload('tableReload', {page: {curr: 1}}); //调用业务弹层外表格重新加载
+                    }
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+        form.render();
+    })
+</script>

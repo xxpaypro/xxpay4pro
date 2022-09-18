@@ -1,0 +1,60 @@
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">分润明细列表</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-tab-item layui-show">
+                    <div class="layui-row">
+                        <div class="layui-form" style="float:right;">
+                            <div class="layui-form-item" style="margin:0;"></div>
+                        </div>
+                    </div>
+                    <div class="layui-row">
+                        <div class="layuiAdmin-btns" style="margin-bottom: 10px;">
+                        </div>
+                    </div>
+                    <table id="XxPay_Profit_Detail_dataAll" lay-filter="XxPay_Profit_Detail_dataAll"></table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    layui.use(['admin', 'table', 'util'], function(){
+        var $ = layui.$
+            ,admin = layui.admin
+            ,table = layui.table
+            ,element = layui.element
+            ,form = layui.form
+            ,view = layui.view;
+
+        element.render('breadcrumb', 'breadcrumb');
+
+        var taskId = view.getOpenParams('taskId');
+        //商户列表
+        table.render({
+            elem: '#XxPay_Profit_Detail_dataAll'
+            ,url: layui.setter.baseUrl + '/sub_order_profit/profit_detail_list' //列表接口
+            ,where: {taskId: taskId}
+            ,id: 'tableReloadDetail'
+            ,page: true
+            ,cols: [[
+                {field: 'bizOrderId', title: '业务单号'}
+                ,{title: '业务单类型', templet:"<div>{{ d.bizType == 1 ? '支付' : d.bizType == 2 ? '充值' : '退款' }}</div>"}
+                ,{title: '业务单支付金额', templet: "<div>{{ d.bizOrderPayAmount / 100 }}</div>"}
+                ,{field: 'bizOrderCreateDate', title: '业务创建时间', width: 180, templet: '<div>{{ layui.util.toDateString(d.bizOrderCreateDate, "yyyy-MM-dd HH:mm:ss") }}</div>'}
+                ,{title: '收入金额', templet: "<div>{{ d.incomeAmount / 100 }}</div>"}
+                ,{title: '支出/退款金额', templet: "<div>{{ d.feeAmount / 100 }}</div>"}
+                ,{field: 'feeRateSnapshot', title: '返佣比例快照'}
+            ]]
+            ,skin: 'line'
+        });
+
+        // 渲染表单
+        form.render();
+    });
+</script>

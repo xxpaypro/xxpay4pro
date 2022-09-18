@@ -1,0 +1,151 @@
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a><cite>支付配置</cite></a>
+    </span>
+</div>
+
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">支付产品</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-row">
+                    <div class="layuiAdmin-btns" style="margin-bottom: 10px;">
+                        <a class="layui-btn" data-type="all" data-events="create">新增支付产品</a>
+                    </div>
+                </div>
+                <table class="layui-hide center" id="cList" lay-filter="cList"></table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['table','util', 'form','view'], function(){
+        var table = layui.table
+        ,$ = layui.$
+        ,form = layui.form
+        ,element = layui.element
+        ,view = layui.view
+        ,admin = layui.admin;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        //标题内容模板
+        var tplTitle = function(d){
+            return '<a class="layui-btn layui-btn-sm" lay-event="edit">编辑</a>'
+        };
+
+        var tplStatus = function(d){
+
+            var checkedHtml = " recordId='"+d.id+"' ";
+            if(d.status == 1) {
+                checkedHtml += " checked";
+            }
+            return '<input type="checkbox" lay-filter="statusSwitch" lay-skin="switch" '+checkedHtml+' lay-text="启用|停用">';
+        };
+
+        var tplProductType = function(d){
+            if(d.productType == 1) {
+                return '收款';
+            }else if(d.productType == 2) {
+                return '充值';
+            }else {
+                return '';
+            }
+        };
+
+        var tplIfMode = function(d){
+            if(d.ifMode == 1) {
+                return "单独";
+            }else if(d.ifMode == 2) {
+                return "<span style='color: red'>轮询</span>";
+            }
+        };
+
+        var tplMchRate = function(d){
+            if(d.mchRate == '' || d.mchRate == null) {
+                return "未设置";
+            }else {
+                return "<span style='color: blue'>"+ d.mchRate+"%<span>";
+            }
+        };
+
+        var tplAgentRate = function(d){
+            if(d.agentRate == '' || d.agentRate == null) {
+                return "未设置";
+            }else {
+                return "<span style='color: blue'>"+ d.agentRate+"%<span>";
+            }
+        };
+
+        table.render({
+            elem: '#cList'
+            ,url: layui.setter.baseUrl + '/config/pay_product/list'
+            
+            ,id: 'tableReload'
+            ,cols: [[
+                {field:'id', title: '产品ID'}
+                ,{field:'productName', title: '产品名称'}
+                ,{field:'productType', title: '产品类型', templet: tplProductType}
+                ,{field:'payTypeName',  title: '支付类型'}
+                //,{field:'agentRate', width: 150, title: '代理商费率',templet: tplAgentRate}
+                //,{field:'mchRate', width: 150, title: '商户费率',templet: tplMchRate}
+                //,{field:'ifMode', width: 150,  title: '接口模式',templet: tplIfMode}
+                ,{field:'status', title: '状态',templet: tplStatus }
+                ,{field:'edite', width: 200, title: '操作', templet: tplTitle }
+            ]]
+            ,page: true
+            ,skin: 'line'
+        });
+
+        form.on('switch(statusSwitch)', function(data){
+
+            var updateRecordId = $(data.elem).attr('recordId');
+            var updateState = data.elem.checked ? "1" : "0";
+            var loadingIndex = layer.load();
+            admin.req({
+                type: "POST",
+                url: layui.setter.baseUrl + '/config/pay_product/update',
+                data: {id: updateRecordId, status: updateState},
+                success: function(res){
+                    if(res.code == 0) {
+                        table.reload('tableReload');
+                    }
+                },
+                complete:function(){
+                    layer.close(loadingIndex);
+                }
+            });
+        });
+
+        //监听工具条
+        table.on('tool(cList)', function(obj){
+            var data = obj.data;
+            if(obj.event === 'edit'){
+                view.xxpayPopup("编辑", "config/pay_product/update", {id: data.id});
+            }
+        });
+
+        // 事件处理
+        var events = {
+            create: function () {
+                view.xxpayPopup("新增支付产品", "config/pay_product/create");
+            }
+        };
+
+        $('.layuiAdmin-btns .layui-btn').on('click', function(){
+            var othis = $(this)
+                ,thisEvent = othis.data('events')
+                ,type = othis.data('type');
+            events[thisEvent] && events[thisEvent].call(this, othis, type);
+        });
+
+        // 渲染表单
+        form.render();
+
+    });
+    
+</script>

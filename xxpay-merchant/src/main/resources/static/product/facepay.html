@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>刷脸支付 - 小新支付</title>
+    <meta name="keywords" content="刷脸支付,刷脸支付系统源码,XxPay刷脸支付解决方案">
+    <meta name="description" content="XxPay刷脸支付系统使用Java开发,支持分布式部署,高并发.商户收款支持收款app|小程序|pc收银插件|青蛙和蜻蜓刷脸.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+    <link rel="stylesheet" href="/x_mch/start/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/css/global.css" media="all">
+    <style>
+        body{
+            width:100%;
+            background:rgba(245,246,247,1);
+            opacity:1;
+        }
+    </style>
+</head>
+<body>
+<div class="page">
+    <div class="headerpage fly-header"></div>
+
+    <div class="xxpay-index">
+        <div class="xxpay-mode product-mode-bg">
+            <div class="xxpay-mode-product-title">
+                <div class="product-title-img"><img src="/images/product/wxpay.svg" /><img src="/images/product/alipay.svg" /></div>
+                <p>微信/支付宝 刷脸支付</p>
+                <span>开启刷脸新时代</span>
+            </div>
+            <div class="xxpay-mode-title" style="margin-top: 0px">
+                <p>支付新体验</p>
+            </div>
+            <div class="xxpay-mode-body">
+                <div class="xxpay-body-card-list" style="width: 1280px">
+                    <div class="xxpay-body-product-side">
+                        <div class="product-side-top">
+                            <div class="product-side-top-content">
+                                <div class="img"><img src="/images/product/new1.svg"></div>
+                                <p class="title">新技术</p>
+                                <p class="content">支付场景极低误识率（FAR）整体识别流程耗时小于 1s，节约支付环节的等待时间</p>
+                            </div>
+                        </div>
+                        <div class="product-side-top-content">
+                            <div class="img"><img src="/images/product/new2.svg"></div>
+                            <p class="title">新流量</p>
+                            <p class="content">行业平台流量转化为商户自有流量，精细化私域经营，流量获取成本更低，更精准</p>
+                        </div>
+                    </div>
+                    <div class="xxpay-body-product-new">
+                        <p>支付宝蜻蜓</p>
+                        <img src="/images/product/Iot.svg"/>
+                        <p>微信青蛙</p>
+                    </div>
+                    <div class="xxpay-body-product-side">
+                        <div class="product-side-top-content">
+                            <div class="img"><img src="/images/product/new3.svg"></div>
+                            <p class="title">新趋势</p>
+                            <p class="content">零售模式升级，从传统的赶集造节变成顾客日常触达，商户自主营销、能力更强，市场竞争力更强</p>
+                        </div>
+                        <div class="product-side-top">
+                            <div class="product-side-top-content">
+                                <div class="img"><img src="/images/product/new4.svg"></div>
+                                <p class="title">更安全</p>
+                                <p class="content">3D活体检测技术，可拦截照片、面具、视频等攻击，支付ID盗取、复制难度极大，支付更安全可靠</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="xxpay-mode">
+            <div class="xxpay-mode-title">
+                <img src="/images/product/alipay.png"/>
+                <p>蜻蜓刷脸支付流程演示</p>
+            </div>
+            <div class="xxpay-mode-body">
+                <div class="xxpay-body-card-list" style="width: 1100px">
+                    <div class="xxpay-body-step">
+                        <div>
+                            <img src="/images/product/qt1.svg" style="width: 240px;"/>
+                        </div>
+                        <div class="xxpay-product-step-bottom">
+                            <p>商家输入付款金额</p>
+                        </div>
+                    </div>
+                    <div class="xxpay-body-step">
+                        <div>
+                            <img src="/images/product/qt2.svg" style="width: 240px;"/>
+                        </div>
+                        <div class="xxpay-product-step-bottom">
+                            <p>刷脸验证身份</p>
+                        </div>
+                    </div>
+                    <div class="xxpay-body-step">
+                        <div>
+                            <img src="/images/product/qt3.svg" style="width: 240px;"/>
+                        </div>
+                        <div class="xxpay-product-step-bottom">
+                            <p>选择并确认支付账号</p>
+                        </div>
+                    </div>
+                    <div class="xxpay-body-step">
+                        <div>
+                            <img src="/images/product/qt4.svg" style="width: 240px;"/>
+                        </div>
+                        <div class="xxpay-product-step-bottom">
+                            <p>支付成功</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="xxpay-mode">
+            <div class="xxpay-mode-title">
+                <img src="/images/product/wxpay.webp" style="width: 43px"/>
+                <p>青蛙刷脸支付流程演示</p>
+            </div>
+            <div class="xxpay-mode-body">
+                <div class="xxpay-body-card-list" style="width: 1280px">
+                    <div class="xxpay-body-step">
+                        <div>
+                            <img src="/images/product/qw1.svg" style="width: 236px;"/>
+                        </div>
+                        <div class="xxpay-product-step-bottom">
+                            <p>商家输入付款金额</p>
+                        </div>
+                    </div>
+                    <div class="xxpay-body-step">
+                        <div>
+                            <img src="/images/product/qw2.svg" style="width: 236px;"/>
+                        </div>
+                        <div class="xxpay-product-step-bottom">
+                            <p>选择刷脸支付</p>
+                        </div>
+                    </div>
+                    <div class="xxpay-body-step">
+                        <div>
+                            <img src="/images/product/qw3.svg" style="width: 236px;"/>
+                        </div>
+                        <div class="xxpay-product-step-bottom">
+                            <p>刷脸验证身份</p>
+                        </div>
+                    </div>
+                    <div class="xxpay-body-step">
+                        <div>
+                            <img src="/images/product/qw4.svg" style="width: 236px;"/>
+                        </div>
+                        <div class="xxpay-product-step-bottom">
+                            <p>输入手机尾号验证身份</p>
+                        </div>
+                    </div>
+                    <div class="xxpay-body-step">
+                        <div>
+                            <img src="/images/product/qw5.svg" style="width: 236px;"/>
+                        </div>
+                        <div class="xxpay-product-step-bottom">
+                            <p>支付成功</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="xxpay-mode product-mode-bg-app">
+            <div class="xxpay-mode-product-title">
+                <div class="product-title-img"><img src="/images/product/app.svg" /></div>
+                <p>APP</p>
+                <span>聚合支付收银专家</span>
+            </div>
+            <div class="xxpay-mode-title" style="margin: 0px">
+                <p>我的店铺一手掌握</p>
+            </div>
+            <p class="xxpay-mode-sub-title">用手机对店铺进行运营管理，便携高效</p>
+            <div class="xxpay-mode-body">
+                <div class="app-body">
+                    <div class="app-body-left" id="preBtn2">
+                        <img id="preImg" src="/images/product/manage.webp">
+                    </div>
+                    <div class="app-body-arr-left" id="preBtn">
+                        <img src="/images/product/arr_left.svg">
+                        <img src="/images/product/arr_left_hover.svg">
+                    </div>
+                    <div class="app-body-center">
+                        <img  id="currImg" data-curr="1" src="/images/product/mgr.webp">
+                        <p id="detail1">店铺管理</p>
+                        <p id="detail2">门店，店员分级管理，实时掌控</p>
+                    </div>
+                    <div class="app-body-arr-right" id="nextBtn">
+                        <img src="/images/product/arr_right.svg">
+                        <img  src="/images/product/arr_right_hover.svg">
+                    </div>
+                    <div class="app-body-right" id="nextBtn2">
+                        <img  id="nextImg" src="/images/product/coupon.webp">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="xxpay-mode">
+            <div class="xxpay-mode-title">
+                <p>APP页面展示</p>
+            </div>
+            <div class="xxpay-mode-body">
+                <div class="xxpay-body-card-list" style="width: 1300px">
+                    <div class="xxpay-body-step">
+                        <div class="step-image">
+                            <img src="/images/product/app_index.svg" style="width: 200px;"/>
+                        </div>
+                        <div class="xxpay-product-step-bottom app-step-bottom">
+                            <p>首页</p>
+                        </div>
+                    </div>
+                    <div class="xxpay-body-step">
+                        <div class="step-image">
+                            <img src="/images/product/app_sta.svg" style="width: 200px;"/>
+                        </div>
+                        <div class="xxpay-product-step-bottom app-step-bottom">
+                            <p>统计</p>
+                        </div>
+                    </div>
+                    <div class="xxpay-body-step">
+                        <div class="step-image">
+                            <img src="/images/product/app_order.svg" style="width: 200px;"/>
+                        </div>
+                        <div class="xxpay-product-step-bottom app-step-bottom">
+                            <p>订单</p>
+                        </div>
+                    </div>
+                    <div class="xxpay-body-step">
+                        <div class="step-image">
+                            <img src="/images/product/app_member.svg" style="width: 200px;"/>
+                        </div>
+                        <div class="xxpay-product-step-bottom app-step-bottom">
+                            <p>会员详情</p>
+                        </div>
+                    </div>
+                    <div class="xxpay-body-step">
+                        <div class="step-image">
+                            <img src="/images/product/app_coupon.svg" style="width: 200px;"/>
+                        </div>
+                        <div class="xxpay-product-step-bottom app-step-bottom">
+                            <p>卡券管理</p>
+                        </div>
+                    </div>
+                    <div class="xxpay-body-step">
+                        <div class="step-image">
+                            <img src="/images/product/app_sub.svg" style="width: 200px;"/>
+                        </div>
+                        <div class="xxpay-product-step-bottom app-step-bottom">
+                            <p>员工管理</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="xxpay-mode product-mode-bg-code">
+            <div class="xxpay-mode-product-title">
+                <div class="product-title-img"><img src="/images/product/code.svg" /></div>
+                <p>聚合码</p>
+                <span>一码搞定多平台收款</span>
+            </div>
+            <div class="xxpay-mode-body">
+                <div class="xxpay-body-card-list">
+                    <div class="product-code">
+                        <p class="product-code-detail1">亚克力收款码</p>
+                        <img src="/images/product/pay_code.svg">
+                        <p class="product-code-detail2">纸质收款码</p>
+                    </div>
+                    <div class="product-sub-title sub-title-width">
+                        <p>一码多用，可贴可放</p>
+                        <p style="text-align: center;">小新聚合码，一码搞定多平台收款.支持“微信，支付宝，云闪付”三种支付方式。便捷，安全，实用。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="xxpay-mode product-mode-bg-mbr">
+            <div class="xxpay-mode-product-title">
+                <div class="product-title-img"><img src="/images/product/mbr.svg" /></div>
+                <p>商户会员系统</p>
+                <span>会员专享福利</span>
+            </div>
+            <div class="xxpay-mode-body">
+                <div class="xxpay-body-card-list">
+                    <div class="product-mbr-card">
+                        <div></div>
+                        <div class="product-sub-title">
+                            <p class="product-mbr-detail1" style="text-align: right">卡券广场</p>
+                            <p class="product-mbr-detail2">广场主要功能是为会员展示当前商户所投放的优惠券，会员可根据己身不同程度的消费意愿来领取活动中的优惠券。作用是加强会员二次消费的转化率。从而提高商家的营业额。</p>
+                        </div>
+                    </div>
+                    <div><img src="/images/product/mbr_system.svg"></div>
+                    <div class="product-mbr-card">
+                        <div class="product-sub-title">
+                            <p class="product-code-detail1" style="text-align: left">积分商城</p>
+                            <p class="product-code-detail2">商城主要功能是为会员展示当前商户所投放的免费商品，会员可根据己身拥有的积分状况来兑换活动中的免费商品。此活动可不同程度的刺激用户获取积分，提高用户的对当前商家在同类店铺中的忠诚度。</p>
+                        </div>
+                        <div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="xxpay-mode product-mode-bg-pc">
+            <div class="xxpay-mode-product-title">
+                <div class="product-title-img"><img src="/images/product/pc.svg" /></div>
+                <p>PC收银插件</p>
+                <span>简单高效稳定</span>
+            </div>
+            <div class="xxpay-mode-body">
+                <div class="product-pc-body">
+                    <img src="/images/product/pc_index.webp"/>
+                </div>
+                <div class="product-pc-body">
+                    <div class="product-sub-title"  style="width: 625px">
+                        <p class="product-mbr-detail1" style="text-align: left;">收款</p>
+                        <p class="product-mbr-detail2">收款界面为商户提供了不同场景下的方案，可连接扫码设备（扫码枪，扫码盒子），刷脸设备，也可以独立收银，针对会员用户还提供了卡券核销功能。</p>
+                    </div>
+                    <div class="product-sub-title"  style="width: 625px">
+                        <p class="product-mbr-detail1" style="text-align: left;">会员</p>
+                        <p class="product-mbr-detail2">会员系统是提高用户”转化率，忠诚度，付费率“最佳的方式用户认可度高，教育成本低，覆盖广。</p>
+                    </div>
+                    <div class="product-sub-title"  style="width: 625px">
+                        <p class="product-mbr-detail1" style="text-align: left;">流水</p>
+                        <p class="product-mbr-detail2">业务中心展示了所有订单业务的记录，且细分订单状态。详细的信息展示让商户查询不费吹灰之力。商户更可以根据用户的付费方式精准的发起各种营销活动。</p>
+                    </div>
+                    <div class="product-sub-title"  style="width: 625px">
+                        <p class="product-mbr-detail1" style="text-align: left;">交班</p>
+                        <p class="product-mbr-detail2">交班功能展示了当前收银员工作时间内的营业状况，详细信息的区分让对账变的一目了然，有效的节约了时间成本。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<div class="footerpage fly-footer"></div>
+<script src="/x_mch/start/layui/layui.js"></script>
+<script type="text/javascript">
+    layui.use('jquery', function() {
+                var $ = layui.$;
+
+        $(".headerpage").load("/common/header.html");
+        $(".footerpage").load("/common/footer.html");
+
+        $("#preBtn").on('click', function () {
+            pre();
+        })
+        $("#preBtn2").on('click', function () {
+            pre();
+        })
+        $("#nextBtn").on('click', function () {
+            next();
+        })
+        $("#nextBtn2").on('click', function () {
+            next();
+        })
+
+        function pre() {
+            var curr = $("#currImg").data('curr');
+            switch (curr) {
+                case 1:
+                    $("#preImg").attr('src', '/images/product/member.png');
+                    $("#currImg").attr('src', '/images/product/manage.webp');
+                    $("#nextImg").attr('src', '/images/product/mgr.webp');
+                    $("#detail1").text("便捷收款");
+                    $("#detail2").text("主扫，被扫 一部手机即可搞定");
+                    curr = 4;
+                    $("#currImg").data('curr', curr);
+                    break;
+                case 2:
+                    $("#preImg").attr('src', '/images/product/manage.webp');
+                    $("#currImg").attr('src', '/images/product/mgr.webp');
+                    $("#nextImg").attr('src', '/images/product/coupon.webp');
+                    $("#detail1").text("店铺管理");
+                    $("#detail2").text("门店，店员分级管理，实时掌控");
+                    curr--;
+                    $("#currImg").data('curr', curr);
+                    break;
+                case 3:
+                    $("#preImg").attr('src', '/images/product/mgr.webp');
+                    $("#currImg").attr('src', '/images/product/coupon.webp');
+                    $("#nextImg").attr('src', '/images/product/member.png');
+                    $("#detail1").text("卡券核销");
+                    $("#detail2").text("扫描核销卡券，收银功能更强大");
+                    curr--;
+                    $("#currImg").data('curr', curr);
+                    break;
+                case 4:
+                    $("#preImg").attr('src', '/images/product/coupon.webp');
+                    $("#currImg").attr('src', '/images/product/member.png');
+                    $("#nextImg").attr('src', '/images/product/manage.webp');
+                    $("#detail1").text("会员管理");
+                    $("#detail2").text("自有营销体系，高效管理");
+                    curr--;
+                    $("#currImg").data('curr', curr);
+                    break;
+            }
+        }
+
+        function next() {
+            var curr = $("#currImg").data('curr');
+            switch (curr) {
+                case 1:
+                    $("#preImg").attr('src', '/images/product/mgr.webp');
+                    $("#currImg").attr('src', '/images/product/coupon.webp');
+                    $("#nextImg").attr('src', '/images/product/member.png');
+                    $("#detail1").text("卡券核销");
+                    $("#detail2").text("扫描核销卡券，收银功能更强大");
+                    curr++;
+                    $("#currImg").data('curr', curr);
+                    break;
+                case 2:
+                    $("#preImg").attr('src', '/images/product/coupon.webp');
+                    $("#currImg").attr('src', '/images/product/member.png');
+                    $("#nextImg").attr('src', '/images/product/manage.webp');
+                    $("#detail1").text("会员管理");
+                    $("#detail2").text("自有营销体系，高效管理");
+                    curr++;
+                    $("#currImg").data('curr', curr);
+                    break;
+                case 3:
+                    $("#preImg").attr('src', '/images/product/member.png');
+                    $("#currImg").attr('src', '/images/product/manage.webp');
+                    $("#nextImg").attr('src', '/images/product/mgr.webp');
+                    $("#detail1").text("便捷收款");
+                    $("#detail2").text("主扫，被扫 一部手机即可搞定");
+                    curr++;
+                    $("#currImg").data('curr', curr);
+                    break;
+                case 4:
+                    $("#preImg").attr('src', '/images/product/manage.webp');
+                    $("#currImg").attr('src', '/images/product/mgr.webp');
+                    $("#nextImg").attr('src', '/images/product/coupon.webp');
+                    $("#detail1").text("店铺管理");
+                    $("#detail2").text("门店，店员分级管理，实时掌控");
+                    curr = 1;
+                    $("#currImg").data('curr', curr);
+                    break;
+            }
+        }
+    })
+</script>
+</body>
+</html>

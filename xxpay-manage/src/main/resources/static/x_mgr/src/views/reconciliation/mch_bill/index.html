@@ -1,0 +1,162 @@
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a>对账</a>
+        <a>
+            <cite>商户对账</cite>
+        </a>
+    </div>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">对账文件</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-tab-item layui-show">
+                    <div class="layui-row">
+                        <div class="layui-form" style="float:right; margin-bottom: 10px;">
+                            <div class="layui-form-item" style="margin:0;">
+                                <div class="layui-input-inline">
+                                    <input type="text" name="infoId" id="infoId" placeholder="商户/代理商ID" autocomplete="off" class="layui-input">
+                                </div>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="billDate" id="billDate" placeholder="对账日期" autocomplete="off" class="layui-input">
+                                </div>
+                                <div class="layui-input-inline">
+                                    <select name="type" id="status" lay-search="">
+                                        <option value="-99">状态</option>
+                                        <option value="0">未生成</option>
+                                        <option value="1">已生成</option>
+                                    </select>
+                                </div>
+                                <div class="layui-input-inline">
+                                    <select name="type" id="billType" lay-search="">
+                                        <option value="1" selected>支付对账单</option>
+                                        <option value="2">代付对账单</option>
+                                    </select>
+                                </div>
+                                <div class="layui-input-inline">
+                                <select name="infoType" id="infoType" lay-search="">
+                                    <option value="">发起类型</option>
+                                    <option value="1">商户</option>
+                                    <option value="2">代理商</option>
+                                </select>
+                            </div>
+                                <button id="search" class="layui-btn" data-type="reload">搜索</button>
+                            </div>
+                        </div>
+                    </div>
+                    <table id="XxPay_Mgr_PayOrder_dataAll" lay-filter="XxPay_Mgr_PayOrder_dataAll"></table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/html" id="xxpayBar">
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+    <a target="_blank" class="layui-btn layui-btn-primary layui-btn-xs" lay-event="download">下载</a>
+</script>
+
+<script>
+    layui.use(['admin', 'table', 'util'], function () {
+        var $ = layui.$,
+            admin = layui.admin,
+            table = layui.table,
+            element = layui.element,
+            form = layui.form;
+
+        element.render('breadcrumb', 'breadcrumb');
+
+        //用户列表
+        table.render({
+            elem: '#XxPay_Mgr_PayOrder_dataAll',
+            url: layui.setter.baseUrl + '/bill/mch/list', //列表接口
+            where: {billType : 1},
+            id: 'tableReload',
+            page: true,
+            cols: [
+                [{
+                    type: 'checkbox',
+                    fixed: 'left'
+                }, {
+                    field: 'billDate',
+                    title: '对账日期',
+                    templet: '<div>{{ layui.util.toDateString(d.createTime, "yyyy-MM-dd") }}</div>'
+                }, {
+                    field: 'infoId',
+                    title: '商户/代理商ID'
+                },  {
+                    field: 'mchType',
+                    title: '商户类型',
+                    templet: '<div>{{ d.mchType == 1?"平台账户":"私有账户" }}</div>'
+                }, {
+                    field: 'infoType',
+                    title: '发起类型',
+                    templet: '<div>{{ d.infoType == 1?"商户":"代理商" }}</div>'
+                }, {
+                    field: 'status',
+                    title: '状态',
+                    templet: '<div>{{ d.status == 0?"未生成":"已生成" }}</div>'
+                },  {
+                    field: 'createTime',
+                    title: '创建时间',
+                    templet: '<div>{{ layui.util.toDateString(d.createTime, "yyyy-MM-dd HH:mm:ss") }}</div>'
+                }, {
+                    title: '对账类型',
+                    templet: '<div>{{ d.billType == 1?"支付对账单":"代付对账单" }}</div>'
+                }, {
+                    field: 'edit',
+                    title: '操作',
+                    toolbar: '#xxpayBar'
+                }]
+            ],
+            skin: 'line'
+        });
+
+        //监听工具条
+        table.on('tool(XxPay_Mgr_PayOrder_dataAll)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'detail') {
+                location.hash = "/reconciliation/mch_bill/view/id=" + data.id;
+            }else if(obj.event === 'download') {
+                // location.href = data.billPath;
+                window.open(data.billPath) ;
+            }
+        });
+
+        // 搜索
+        var $ = layui.$,
+            active = {
+                reload: function () {
+                    var infoId = $('#infoId').val();
+                    var status = $("#status").val();
+                    var billDate = $("#billDate").val();
+                    var billType = $("#billType").val();
+                    var infoType = $('#infoType').val();
+                    //执行重载
+                    table.reload('tableReload', {
+                        page: {
+                            curr: 1 //重新从第 1 页开始
+                        },
+                        where: {
+                            infoId: infoId,
+                            infoType: infoType,
+                            status: status,
+                            billDate: billDate,
+                            billType: billType
+                        }
+                    });
+                }
+            };
+        $('#search').on('click', function () {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+        // 渲染表单
+        form.render();
+    });
+</script>

@@ -1,0 +1,330 @@
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>转账订单</cite></a>
+        <a><cite>查看订单</cite></a>
+    </div>
+</div>
+<style>
+    .layui-form-label {
+        width:15% !important;
+        margin-left:1%;
+    }
+    .layui-input-inline {
+        width: 33% !important;
+    }
+</style>
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-tab layui-tab-brief">
+        <ul class="layui-tab-title">
+            <li class="layui-this">订单详情</li>
+        </ul>
+        <div class="layui-tab-content">
+            <form class="layui-form layui-form-pane" action="">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">转账订单号</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="transOrderId" disabled="disabled" class="layui-input">
+                    </div>
+                    <label class="layui-form-label">商户单号</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="mchOrderNo" disabled="disabled" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">商户ID</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="mchId" disabled="disabled" class="layui-input">
+                    </div>
+                    <label class="layui-form-label">应用ID</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="appId" disabled="disabled" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">支付接口类型</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="channelType" disabled="disabled" class="layui-input">
+                    </div>
+                    <label class="layui-form-label">支付接口</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="channelId" disabled="disabled" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">支付通道ID</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="passageId" disabled="disabled" class="layui-input">
+                    </div>
+                    <label class="layui-form-label">支付通道账户ID</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="passageAccountId" disabled="disabled" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">转账金额</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="amount" disabled="disabled" class="layui-input">
+                    </div>
+                    <label class="layui-form-label">转账状态</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="status" disabled="disabled" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">转账结果</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="result" disabled="disabled" class="layui-input">
+                    </div>
+                    <label class="layui-form-label">备注</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="remarkInfo" disabled="disabled" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">设备</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="device" disabled="disabled" class="layui-input">
+                    </div>
+                    <label class="layui-form-label">客户端IP</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="clientIp" disabled="disabled" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">账户属性</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="accountAttr" disabled="disabled" class="layui-input">
+                    </div>
+                    <label class="layui-form-label">账户类型</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="accountType" disabled="disabled" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">开户行名称</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="bankName" disabled="disabled" class="layui-input">
+                    </div>
+                    <label class="layui-form-label">联行号</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="bankType" disabled="disabled" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">账户名</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="accountName" disabled="disabled" class="layui-input">
+                    </div>
+                    <label class="layui-form-label">账户号</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="accountNo" disabled="disabled" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">开户行所在省</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="province" disabled="disabled" class="layui-input">
+                    </div>
+                    <label class="layui-form-label">开户行所在市</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="city" disabled="disabled" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">渠道商户ID</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="channelMchId" disabled="disabled" class="layui-input">
+                    </div>
+                    <label class="layui-form-label">渠道用户</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="channelUser" disabled="disabled" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">渠道订单号</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="channelOrderNo" disabled="disabled" class="layui-input">
+                    </div>
+                    <label class="layui-form-label">上游通道费率</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="channelRate" disabled="disabled" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">上游通道费用</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="channelFeeEvery" disabled="disabled" class="layui-input">
+                    </div>
+                    <label class="layui-form-label">上游通道成本</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="channelCost" disabled="disabled" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">上游渠道错误码</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="channelErrCode" disabled="disabled" class="layui-input">
+                    </div>
+                    <label class="layui-form-label">上游渠道错误描述</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="channelErrMsg" disabled="disabled" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">上游渠道扩展参数</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="extra" disabled="disabled" class="layui-input">
+                    </div>
+                    <label class="layui-form-label">通知地址</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="notifyUrl" disabled="disabled" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">扩展参数1</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="param1" disabled="disabled" class="layui-input">
+                    </div>
+                    <label class="layui-form-label">扩展参数2</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="param2" disabled="disabled" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">订单成功时间</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="transSuccTime" disabled="disabled" class="layui-input">
+                    </div>
+                    <label class="layui-form-label">订单失效时间</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="expireTime" disabled="disabled" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">创建时间</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="createTime" disabled="disabled" class="layui-input">
+                    </div>
+                    <label class="layui-form-label">更新时间</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="updateTime" disabled="disabled" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-inline">
+                        <a class="layui-btn" lay-href="order/trans/">返回</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    layui.use(['admin', 'form'],function(){
+        var form = layui.form
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,element = layui.element
+        ,layer = layui.layer ;
+        // 导航
+        element.render('breadcrumb', 'breadcrumb');
+        var transOrderId = location.href.split('?')[1];
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/trans_order/get',
+            data: {
+                transOrderId : transOrderId
+            },
+            error: function(err){
+                layer.alert(JSON.stringify(err.field), {
+                    title: '错误提示'
+                })
+            },
+            success: function(res){
+                if(res.code == 0){
+                    $('#transOrderId').val(res.data.transOrderId);
+                    $('#mchId').val(res.data.mchId);
+                    $('#appId').val(res.data.appId);
+                    $('#mchOrderNo').val(res.data.mchTransNo);
+                    $('#channelType').val(res.data.channelType);
+                    $('#channelId').val(res.data.channelId);
+                    $('#passageId').val(res.data.passageId);
+                    $('#passageAccountId').val(res.data.passageAccountId);
+                    $('#amount').val(res.data.amount/100);
+                    if(res.data.status == 0) {
+                        $('#status').val("订单生成");
+                    }else if(res.data.status == 1) {
+                        $('#status').val("转账中");
+                    }else if(res.data.status == 2) {
+                        $('#status').val("转账成功");
+                    }else if(res.data.status == 3) {
+                        $('#status').val("转账失败");
+                    }
+                    if(res.data.result == 0) {
+                        $('#result').val("不确认结果");
+                    }else if(res.data.result == 1) {
+                        $('#result').val("等待手动处理");
+                    }else if(res.data.result == 2) {
+                        $('#result').val("确认成功");
+                    }else if(res.data.result == 3) {
+                        $('#result').val("确认失败");
+                    }
+                    $('#remarkInfo').val(res.data.remarkInfo);
+                    $('#device').val(res.data.device);
+                    $('#clientIp').val(res.data.clientIp);
+                    if(res.data.accountAttr == 0) {
+                        $('#accountAttr').val("对私");
+                    }else if(res.data.accountAttr == 1) {
+                        $('#accountAttr').val("对公");
+                    }
+                    if(res.data.accountType == 1) {
+                        $('#accountType').val("银行卡账户");
+                    }else if(res.data.accountType == 2) {
+                        $('#accountType').val("微信账户");
+                    }else if(res.data.accountType == 3) {
+                        $('#accountType').val("支付宝账户");
+                    }
+                    $('#bankName').val(res.data.bankName);
+                    $('#bankType').val(res.data.bankType);
+                    $('#accountName').val(res.data.accountName);
+                    $('#accountNo').val(res.data.accountNo);
+                    $('#province').val(res.data.province);
+                    $('#city').val(res.data.city);
+                    $('#channelMchId').val(res.data.channelMchId);
+                    $('#channelUser').val(res.data.channelUser);
+                    $('#channelOrderNo').val(res.data.channelOrderNo);
+                    if(res.data.channelRate != '' && res.data.channelRate != null) {
+                        $('#channelRate').val(res.data.channelRate + "%");
+                    }
+                    if(res.data.channelFeeEvery != null && res.data.channelFeeEvery != '') {
+                        $('#channelFeeEvery').val(res.data.channelFeeEvery/100 + "元/笔");
+                    }
+                    $('#channelCost').val(res.data.channelCost/100);
+                    $('#channelErrCode').val(res.data.channelErrCode);
+                    $('#channelErrMsg').val(res.data.channelErrMsg);
+                    $('#extra').val(res.data.extra);
+                    $('#notifyUrl').val(res.data.notifyUrl);
+                    $('#param1').val(res.data.param1);
+                    $('#aram2').val(res.data.param2);
+                    if(res.data.expireTime != "" && res.data.expireTime != null) {
+                        $('#expireTime').val(layui.util.toDateString(res.data.expireTime));
+                    }
+                    if(res.data.transSuccTime != "" && res.data.transSuccTime != null) {
+                        $('#transSuccTime').val(layui.util.toDateString(res.data.transSuccTime));
+                    }
+                    if(res.data.createTime != "" && res.data.createTime != null) {
+                        $('#createTime').val(layui.util.toDateString(res.data.createTime));
+                    }
+                    if(res.data.updateTime != "" && res.data.updateTime != null) {
+                        $('#updateTime').val(layui.util.toDateString(res.data.updateTime));
+                    }
+                    form.render();
+                }
+            }
+        })
+    })
+</script>

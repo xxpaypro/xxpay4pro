@@ -1,0 +1,184 @@
+<div class="layui-card layadmin-header">
+  <div class="layui-breadcrumb" lay-filter="breadcrumb">
+    <a lay-href="">主页</a>
+    <a><cite>商户管理</cite></a>
+    <a><cite>所有商户</cite></a>
+  </div>
+</div>
+
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-tab layui-tab-brief">
+      <ul class="layui-tab-title">
+        <li class="layui-this">商户列表</li>
+      </ul>
+      <div class="layui-tab-content">
+        <div class="layui-tab-item layui-show">
+          <div class="layui-row">
+            <div class="layui-form" style="float:right;">
+              <div class="layui-form-item" style="margin:0;">
+                <div class="layui-input-inline">
+                  <input type="text" name="searchMchId" id="searchMchId" placeholder="商户ID" autocomplete="off" class="layui-input">
+                </div>
+                <button id="search" class="layui-btn" data-type="reload">搜索</button>
+              </div>
+            </div>
+          </div>
+          <div class="layui-row">
+            <div class="layuiAdmin-btns" style="margin-bottom: 10px;">
+               <a class="layui-btn layui-hide" id="addMchA" data-events="create">新增</a>
+            </div>
+          </div>
+          <table id="XxPay_Mgr_Merchant_dataAll" lay-filter="XxPay_Mgr_Merchant_dataAll"></table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  layui.use(['admin', 'table', 'util', 'view'], function(){
+    var $ = layui.$
+            ,admin = layui.admin
+            ,table = layui.table
+            ,element = layui.element
+            ,view = layui.view
+            ,form = layui.form;
+
+    element.render('breadcrumb', 'breadcrumb');
+
+    var tplStatus = function(d){
+      if(d.status == -1) {
+        return "<span style='color: orange'>等待审核</span>";
+      }else if(d.status == -2) {
+        return "<span style='color: red'>审核不通过</span>";
+      }else if(d.status == 0) {
+        return "<span style='color: rebeccapurple'>停止</span>";
+      }else if(d.status == 1) {
+        return "<span style='color: darkgreen'>启用</span>";
+      }
+    };
+
+    var tplSignStatus = function(d){
+        if(d.signStatus == 0) {
+            return "<span style='color: orange'>待补充资料</span>";
+        }else if(d.signStatus == 1) {
+            return "<span style='color: red'>待签约</span>";
+        }else if(d.signStatus == 2) {
+            return "<span style='color: darkgreen'>已签约</span>";
+        }
+        return "未知";
+    };
+
+    var tplEdit = function(d){
+
+        var thisHtml = "";
+        thisHtml += "<a class='layui-btn layui-btn-primary layui-btn-xs' lay-event='merchantDetail'>查看商户</a>";
+
+        if(d.status == -2){  //审核不通过状态
+            thisHtml += "<a class='layui-btn layui-btn-primary layui-btn-xs' lay-event='updateAnd2Audit'>修改并提交</a>";
+        }
+
+        if(d.status == 1 && d.signStatus == 0){  //商户状态： 可用 && 签约状态： 待补充资料
+            thisHtml += "<a class='layui-btn layui-btn-primary layui-btn-xs' lay-event='fillMchInfo'>补充进件资料</a>";
+        }
+
+        if(d.status == '1'){ //正常状态
+            thisHtml += "<a class='layui-btn layui-btn-primary layui-btn-xs' lay-event='resetLoginPwd'>重置密码</a>";
+        }
+       return thisHtml;
+    };
+
+    //商户列表
+    table.render({
+      elem: '#XxPay_Mgr_Merchant_dataAll'
+      ,url: layui.setter.baseUrl + '/mch_info/list' //列表接口
+      ,id: 'tableReload'
+      ,page: true
+      ,cols: [[
+        {type: 'checkbox', fixed: 'left'}
+        ,{field: 'mchId', title: '商户ID'}
+        ,{field: 'mchName', title: '商户名称'}
+        ,{field: 'status', title: '状态', templet: tplStatus}
+        ,{title: '签约状态', templet: tplSignStatus}
+        ,{field: 'createTime', title: '时间', width: 200, templet: '<div>{{ layui.util.toDateString(d.createTime, "yyyy-MM-dd HH:mm:ss") }}</div>'}
+        ,{field: 'edit', title: '操作', width: 380, templet: tplEdit }
+      ]]
+      ,skin: 'line'
+    });
+
+    //监听工具条
+    table.on('tool(XxPay_Mgr_Merchant_dataAll)', function(obj){
+      var data = obj.data;
+      if(obj.event === 'merchantDetail'){
+        view.xxpayPopup("商户信息", "biz/merchant/mch_view", {mchId: data.mchId}, {btn: false});
+      }else if(obj.event === "resetLoginPwd"){ //重置密码
+
+          layer.confirm("确认重置商户登录密码？ ", function(index){
+
+              admin.req({
+                  type: 'post',
+                  url: layui.setter.baseUrl + '/mch_info/resetLoginPwd',
+                  data: {mchId : data.mchId},
+                  success: function(resData){
+                      layer.msg("重置成功", {icon: 1});
+                      layer.close(index);
+                  }
+              });
+          });
+      }else if(obj.event === "fillMchInfo"){  //补充进件资料
+          view.xxpayPopup("补充进件资料", "biz/merchant/mch_fill_info", {mchId: data.mchId}, {btn: false});
+      }else if(obj.event === "updateAnd2Audit"){  //修改并提交
+          view.xxpayPopup("修改资料并提交审核", "biz/merchant/mch_edit", {mchId: data.mchId});
+      }
+
+    });
+
+    // 事件处理
+    var events = {
+        create: function() {
+            view.xxpayPopup("新增商户", "biz/merchant/mch_add");
+        }
+    };
+
+    $('.layuiAdmin-btns .layui-btn').on('click', function(){
+        var othis = $(this)
+            ,thisEvent = othis.data('events')
+            ,type = othis.data('type');
+        events[thisEvent] && events[thisEvent].call(this, othis, type);
+    });
+
+      // 搜索
+    var $ = layui.$, active = {
+      reload: function(){
+        var mchId = $('#searchMchId').val();
+        //执行重载
+        table.reload('tableReload', {
+          page: {
+            curr: 1 //重新从第 1 页开始
+          }
+          ,where: {
+            mchId: mchId
+          }
+        });
+      }
+    };
+    $('#search').on('click', function() {
+      var type = $(this).data('type');
+      active[type] ? active[type].call(this) : '';
+    });
+    
+    admin.req({
+        url: layui.setter.baseUrl + '/agent/get',
+        success: function(res){
+            if(res.data.allowAddMch){
+            	$('#addMchA').removeClass('layui-hide');
+            }
+        }
+    });
+
+    // 渲染表单
+    form.render();
+  });
+</script>

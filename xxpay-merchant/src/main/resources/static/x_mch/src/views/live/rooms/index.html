@@ -1,0 +1,147 @@
+<style>
+    .margin-top{margin-top:10px;}
+</style>
+<div class="layui-card-header layui-card" style="margin-bottom: 0">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>直播间管理</cite></a>
+        <a><cite>直播间列表</cite></a>
+    </span>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">直播间列表</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-row">
+                    <form action="" id="exportForm" method="post">
+                        <div class="layui-form" style="float:right; margin-bottom: 10px;">
+                            所属小程序：
+                            <div class="layui-input-inline">
+                                <select name="searchAuthFrom" id="searchAuthFrom" lay-search="">
+                                    <option value="1">点餐</option>
+                                    <option value="2" selected>商城</option>
+                                </select>
+                            </div>
+                            <div class="layui-input-inline">
+                                <button id="search" class="layui-btn" data-type="reload">搜索</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-row">
+                    <div class="layuiAdmin-btns" style="margin-bottom: 10px;">
+                        <a class="layui-btn" data-type="all" data-events="create">创建直播间</a>
+                    </div>
+                </div>
+                <table id="roomList" lay-filter="roomList"></table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+     //标题内容模板
+     var tplTitle = function(d){
+         return '<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看商品</a> ' +
+             '<a class="layui-btn layui-btn-xs" lay-event="import" >导入商品</a> '
+     };
+
+     var tplStatus = function(d){
+         if(d.live_status == 101) {
+             return '<span class="layui-badge layui-bg-green">直播中</span>';
+         }else if(d.live_status == 102) {
+             return '<span class="layui-badge layui-bg-blue">未开始</span>';
+         }else if(d.live_status == 103) {
+             return '<span class="layui-badge layui-bg-orange">已结束</span>';
+         }else if(d.live_status == 104) {
+             return '<span class="layui-badge layui-bg-red">禁播</span>';
+         }else if(d.live_status == 105) {
+             return '<span class="layui-badge layui-bg-orange">暂停</span>';
+         }else if(d.live_status == 106) {
+             return '<span class="layui-badge layui-bg-red">异常</span>';
+         }else if(d.live_status == 107) {
+             return '<span class="layui-badge layui-bg-black">已过期</span>';
+         }
+     };
+
+     var tplCoverImg = function(d){
+         return '<img class="uploadImg" src="' + d.cover_img + '"> ';
+     };
+
+     var tplShareImg = function(d){
+         return '<img class="uploadImg" src="' + d.share_img + '"> ';
+     };
+
+	 layui.config({
+	    base: '/x_mch/src/lib/extend/',
+	 });
+     layui.use(['table','util','admin'], function(){
+        var table = layui.table
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,element = layui.element
+        ,view = layui.view
+        ,form = layui.form;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+         var authFromOrigin = $("#searchAuthFrom").val();
+        table.render({
+            elem: '#roomList'
+            ,id: "tableReload"
+            ,url: layui.setter.baseUrl + '/wx_mini/get_live_info'
+            ,where: {
+                authFrom: authFromOrigin
+            }
+            ,cols: [[
+                {field: 'roomid', title: '直播间ID'}
+                ,{field: 'name',title: '直播间名称'}
+                /*,{field: 'cover_img',title: '直播间背景图', templet: tplCoverImg}
+                ,{field: 'share_img',title: '直播间分享图链接', templet: tplShareImg}*/
+                ,{field: 'anchor_name',title: '主播名'}
+                ,{field: 'start_time',title: '开始时间', minWidth: 180, templet: '<div>{{ layui.util.toDateString(d.start_time*1000) }}</div>'}
+                ,{field: 'end_time',title: '结束时间', minWidth: 180, templet: '<div>{{ layui.util.toDateString(d.end_time*1000) }}</div>'}
+                ,{field: 'live_status',title: '状态',templet: tplStatus}
+                ,{field: 'edit', title: '商品信息', width: 400, templet: tplTitle }
+            ]]
+            ,page: true
+            ,limit: 30
+            ,loading: true
+            ,skin: 'line'
+        });
+
+
+         //监听工具条
+         table.on('tool(roomList)', function(obj){
+             var data = obj.data;
+
+             if(obj.event === 'detail'){
+                 view.xxpayPopup("商品详情", "live/rooms/goods_detail", {goods: data.goods}, {btn:false});
+             } else if(obj.event === 'import') {//导入直播间
+                 var authFrom = $("#searchAuthFrom").val();
+                 view.xxpayPopup("商品导入直播间", "live/rooms/import_goods", {roomId: data.roomid, authFrom: authFrom}, {btn:false});
+             }
+         });
+
+         // 事件处理
+         var events = {
+             create: function(othis, type){
+                 location.hash = "/live/rooms/create";
+             },
+         };
+
+         $('.layuiAdmin-btns .layui-btn').on('click', function(){
+             var othis = $(this)
+                 ,thisEvent = othis.data('events')
+                 ,type = othis.data('type');
+             events[thisEvent] && events[thisEvent].call(this, othis, type);
+         });
+
+
+         // 渲染表单
+         form.render();
+        
+     })
+</script>

@@ -1,0 +1,96 @@
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a><cite>资金流水详情</cite></a>
+    </span>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">基本信息</li>
+            </ul>
+            <div class="layui-tab-content" id="cnotent">   
+                <table class="layui-table" id="zjlsDList"></table>
+                <a class="layui-btn " lay-href="account/history/" style="margin-left:10%">返回</a> 
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    table{
+        text-align: center;
+    }
+    .leftT {
+        text-align: left;
+    }
+</style>
+<script>
+     layui.use(['table','util','admin'], function(){
+        var table = layui.table
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,element = layui.element;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        var router = layui.router();
+        var curdid = router.search.id;
+
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/account/history_get',
+            data: {
+                id: curdid,
+            },
+            error: function(err){
+                layer.alert(err);
+            },
+            success: function(res){
+                if(res.code == 0){
+                    var html = '';
+                   
+                    html += `
+                        <table>
+                            <colgroup>
+                                <col width="25%">
+                                <col>
+                                <col width="25%">
+                                <col>
+                            </colgroup>
+                            <tbody>
+                                <tr>
+                                    <td>流水号</td>
+                                    <td class="leftT">${res.data.id}</td>
+                                    <td>业务订单</td>
+                                    <td class="leftT">${res.data.orderId == null ? "" : res.data.orderId }</td>
+                                </tr>
+                                <tr>
+                                    <td>变更前余额</td>
+                                    <td class="leftT">${res.data.balance/100}</td>
+                                    <td>变更金额</td>
+                                    <td class="leftT">${res.data.amount/100}</td>
+                                </tr>
+                                <tr>
+                                    <td>业务类型</td>
+                                    <td class="leftT">${res.data.bizType == 1?'支付':res.data.bizType == 2?'提现':res.data.bizType == 3?'调账':res.data.bizType == 4?'充值':res.data.bizType == 5?'差错处理':res.data.bizType == 6?'代付':""}</td>
+                                    <td>资金变动方向</td>
+                                    <td class="leftT">${res.data.fundDirection == 2?'减款':'加款'}</td>
+                                </tr>
+                                <tr>
+                                    <td>创建时间</td>
+                                    <td class="leftT">${ layui.util.toDateString(res.data.createTime) }</td>
+                                    <td>修改时间</td>
+                                    <td class="leftT">${ layui.util.toDateString(res.data.updateTime) }</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    `
+                    $('#zjlsDList').html(html);
+                }else {
+                    layer.alert(res.msg,{title:'请求数据失败'});
+                }
+            }
+        })
+     })
+</script>

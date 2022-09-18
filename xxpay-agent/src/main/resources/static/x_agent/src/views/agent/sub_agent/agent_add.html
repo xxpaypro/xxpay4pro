@@ -1,0 +1,141 @@
+<style>
+    .xxpayPopupDiv .layui-form-label {
+        width:15% !important;
+        margin-left:1%;
+    }
+    .xxpayPopupDiv .layui-input-inline {
+        width: 33% !important;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <form class="layui-form layui-form-pane">
+            <div class="layui-tab layui-tab-brief">
+                <div class="layui-tab-content">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">代理商名称</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="agentName" name="agentName" lay-verify="required" placeholder="输入代理商名称" autocomplete="off" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">用户登录名</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="loginUserName" name="loginUserName" lay-verify="required" placeholder="输入用户登录名" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">登录手机号（联系人手机号）</label>
+                        <div class="layui-input-inline">
+                            <input type="tel" id="mobile" maxlength='11' name="mobile" lay-verify="phone" placeholder="输入手机号" autocomplete="off" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">登录邮箱（联系人邮箱）</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="email" name="email" lay-verify="email" placeholder="输入邮箱" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">联系人真实姓名</label>
+                        <div class="layui-input-inline">
+                            <input type="tel" id="realName" name="realName" lay-verify="required" placeholder="输入真实姓名" autocomplete="off" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">联系人身份证号</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="idCard" name="idCard" lay-verify="required" placeholder="输入身份证号" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">QQ号</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="qq" name="qq" lay-verify="number" placeholder="输入QQ号" autocomplete="off" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">通讯地址</label>
+                        <div class="layui-input-inline">
+                            <input type="tel" id="address" name="address" placeholder="输入通讯地址" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+
+                        <label class="layui-form-label">分佣比例(%)</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="profitRate" name="profitRate" lay-verify="number" placeholder="输入分佣比例" autocomplete="off" class="layui-input" value="0">
+                        </div>
+                        <label class="layui-form-label">设置</label>
+                        <input type="checkbox" lay-filter='allowAddMchCheckbox' title="发展商户" checked/>
+                        <input type="checkbox" lay-filter='allowAddSubAgentCheckbox' title="发展子代理商" checked/>
+                        <input type='hidden' id='allowAddMch' name='allowAddMch' value='1'/>
+                        <input type='hidden' id='allowAddSubAgent' name='allowAddSubAgent' value='1'/>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block" style="padding-bottom: 20px;">
+                        <button type="button" class="layui-hide xxpayYesBtn" lay-submit="" lay-filter="agentAdd">保存</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    layui.use(['admin', 'form'],function(){
+        var form = layui.form
+            ,$ = layui.$
+            ,admin = layui.admin
+            ,element = layui.element
+            ,layer = layui.layer ;
+
+        element.render('breadcrumb', 'breadcrumb');
+
+
+
+        admin.req({
+            url: layui.setter.baseUrl + '/agent/getAgentMaxlevel',
+            success: function(res){
+                if(res.data.agentMaxlevel - res.data.currentAgentLevel <= 1 ){  //最高 - 当前 <= 1  则 不允许再发展代理
+                    $('input[lay-filter="allowAddSubAgentCheckbox"]').prop('disabled', 'disabled').prop('checked', false);
+                    $("#allowAddSubAgent").val(0);
+                    form.render();
+                }
+            }
+        });
+
+
+        form.on('submit(agentAdd)', function(data) {
+
+            if(/^\d*$/.test(data.field.loginUserName)){  //登录名不允许全部是数字
+                layer.alert('用户登录名不允许全部是数字');
+                return false;
+            }
+
+            //这里可以写ajax方法提交表单
+            admin.req({
+                type: "POST",
+                url: layui.setter.baseUrl + '/sub_agent/add',
+                data: data.field,
+                success: function(res){
+                    if(res.code == 0) {
+                        layer.closeAll(); //关闭所有弹层
+                        layer.msg("保存成功");
+                        layui.table.reload('tableReload', {page: {curr: 1}}); //调用业务弹层外表格重新加载
+                    }
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+        form.on('checkbox(allowAddSubAgentCheckbox)', function(data){
+            var value = data.elem.checked ? 1 : 0;
+            $("#allowAddSubAgent").val(value);
+        });
+
+        form.on('checkbox(allowAddMchCheckbox)', function(data){
+            var value = data.elem.checked ? 1 : 0;
+            $("#allowAddMch").val(value);
+        });
+
+        form.render();
+    })
+</script>

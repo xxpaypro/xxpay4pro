@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="
+         http://www.springframework.org/schema/beans
+         http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+         http://www.springframework.org/schema/tx
+         http://www.springframework.org/schema/tx/spring-tx-3.2.xsd">
+
+    <bean id="dataSourceMaster" class="org.xxpay.service.common.datasource.EncryptDruidDataSource" destroy-method="close" primary="true">
+        <property name="driverClassName" value="com.mysql.cj.jdbc.Driver" />
+        <property name="url" value="@master.datasource.url@" />
+        <property name="username" value="@master.datasource.username@" />   <!-- 密码已加密， 加密函数详见 DBPasswordUtil.class -->
+        <property name="password" value="@master.datasource.password@" />
+        <property name="initialSize" value="5" />
+        <property name="minIdle" value="5" />
+        <property name="maxActive" value="20" />
+        <property name="maxWait" value="60000" />
+        <property name="timeBetweenEvictionRunsMillis" value="60000" />
+        <property name="minEvictableIdleTimeMillis" value="300000" />
+        <property name="validationQuery" value="SELECT 1 FROM DUAL" />
+        <property name="testWhileIdle" value="true" />
+        <property name="testOnBorrow" value="false" />
+        <property name="testOnReturn" value="false" />
+        <property name="poolPreparedStatements" value="true" />
+        <property name="maxPoolPreparedStatementPerConnectionSize" value="20" />
+        <property name="filters" value="stat,wall,log4j" />
+        <property name="connectionProperties" value="druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000" />
+    </bean>
+
+    <bean id="dataSourceSlave" class="org.xxpay.service.common.datasource.EncryptDruidDataSource" destroy-method="close">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+        <property name="url" value="@slave.datasource.url@" />
+        <property name="username" value="@slave.datasource.username@" />  <!--密码已加密， 加密函数详见 DBPasswordUtil.class  -->
+        <property name="password" value="@slave.datasource.password@" />
+        <property name="initialSize" value="5" />
+        <property name="minIdle" value="5" />
+        <property name="maxActive" value="20" />
+        <property name="maxWait" value="60000" />
+        <property name="timeBetweenEvictionRunsMillis" value="60000" />
+        <property name="minEvictableIdleTimeMillis" value="300000" />
+        <property name="validationQuery" value="SELECT 1 FROM DUAL" />
+        <property name="testWhileIdle" value="true" />
+        <property name="testOnBorrow" value="false" />
+        <property name="testOnReturn" value="false" />
+        <property name="poolPreparedStatements" value="true" />
+        <property name="maxPoolPreparedStatementPerConnectionSize" value="20" />
+        <property name="filters" value="stat,wall,log4j" />
+        <property name="connectionProperties" value="druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000" />
+    </bean>
+
+    <bean id="dataSource" class="org.xxpay.service.common.datasource.DynamicDataSource">
+        <property name="defaultTargetDataSource" ref="dataSourceMaster" /> <!-- 默认数据源：主库 -->
+        <property name="targetDataSources">
+            <map key-type="org.xxpay.service.common.enumm.DataSourceType">
+                <entry key="MASTER" value-ref="dataSourceMaster"/>
+                <entry key="SLAVE" value-ref="dataSourceSlave"/>
+            </map>
+        </property>
+    </bean>
+
+
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource">
+            <ref bean="dataSource" />
+        </property>
+    </bean>
+
+    <!-- mybatis plus 分页插件 -->
+    <bean id="mpPaginationInterceptor" class="com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor"></bean>
+
+    <!-- MYBATIS配置 -->
+    <bean id="sqlSessionFactory" class="com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource" />
+        <property name="mapperLocations" value="classpath*:org/xxpay/service/dao/mapper/*.xml" />
+        <!--<property name="typeAliasesPackage" value="org.xxpay.core.entity" /> 高版本Mybatis添加typeAliasesPackage, 使用存量代码提示Criteria已存在 -->
+        <property name="plugins">
+            <array><ref bean="mpPaginationInterceptor" /></array>
+        </property>
+    </bean>
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="org.xxpay.service.dao.mapper" />
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
+    </bean>
+
+    <!-- 基本信息库事务管理 -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" />
+
+</beans>

@@ -1,0 +1,354 @@
+<style>
+    .xxpayPopupDiv .layui-form-label {
+        width:15% !important;
+        margin-left:1%;
+    }
+    .xxpayPopupDiv .layui-input-inline {
+        width: 33% !important;
+    }
+    .xxpayPopupDiv .layui-layedit-tool {
+        padding: 0px 0px;
+        border-bottom-width: 0px;
+        border-bottom-style: solid;
+        font-size: 0;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <div class="layui-tab-content">
+                <form class="layui-form layui-form-pane" action="">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">商品ID</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="goodsId" name="goodsId" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">商品名称</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="goodsName" name="goodsName" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">商品分类ID</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="categoryId" name="categoryId" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">商品分类名称</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="categoryName" name="categoryName" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">商品类型</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="goodsType" name="goodsType" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">子商品ID</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="subGoodsId" name="subGoodsId" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">商品所属行业</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="industryType" name="industryType" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">商品所属模块</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="goodsModule" name="goodsModule" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">商品售价</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="cellingPrice" name="cellingPrice" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">商品进价</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="buyingPrice" name="buyingPrice" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">会员价</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="memberPrice" name="memberPrice" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">单位</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="unit" name="unit" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">实际销量</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="actualSaleNum" name="actualSaleNum" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">虚拟销量</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="virtualSaleNum" name="virtualSaleNum" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">浏览量</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="browseNumber" name="browseNumber" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">评价数</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="evaluationNumber" name="evaluationNumber" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">商品主图</label>
+                        <div class="layui-input-inline">
+                            <input id="imgPathMain" type="hidden" name="imgPathMain" autocomplete="off" class="layui-input">
+                            <div class="layui-input-inline">
+                                <img id="imgMain" class="uploadImg" style="height:38px; margin-left:30px;cursor: pointer;" title="点击放大" />
+                            </div>
+                        </div>
+                        <label class="layui-form-label">商品详情图</label>
+                        <div class="layui-input-inline">
+                            <input id="imgPathMore" type="hidden" name="imgPathMore" autocomplete="off" class="layui-input">
+                            <div class="layui-input-inline" id="imgMore">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">生产日期</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="producedBeginTime" name="producedBeginTime" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">保质期</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="expiration" name="expiration" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">库存</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="stockNum" name="stockNum" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">商品状态</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="status" name="status" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">品牌</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="brand" name="brand" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">供应商</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="supplier" name="supplier" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">属性分类</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="goodsProps" name="goodsProps" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">限制门店</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="stores" name="stores" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">创建时间</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="createTime" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">更新时间</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="updateTime" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">商品详情</label>
+                        <input hidden type="text" id="goodsDesc" name="goodsDesc">
+                        <div class="layui-input-inline layedit-content detail-body" style="width: 82.5% !important;">
+                            <textarea id="layedit-content" placeholder="请输入商品详情" disabled></textarea>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">图文详情</label>
+                        <div class="layui-input-inline layedit-content detail-body" style="width: 82.5% !important;">
+                            <textarea type="text" id="graphicDesc" name="graphicDesc" disabled="disabled"></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    layui.use(['admin','form','view', 'layedit'],function(){
+        var form = layui.form
+            ,$ = layui.$
+            ,admin = layui.admin
+            ,element = layui.element
+            ,view = layui.view
+            ,layedit = layui.layedit
+            ,layer = layui.layer ;
+        // 导航
+        element.render('breadcrumb', 'breadcrumb');
+
+        //生成商品详情富文本编辑器
+        var contentIndex = layedit.build('layedit-content',{
+            hideTool: [
+                'undo','redo' //撤销重做--实验功能，不推荐使用
+                ,'code', 'strong', 'italic', 'underline', 'del',
+                ,'addhr' //添加水平线
+                ,'|', 'fontFomatt','fontfamily','fontSize', //段落格式，字体样式，字体颜色
+                , 'colorpicker', 'fontBackColor'//字体颜色，字体背景色
+                , 'face', '|', 'left', 'center', 'right', '|', 'link', 'unlink'
+                ,'image'//原版上传图片
+                ,'images'//多图上传
+                , 'image_alt'//上传图片拓展
+                , 'attachment'//上传附件
+                , 'video' //视频上传
+                ,'anchors' //锚点
+                , '|', 'table'//插入表格
+                ,'customlink'//插入自定义链接
+                ,'fullScreen'//全屏
+                ,'preview'//预览
+            ]
+        });
+
+        //生成图文详情富文本编辑器
+        var graphicIndex = layedit.build('graphicDesc',{
+            hideTool: [
+                'undo','redo' //撤销重做--实验功能，不推荐使用
+                ,'code', 'strong', 'italic', 'underline', 'del',
+                ,'addhr' //添加水平线
+                ,'|', 'fontFomatt','fontfamily','fontSize', //段落格式，字体样式，字体颜色
+                , 'colorpicker', 'fontBackColor'//字体颜色，字体背景色
+                , 'face', '|', 'left', 'center', 'right', '|', 'link', 'unlink'
+                ,'image'//原版上传图片
+                ,'images'//多图上传
+                , 'image_alt'//上传图片拓展
+                , 'attachment'//上传附件
+                , 'video' //视频上传
+                ,'anchors' //锚点
+                , '|', 'table'//插入表格
+                ,'customlink'//插入自定义链接
+                ,'fullScreen'//全屏
+                ,'preview'//预览
+            ]
+        });
+
+        var goodsId = view.getOpenParams('goodsId');
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/mchGoods/get',
+            data: {
+                goodsId : goodsId
+            },
+            error: function(err){
+                layer.alert(JSON.stringify(err.field), {
+                    title: '错误提示'
+                })
+            },
+            success: function(res){
+                if(res.code == 0){
+                    $('#goodsId').val(res.data.goodsId);
+                    $('#goodsName').val(res.data.goodsName);
+                    $('#categoryId').val(res.data.categoryId);
+                    $('#categoryName').val(res.data.categoryName);
+                    res.data.goodsType == 1 ? $('#goodsType').val("单一商品") : res.data.goodsType == 2 ? $('#goodsType').val("组合商品") : '';
+                    res.data.subGoodsId ? $('#subGoodsId').val(res.data.subGoodsId) : '';
+                    res.data.industryType == 1 ? $('#industryType').val("餐饮商品") : res.data.industryType == 2 ? $('#industryType').val("电商商品") : '';
+                    res.data.status == 0 ? $('#status').val("下架") : res.data.status == 1 ? $('#status').val("上架") : res.data.status == 2 ? $('#status').val("售罄") : '';
+
+                    var goodsModule = res.data.goodsModule;
+                    var goodsModuleDetail = '';
+                    if (goodsModule.indexOf(0) != -1){
+                        goodsModuleDetail = goodsModuleDetail + "普通商品";
+                    }
+                    if (goodsModule.indexOf(1) != -1){
+                        goodsModuleDetail = goodsModuleDetail + " 新品";
+                    }
+                    if (goodsModule.indexOf(2) != -1){
+                        goodsModuleDetail = goodsModuleDetail + " 热卖";
+                    }
+                    if (goodsModule.indexOf(3) != -1){
+                        goodsModuleDetail = goodsModuleDetail + " 促销";
+                    }
+                    if (goodsModule.indexOf(4) != -1){
+                        goodsModuleDetail = goodsModuleDetail + " 限时抢购";
+                    }
+                    if (goodsModule.indexOf(5) != -1){
+                        goodsModuleDetail = goodsModuleDetail + " 会员专享";
+                    }
+                    $('#goodsModule').val(goodsModuleDetail);
+
+                    $('#cellingPrice').val(res.data.cellingPrice/100);//售价
+                    res.data.buyingPrice ? $('#buyingPrice').val(res.data.buyingPrice/100) : '';//进件
+                    res.data.memberPrice ? $('#memberPrice').val(res.data.memberPrice/100) : '';//会员价
+                    res.data.unit ? $('#unit').val(res.data.unit) : '';//单位
+                    res.data.stockLimitType == 1 ? $('#stockNum').val("不限库存") : $('#stockNum').val(res.data.stockNum);//库存
+                    $('#actualSaleNum').val(res.data.actualSaleNum);//实际销量
+                    res.data.virtualSaleNum ? $('#virtualSaleNum').val(res.data.virtualSaleNum) : '';//虚拟销量
+                    $('#browseNumber').val(res.data.browseNumber);//浏览数
+                    $('#evaluationNumber').val(res.data.evaluationNumber);//评价数
+                    res.data.producedBeginTime ? $('#producedBeginTime').val(res.data.producedBeginTime) : '';//生产日期
+                    res.data.expiration ? $('#expiration').val(res.data.expiration) : '';//保质期
+                    res.data.brand ? $('#brand').val(res.data.brand) : '';//品牌
+                    res.data.supplier ? $('#supplier').val(res.data.supplier) : '';//供应商
+
+                    if (res.data.storeLimitType == 1){
+                        $('#stores').val(res.data.storeNames)//限制门店ID
+                    }else {
+                        $('#stores').val("不限制")//限制门店ID
+                    }
+
+                    if (res.data.goodsPropsType == 1){
+                        $('#goodsProps').val(res.data.goodsPropsNames) ;//属性分类ID
+                    }else {
+                        $('#goodsProps').val("未添加属性");
+                    }
+
+                    //res.data.goodsDesc ? $('#goodsDesc').val(res.data.goodsDesc) : '';//商品详情
+                    if (res.data.graphicDesc) layedit.setContent(graphicIndex, res.data.graphicDesc, true);
+                    if (res.data.goodsDesc) layedit.setContent(contentIndex, res.data.goodsDesc, true);
+
+                    $('#imgMain').attr('src', res.data.imgPathMain);
+                    if (res.data.imgPathMore){
+                        var imgPathMore = res.data.imgPathMore
+                        var split = imgPathMore.split(",");
+                        $.each(split, function (key) {
+                            $("#imgMore").append('<img src="' + split[key] + '" class="uploadImg" style="height:38px; margin-left:30px;cursor: pointer;" title="点击放大" />');
+                        })
+                    }
+
+                    if(res.data.createTime != "" && res.data.createTime != null) {
+                        $('#createTime').val(layui.util.toDateString(res.data.createTime));
+                    }
+                    if(res.data.updateTime != "" && res.data.updateTime != null) {
+                        $('#updateTime').val(layui.util.toDateString(res.data.updateTime));
+                    }
+                    form.render();
+                }
+            }
+        });
+        //点击[图片] 按钮， 事件
+        $('.uploadImg').click(function(){
+            var imgSrc = $(this).attr('src');
+            layer.photos({photos: {
+                    "title": "查看上传图片", //相册标题
+                    "id": 1, //相册id
+                    "start": 0, //初始显示的图片序号，默认0
+                    "data": [   //相册包含的图片，数组格式
+                        {
+                            "alt": "图片",
+                            "pid": 1, //图片id
+                            "src": imgSrc, //原图地址
+                            "thumb": "" //缩略图地址
+                        }
+                    ]
+                } ,anim: 5});
+        });
+
+    })
+</script>

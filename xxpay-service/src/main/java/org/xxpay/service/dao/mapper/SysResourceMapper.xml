@@ -1,0 +1,389 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.xxpay.service.dao.mapper.SysResourceMapper" >
+  <resultMap id="BaseResultMap" type="org.xxpay.core.entity.SysResource" >
+    <id column="resourceId" property="resourceId" jdbcType="BIGINT" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="jump" property="jump" jdbcType="VARCHAR" />
+    <result column="permName" property="permName" jdbcType="VARCHAR" />
+    <result column="permUrl" property="permUrl" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="TINYINT" />
+    <result column="system" property="system" jdbcType="TINYINT" />
+    <result column="icon" property="icon" jdbcType="VARCHAR" />
+    <result column="orderNum" property="orderNum" jdbcType="INTEGER" />
+    <result column="parentId" property="parentId" jdbcType="BIGINT" />
+    <result column="createTime" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="updateTime" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="status" property="status" jdbcType="TINYINT" />
+    <result column="property" property="property" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    resourceId, name, title, jump, permName, permUrl, type, system, icon, orderNum, parentId, 
+    createTime, updateTime, status, property
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="org.xxpay.core.entity.SysResourceExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from t_mgr_sys_resource
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+    <if test="limit != null" >
+      <if test="offset != null" >
+        limit ${offset}, ${limit}
+      </if>
+      <if test="offset == null" >
+        limit ${limit}
+      </if>
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_mgr_sys_resource
+    where resourceId = #{resourceId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from t_mgr_sys_resource
+    where resourceId = #{resourceId,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="org.xxpay.core.entity.SysResourceExample" >
+    delete from t_mgr_sys_resource
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="org.xxpay.core.entity.SysResource" >
+    insert into t_mgr_sys_resource (resourceId, name, title, 
+      jump, permName, permUrl, 
+      type, system, icon, 
+      orderNum, parentId, createTime, 
+      updateTime, status, property
+      )
+    values (#{resourceId,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, 
+      #{jump,jdbcType=VARCHAR}, #{permName,jdbcType=VARCHAR}, #{permUrl,jdbcType=VARCHAR}, 
+      #{type,jdbcType=TINYINT}, #{system,jdbcType=TINYINT}, #{icon,jdbcType=VARCHAR}, 
+      #{orderNum,jdbcType=INTEGER}, #{parentId,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{status,jdbcType=TINYINT}, #{property,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="org.xxpay.core.entity.SysResource" >
+    insert into t_mgr_sys_resource
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="resourceId != null" >
+        resourceId,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="title != null" >
+        title,
+      </if>
+      <if test="jump != null" >
+        jump,
+      </if>
+      <if test="permName != null" >
+        permName,
+      </if>
+      <if test="permUrl != null" >
+        permUrl,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="system != null" >
+        system,
+      </if>
+      <if test="icon != null" >
+        icon,
+      </if>
+      <if test="orderNum != null" >
+        orderNum,
+      </if>
+      <if test="parentId != null" >
+        parentId,
+      </if>
+      <if test="createTime != null" >
+        createTime,
+      </if>
+      <if test="updateTime != null" >
+        updateTime,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="property != null" >
+        property,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="resourceId != null" >
+        #{resourceId,jdbcType=BIGINT},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="jump != null" >
+        #{jump,jdbcType=VARCHAR},
+      </if>
+      <if test="permName != null" >
+        #{permName,jdbcType=VARCHAR},
+      </if>
+      <if test="permUrl != null" >
+        #{permUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=TINYINT},
+      </if>
+      <if test="system != null" >
+        #{system,jdbcType=TINYINT},
+      </if>
+      <if test="icon != null" >
+        #{icon,jdbcType=VARCHAR},
+      </if>
+      <if test="orderNum != null" >
+        #{orderNum,jdbcType=INTEGER},
+      </if>
+      <if test="parentId != null" >
+        #{parentId,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="property != null" >
+        #{property,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="org.xxpay.core.entity.SysResourceExample" resultType="java.lang.Integer" >
+    select count(*) from t_mgr_sys_resource
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update t_mgr_sys_resource
+    <set >
+      <if test="record.resourceId != null" >
+        resourceId = #{record.resourceId,jdbcType=BIGINT},
+      </if>
+      <if test="record.name != null" >
+        name = #{record.name,jdbcType=VARCHAR},
+      </if>
+      <if test="record.title != null" >
+        title = #{record.title,jdbcType=VARCHAR},
+      </if>
+      <if test="record.jump != null" >
+        jump = #{record.jump,jdbcType=VARCHAR},
+      </if>
+      <if test="record.permName != null" >
+        permName = #{record.permName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.permUrl != null" >
+        permUrl = #{record.permUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="record.type != null" >
+        type = #{record.type,jdbcType=TINYINT},
+      </if>
+      <if test="record.system != null" >
+        system = #{record.system,jdbcType=TINYINT},
+      </if>
+      <if test="record.icon != null" >
+        icon = #{record.icon,jdbcType=VARCHAR},
+      </if>
+      <if test="record.orderNum != null" >
+        orderNum = #{record.orderNum,jdbcType=INTEGER},
+      </if>
+      <if test="record.parentId != null" >
+        parentId = #{record.parentId,jdbcType=BIGINT},
+      </if>
+      <if test="record.createTime != null" >
+        createTime = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateTime != null" >
+        updateTime = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.status != null" >
+        status = #{record.status,jdbcType=TINYINT},
+      </if>
+      <if test="record.property != null" >
+        property = #{record.property,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update t_mgr_sys_resource
+    set resourceId = #{record.resourceId,jdbcType=BIGINT},
+      name = #{record.name,jdbcType=VARCHAR},
+      title = #{record.title,jdbcType=VARCHAR},
+      jump = #{record.jump,jdbcType=VARCHAR},
+      permName = #{record.permName,jdbcType=VARCHAR},
+      permUrl = #{record.permUrl,jdbcType=VARCHAR},
+      type = #{record.type,jdbcType=TINYINT},
+      system = #{record.system,jdbcType=TINYINT},
+      icon = #{record.icon,jdbcType=VARCHAR},
+      orderNum = #{record.orderNum,jdbcType=INTEGER},
+      parentId = #{record.parentId,jdbcType=BIGINT},
+      createTime = #{record.createTime,jdbcType=TIMESTAMP},
+      updateTime = #{record.updateTime,jdbcType=TIMESTAMP},
+      status = #{record.status,jdbcType=TINYINT},
+      property = #{record.property,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="org.xxpay.core.entity.SysResource" >
+    update t_mgr_sys_resource
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null" >
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="jump != null" >
+        jump = #{jump,jdbcType=VARCHAR},
+      </if>
+      <if test="permName != null" >
+        permName = #{permName,jdbcType=VARCHAR},
+      </if>
+      <if test="permUrl != null" >
+        permUrl = #{permUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=TINYINT},
+      </if>
+      <if test="system != null" >
+        system = #{system,jdbcType=TINYINT},
+      </if>
+      <if test="icon != null" >
+        icon = #{icon,jdbcType=VARCHAR},
+      </if>
+      <if test="orderNum != null" >
+        orderNum = #{orderNum,jdbcType=INTEGER},
+      </if>
+      <if test="parentId != null" >
+        parentId = #{parentId,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null" >
+        createTime = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        updateTime = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="property != null" >
+        property = #{property,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where resourceId = #{resourceId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.xxpay.core.entity.SysResource" >
+    update t_mgr_sys_resource
+    set name = #{name,jdbcType=VARCHAR},
+      title = #{title,jdbcType=VARCHAR},
+      jump = #{jump,jdbcType=VARCHAR},
+      permName = #{permName,jdbcType=VARCHAR},
+      permUrl = #{permUrl,jdbcType=VARCHAR},
+      type = #{type,jdbcType=TINYINT},
+      system = #{system,jdbcType=TINYINT},
+      icon = #{icon,jdbcType=VARCHAR},
+      orderNum = #{orderNum,jdbcType=INTEGER},
+      parentId = #{parentId,jdbcType=BIGINT},
+      createTime = #{createTime,jdbcType=TIMESTAMP},
+      updateTime = #{updateTime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=TINYINT},
+      property = #{property,jdbcType=VARCHAR}
+    where resourceId = #{resourceId,jdbcType=BIGINT}
+  </update>
+
+  <!-- 根据用户ID查询拥有的权限资源 -->
+  <select id="selectResourceByUserId" resultMap="BaseResultMap" parameterType="Long" >
+    select DISTINCT (ss.resourceId), ss.*
+    from t_mgr_sys_user su
+    JOIN t_mgr_sys_user_role sur on su.userId= sur.userId
+    JOIN t_mgr_sys_role sr on sur.roleId = sr.roleId
+    JOIN t_mgr_sys_permission sp on sp.roleId = sr.roleId
+    JOIN t_mgr_sys_resource ss on ss.resourceId = sp.resourceId
+    where su.userId = #{userId} AND ss.status = 1 ORDER BY ss.orderNum ASC ;
+  </select>
+</mapper>

@@ -1,0 +1,117 @@
+
+<div class="layui-card layadmin-header">
+  <div class="layui-breadcrumb" lay-filter="breadcrumb">
+    <a lay-href="">主页</a>
+    <a><cite>应用管理</cite></a>
+  </div>
+</div>
+
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-tab layui-tab-brief">
+      <ul class="layui-tab-title">
+        <li class="layui-this">应用列表</li>
+      </ul>
+      <div class="layui-tab-content">
+        <div class="layui-tab-item layui-show">
+          <div class="layui-row">
+            <div class="layui-form" style="float:right;">
+              <div class="layui-form-item" style="margin:0;">
+                <div class="layui-input-inline">
+                  <input type="text" name="appId" id="appId" placeholder="应用ID" autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-input-inline">
+                  <input type="text" name="mchId" id="mchId" placeholder="商户ID" autocomplete="off" class="layui-input">
+                </div>
+                <button id="search" class="layui-btn" data-type="reload">搜索</button>
+              </div>
+            </div>
+          </div>
+          <div class="layui-row">
+            <div class="layuiAdmin-btns" style="margin-bottom: 10px;"></div>
+          </div>
+          <table id="XxPay_Mgr_App_dataAll" lay-filter="XxPay_Mgr_App_dataAll"></table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/html" id="xxpayBar">
+  <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="detail">查看</a>
+  <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+</script>
+
+<script>
+  layui.use(['admin', 'table', 'util'], function(){
+    var $ = layui.$
+      ,admin = layui.admin
+      ,table = layui.table
+      ,element = layui.element
+      ,form = layui.form;
+
+    element.render('breadcrumb', 'breadcrumb');
+
+    var tplStatus = function(d){
+      if(d.status == 1) {
+        return "<span style='color: green'>启用</span>";
+      }
+      return "<span style='color: red'>停止</span>";
+    };
+
+    //商户列表
+    table.render({
+      elem: '#XxPay_Mgr_App_dataAll'
+      ,url: layui.setter.baseUrl + '/app/list' //列表接口
+      ,id: 'tableReload'
+      ,page: true
+      ,cols: [[
+        {type: 'checkbox', fixed: 'left'}
+        ,{field: 'appId', title: '应用ID'}
+        ,{field: 'appName', title: '应用名称'}
+        ,{field: 'mchId', title: '商户ID'}
+        ,{field: 'status', title: '状态', templet: tplStatus}
+        ,{field: 'createTime', title: '创建时间', width: 200, templet: '<div>{{ layui.util.toDateString(d.createTime, "yyyy-MM-dd HH:mm:ss") }}</div>'}
+        ,{field: 'edit', title: '操作', width: 320, toolbar: '#xxpayBar' }
+      ]]
+      ,skin: 'line'
+    });
+
+    //监听工具条
+    table.on('tool(XxPay_Mgr_App_dataAll)', function(obj){
+      var data = obj.data;
+      if(obj.event === 'detail'){
+        location.hash = "/merchant/app/app_view/appId=" + data.appId;
+      } else if(obj.event === 'edit'){
+        location.hash = "/merchant/app/app_edit/appId=" + data.appId;
+      }
+
+    });
+
+    // 搜索
+    var $ = layui.$, active = {
+      reload: function(){
+        var mchId = $('#mchId').val();
+        var appId = $("#appId").val();
+        //执行重载
+        table.reload('tableReload', {
+          page: {
+            curr: 1 //重新从第 1 页开始
+          }
+          ,where: {
+            mchId: mchId,
+            appId : appId
+          }
+        });
+      }
+    };
+    $('#search').on('click', function() {
+      var type = $(this).data('type');
+      active[type] ? active[type].call(this) : '';
+    });
+
+    // 渲染表单
+    form.render();
+  });
+</script>

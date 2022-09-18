@@ -1,0 +1,75 @@
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <div class="layui-row">
+                <div class="layuiAdmin-btns" style="margin-bottom: 10px;">
+                    <a class="layui-btn" data-type="all" data-events="addStore">添加门店</a>
+                </div>
+            </div>
+                <table id="storeList" lay-filter="storeList"></table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+   
+    layui.use(['form','admin', 'table'], function(){
+        var form = layui.form
+        ,$ = layui.$
+        ,table = layui.table
+        ,element = layui.element;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        var tplStatus = function(d){
+            if(d.status == 0) {
+                return '<span class="layui-badge layui-bg-red">暂停营业</span>';
+            }else if(d.status == 1) {
+                return '<span class="layui-badge layui-bg-green">正常营业</span>';
+            }
+        };
+
+        //用户列表
+        table.render({
+            elem: '#storeList'
+            ,url: layui.setter.baseUrl + '/store/list'
+            ,id: 'tableReload'
+            ,page: true
+            ,cols: [[
+                {type: 'checkbox', fixed: 'left'}
+                ,{field: 'storeId', title: '门店ID'}
+                ,{field: 'storeName', title: '名称'}
+                ,{field: 'status', title: '状态', templet: tplStatus}
+            ]]
+            ,skin: 'line'
+        });
+
+        // 事件处理
+        var events = {
+            addStore: function(othis, type){
+                var checkStatus = table.checkStatus("tableReload")
+                    ,data = checkStatus.data; //获得选中的数据
+                if(data.length === 0) return layer.msg('请选择数据');
+                var storeIds = "";
+                $.each(data, function(i, n){
+                    storeIds = storeIds + "," + n.storeId;
+                });
+                if(storeIds != "") {
+                    storeIds = storeIds.substring(1);
+                }
+                $("#storeIds").val(storeIds);
+                layer.closeAll(); //关闭所有弹层
+                layui.table.reload('tableReload'); //调用业务弹层外表格重新加载
+            }
+        };
+
+        $('.layuiAdmin-btns .layui-btn').on('click', function(){
+            var othis = $(this)
+                ,thisEvent = othis.data('events')
+                ,type = othis.data('type');
+            events[thisEvent] && events[thisEvent].call(this, othis, type);
+        });
+
+    });
+
+</script>

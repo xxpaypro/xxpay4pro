@@ -1,0 +1,321 @@
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>积分商品</cite></a>
+        <a><cite>编辑积分商品</cite></a>
+    </span>
+</div>
+<style>
+    .layui-form-label {
+        width:15% !important;
+        margin-left:1%;
+    }
+    .layui-input-inline {
+        width: 33% !important;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <form class="layui-form layui-form-pane">
+            <div class="layui-tab layui-tab-brief">
+                <ul class="layui-tab-title">
+                    <li class="layui-this">编辑积分商品</li>
+                </ul>
+                <div class="layui-tab-content">
+
+                    <input type="hidden" id="goodsId" name="goodsId" />
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">商品名称</label>
+                        <div class="layui-input-inline">
+                            <input type="text" required id="goodsName" name="goodsName" lay-verify="request" disabled="disabled" placeholder="输入商品名称" autocomplete="off" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">所需积分</label>
+                        <div class="layui-input-inline">
+                            <input type="text" required id="points" name="points" lay-verify="request" placeholder="输入所需积分" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">商品价格</label>
+                        <div class="layui-input-inline">
+                            <input type="text" required id="goodsPrice" name="goodsPrice" placeholder="输入商品价格" autocomplete="off" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">图片路径</label>
+                        <div class="layui-input-inline">
+                            <input type="hidden" name="imgPath" id="imgPath" class="layui-hide">
+                            <img class="uploadImg layui-hide" style="height:38px; margin-left:30px;cursor: pointer;" title="点击放大" />
+                            <button class="uploadImgBtn layui-btn layui-btn-sm" type="button" style="margin-left: 20px;margin-top: 5px;">上传图片</button>
+                            <button class="delImgBtn layui-btn layui-btn-sm layui-btn-danger layui-hide" style="margin-top: 5px;" type="button">删除图片</button>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">是否限制库存</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="stockLimitType" value="1" title="不限" lay-filter="stockLimitType">
+                            <input type="radio" name="stockLimitType" value="2" title="限制" lay-filter="stockLimitType">
+                        </div>
+                        <label class="layui-form-label stockNum">库存数量</label>
+                        <div class="layui-input-inline stockNum">
+                            <input type="text" id="stockNum" name="stockNum" placeholder="输入库存数量" autocomplete="off" class="layui-input stockNum">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">是否限制兑换数量</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="singleLimit" value="1" title="不限制" lay-filter="singleMemberLimit">
+                            <input type="radio" name="singleLimit" value="2" title="限制" checked="checked"  lay-filter="singleMemberLimit">
+                        </div>
+                        <label class="layui-form-label limit">单用户兑换限制数量</label>
+                        <div class="layui-input-inline limit">
+                            <input type="text" id="singleMemberLimit" name="singleMemberLimit" lay-verify="required" placeholder="输入限制数量" autocomplete="off" class="layui-input limit">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">状态</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="status" value="1" title="上架" checked="checked">
+                            <input type="radio" name="status" value="0" title="下架">
+                        </div>
+                        <label class="layui-form-label">活动时间</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="activityTime" name="activityTime" readonly placeholder="输入活动时间" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">是否限制门店</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="storeLimitType" value="0" title="不限" lay-filter="storeLimitType">
+                            <input type="radio" name="storeLimitType" value="1" title="限制" lay-filter="storeLimitType">
+                        </div>
+                        <label class="layui-form-label storeId">门店ID</label>
+                        <div class="layui-input-inline storeId">
+                            <input name="storeIds" id="storeIds" readonly class="layui-input storeId">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">备注信息</label>
+                        <div class="layui-input-inline">
+                            <input type="text" required id="remark" name="remark" placeholder="请输入备注信息" autocomplete="off" class="layui-input allAccInput">
+                        </div>
+                    </div>
+                    <div class="layui-form-item ">
+                        <div class="layui-input-block">
+                            <button type="button" lay-submit lay-filter="btnUP" class="layui-btn">保存</button>
+                            <a lay-href="account/points_goods/" class="layui-btn">返回</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    layui.use(['form','util','admin','laydate','upload','setter'], function(){
+        var form = layui.form
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,element = layui.element
+        ,laydate = layui.laydate
+        ,upload = layui.upload
+        ,setter = layui.setter
+        ,view = layui.view;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        var goodsId = layui.router().search.goodsId;
+        //首先让页面中获取到原来的数据
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/points_goods/get',
+            data: {
+                goodsId: goodsId
+            },
+            error: function(err){
+                layer.alert(err);
+            },
+            success: function(res){
+                if(res.code == 0 ){
+                    $('#goodsId').val(res.data.goodsId);
+
+                    $('#goodsName').val(res.data.goodsName);
+                    $('#points').val(res.data.points);
+                    $('#goodsPrice').val(res.data.goodsPrice/100);
+                    $('#stockNum').val(res.data.stockNum);
+                    $('#mchId').val(res.data.mchId);
+                    $("#activityTime").val(res.data.beginTime + " ~ " + res.data.endTime);
+                    $("#storeIds").val(res.data.storeIds);
+                    $("#imgPath").val(res.data.imgPath);
+                    $("#singleMemberLimit").val(res.data.singleMemberLimit);
+                    if (res.data.singleMemberLimit == -1) {
+                        $(".limit").css("display","none");
+                    }
+                    if(res.data.status == 0) {
+                        $("input[name='status'][value='0']").attr("checked",true);
+                    }else if(res.data.status == 1) {
+                        $("input[name='status'][value='1']").attr("checked",true);
+                    }
+                    if (res.data.stockLimitType == 1){
+                        $(".stockNum").css("display","none");
+                        $("input[name='stockLimitType'][value='1']").attr("checked",true);
+                    } else if (res.data.stockLimitType == 2){
+                        $(".stockNum").show();
+                        $("input[name='stockLimitType'][value='2']").attr("checked",true);
+                    }
+                    if (res.data.storeLimitType == 0){
+                        $("input[name='storeLimitType'][value='0']").attr("checked",true);
+                        $(".storeId").css("display","none");
+                    } else if (res.data.storeLimitType == 1){
+                        $(".storeId").show();
+                        $("input[name='storeLimitType'][value='1']").attr("checked",true);
+                    }
+                    if (res.data.imgPath){
+                        setImgValFunc("imgPath", res.data.imgPath)
+                    }
+
+                    $('#remark').val(res.data.remark);
+
+                }else {
+                    layer.alert(res.msg,{title: '请求失败'})
+                }
+                form.render();
+            }
+            
+        });
+
+        //提交修改后的数据
+        //监听提交
+        form.on('submit(btnUP)', function(data){
+            //若为限制门店判断是否选择门店
+            if (data.field.storeLimitType == 1){
+                var storeIds = $("#storeIds").val();
+                if (storeIds.length == 0){
+                    return layer.msg('请选择要限制的门店！');
+                }
+            }
+            //活动范围
+            var times = $("#activityTime").val().split("~");
+            if (times.length <= 1){
+                return layer.msg('请选择活动范围！');
+            }
+            data.field.beginTime = times[0].trim();
+            data.field.endTime = times[1].trim();
+            data.field.goodsPrice = $('#goodsPrice').val() * 100;
+            // 在这个回调函数里面写ajax提交
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/points_goods/update',
+                data: data.field,
+                success: function(res){
+                    if(res.code == 0){
+                        layer.alert(res.msg, function(index){
+                            layer.close(index);
+                            location.hash = '/account/points_goods/';
+                        })
+                    }
+                }
+            });
+            return false;//阻止跳转
+        });
+
+        //是否限制库存
+        form.on('radio(stockLimitType)', function(data){
+            if (data.value == 1) {
+                $(".stockNum").css("display","none");
+            }else {
+                $(".stockNum").show();
+            }
+        });
+        //是否限制单用户兑换数量
+        form.on('radio(singleMemberLimit)', function(data){
+            if (data.value == 1) {
+                $(".limit").css("display","none");
+                $("#singleMemberLimit").val(-1)
+            }else {
+                $(".limit").show();
+                $("#singleMemberLimit").val("")
+            }
+        });
+
+        //是否限制门店
+        form.on('radio(storeLimitType)', function(data){
+            if (data.value == 0){
+                $(".storeId").css("display","none");
+            } else if (data.value == 1){
+                view.xxpayPopup("选择门店", "account/points_goods/points_stores", null, {btn:false});
+                $(".storeId").show();
+            }
+        });
+
+        var headers = {};
+        headers[setter.request.tokenName] = layui.data(setter.tableName)[setter.request.tokenName];
+        upload.render({
+            elem: '.uploadImgBtn'
+            , url: layui.setter.baseUrl + '/upload/points'
+            , headers: headers
+            , size: 2048  //仅支持2M图片上传
+            ,before: function (obj) {
+                obj.preview(function(index, file, result) {
+                    $('#img').attr('src', result);
+                })
+            },done: function(res){
+                //如果上传失败
+                if(res.code != 0){
+                    return layer.msg('上传失败['+res.msg+']', {icon: 2});
+                }
+                //上传成功
+                $("#imgPath").val(res.data);
+                var divElem = $(this.item).parent();
+                divElem.find('.uploadImg').attr("src", res.data).removeClass('layui-hide');
+                divElem.find('.delImgBtn').removeClass('layui-hide');
+                divElem.find('.uploadImgBtn').text('重新上传');
+            }
+        });
+
+        var setImgValFunc = function(inputName, src){
+            var divElem = $("input[name='"+inputName+"']").parent();
+            divElem.find('.imgVal').val(src); //图片真实路径
+            divElem.find('.uploadImg').attr("src", src).removeClass('layui-hide');
+            divElem.find('.delImgBtn').removeClass('layui-hide');
+            divElem.find('.uploadImgBtn').text('重新上传');
+        };
+
+        //点击[图片] 按钮， 事件
+        $('.uploadImg').click(function(){
+            var imgSrc = $(this).attr('src');
+            layer.photos({photos: {
+                    "title": "查看上传图片", //相册标题
+                    "id": 1, //相册id
+                    "start": 0, //初始显示的图片序号，默认0
+                    "data": [   //相册包含的图片，数组格式
+                        {
+                            "alt": "图片",
+                            "pid": 1, //图片id
+                            "src": imgSrc, //原图地址
+                            "thumb": "" //缩略图地址
+                        }
+                    ]
+                } ,anim: 5});
+        });
+
+        //点击[删除图片] 按钮， 事件
+        $('.delImgBtn').click(function(){
+
+            var divElem = $(this).parent();
+            divElem.find('.imgVal').val(""); //清空图片真实路径
+            divElem.find('.uploadImgBtn').text("上传图片");
+            divElem.find('.uploadImg').attr("src", "").addClass('layui-hide');
+            divElem.find('.delImgBtn').addClass('layui-hide');
+            form.render();
+        });
+        //活动时间
+        laydate.render({
+            elem: '#activityTime'
+            ,type: 'datetime'
+            ,range: '~'
+            ,trigger: 'click'
+        });
+
+
+        form.render();
+
+    })
+</script>

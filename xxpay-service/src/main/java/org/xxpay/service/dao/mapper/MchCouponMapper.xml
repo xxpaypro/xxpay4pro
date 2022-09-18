@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.xxpay.service.dao.mapper.MchCouponMapper">
+
+  <resultMap id="BaseResultMap" type="org.xxpay.core.entity.MchCoupon">
+    <id column="CouponId" jdbcType="BIGINT" property="couponId" />
+    <result column="CouponName" jdbcType="VARCHAR" property="couponName" />
+    <result column="CouponColor" jdbcType="VARCHAR" property="couponColor" />
+    <result column="LogoImgPath" jdbcType="VARCHAR" property="logoImgPath" />
+    <result column="CouponAmount" jdbcType="BIGINT" property="couponAmount" />
+    <result column="PayAmountLimit" jdbcType="BIGINT" property="payAmountLimit" />
+    <result column="Status" jdbcType="TINYINT" property="status" />
+    <result column="ValidateType" jdbcType="TINYINT" property="validateType" />
+    <result column="ValidateDay" jdbcType="INTEGER" property="validateDay" />
+    <result column="BeginTime" jdbcType="TIMESTAMP" property="beginTime" />
+    <result column="EndTime" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="TotalNum" jdbcType="INTEGER" property="totalNum" />
+    <result column="ReceiveNum" jdbcType="INTEGER" property="receiveNum" />
+    <result column="UseTimeConfig" jdbcType="VARCHAR" property="useTimeConfig" />
+    <result column="SingleUserLimit" jdbcType="INTEGER" property="singleUserLimit" />
+    <result column="StoreLimitType" jdbcType="TINYINT" property="storeLimitType" />
+    <result column="ExpiredWarningTime" jdbcType="INTEGER" property="expiredWarningTime" />
+    <result column="SyncWX" jdbcType="TINYINT" property="syncWX" />
+    <result column="MchId" jdbcType="BIGINT" property="mchId" />
+    <result column="Remark" jdbcType="VARCHAR" property="remark" />
+    <result column="CreateTime" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="UpdateTime" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+
+  <update id="updateReceiveNumByCouponId" parameterType="org.xxpay.core.entity.MchCoupon">
+    update t_mch_coupon
+    <set>
+      <if test="receiveNum != null">
+        ReceiveNum = ReceiveNum + #{receiveNum},
+      </if>
+    </set>
+    where CouponId = #{couponId}
+    <if test="receiveNum != null" >
+      and TotalNum >= (ReceiveNum + #{receiveNum})
+    </if>
+  </update>
+
+  <!-- 继承BaseResultMap -->
+  <resultMap id="BaseResultMapBySelectMemberCanUseCoupon" type="org.xxpay.core.entity.MchCoupon" extends="BaseResultMap">
+    <result column="m_couponNo" property="ps.couponNo" /> <!--  优惠券核销码 -->
+    <result column="m_ValidateEnd" property="ps.validateEnd" /> <!-- 优惠券有效期 -->
+  </resultMap>
+
+  <!-- 查询会员已领取的所有优惠券列表集合 -->
+  <select id="selectMemberCanUseCoupon" parameterType="Map" resultMap="BaseResultMapBySelectMemberCanUseCoupon">
+
+    select mbrc.CouponNo as m_couponNo, mbrc.ValidateEnd as m_ValidateEnd,
+    mchc.*
+    from t_member_coupon mbrc INNER JOIN t_mch_coupon mchc on mbrc.CouponId = mchc.CouponId
+    where mbrc.MemberId = #{memberId}
+    and mbrc.MchId = #{mchId}
+    and mbrc.`Status` = '0'  <!-- 未使用 -->
+    and mbrc.ValidateEnd >= now()  <!-- 有效期至 需大于等于当前时间 -->
+  </select>
+
+
+
+
+</mapper>

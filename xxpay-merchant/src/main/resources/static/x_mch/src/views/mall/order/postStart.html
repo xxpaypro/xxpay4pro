@@ -1,0 +1,77 @@
+<style>
+    .xxpayPopupDiv .layui-form-label {
+        width:30% !important;
+        margin-left:1%;
+    }
+    .xxpayPopupDiv .layui-input-inline {
+        width: 66% !important;
+        margin-top: 0;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+            <form class="layui-form layui-form-pane">
+                <div class="layui-tab layui-tab-brief">
+                    <input type="hidden" name="tradeOrderId" id="tradeOrderId" value="">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">快递单号</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="transportNo" name="transportNo"  lay-verify="required" placeholder="请输入快递单号" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <button type="button" class="layui-hide xxpayYesBtn" lay-submit="" id="postStart" lay-filter="postStart">保存</button>
+                </div>
+            </form>
+        </div>
+</div>
+
+<script>
+    layui.use(['form','util','admin','view', 'table'], function(){
+       var form = layui.form
+       ,$ = layui.$
+       ,admin = layui.admin
+       ,view = layui.view
+       ,element = layui.element;
+
+       element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+        var tradeOrderId = view.getOpenParams('tradeOrderId');
+        $("#tradeOrderId").val(tradeOrderId);
+
+        /*admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/account/get?mchId=' + mchId,
+            error: function(err){
+                layer.alert(err.msg,{title:'请求失败'})
+            },
+            success:function(res){
+                if(res.code == 0 && res.data != null){
+                    $('#amountTip').html(
+                            "账户余额: <span style='color: green'>" + res.data.balanceAmount / 100 + "</span> 元 " +
+                            "代付余额: <span style='color: green'>" + res.data.agpayAmount / 100 + "</span> 元 " +
+                            "冻结金额: <span style='color: red'>" + res.data.balanceFrozenAmount / 100 + "</span> 元 " +
+                            "保证金额: <span style='color: red'>" + res.data.bailAmount / 100 + "</span> 元"
+                    );
+                }
+            }
+        });*/
+
+       form.on('submit(postStart)', function(data){
+           admin.req({
+               type: 'get',
+               url: layui.setter.baseUrl + '/trade_order/post_start',
+               data: data.field,
+               success: function(res){
+                   layer.closeAll(); //关闭所有弹层
+                   layer.msg("保存成功");
+                   layui.table.reload('tableReload', {page: {curr: 1}}); //调用业务弹层外表格重新加载
+               }
+           });
+           return false;//阻止跳转
+
+        });
+
+
+        form.render();
+
+    })
+</script>

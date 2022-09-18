@@ -1,0 +1,164 @@
+<style>
+    .margin-top{margin-top:10px;}
+</style>
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>门店管理</cite></a>
+    </span>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">轮播图列表</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-row">
+                   <form action="" id="exportForm" method="post">
+                    <div class="layui-form" style="float:right; margin-bottom: 10px;">
+                        <div id="timeDiv" class="layui-form-item" style="margin:0;">
+                            <div class="layui-input-inline margin-top">
+                                <input type="text" name="searchBannerName" id="searchBannerName" placeholder="轮播图名称" autocomplete="off" class="layui-input">
+                            </div>
+                            <div class="layui-input-inline margin-top">
+                                <select name="searchShowType" id="searchShowType" lay-search="">
+                                    <option value="-99">显示位置</option>
+                                    <option value="1">小程序首页</option>
+                                    <option value="2">直播列表页顶部</option>
+                                </select>
+                            </div>
+                            <div class="layui-input-inline margin-top">
+                                <select name="searchStatus" id="searchStatus" lay-search="">
+                                    <option value="-99">状态</option>
+                                    <option value="0">关闭</option>
+                                    <option value="1">启用</option>
+                                </select>
+                            </div>
+                            <div class="layui-input-inline margin-top">
+                                <button id="search" class="layui-btn" data-type="reload">搜索</button>
+                            </div>
+                        </div>
+                    </div>
+                   </form>
+                </div>
+                <div class="layui-row">
+                    <div class="layuiAdmin-btns" style="margin-bottom: 10px;">
+                        <a lay-href="store/bannerList/create" class="layui-btn" data-type="all" data-events="create">新增轮播图</a>
+                    </div>
+                </div>
+                <table id="bannerList" lay-filter="bannerList"></table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+     //标题内容模板
+     var tplTitle = function(d){
+         return '<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a> ' +
+                '<a class="layui-btn layui-btn-xs" lay-event="edit" >修改</a> ' +
+                '<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>'
+     };
+
+     var tplStatus = function(d){
+         if(d.status == 0) {
+             return '<span class="layui-badge layui-bg-red">关闭</span>';
+         }else if(d.status == 1) {
+             return '<span class="layui-badge layui-bg-green">启用</span>';
+         }
+     };
+
+	 layui.config({
+	    base: '/x_mch/src/lib/extend/',
+	 });
+     layui.use(['table','util','admin'], function(){
+        var table = layui.table
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,element = layui.element
+        ,view = layui.view
+        ,form = layui.form;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        table.render({
+            elem: '#bannerList'
+            ,id: "tableReload"
+            ,url: layui.setter.baseUrl + '/store_banner/list'
+            ,cols: [[
+                {field: 'bannerId', title: '轮播图ID'}
+                ,{field: 'mchId', title: '商户ID'}
+                ,{field: 'bannerName',title: '轮播图名称'}
+                ,{field: 'authFrom',title: '所属小程序', templet: '<div>{{ d.authFrom == 1?"点餐":d.authFrom == 2?"商城":"" }}</div>' }
+                ,{field: 'showType',title: '显示位置', templet: '<div>{{ d.showType == 1?"小程序首页": d.showType == 2 ? "直播列表页顶部" : "" }}</div>' }
+                ,{field: 'putStoreLimitType',title: '投放门店', templet: '<div>{{ d.putStoreLimitType == 0?"全部门店":d.putStoreLimitType == 1?"部分门店":"" }}</div>' }
+                ,{field: 'status',title: '状态', templet: tplStatus}
+                ,{field: 'sortNum',title: '排序值'}
+                ,{field: 'createTime',  title: '时间', width: 180, templet: '<div>{{ layui.util.toDateString(d.createTime) }}</div>' }
+                ,{field: 'edit', title: '操作', width: 400, templet: tplTitle }
+            ]]
+            ,page: true
+            ,skin: 'line'
+        });
+
+         // 搜索
+         var $ = layui.$, active = {
+             reload: function(){
+                 var bannerName = $('#searchBannerName').val().trim();
+                 var showType = $('#searchShowType').val();
+                 var status = $("#searchStatus").val();
+                 //执行重载
+                 table.reload('tableReload', {
+                     page: {
+                         curr: 1 //重新从第 1 页开始
+                     }
+                     ,where: {
+                         bannerName: bannerName,
+                         showType : showType,
+                         status : status
+                     }
+                 });
+             }
+         };
+
+         $('#search').on('click', function() {
+             var type = $(this).data('type');
+             active[type] ? active[type].call(this) : '';
+             return false;
+         });
+
+         //监听工具条
+         table.on('tool(bannerList)', function(obj){
+             var data = obj.data;
+             var layEvent = obj.event;
+
+             if(layEvent === 'edit'){ //编辑
+                 location.hash="/store/bannerList/update/bannerId=" + data.bannerId;
+             } else if(obj.event === 'detail'){
+                 view.xxpayPopup("轮播图详情", "store/bannerList/detail", {bannerId: data.bannerId}, {btn:false});
+             } else if(obj.event === 'del'){
+                 layer.confirm('确认删除么', function(index){
+                     admin.req({
+                         type: 'get',
+                         url: layui.setter.baseUrl + '/store_banner/delete',
+                         data: {
+                             bannerId: data.bannerId,
+                         },
+                         success: function(res){
+                             if(res.code == 0) {
+                                 layer.msg('删除成功', {
+                                     icon: 1
+                                 });
+                                 table.reload("tableReload");
+                             }
+                         }
+                     });
+                 });
+             }
+         });
+
+         // 渲染表单
+         form.render();
+        
+     })
+</script>

@@ -1,0 +1,329 @@
+
+<div class=" layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a>商户管理</a>
+        <a><cite>支付渠道</cite></a>
+    </div>
+</div>
+
+<style>
+    .layui-form-label {
+        width:120px !important;
+        margin-left:1%;
+    }
+    .layui-input-inline {
+        width: 80% !important;
+    }
+    
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">渠道配置</li>
+            </ul>
+            <div class="layui-tab-content">
+                <form class="layui-form center">
+                    <input type="hidden" id="id" name="id">
+                    <input type="hidden" id="mchId" name="mchId">
+                    <input type="hidden" id="agentId" name="agentId">
+                    <input type="hidden" id="productId" name="productId">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">产品名称</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="productName" id="productName" style="border-width: 0px;" required lay-verify="required" autocomplete="off" class="layui-input" readonly="readonly" disabled="disabled">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">产品类型</label>
+                        <div class="layui-input-inline" >
+                            <input type="radio" name="productType" title="收款" value="1" disabled />
+                            <input type="radio" name="productType" title="充值" value="2" disabled />
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">代理商费率(%)</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="agentRate" id="agentRate" style="border-width: 0px;" required lay-verify="required" autocomplete="off" class="layui-input" readonly="readonly" disabled="disabled">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">商户费率(%)</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="mchRate" name="mchRate"  placeholder="请输入商户费率" lay-verify="required" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">接口模式</label>
+                        <div class="layui-input-inline" >
+                            <input type="radio" name="ifMode" title="单独" value="1" lay-filter="ifModeFilter" checked="checked"/>
+                            <input type="radio" name="ifMode" title="轮询" value="2" lay-filter="ifModeFilter"/>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item" id="payPassageIdDiv" style="display: none">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">支付通道</label>
+                            <div class="layui-input-inline" >
+                                <select name="payPassageId" id="payPassageId" lay-filter="payPassageFilter">
+                                    <option value="">选择支付通道</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">通道子账户</label>
+                            <div class="layui-input-inline" >
+                                <select name="payPassageAccountId" id="payPassageAccountId" lay-filter="payPassageAccountFilter">
+                                    <option value="">选择通道子账户</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item" id="pollWeightDiv" style="display: none">
+                        <label class="layui-form-label">支付通道</label>
+                        <div class="layui-input-inline" >
+                            <table id="XxPay_Mgr_Poll_dataAll" lay-filter="XxPay_Mgr_Poll_dataAll"></table>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">状态</label>
+                        <div class="layui-input-inline" >
+                            <input type="radio" name="status" title="开启" value="1" />
+                            <input type="radio" name="status" title="关闭" value="0" />
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-inline">
+                            <button type="button" class="layui-btn" lay-submit="" lay-filter="update">保存</button>
+                            <button type="button" id="btnBack" class="layui-btn">返回</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    layui.use(['form','table','util','admin',],function(){
+        var form = layui.form
+                , $ = layui.$
+                , admin = layui.admin
+                , layer = layui.layer
+                , element = layui.element
+                , table = layui.table;
+
+        element.render('breadcrumb', 'breadcrumb'); //渲染导航信息
+
+        var router = layui.router();
+        var mchId = router.search.mchId;
+        var productId = router.search.productId;
+        
+        var passageObject = null;  //当前代理商所有支付通道和子账户 集合
+        admin.req({
+            type: 'post',
+            async: false,
+            url: layui.setter.baseUrl + '/agent_passage/getCanSetPassage',
+            data: { productId: productId },
+            error: function(err){layer.alert(err);},
+            success: function(res){passageObject = res.data;}
+        });
+        admin.req({
+            type: 'post',
+            url: layui.setter.baseUrl + '/mch_pay_passage/get',
+            data: {
+                mchId: mchId,
+                productId: productId
+            },
+            error: function(err){
+                layer.alert(err);
+            },
+            success: function(res){
+                if(res.code == 0){
+                    $('#id').val(res.data.id);
+                    $('#mchId').val(res.data.mchId);
+                    $('#agentId').val(res.data.agentId);
+                    $('#productId').val(res.data.productId);
+                    $('#productName').val(res.data.productName);
+                    $("input[name='productType'][value='"+res.data.productType+"']").attr("checked",true);
+                    if(res.data.agentRate == '' || res.data.agentRate == null) {
+                        $('#agentRate').val('未设置');
+                    }else {
+                        $('#agentRate').val(res.data.agentRate);
+                    }
+                    $('#mchRate').val(res.data.mchRate);
+                    $("input[name='status'][value='"+res.data.status+"']").attr("checked",true);
+                    if(res.data.ifMode == 1) {
+                        $("input[name='ifMode'][value='1']").attr("checked",true);
+                        $("#payPassageIdDiv").show();
+                        $("#pollWeightDiv").hide();
+                    }else if(res.data.ifMode == 2) {
+                        $("input[name='ifMode'][value='2']").attr("checked",true);
+                        $("#payPassageIdDiv").hide();
+                        $("#pollWeightDiv").show();
+                    }
+                    var payPassageId = res.data.payPassageId;
+                    var payPassageAccountId = res.data.payPassageAccountId;
+                    
+                    //加载指定通道 
+                  	$.each(passageObject, function(key){
+                  		var isCloseStr = "";
+                  		if(this.passageStatus == 0){
+                  			isCloseStr = "(已停用)";
+                  		}
+                  		$("#payPassageId").append('<option value= '+key+'>'+this.passageName + isCloseStr +'</option>');
+                  	});
+                    
+                    if(payPassageId){ //当商户存在指定通道账户 信息
+                    	
+                    	$.each(passageObject[payPassageId].accList, function(){
+                    		var isCloseStr = "";
+                      		if(this.accStatus == 0){
+                      			isCloseStr = "(已停用)";
+                      		}
+                            $("#payPassageAccountId").append('<option value= '+this.accountId+'>'+this.accName + isCloseStr +'</option>');
+                    	});
+                        //通道选中   子账户选中
+                        $("#payPassageId").find('option[value="'+payPassageId+'"]').attr('selected', true); //通道选中
+                        $("#payPassageAccountId").find('option[value="'+payPassageAccountId+'"]').attr('selected', true);
+                    }
+                    
+                  pollData = [];
+                  var pollParam = JSON.parse(res.data.pollParam);
+                  if(pollParam){
+                	  $.each(pollParam, function(){
+                		 if(passageObject[this.payPassageId]){
+                			 passageObject[this.payPassageId].weight = this.weight;
+                		 } 
+                	  });
+                  }
+                  
+                  $.each(passageObject, function(key){
+                	 var obj = {};
+                	 obj.id=key;
+                	 obj.passageName=this.passageName;
+                	 obj.weight = this.weight == null ? '1' : this.weight;
+                	 if(this.weight != null){
+                		 obj.LAY_CHECKED = true;
+                	 }
+                	 pollData.push(obj);
+                  });
+                    
+                 // 通道轮询
+                 table.render({
+                       elem: '#XxPay_Mgr_Poll_dataAll'
+                       ,id: 'tableReload'
+                       ,page: false
+                       ,cols: [[
+                           {field: 'ok', type: 'checkbox', fixed: 'left'}
+                           ,{field: 'id', title: '通道ID', width: 180}
+                           ,{field: 'passageName', title: '通道名称', width: 250}
+                           ,{field: 'weight', edit: 'text', title: '轮询权重(1-9)', width: 240}
+                       ]]
+                       ,data: pollData
+                       ,skin: 'line'
+                  });
+
+                  form.render();
+                 }
+            }
+        });
+        
+        
+        // 监控通道列表下拉选择事件
+        form.on('select(payPassageFilter)', function(data){
+            var payPassageId = data.value;
+            
+            var tempOption = $("#payPassageAccountId option[value='']").prop("outerHTML");
+            $("#payPassageAccountId option").remove();
+            $("#payPassageAccountId").append(tempOption);
+            
+            if(payPassageId && passageObject[payPassageId]){
+            	 $.each(passageObject[payPassageId].accList, function(){
+             		var isCloseStr = "";
+               		if(this.accStatus == 0){
+               			isCloseStr = "(已停用)";
+               		}
+                     $("#payPassageAccountId").append('<option value= '+this.accountId+'>'+this.accName + isCloseStr +'</option>');
+             	});
+            }
+           
+            form.render('select');
+        });
+        
+
+        ///提交事件
+        form.on('submit(update)', function(data){
+            var agentRate = $.trim($('#agentRate').val());
+            var mchRate = $.trim($('#mchRate').val());
+            // 如果商户有代理,则需与代理商费率对比判断
+            if(agentRate == '' || agentRate == '未设置') {
+                layer.alert("请联系运营平台设置代理商费率",{title: '提示'});
+                return false;
+            }
+            if(agentRate/1 > mchRate/1) {
+                layer.alert("商户费率不得低于代理商费率",{title: '提示'});
+                return false;
+            }
+
+            var payPassageId = $.trim($('#payPassageId').val());
+            var ifMode = $('input[name="ifMode"]:checked ').val();
+            if(ifMode == 1 && !payPassageId) {
+                layer.alert("请选择支付通道",{title: '提示'});
+                return false;
+            }
+
+            // 获取表格选中行的数据
+            var checkDatas = table.checkStatus('tableReload');
+            if(ifMode == 2 && checkDatas.data.length <= 0) {
+                layer.alert("请选择支付通道",{title: '提示'});
+                return false;
+            }
+            var poll = [];
+            $.each(checkDatas.data, function(index, val) {
+                var p = {};
+                p.payPassageId = val.id;
+                p.weight = val.weight;
+                poll.push(p);
+            });
+            // 转成轮询参数json
+            var pollParam = JSON.stringify(poll);
+            data.field.pollParam = pollParam;
+
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/mch_pay_passage/update',
+                data: data.field,
+                error: function(err){layer.alert(err.msg,{title:"请求失败"})},
+                success: function(res){
+                    if(res.code == 0){
+                        layer.alert(res.msg, {title: '保存成功'},function(index){
+                            layer.close(index);
+                            location.hash = '/biz/pay_passage//mchId=' + mchId;
+                        });
+                    }
+                }
+            })
+            return false;
+        });
+
+        $('#btnBack').on('click', function() {
+            location.hash = '/biz/pay_passage//mchId=' + mchId;
+        });
+
+        form.on('radio(ifModeFilter)', function(data){
+            if(data.value == 1) {
+                $("#payPassageIdDiv").show();
+                $("#pollWeightDiv").hide();
+            }else if(data.value == 2) {
+                $("#payPassageIdDiv").hide();
+                $("#pollWeightDiv").show();
+            }
+        });
+
+    });
+
+</script>

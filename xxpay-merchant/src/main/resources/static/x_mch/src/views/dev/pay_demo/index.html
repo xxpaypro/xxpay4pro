@@ -1,0 +1,310 @@
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a><cite>支付通道测试</cite></a>
+    </span>
+</div>
+<div style="display:none" id="formJump"></div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+
+            <form class="layui-form">
+                <div class="layui-tab layui-tab-brief">
+                    <ul class="layui-tab-title">
+                        <li class="layui-this switchTabBtn" openClass="payTest1">模拟订单数据</li>
+                        <li class="switchTabBtn" openClass="payTest2">微信/支付宝被扫模式</li>
+                    </ul>
+                    <div class="layui-tab-content">
+
+
+                        <div class="layui-form-item payTest1">
+                            <label class="layui-form-label">支付产品</label>
+                            <div class="layui-input-block">
+                                <select name="productId" id="productId"></select>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item payTest1 payTest2">
+                            <label class="layui-form-label">选择应用</label>
+                            <div class="layui-input-block">
+                                <select name="appId" id="appSelect"><option value=''>选择应用</option></select>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item payTest1 payTest2">
+                            <label class="layui-form-label">支付金额(元)</label>
+                            <div class="layui-input-block">
+                                <input type="text" id="amount" name="amount" lay-verify="number" autocomplete="off" placeholder="请输入amount,单位元" class="layui-input" value="0.01">
+                            </div>
+                        </div>
+                        <div class="layui-form-item payTest1 payTest2">
+                            <label class="layui-form-label">商品标题</label>
+                            <div class="layui-input-block">
+                                <input type="text" id="subject" name="subject" lay-verify="required" autocomplete="off" placeholder="请输入subject" class="layui-input" value="网络购物">
+                            </div>
+                        </div>
+                        <div class="layui-form-item payTest1 payTest2">
+                            <label class="layui-form-label">商品描述</label>
+                            <div class="layui-input-block">
+                                <input type="text" id="body" name="body" lay-verify="required" autocomplete="off" placeholder="请输入body" class="layui-input" value="网络购物">
+                            </div>
+                        </div>
+                        <div class="layui-form-item payTest1 payTest2">
+                            <label class="layui-form-label">回调地址</label>
+                            <div class="layui-input-block">
+                                <input type="text" id="notifyUrl" name="notifyUrl" lay-verify="url" autocomplete="off" placeholder="请输入notifyUrl" class="layui-input" value="http://www.baidu.com">
+                            </div>
+                        </div>
+                        <div class="layui-form-item payTest1">
+                            <label class="layui-form-label">跳转地址</label>
+                            <div class="layui-input-block">
+                                <input type="text" id="returnUrl" name="returnUrl" lay-verify="url" autocomplete="off" placeholder="请输入returnUrl" class="layui-input" value="http://www.baidu.com">
+                            </div>
+                        </div>
+                        <div class="layui-form-item payTest1">
+                            <label class="layui-form-label">扩展参数</label>
+                            <div class="layui-input-block">
+                                <textarea name="extra" id="extra" placeholder="请输入扩展参数" class="layui-textarea"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item payTest2">
+                        <label class="layui-form-label">微信/支付宝用户条码</label>
+                        <div class="layui-input-block" style="width:600px; margin-bottom: 20px">
+                            <input type="text" style="width:300px; display: inline;" id="barTestPayAmount" name="" autocomplete="off" placeholder="请使用设备扫码或输入编码" class="layui-input">
+                            <button type="button" class="layui-btn layui-btn-primary" onclick="layui.$('#barTestPayAmount').val('');">清空条码</button>
+                            <button type="button" class="layui-btn layui-btn-normal" id="toBarPayBtn">手动触发支付</button>
+                        </div>
+                        <span style="color:red"> 使用扫码设备扫码后自动调起微信/支付宝接口，如扫码失败请尝试手动触发支付！ </span>
+                    </div>
+
+                    <div class="layui-form-item payTest1">
+                        <div class="layui-input-block" style="padding-bottom: 20px;">
+                            <button type="button" class="layui-btn layui-btn-danger" lay-submit lay-filter="recharge">下单测试</button>
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    //注意：导航 依赖 element 模块，否则无法进行功能性操作
+    layui.use(['element', 'form', 'admin'], function(){
+        var form = layui.form
+            ,$ = layui.$
+            ,element = layui.element
+            ,layer = layui.layer
+            ,admin = layui.admin;
+
+        //实时聚焦
+        function barAmountFocusFunc(){
+
+            if($('#barTestPayAmount').length == 0) { //当切换到其他页面， 将定时器删除
+                window.clearInterval(barPayTestOnFocusInterval);
+                return ;
+            }
+
+            if(!$('.switchTabBtn[openClass="payTest2"]').hasClass('layui-this')){ //当面板没有展示时，不做任何处理
+                return ;
+            }
+            $("#barTestPayAmount").focus(); //聚焦事件
+
+        }
+
+        if(typeof (barPayTestOnFocusInterval) != 'undefined'){ //每次删除定时任务后重新添加
+            window.clearInterval(barPayTestOnFocusInterval);
+        }
+        barPayTestOnFocusInterval = setInterval(barAmountFocusFunc ,1500);  //将定时任务作为全局变量
+
+
+        $('.payTest1,.payTest2').addClass('layui-hide'); $('.payTest1').removeClass('layui-hide'); //默认被扫模式隐藏
+
+
+        var host = window.location.host;
+        $("#notifyUrl").val("http://" + host + "/api/paydemo/notify.htm");
+        $("#returnUrl").val("http://" + host + "/api/paydemo/return.htm");
+
+        admin.req({
+            type: 'post',
+            url: layui.setter.baseUrl + '/app/list?status=1',
+            success: function(res){
+                if(res.code == 0){
+                    for(var i = 0; i < res.data.length; i++){
+                        $("#appSelect").append("<option value='"+res.data[i]['appId']+"'>"+res.data[i]['appName']+"</option>");
+                    }
+                    form.render();
+                }
+            }
+        });
+
+        admin.req({
+            type: 'post',
+            url: layui.setter.baseUrl + '/mch_pay_passage/list',
+            success: function(res){
+                if(res.code == 0){
+                    $.each(res.data, function(){
+                        $("#productId").append("<option value='"+this.ps.productId+"'>"+this.ps.productName+"</option>");
+                    });
+                    form.render();
+                }
+            }
+        });
+
+        //切换支付类型
+        $(".switchTabBtn").click(function(){
+            $('.payTest1').addClass('layui-hide');$('.payTest2').addClass('layui-hide');
+            var openClass = $(this).attr('openClass');
+            $('.' + openClass).removeClass('layui-hide');
+        });
+
+
+        var payTestQueryCount = 0;
+        var payTestQueryPayOrderId = '';
+
+        //支付测试 - 查询订单定时任务执行函数
+        function payTestQueryFunc(){
+
+            payTestQueryCount++;
+            if(typeof(payTestQueryCount) == 'undefined' || payTestQueryCount > 30){ //超过次数不再查询
+                window.clearInterval(barPayTestQueryInterval);
+            }
+
+            admin.req({
+                type: "POST", url: layui.setter.baseUrl + '/paydemo/query',
+                data: {"payOrderId": payTestQueryPayOrderId},
+                error: function(){},
+                success: function(res){
+                    if(res.data.status == 2 || res.data.status == 3){
+                        layer.alert("支付成功！");
+                        window.clearInterval(barPayTestQueryInterval);
+                    }
+                }
+            });
+        }
+
+        function toBarPay(){
+
+            $("#barTestPayAmount").focus(); //重新聚焦事件
+
+            var bar = $('#barTestPayAmount').val().trim();
+            if(!bar) return ; //没任何内容
+
+            if(isNaN(bar)) return layer.msg('请录入正确的条码！');
+
+            var payProductId = "";
+            if(/^(25|26|27|28|29|30)/.test(bar) && bar.length >= 16 && bar.length <= 24 ){ //支付宝 ： 25~30开头的长度为16~24位的数字
+
+                payProductId = "8021";
+            }else if(/^(10|11|12|13|14|15)/.test(bar) && bar.length == 18 ){ //微信 ：18位纯数字，以10、11、12、13、14、15开头
+
+                payProductId = "8020";
+            }else{
+                return layer.msg('暂不支持的条码类型！');
+            }
+
+            var appId = $("#appSelect").val();
+            var amount = $("#amount").val();
+            var subject = $("#subject").val();
+            var body = $("#body").val();
+            var notifyUrl = $("#notifyUrl").val();
+
+            //封装请求参数
+            var reqParams = {};
+            reqParams.appId = appId;
+            reqParams.amount = amount;
+            reqParams.subject = subject;
+            reqParams.body = body;
+            reqParams.notifyUrl = notifyUrl;
+            reqParams.extra = bar;
+            reqParams.productId = payProductId;
+
+
+            var layerMsgId = layer.msg('正在请求支付接口...',{time: 0, shade: 0.3});
+
+            admin.req({
+                type: "POST", url: layui.setter.baseUrl + '/paydemo/create',
+                data: reqParams,
+                error: function(){layer.close(layerMsgId);},
+                success: function(res){
+                    layer.close(layerMsgId);
+                    if(res.code == 0) {
+                        var data = res.data;
+                        $("#barTestPayAmount").val(""); //清空条码
+                        if(data.orderStatus == '1'){
+                            payTestQueryPayOrderId = data.payOrderId;
+                            layer.alert("支付结果：等待用户支付，正在定时查询最新结果中... ...", {btn:false});
+                            barPayTestQueryInterval = setInterval(payTestQueryFunc ,2000); //2s查询一次查询
+                        }if(data.orderStatus == '2' || data.orderStatus == '3'){
+                            layer.alert("支付结果：支付成功");
+                        }
+                    }
+                }
+            });
+        }
+
+        //当条码变更时
+        $('#barTestPayAmount').change(function(){
+            toBarPay();
+        });
+
+        //手动触发支付 按钮
+        $('#toBarPayBtn').click(function(){
+            toBarPay();
+        });
+
+
+        form.on('submit(recharge)', function(data) {
+            var productId = $("#productId").val();
+            data.field.type = "recharge";
+
+            var amount = $("#amount").val();
+
+            //这里可以写ajax方法提交表单
+            admin.req({
+                type: "POST",
+                url: layui.setter.baseUrl + '/paydemo/create',
+                data: data.field,
+                success: function(res){
+                    if(res.code == 0) {
+                        var data = res.data;
+                        var payMethod = data.payMethod;
+                        if(payMethod == 'formJump') {
+                            var payUrl = data.payUrl;
+                            $('#formJump').html(payUrl);
+                        }else if(payMethod == 'codeImg') {
+                            var codeImgUrl = data.codeImgUrl;
+                            layer.open({
+                                title: "扫描二维码支付",
+                                type: 1,
+                                anim: 0,
+                                content: "<img style='padding:20px' src='" +  codeImgUrl + "' />"
+                            });
+                        }else {
+                            layer.open({
+                                title: "支付结果",
+                                content: JSON.stringify(data)
+                            });
+                        }
+                    }else {
+                        /*layer.open({
+                            title: "下单失败",
+                            content: res.msg
+                        });*/
+                    }
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+        form.render();
+    });
+</script>
+
+
+
+

@@ -1,0 +1,213 @@
+<div class=" layui-card layadmin-header">
+	<div class="layui-breadcrumb" lay-filter="breadcrumb">
+		<a lay-href="">首页</a>
+		<a>商城管理</a>
+		<a><cite>售后配置</cite></a>
+	</div>
+</div>
+<style>
+	.layui-form-label {
+		width: 20% !important;
+	}
+	.layui-input-inline {
+		width: 50% !important;
+	}
+</style>
+<div class="layui-fluid">
+	<div class="layui-card">
+		<div class="layui-tab layui-tab-brief">
+			<ul class="layui-tab-title">
+				<li class="layui-this tabLi">退换货信息</li>
+				<li class="tabLi">申请售后原因</li>
+			</ul>
+
+			<div class="layui-tab-content">
+				<div class="layui-row layui-tab-item layui-show">
+					<form class="layui-form layui-form-pane">
+						<input type="hidden" value="receiveInfo" name="configCode" >
+						<input type="hidden" value="退换货信息" name="configName" >
+						<div class="layui-form-item">
+							<label class="layui-form-label">所属小程序</label>
+							<div class="layui-input-block">
+								<!--<input type="radio" name="authFrom" value="1" title="点餐小程序" lay-filter="authFromFilter"  />-->
+								<input type="radio" name="authFrom" value="2" title="商城小程序" lay-filter="authFromFilter" checked="checked" />
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">售后收件人姓名</label>
+							<div class="layui-input-inline">
+								<input type="text" id="receiveName" name="receiveName" placeholder="请填写售后收件人姓名" class="layui-input" >
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">售后收件人电话</label>
+							<div class="layui-input-inline">
+								<input type="text" id="receiveTel" name="receiveTel" placeholder="请填写售后收件人电话" class="layui-input" >
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">退换货地址</label>
+							<div class="layui-input-inline">
+								<input type="text" id="receiveAddress" name="receiveAddress" placeholder="请填写退换货地址" class="layui-input" >
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<div class="layui-input-block">
+								<button type="button" lay-submit="" lay-filter="receiveInfoSave" class="layui-btn">保存</button>
+							</div>
+						</div>
+					</form>
+				</div>
+				<div class="layui-tab-item">
+					<div class="layui-row">
+						<div class="layuiAdmin-btns" style="margin-bottom: 10px;">
+							<a class="layui-btn" data-type="all" data-events="create">新增</a>
+						</div>
+					</div>
+					<table id="reasonList" lay-filter="reasonList"></table>
+				</div>
+			</div>
+        </div>
+    </div>
+
+
+</div>
+<script>
+	//标题内容模板
+	var tplTitle = function(d){
+		return '<a class="layui-btn layui-btn-xs" lay-event="edit" >编辑</a> '
+	};
+
+	layui.use(['form', 'table', 'util', 'admin', 'view'], function() {
+		var form = layui.form,
+			$ = layui.$,
+			table = layui.table,
+			admin = layui.admin,
+			layer = layui.layer,
+			view = layui.view,
+			element = layui.element;
+
+		element.render('breadcrumb', 'breadcrumb'); //渲染导航信息
+
+		//售后申请原因列表
+		table.render({
+			elem: '#reasonList'
+			,id: "tableReload"
+			,url: layui.setter.baseUrl + '/mini_config/reason_list'
+			,where: {
+				authFrom: 2,
+				configCode: 'reason'
+			}
+			,cols: [[
+				{field: 'id',title: 'id'}
+				,{field: 'authFrom',title: '所属小程序', templet: '<div>{{ d.authFrom == 1 ? "点餐" : d.authFrom == 2 ? "商城" : ""}}</div>'}
+				,{field: 'configValue', title: '申请原因'}
+				,{field: 'edit', title: '操作', width: 400, templet: tplTitle }
+			]]
+			,page: true
+			,skin: 'line'
+		});
+
+		//监听工具条
+		table.on('tool(reasonList)', function(obj){
+			var data = obj.data;
+			var layEvent = obj.event;
+
+			if(layEvent === 'edit'){ //编辑
+				view.xxpayPopup("编辑售后原因", "mall/after/update_reason", {id: data.id, authFrom: data.authFrom, configValue: data.configValue}, {area:["50%", "60%"]});
+			}
+		});
+
+		// 事件处理
+		var events = {
+			create: function(othis, type){
+				view.xxpayPopup("新增售后原因", "mall/after/create_reason", null, {area:["50%", "60%"]});
+			}
+		};
+
+		$('.layuiAdmin-btns .layui-btn').on('click', function(){
+			var othis = $(this)
+					,thisEvent = othis.data('events')
+					,type = othis.data('type');
+			events[thisEvent] && events[thisEvent].call(this, othis, type);
+		});
+
+		//通用更新函数
+		var commonUpdateFunc = function(data){
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/sys/config/update',
+                data: data,
+                error: function(err) {layer.alert(err.msg, {title: "请求失败"})},
+                success: function(res) {
+                    if(res.code == 0) {
+                        layer.alert(res.msg, {title: '保存成功'});
+                    }
+                    form.render();
+                }
+            })
+		};
+
+
+        form.on('submit(hotSearchConfigFilter)', function(data) {
+
+            commonUpdateFunc(data.field);
+            return false;
+        });
+
+		admin.req({
+			type: 'post',
+			url: layui.setter.baseUrl + '/mini_config/get',
+			data: {
+				authFrom: 2,
+				configCode: 'receiveInfo'
+			},
+			success: function(res){
+				if(res.code == 0){
+					var configValue = JSON.parse(res.data.value);
+					$("#receiveName").val(configValue.receiveName);
+					$("#receiveTel").val(configValue.receiveTel);
+					$("#receiveAddress").val(configValue.receiveAddress);
+				}
+			}
+		});
+
+		//监听提交
+		form.on('submit(receiveInfoSave)', function(data){
+			if (!data.field.receiveName) {
+				return layer.msg("请填写收货人姓名！")
+			}
+			if (!data.field.receiveTel) {
+				return layer.msg("请填写收货人电话！")
+			}
+			if (!data.field.receiveAddress) {
+				return layer.msg("请填写退换货地址！")
+			}
+
+			var value = {
+				receiveName: data.field.receiveName,
+				receiveTel: data.field.receiveTel,
+				receiveAddress: data.field.receiveAddress,
+			};
+
+			data.field.value = value;
+			console.log(data.field)
+			// 在这个回调函数里面写ajax提交
+			admin.req({
+				type: 'post',
+				url: layui.setter.baseUrl + '/mini_config/save',
+				data: data.field,
+				success: function(res){
+					if(res.code == 0){
+						layer.msg("保存成功");
+					}
+				}
+			});
+			return false;//阻止跳转
+		});
+
+
+		form.render();
+
+})
+</script>

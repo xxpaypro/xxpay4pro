@@ -1,0 +1,179 @@
+<style>
+    .xxpayPopupDiv .layui-form-label {
+        width:15% !important;
+        margin-left:1%;
+    }
+    .xxpayPopupDiv .layui-input-inline {
+        width: 33% !important;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <div class="layui-tab-content">
+                <form class="layui-form center layui-form-pane" action="">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">二维码ID</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="id" name="id" readonly class="layui-input">
+                        </div>
+                        <label class="layui-form-label">二维码名称</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="codeName" name="codeName" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">门店</label>
+                            <div class="layui-input-inline">
+                                <select name="storeId" id="storeId" lay-search="" lay-verify="required">
+                                    <option value="">请选择</option>
+                                </select>
+                            </div>
+                            <label class="layui-form-label">操作员</label>
+                            <div class="layui-input-inline">
+                                <select name="operatorId" id="operatorId" lay-search="" lay-verify="required">
+                                    <option value="">请选择</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">二维码金额</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="payAmount" name="payAmount" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">状态</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="status" value="1" title="正常使用">
+                            <input type="radio" name="status" value="0" title="停止使用">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">备注</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="remark" name="remark" class="layui-input">
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" lay-submit lay-filter="qrcodeUpdate" class="layui-hide xxpayYesBtn">保存</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    layui.use(['form','admin'],function(){
+        var form = layui.form
+        , admin = layui.admin
+        , $ = layui.$
+        , layer = layui.layer
+        , view = layui.view
+        , element = layui.element;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+        var id = view.getOpenParams('id');
+
+        var storeId = "";
+        var operatorId = "";
+
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/mch_qrcode/get',
+            data: {
+                id: id
+            },
+            error: function(err){
+                layer.alert(err,{title:'请求失败'},function(index){
+                    layer.close(index);
+                })
+            },
+            success: function(res){
+                if(res.code == 0){
+                    $("#id").val(res.data.id);
+
+                    $("#codeName").val(res.data.codeName);
+                    $("#payAmount").val(res.data.payAmount/100);
+                    $("#storeId").val(res.data.storeId);
+                    $("#operatorId").val(res.data.operatorId);
+                    $("#remark").val(res.data.remark);
+                    storeId = res.data.storeId;
+                    operatorId = res.data.operatorId;
+                    $("input[name='status'][value='"+res.data.status+"']").attr("checked", true);
+
+                    form.render();
+                }else {
+                    layer.alert(res.msg,{title: '获取数据失败'});
+                }
+            }
+        });
+
+        admin.req({
+            type: "POST",
+            url: layui.setter.baseUrl + '/store/storeList',
+            success: function(res){
+                if(res.code == 0) {
+                    var storeList = res.data;
+                    //遍历赋值
+                    for(var i in storeList){
+                        $("#storeId").append('<option value= '+storeList[i].storeId+'>'+ storeList[i].storeName+'</option>');
+                        if (storeId == storeList[i].storeId) {
+                            $("#storeId").val(storeList[i].storeId);
+                        }
+                    }
+                    form.render('select');
+                }
+            }
+        });
+
+        admin.req({
+            type: "POST",
+            url: layui.setter.baseUrl + '/subuser/subUserList',
+            success: function(res){
+                if(res.code == 0) {
+                    var subUserList = res.data;
+                    //遍历赋值
+                    for(var i in subUserList){
+                        $("#operatorId").append('<option value= '+subUserList[i].userId+'>'+ subUserList[i].loginUserName+'</option>');
+                        if (operatorId == subUserList[i].userId) {
+                            $("#operatorId").val(subUserList[i].userId);
+                        }
+                    }
+                    form.render('select');
+                }
+            }
+        });
+
+        //提交修改后的数据
+        //监听提交
+        form.on('submit(qrcodeUpdate)', function(data){
+            var exp = /^([1-9][\d]{0,7}|0)(\.[\d]{1,2})?$/;
+            var payAmount = data.field.payAmount;
+            if (payAmount != "") {
+                if (!exp.test(data.field.payAmount)) {
+                    return layer.msg('请输入正确金额！');
+                }
+            }
+            // 在这个回调函数里面写ajax提交
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/mch_qrcode/update',
+                data: data.field,
+                error: function(err){layer.alert(err.msg,{title:"请求失败"})},
+                success: function(res){
+                    if(res.code == 0){
+                        layer.alert(res.msg, function(index){
+                            layer.closeAll(); //关闭所有弹层
+                            layui.table.reload('tableReload', {page: {curr: 1}}); //调用业务弹层外表格重新加载
+                        })
+                    }
+                }
+            });
+            return false;//阻止跳转
+        });
+
+        form.render();
+    })
+</script>

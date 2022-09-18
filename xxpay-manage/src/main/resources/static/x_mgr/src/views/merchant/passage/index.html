@@ -1,0 +1,135 @@
+
+<div class="layui-card layadmin-header">
+  <div class="layui-breadcrumb" lay-filter="breadcrumb">
+    <a lay-href="">主页</a>
+    <a><cite>商户通道</cite></a>
+  </div>
+</div>
+
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-tab layui-tab-brief">
+      <ul class="layui-tab-title">
+        <li class="layui-this">通道列表</li>
+      </ul>
+      <div class="layui-tab-content">
+        <div class="layui-tab-item layui-show">
+          <div class="layui-row">
+            <div class="layui-form" style="float:right;">
+              <div class="layui-form-item" style="margin:0;">
+                <div class="layui-input-inline">
+                  <input type="text" name="passageId" id="passageId" placeholder="通道ID" autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-input-inline">
+                  <input type="text" name="mchId" id="mchId" placeholder="商户ID" autocomplete="off" class="layui-input">
+                </div>
+                <button id="search" class="layui-btn" data-type="reload">搜索</button>
+              </div>
+            </div>
+          </div>
+          <div class="layui-row">
+            <div class="layuiAdmin-btns" style="margin-bottom: 10px;">
+              <button class="layui-btn" data-type="all" data-events="add">新增</button>
+            </div>
+          </div>
+          <table id="XxPay_Mgr_Passage_dataAll" lay-filter="XxPay_Mgr_Passage_dataAll"></table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/html" id="xxpayBar">
+  <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+</script>
+
+<script>
+  layui.use(['admin', 'table', 'util'], function(){
+    var $ = layui.$
+      ,admin = layui.admin
+      ,table = layui.table
+      ,element = layui.element
+      ,form = layui.form;
+
+    element.render('breadcrumb', 'breadcrumb');
+
+    var router = layui.router();
+    var mchId = router.search.mchId;
+
+    var tplStatus = function(d){
+      if(d.status == 1) {
+        return "<span style='color: green'>开启</span>";
+      }
+      return "<span style='color: red'>关闭</span>";
+    };
+
+    //商户列表
+    table.render({
+      elem: '#XxPay_Mgr_Passage_dataAll'
+      ,url: layui.setter.baseUrl + '/mch_passage/list' //列表接口
+      ,where: {
+        mchId: mchId
+      }
+      ,id: 'tableReload'
+      ,page: true
+      ,cols: [[
+        {type: 'checkbox', fixed: 'left'}
+        ,{field: 'mchId', title: '商户ID'}
+        ,{field: 'passageId', title: '通道ID'}
+        ,{field: 'mchRate', title: '商户费率'}
+        ,{field: 'status', title: '状态', templet: tplStatus}
+        ,{field: 'createTime', title: '创建时间', width: 200, templet: '<div>{{ layui.util.toDateString(d.createTime, "yyyy-MM-dd HH:mm:ss") }}</div>'}
+        ,{field: 'edit', title: '操作', width: 320, toolbar: '#xxpayBar' }
+      ]]
+      ,skin: 'line'
+    });
+
+    //监听工具条
+    table.on('tool(XxPay_Mgr_Passage_dataAll)', function(obj){
+      var data = obj.data;
+      if(obj.event === 'edit'){
+        location.hash = "/merchant/passage/edit/id=" + data.id + "/mchId=" + data.mchId;
+      }
+
+    });
+
+    // 事件处理
+    var events = {
+      add: function(othis, type){
+        location.hash = '/merchant/passage/add/mchId=' + mchId;
+      }
+    };
+    $('.layuiAdmin-btns .layui-btn').on('click', function(){
+      var othis = $(this)
+              ,thisEvent = othis.data('events')
+              ,type = othis.data('type');
+      events[thisEvent] && events[thisEvent].call(this, othis, type);
+    });
+
+    // 搜索
+    var $ = layui.$, active = {
+      reload: function(){
+        var mchId = $('#mchId').val();
+        var appId = $("#appId").val();
+        //执行重载
+        table.reload('tableReload', {
+          page: {
+            curr: 1 //重新从第 1 页开始
+          }
+          ,where: {
+            mchId: mchId,
+            appId : appId
+          }
+        });
+      }
+    };
+    $('#search').on('click', function() {
+      var type = $(this).data('type');
+      active[type] ? active[type].call(this) : '';
+    });
+
+    // 渲染表单
+    form.render();
+  });
+</script>

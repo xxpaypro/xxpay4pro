@@ -1,0 +1,114 @@
+
+<div class="layui-card layadmin-header">
+  <div class="layui-breadcrumb" lay-filter="breadcrumb">
+    <a lay-href="">主页</a>
+    <a><cite>用户账户</cite></a>
+  </div>
+</div>
+
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-tab layui-tab-brief">
+      <ul class="layui-tab-title">
+        <li class="layui-this">资金明细列表</li>
+      </ul>
+      <div class="layui-tab-content">
+        <div class="layui-tab-item layui-show">
+          <div class="layui-row">
+            <div class="layui-form" style="float:right; margin-bottom: 10px;">
+              <div class="layui-form-item" style="margin:0;">
+                <div class="layui-input-inline">
+                  <input type="text" name="changeDay" id="changeDay" placeholder="日期" autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-input-inline">
+                  <select name="accountType" id="accountType" lay-search="">
+                    <option value="-99">账户类型</option>
+                    <option value="0">账户余额</option>
+                    <option value="1">可用余额</option>
+                  </select>
+                </div>
+                <button id="search" class="layui-btn" data-type="reload">搜索</button>
+              </div>
+            </div>
+          </div>
+          <table id="XxPay_Mch_UAccount_dataList" lay-filter="XxPay_Mch_UAccount_dataList"></table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+layui.use(['admin', 'table', 'util'], function(){
+  var $ = layui.$
+  ,admin = layui.admin
+  ,table = layui.table
+  ,element = layui.element
+  ,form = layui.form;
+  
+  element.render('breadcrumb', 'breadcrumb');
+  var router = layui.router();
+  var userId = router.search.userId;
+
+  var tplAccountType = function(d){
+    if(d.accountType == 0) {
+      return "<span style='color: black'>账户余额</span>";
+    }else if(d.accountType == 1) {
+      return "<span style='color: black'>可用余额</span>";
+    }
+  };
+
+  var tplChangeAmount = function(d){
+    if(d.changeType == 0) {
+      return "<span style='color: darkgreen'>+" + d.changeAmount/100 + "</span>";
+    }else if(d.changeType == 1) {
+      return "<span style='color: orangered'>-" +  d.changeAmount/100 + "</span>";
+    }
+  };
+
+  //列表
+  table.render({
+    elem: '#XxPay_Mch_UAccount_dataList'
+    ,url: layui.setter.baseUrl + '/uaccount/detail_list' //列表接口
+    ,where: {
+        userId : userId
+    }
+    ,id: 'tableReload'
+    ,page: true
+    ,cols: [[
+      {type: 'checkbox', fixed: 'left'}
+      ,{field: 'userId', title: '用户ID'}
+      ,{field: 'changeDay', title: '日期'}
+      ,{field: 'changeAmount', title: '金额', templet: tplChangeAmount}
+      ,{field: 'accountType', title: '账户类型', templet: tplAccountType}
+      ,{field: 'createTime', title: '时间', templet: '<div>{{ layui.util.toDateString(d.createTime, "yyyy-MM-dd HH:mm:ss") }}</div>'}
+    ]]
+    ,skin: 'line'
+  });
+
+  // 搜索
+  var $ = layui.$, active = {
+    reload: function(){
+      var changeDay = $('#changeDay').val();
+      var accountType = $("#accountType").val();
+      //执行重载
+      table.reload('tableReload', {
+        page: {
+          curr: 1 //重新从第 1 页开始
+        }
+        ,where: {
+          changeDay: changeDay,
+          accountType: accountType
+        }
+      });
+    }
+  };
+  $('#search').on('click', function() {
+    var type = $(this).data('type');
+    active[type] ? active[type].call(this) : '';
+  });
+  // 渲染表单
+  form.render();
+});
+</script>

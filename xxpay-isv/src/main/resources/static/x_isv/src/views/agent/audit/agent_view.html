@@ -1,0 +1,158 @@
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>下级代理商</cite></a>
+        <a><cite>查看代理商</cite></a>
+    </div>
+</div>
+
+<style>
+    .xxpayPopupDiv .layui-form-label {
+        width:15% !important;
+        margin-left:1%;
+    }
+    .xxpayPopupDiv .layui-input-inline {
+        width: 33% !important;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <form class="layui-form layui-form-pane">
+            <div class="layui-tab layui-tab-brief">
+                <ul class="layui-tab-title">
+                    <li class="layui-this">基本信息</li>
+                </ul>
+                <div class="layui-tab-content">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">代理商ID</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="agentId" name="agentId" lay-verify="required" autocomplete="off" class="layui-input" disabled="disabled">
+                        </div>
+                        <label class="layui-form-label">代理商名称</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="agentName" name="agentName" lay-verify="required" placeholder="输入代理商名称" autocomplete="off" class="layui-input" disabled="disabled">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">用户登录名</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="loginUserName" name="loginUserName" lay-verify="required" placeholder="输入用户登录名" autocomplete="off" class="layui-input" disabled="disabled">
+                        </div>
+                        <label class="layui-form-label">手机号</label>
+                        <div class="layui-input-inline">
+                            <input type="tel" id="mobile" name="mobile" lay-verify="phone" placeholder="输入手机号" autocomplete="off" class="layui-input" disabled="disabled">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+
+                        <label class="layui-form-label">邮箱</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="email" name="email" lay-verify="email" placeholder="输入邮箱" autocomplete="off" class="layui-input" disabled="disabled">
+                        </div>
+                        <label class="layui-form-label">真实姓名</label>
+                        <div class="layui-input-inline">
+                            <input type="tel" id="realName" name="realName" lay-verify="required" placeholder="输入真实姓名" autocomplete="off" class="layui-input" disabled="disabled">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+
+                        <label class="layui-form-label">身份证号</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="idCard" name="idCard" lay-verify="required" placeholder="输入身份证号" autocomplete="off" class="layui-input" disabled="disabled">
+                        </div>
+                        <label class="layui-form-label">QQ号</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="qq" name="qq" lay-verify="number" placeholder="输入QQ号" autocomplete="off" class="layui-input" disabled="disabled">
+                        </div>
+
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">通讯地址</label>
+                        <div class="layui-input-inline">
+                            <input type="tel" id="address" name="address" placeholder="输入通讯地址" autocomplete="off" class="layui-input" disabled="disabled">
+                        </div>
+                        <label class="layui-form-label">状态</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="status" value="1" title="启用" checked="checked" disabled="disabled">
+                            <input type="radio" name="status" value="0" title="停止" disabled="disabled">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+
+                        <label class="layui-form-label">创建时间</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="createTime" name="createTime" class="layui-input" disabled="disabled">
+                        </div>
+
+                        <label class="layui-form-label">设置信息</label>
+                        <input type="checkbox" lay-skin="primary" lay-filter='allowAddMchCheckbox' title="允许发展商户" disabled />
+                        <input type="checkbox" lay-skin="primary" lay-filter='allowAddSubAgentCheckbox' title="允许发展子代理商" disabled />
+                    </div>
+
+                    <div class="layui-form-item">
+
+                        <label class="layui-form-label">分佣比例(%)</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="profitRate" readonly lay-verify="number" autocomplete="off" class="layui-input" value="0">
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    layui.use(['admin', 'form'],function(){
+        var form = layui.form
+            ,$ = layui.$
+            ,admin = layui.admin
+            ,element = layui.element
+            ,layer = layui.layer
+            ,view = layui.view;
+        // 导航
+        element.render('breadcrumb', 'breadcrumb');
+
+        var agentId = view.getOpenParams('agentId');
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/agent/get',
+            data: { agentId : agentId },
+            error: function(err){
+                layer.alert(JSON.stringify(err.field));
+            },
+            success: function(res){
+
+                if(res.code == 0){
+                    $('#agentId').val(res.data.agentId);
+                    $('#agentName').val(res.data.agentName);
+                    $('#loginUserName').val(res.data.loginUserName);
+                    $('#email').val(res.data.email);
+                    $('#mobile').val(res.data.mobile);
+                    $("input[name='status'][value='"+res.data.status+"']").attr("checked",true);
+                    $('#realName').val(res.data.realName);
+                    $('#idCard').val(res.data.idCard);
+                    $('#qq').val(res.data.qq);
+                    $('#address').val(res.data.address);
+                    if(res.data.createTime != "" && res.data.createTime != null) {
+                        $('#createTime').val(layui.util.toDateString(res.data.createTime));
+                    }
+                    if(res.data.allowAddSubAgent){
+                        $("input[lay-filter='allowAddSubAgentCheckbox']").attr('checked', 'checked');
+                    }
+                    if(res.data.allowAddMch){
+                        $("input[lay-filter='allowAddMchCheckbox']").attr('checked', 'checked');
+                    }
+
+                    $('#profitRate').val(res.data.profitRate);
+
+                    form.render();
+                }
+            }
+        });
+
+    })
+</script>

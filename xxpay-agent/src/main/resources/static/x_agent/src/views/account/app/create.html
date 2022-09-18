@@ -1,0 +1,72 @@
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a><cite>新建应用</cite></a>
+    </span>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">新建应用</li>
+            </ul>
+            <div class="layui-tab-content">
+                <style>
+                    .center {
+                        width: 80%;
+                    }
+                </style>
+
+                <form class="layui-form center">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">应用名称</label>
+                        <div class="layui-input-block">
+                            <input type="text" required  name="appName"  lay-verify="required" placeholder="请输入应用名称" autocomplete="off" class="layui-input appname">
+                        </div>
+                    </div>
+                    <div class="layui-form-item ">
+                        <div class="layui-input-block">
+                            <button type="button" lay-filter="btnC" lay-submit class="layui-btn">保存</button>
+                            <a lay-href="account/app/list"  class="layui-btn">返回</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['form','element','util','admin'],function(){
+        var form = layui.form
+        , admin = layui.admin
+        , $ = layui.$
+        , layer = layui.layer
+        , element = layui.element ;
+        
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        //监听提交
+        form.on('submit(btnC)', function(data){
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/app/add', //模拟接口,
+                data: data.field,
+                error: function(err){layer.alert(err.msg,{title:"请求失败"})},
+                success: function(res){
+                    if(res.code == 0){
+                        layer.alert(res.msg, {title: '新建应用成功'},function(index){
+                            layer.close(index);
+                            location.hash = '/account/app/list';
+                        });
+                    }else {
+                        layer.alert(res.msg,{title: '新建应用失败'})
+                    }
+
+                }
+            })
+            return false;
+        });
+
+    })
+
+</script>

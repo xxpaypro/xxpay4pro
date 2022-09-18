@@ -1,0 +1,90 @@
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <div class="layui-tab-content">
+                <form class="layui-form center">
+                    <div id="userRoleTree" class="xtree_contianer"></div>
+                    <hr>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button type="button" class="layui-hide xxpayYesBtn" lay-submit="" lay-filter="userRoleSave">保存</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!--引用xtree-->
+<script src="layui/layui-xtree/layui-xtree.js"></script>
+<script>
+    layui.use(['form','admin','view'],function(){
+        var form = layui.form
+                ,$ = layui.$
+                ,admin = layui.admin
+                ,element = layui.element
+                ,view = layui.view
+                ,layer = layui.layer ;
+        // 导航
+        element.render('breadcrumb', 'breadcrumb');
+        var userId = view.getOpenParams('userId');
+        var userRoleTree;
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/sys/user/user_role_view',
+            data: {
+                 userId : userId
+            },
+            error: function(err){
+                layer.alert(JSON.stringify(err.field), {
+                    title: '错误提示'
+                })
+            },
+            success: function(res){
+                if(res.code == 0){
+                    userRoleTree = new layuiXtree({
+                        elem: 'userRoleTree'    //(必填) 放置xtree的容器，样式参照 .xtree_contianer
+                        , form: form        //(必填) layui 的 from
+                        , data: res.data    //(必填) json数据
+                    });
+                }
+            }
+        });
+
+        form.on('submit(userRoleSave)', function(data) {
+            // 获取所有选中的
+            var oCks = userRoleTree.GetAllCheckBox();
+            var roleIds = "";
+            for (var i = 0; i < oCks.length; i++) {
+                if(oCks[i].checked) {
+                    roleIds = roleIds + "," + oCks[i].value;
+                }
+            }
+            roleIds = roleIds.substring(1);
+            console.log(roleIds);
+
+            //这里可以写ajax方法提交表单
+            admin.req({
+                type: "POST",
+                url: layui.setter.baseUrl + '/sys/user/user_role_save',
+                data: {
+                    userId: userId,
+                    roleIds: roleIds,
+                },
+                success: function(res){
+                    if(res.code == 0) {
+                        layer.closeAll(); //关闭所有弹层
+                        layer.msg("保存成功");
+                        layui.table.reload('tableReload', {page: {curr: 1}}); //调用业务弹层外表格重新加载
+                    }else {
+                        layer.alert(res.msg, {
+                            title: '保存失败'
+                        });
+                    }
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+    })
+</script>

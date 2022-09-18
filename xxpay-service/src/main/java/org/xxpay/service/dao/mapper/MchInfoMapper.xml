@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.xxpay.service.dao.mapper.MchInfoMapper">
+
+  <!-- 通用查询映射结果 -->
+  <resultMap id="BaseResultMap" type="org.xxpay.core.entity.MchInfo">
+    <id column="MchId" property="MchId" />
+    <result column="MchName" property="mchName" />
+    <result column="MchShortName" property="mchShortName" />
+    <result column="ContactRealName" property="contactRealName" />
+    <result column="LoginUserName" property="loginUserName" />
+    <result column="LoginMobile" property="loginMobile" />
+    <result column="LoginEmail" property="loginEmail" />
+    <result column="RegisterPassword" property="registerPassword" />
+    <result column="Type" property="type" />
+    <result column="PrivateKey" property="privateKey" />
+    <result column="ProvinceCode" property="provinceCode" />
+    <result column="CityCode" property="cityCode" />
+    <result column="AreaCode" property="areaCode" />
+    <result column="AreaInfo" property="areaInfo" />
+    <result column="Address" property="address" />
+    <result column="AgentId" property="agentId" />
+    <result column="MchLevel" property="mchLevel" />
+    <result column="IsvId" property="isvId" />
+    <result column="Status" property="status" />
+    <result column="SignStatus" property="signStatus" />
+    <result column="MiniRole" property="miniRole" />
+    <result column="ParentId" property="parentId" />
+    <result column="HospitalId" property="hospitalId" />
+    <result column="DepositModeStatus" property="depositModeStatus" />
+    <result column="AuditInfo" property="auditInfo" />
+    <result column="Remark" property="remark" />
+    <result column="CreateTime" property="createTime" />
+    <result column="UpdateTime" property="updateTime" />
+  </resultMap>
+
+  <!-- 统计商户信息 -->
+  <select id="count4Mch" resultType="java.util.Map" parameterType="java.util.Map" >
+    SELECT COUNT(1) AS totalCount FROM t_mch_info
+  </select>
+
+
+  <!-- 递归查询当前代理商和所有子代理商 所属商户ID集合  -->
+  <sql id="queryAllMchIds4SubAgents">
+    select m.MchId from t_mch_info m where m.agentId in (
+    <include refid="org.xxpay.service.dao.mapper.AgentInfoMapper.queryAllSubAgentIdsSQL"/>
+    )
+  </sql>
+
+  <!-- 统计商户数量：  根据代理商等级查询 -->
+  <select id="countMchByAgentLevel" resultType="java.lang.Long" parameterType="Map">
+    select count(1) from t_mch_info where AgentId in
+    (
+    select AgentId from t_agent_info
+    <where>
+      <if test="agentLevel != null">and AgentLevel = #{agentLevel}</if>
+      <if test="isvId != null">and IsvId = #{isvId}</if>
+      <if test="agentIdList != null">and AgentId in
+        <foreach collection="agentIdList" item="agentId" index="index" open="(" close=")" separator=",">
+          #{agentId}
+        </foreach>
+      </if>
+    </where>
+    )
+    <if test="createTimeStart != null">and CreateTime &gt;= #{createTimeStart}</if>
+    <if test="createTimeEnd != null">and CreateTime &lt;= #{createTimeEnd}</if>
+  </select>
+
+  <!-- 统计代理商下所属商户微信进件数量 -->
+  <select id="countWxSnashot" resultType="java.lang.Integer" parameterType="java.util.Map" >
+    SELECT COUNT(1) as count from t_wx_mch_snapshot s
+    <where>
+      1 = 1
+      <if test="isvId != null">and s.IsvId = #{isvId}</if>
+      <if test="applyStatus != null">and s.ApplyStatus = #{applyStatus}</if>
+    </where>
+  </select>
+
+  <!-- 代理商下所属商户微信进件信息列表 -->
+  <select id="selectWxSnashotPage" resultType="java.util.Map" parameterType="java.util.Map" >
+    SELECT m.MchId, m.MchName, m.Status, m.IsvId, m.AgentId, m.MchLevel, m.Type, m.LoginUserName, m.LoginMobile, m.LoginEmail,
+    m.AuditInfo, m.SignStatus, s.ApplyNo, s.ApplyStatus, s.ApplyType, m.CreateTime, m.UpdateTime
+    FROM t_wx_mch_snapshot s LEFT JOIN t_mch_info m ON s.mchId = m.mchId
+    <where>
+      1 = 1
+      <if test="isvId != null">and m.IsvId = #{isvId}</if>
+      <if test="isvId != null">and s.IsvId = #{isvId}</if>
+      <if test="applyStatus != null">and s.ApplyStatus = #{applyStatus}</if>
+    </where>
+    order by m.CreateTime desc
+    <if test="limit != null" >
+      <if test="offset != null" >
+        limit ${offset}, ${limit}
+      </if>
+      <if test="offset == null" >
+        limit ${limit}
+      </if>
+    </if>
+  </select>
+
+  <!-- 统计代理商下所属商户支付宝进件数量 -->
+  <select id="countAliSnashot" resultType="java.lang.Integer" parameterType="java.util.Map" >
+    SELECT COUNT(1) as count from t_alipay_mch_snapshot s
+    <where>
+      1 = 1
+      <if test="isvId != null">and s.IsvId = #{isvId}</if>
+      <if test="applyStatus != null">and s.ApplyStatus = #{applyStatus}</if>
+    </where>
+  </select>
+
+  <!-- 代理商下所属商户支付宝进件信息列表 -->
+  <select id="selectAliSnashotPage" resultType="java.util.Map" parameterType="java.util.Map" >
+    SELECT m.MchId, m.MchName, m.Status, m.IsvId, m.AgentId, m.MchLevel, m.Type, m.LoginUserName, m.LoginMobile, m.LoginEmail,
+    m.AuditInfo, m.SignStatus, s.ApplyNo, s.ApplyStatus, m.CreateTime, m.UpdateTime
+    FROM t_alipay_mch_snapshot s LEFT JOIN t_mch_info m ON s.mchId = m.mchId
+    <where>
+      1 = 1
+      <if test="isvId != null">and m.IsvId = #{isvId}</if>
+      <if test="isvId != null">and s.IsvId = #{isvId}</if>
+      <if test="applyStatus != null">and s.ApplyStatus = #{applyStatus}</if>
+    </where>
+    order by m.CreateTime desc
+    <if test="limit != null" >j
+      <if test="offset != null" >
+        limit ${offset}, ${limit}
+      </if>
+      <if test="offset == null" >
+        limit ${limit}
+      </if>
+    </if>
+  </select>
+
+
+
+  <!--  =========================================================== 开始纳呈查账收款小程序查询统计 ============================================================ -->
+
+  <!--    通过商户ID统计医院商户数 -->
+  <select id="selectMchIdForNc" parameterType="java.util.List"  resultType="java.util.List">
+    select distinct mi.mchId from t_mch_info mi
+    <where> 1=1
+      <if test="mchIds != null">and mchId in
+        <foreach collection="mchIds" item="mchId" index="index" open="(" close=")" separator=",">
+          #{mchId}
+        </foreach>
+      </if>
+    </where>
+  </select>
+
+  <!--   =========================================================== 结束纳呈查账收款小程序查询统计 ============================================================  -->
+
+
+</mapper>

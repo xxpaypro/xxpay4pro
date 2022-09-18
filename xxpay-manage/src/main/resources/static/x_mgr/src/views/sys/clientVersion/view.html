@@ -1,0 +1,136 @@
+<style>
+    .xxpayPopupDiv .layui-form-label {
+        width:165px !important;
+        margin-left:1%;
+    }
+    .xxpayPopupDiv .layui-input-inline {
+        width: 80% !important;
+    }
+    .xxpayPopupDiv .layui-input , .layui-textarea{
+        width: 80%;
+    }
+</style>
+
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-tab layui-tab-brief">
+      <div class="layui-tab-content">
+          <form class="layui-form layui-form-pane" action="">
+              <div class="layui-form-item">
+                  <label class="layui-form-label">VID</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="vid" disabled="disabled" class="layui-input">
+                  </div>
+              </div>
+
+              <div class="layui-form-item">
+                  <label class="layui-form-label">客户端类型</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="clientType" disabled="disabled" class="layui-input">
+                  </div>
+              </div>
+
+              <div class="layui-form-item">
+                  <label class="layui-form-label">版本名称</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="versionName" disabled="disabled" class="layui-input">
+                  </div>
+              </div>
+              <div class="layui-form-item">
+                  <label class="layui-form-label">版本序列号</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="versionSN" disabled="disabled" class="layui-input">
+                  </div>
+              </div>
+              <div class="layui-form-item">
+                  <label class="layui-form-label">版本描述信息</label>
+                  <div class="layui-input-inline">
+                      <textarea class="layui-textarea" id="versionDesc" disabled="disabled"></textarea>
+                  </div>
+              </div>
+              <div class="layui-form-item">
+                  <label class="layui-form-label">是否强制更新</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="forceUpdate" disabled="disabled" class="layui-input">
+                  </div>
+              </div>
+              <div class="layui-form-item">
+                  <label class="layui-form-label">下载地址</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="downloadUrl" disabled="disabled" class="layui-input">
+                  </div>
+              </div>
+              <div class="layui-form-item">
+                  <label class="layui-form-label">文件大小，单位：M</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="fileSize" disabled="disabled" class="layui-input">
+                  </div>
+              </div>
+
+              <div class="layui-form-item">
+                  <label class="layui-form-label">创建时间</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="createTime" disabled="disabled" class="layui-input">
+                  </div>
+              </div>
+
+              <div class="layui-form-item">
+                  <label class="layui-form-label">更新时间</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="updateTime" disabled="disabled" class="layui-input">
+                  </div>
+              </div>
+
+          </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    layui.use(['form','admin','view'],function(){
+        var form = layui.form
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,element = layui.element
+        ,view = layui.view
+        ,layer = layui.layer ;
+        // 导航
+        element.render('breadcrumb', 'breadcrumb');
+        var vid = view.getOpenParams('vid');
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/sys/clientVersion/get',
+            data: {vid : vid},
+            error: function(err){
+                layer.alert(JSON.stringify(err.field), {title: '错误提示'});
+            },
+            success: function(res){
+                if(res.code == 0){
+
+                    $('#vid').val(res.data.vid);
+                    $('#versionName').val(res.data.versionName);
+                    $('#versionSN').val(res.data.versionSN);
+                    $('#versionDesc').text(res.data.versionDesc);
+                    $('#forceUpdate').val(res.data.forceUpdate == '1' ? '是' : '否');
+                    $('#downloadUrl').val(res.data.downloadUrl);
+                    $('#fileSize').val(res.data.fileSize);
+
+                    if(res.data.clientType == 'FACE_CLIENT'){
+                        $('#clientType').val("刷脸设备");
+                    }else if(res.data.clientType == 'MCH_APP'){
+                        $('#clientType').val("商家APP");
+                    }else if(res.data.clientType == 'PC_PLUGIN'){
+                        $('#clientType').val("商家PC收银插件");
+                    }else if(res.data.clientType == 'APP_COLLECT'){
+                        $('#clientType').val("进件APP");
+                    }
+
+                    $('#createTime').val( layui.util.toDateString(res.data.createTime));
+                    $('#updateTime').val( layui.util.toDateString(res.data.updateTime));
+                    form.render();
+                }
+            }
+        })
+    })
+</script>

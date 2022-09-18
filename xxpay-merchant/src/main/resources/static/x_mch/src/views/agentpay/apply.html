@@ -1,0 +1,205 @@
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a><cite>申请代付</cite></a>
+    </span>
+</div>
+
+
+<div class="layui-fluid" id="LAY-app-message">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">单笔代付</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-form-item">
+                    <blockquote class="layui-elem-quote" id="amountTip"></blockquote>
+                </div>
+                <div class="layui-tab-item layui-show">
+                    <form class="layui-form center">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">出款类型</label>
+                            <input type="radio" name="subAmountFrom" value="1" title="从收款账户出款">
+                            <input type="radio" name="subAmountFrom" value="2" title="从代付余额账户出款" checked="checked">
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">银行账户名</label>
+                            <div class="layui-input-block">
+                                <input type="text" required  name="accountName"  lay-verify="required" placeholder="请输入银行账户名" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">银行账号</label>
+                            <div class="layui-input-block">
+                                <input type="text" required  name="accountNo"  lay-verify="required|number" placeholder="请输入银行账号" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">代付金额(元)</label>
+                            <div class="layui-input-block">
+                                <input type="text" required  id="agentpayAmount" name="agentpayAmount"  lay-verify="required|number" placeholder="请输入代付金额" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div id='currentAuthDivForAuth'></div>
+                        <div class="layui-form-item ">
+                            <div class="layui-input-block">
+                                <button type="button" lay-submit lay-filter="btnJSJ" class="layui-btn">提交申请</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    layui.use(['form','util','admin'], function(){
+       var form = layui.form
+       ,$ = layui.$
+       ,admin = layui.admin
+       ,upload = layui.upload
+       ,element = layui.element;
+
+       element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+       
+       
+       $.genCurrentAuthHtml = function (payType, securityAuthType){
+     	   
+         	//无需验证
+      	   if(payType == '0'){
+      		   return "";
+      	   }
+            //仅支付密码验证
+      	   else if(payType == '1'){
+      		  return `
+  			   <div class="layui-form-item layui-form-text">
+  		         <label class="layui-form-label">支付密码</label>
+  		         <div class="layui-input-block">
+  		            <input type="password" name="payPassword" required lay-verify="required" placeholder="请输入支付密码" autocomplete="off" class="layui-input">
+  		         </div>
+  		   	   </div>`;
+      	   }
+         	//仅安全认证
+      	   else if(payType == '2'){
+      		   return  $.genSecurityAuthHtml(securityAuthType);
+      		   
+      	   }
+         	//支付密码 + 安全认证
+      	   else if(payType == '3'){}
+  	     	  return `
+  			   <div class="layui-form-item layui-form-text">
+  		         <label class="layui-form-label">支付密码</label>
+  		         <div class="layui-input-block">
+  		            <input type="password" name="payPassword" required lay-verify="required" placeholder="请输入支付密码" autocomplete="off" class="layui-input">
+  		         </div>
+  		   	   </div>` + $.genSecurityAuthHtml(securityAuthType);
+      	};
+      	
+      	$.genSecurityAuthHtml = function (securityAuthType){
+    	   
+    	   if(securityAuthType == '1'){ //谷歌验证码
+    		   
+    			return `
+    			   <div class="layui-form-item layui-form-text">
+    		         <label class="layui-form-label">谷歌验证码</label>
+    		         <div class="layui-input-block">
+    		            <input type="text" name="vercode" required lay-verify="required|number" placeholder="请输入谷歌验证码" autocomplete="off" class="layui-input">
+    		         </div>
+    		   	   </div>`;
+    	   }else if(securityAuthType == '2'){ //手机验证码
+    		   
+    	       $('body').off('click', '.sendMsgCodeBtn').on('click', ".sendMsgCodeBtn", function(){
+    	    	   	  var _thisBtn = $(this);
+    	    	      admin.req({
+    	    	        url: layui.setter.baseUrl + '/mch/sms_send'
+    	    	        ,data :{bizType : 28}
+    	    	        ,success: function(res){
+    	    	        	if(!res.code == 0 ){
+    	    	        		return false;
+    	    	        	}
+    	    	       	    var seconds = 60 ,timer, countDown = function(loop){
+    		    	            seconds--;
+    		    	            if(seconds < 0){
+    		    	            	 _thisBtn.removeClass("layui-disabled").removeAttr('disabled').html('发送手机验证码');
+    		    	               seconds = 60;
+    		    	               clearInterval(timer);
+    		    	            } else {
+    		    	            	 _thisBtn.addClass("layui-disabled").attr('disabled', 'disabled').html(seconds + '秒后重获');
+    		    	            }
+    		 	   	            if(!loop){
+    		    	               timer = setInterval(function(){countDown(true);}, 1000);
+    		    	            }
+    	    	            };
+    	    	           layer.msg('验证码已发送至你的手机，请注意查收', {icon: 1, shade: 0});
+    	    	           countDown();
+    	    	        }
+    	    	      });
+    	    	      return false; //阻止表单提交
+    	       });
+    		 	return `
+    			   <div class="layui-form-item layui-form-text">
+    		         <label class="layui-form-label">手机验证码</label>
+    		         <div class="layui-input-inline">
+    		            <input type="text" class="layui-input" name="vercode" required lay-verify="required|number" placeholder="请输入手机验证码" autocomplete="off" >
+    		         </div>
+    		         <button class="layui-btn layui-btn-primary sendMsgCodeBtn">发送手机验证码</button>
+    		   	   </div>`;
+    	   }
+       };
+       
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/mch/get',
+            error: function(err){
+                layer.alert(err.msg,{title:'请求失败'})
+            },
+            success:function(res){
+                if(res.code == 0 && res.data != null){
+                	
+                	$("#currentAuthDivForAuth").html($.genCurrentAuthHtml(res.data.payType, res.data.securityAuthType));
+                    
+                }
+            }
+        });
+
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/account/get',
+            error: function(err){
+                layer.alert(err.msg,{title:'请求失败'})
+            },
+            success:function(res){
+                if(res.code == 0 && res.data != null){
+                    $('#amountTip').html("可结算金额: <span style='color: red'>" + res.data.balanceSettAmount / 100 + "</span> 元， 其中 <span style='color: red'>" + res.data.balanceUnAmount / 100 + "</span> 元不可用；" +
+                        " 可申请代付金额: <span style='color: red'>" + res.data.agpayAmount / 100 + "</span> 元， 其中 <span style='color: red'>" + res.data.agpayUnAmount / 100 + "</span> 元不可用。");
+                }
+            }
+        });
+
+       form.on('submit(btnJSJ)', function(data){
+            
+            var agentpayAmount = $("#agentpayAmount").val();
+            layer.confirm("代付金额:"+agentpayAmount+"元,确定提交么?", function(index){
+               admin.req({
+                   type: 'post',
+                   url: layui.setter.baseUrl + '/agentpay/apply',
+                   data: data.field,
+                   success: function(res){
+                       layer.close(index);
+                       if(res.code == 0){
+                           layer.alert("申请成功,最终代付结果查看代付列表!", function(index){
+                               location.hash = '/agentpay/list';
+                           })
+                       }
+                   }
+               });
+            });
+            return false;//阻止跳转
+        });
+        form.render();
+
+    })
+</script>

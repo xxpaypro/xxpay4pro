@@ -1,0 +1,275 @@
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a>应用管理</a>
+        <a><cite>修改二维码</cite></a>
+    </div>
+</div>
+
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-tab layui-tab-brief">
+      <ul class="layui-tab-title">
+        <li class="layui-this">修改二维码</li>
+      </ul>
+      <div class="layui-tab-content">
+          <form class="layui-form center">
+              <div class="layui-form-item">
+                  <div class="layui-inline">
+                      <label class="layui-form-label">二维码ID</label>
+                      <div class="layui-input-inline">
+                          <input type="text" id="id" name="id" readonly="readonly" class="layui-input">
+                      </div>
+                  </div>
+              </div>
+              <div class="layui-form-item">
+                  <div class="layui-inline">
+                      <label class="layui-form-label">二维码名称</label>
+                      <div class="layui-input-inline">
+                          <input type="text" id="codeName" name="codeName" lay-verify="required" placeholder="输入二维码名称" autocomplete="off" class="layui-input" disabled="disabled">
+                      </div>
+                  </div>
+              </div>
+
+              <div class="layui-form-item">
+                  <label class="layui-form-label">最小金额</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="minMon" name="minAmount" lay-verify="required|number" placeholder="请输入最小金额(分)" autocomplete="off" class="layui-input">
+                  </div>
+              </div>
+              <div class="layui-form-item">
+                  <label class="layui-form-label">最大金额</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="maxMon" name="maxAmount" lay-verify="required|number" placeholder="请输入最大金额(分)" autocomplete="off" class="layui-input">
+                  </div>
+              </div>
+              <div class="layui-form-item">
+                  <label class="layui-form-label">支持渠道</label>
+                  <div class="layui-input-block">
+                      <div class="layui-inline">
+                          <input type="checkbox" lay-filter="wxCheckboxFilter" id="wxCheckboxInput" title="&nbsp;微&nbsp;信&nbsp;" />
+                      </div>
+                      <div class="layui-inline layui-hide" id="wxSelectDiv">
+                          <select id="wxSelect"><option value=""></option></select>
+                      </div>
+                  </div>
+                  <div class="layui-inline"></div>
+                  <div class="layui-input-block">
+                      <div class="layui-inline">
+                          <input type="checkbox" lay-filter="alipayCheckboxFilter" id="alipayCheckboxInput" title="支付宝" />
+                      </div>
+                      <div class="layui-inline layui-hide" id="alipaySelectDiv">
+                          <select id="alipaySelect"><option value=""></option></select>
+                      </div>
+                  </div>
+              </div>
+              <div class="layui-form-item">
+                  <div class="layui-inline">
+                      <label class="layui-form-label">状态</label>
+                      <div class="layui-input-block">
+                          <input type="radio" name="status" value="1" title="启用">
+                          <input type="radio" name="status" value="0" title="停止">
+                      </div>
+                  </div>
+              </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button type="button" class="layui-btn" lay-submit="" lay-filter="userEdit">保存</button>
+                    <a class="layui-btn" lay-href="merchant/qrcode/">返回</a>
+                </div>
+            </div>
+          </form>
+          <!-- <button class="layui-btn backCBtn"  data-type="all" data-events="backF">返回</button> -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    layui.use(['admin', 'form'],function(){
+        var form = layui.form
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,element = layui.element
+        ,layer = layui.layer ;
+        // 导航
+        element.render('breadcrumb', 'breadcrumb');
+
+        var router = layui.router();
+        var mchId = router.search.id;
+
+        form.on('checkbox(wxCheckboxFilter)', function(data){
+            if(data.elem.checked){
+                $("#wxSelectDiv").removeClass("layui-hide");
+            }else{
+                $("#wxSelectDiv").addClass("layui-hide");
+            }
+        });
+
+        form.on('checkbox(alipayCheckboxFilter)', function(data){
+            if(data.elem.checked){
+                $("#alipaySelectDiv").removeClass("layui-hide");
+            }else{
+                $("#alipaySelectDiv").addClass("layui-hide");
+            }
+        });
+
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/mch_qrcode/get',
+            data: {
+                id : mchId
+            },
+            error: function(err){
+                layer.alert(JSON.stringify(err.field), {
+                    title: '错误提示'
+                })
+            },
+            success: function(res){
+                if(res.code == 0){
+                    $('#id').val(res.data.id);
+                    $('#codeName').val(res.data.codeName);
+                    $('#minMon').val(res.data.minAmount == null ? '' : res.data.minAmount/100);
+                    $('#maxMon').val(res.data.maxAmount == null ? '' : res.data.maxAmount/100);
+
+
+                    var channels = JSON.parse(res.data.channels);
+                    var wxCheckProduct = '';
+                    var alipayCheckProduct = '';
+                    $.each(channels, function(){
+                        if(this.channelId == "wxpay_jsapi"){
+                            wxCheckProduct = this.productId;
+                        }
+                        if(this.channelId == "alipay_wap"){
+                            alipayCheckProduct = this.productId;
+                        }
+                    });
+
+                    if(wxCheckProduct){
+                        $('#wxCheckboxInput').prop('checked', true);
+                        $("#wxSelectDiv").removeClass("layui-hide");
+                    }
+
+                    if(alipayCheckProduct){
+                        $('#alipayCheckboxInput').prop('checked', true);
+                        $("#alipaySelectDiv").removeClass("layui-hide");
+                    }
+
+
+                    admin.req({
+                        type: 'get',
+                        url: layui.setter.baseUrl + '/mch_pay_passage/list?mchId='+res.data.mchId,
+                        error: function (err) {
+                            layer.alert(err, {title: '请求失败'}, function (index) {
+                                layer.close(index);
+                            });
+                        },
+                        success: function (res) {
+                            if (res.code == 0) {
+                                $.each(res.data, function(){
+                                    if(!this.id){return true;} //当商户的支付通道未配置，不可设置，继续下一组。
+
+
+                                    if(this.ps.productId == '8004'){ //判断支付（微信）扫码的产品
+                                        var wxSelected = wxCheckProduct == this.ps.productId ? "selected" : "";
+                                        $('#wxSelect').append("<option value='"+this.ps.productId+"' "+wxSelected+" >"+this.ps.productName+"</option>");
+                                    }
+
+                                    if(this.ps.productId == '8007'){ //判断支付（支付宝）扫码的产品
+                                        var alipaySelected = alipayCheckProduct == this.ps.productId ? "selected" : "";
+                                        $('#alipaySelect').append("<option value='"+this.ps.productId+"' "+alipaySelected+" >"+this.ps.productName+"</option>");
+                                    }
+                                });
+                                form.render();
+                            }
+                        }
+                    });
+
+                    if(res.data.status == 1) {
+                        $("input[name='status'][value='1']").attr("checked",true);
+                    }else {
+                        $("input[name='status'][value='0']").attr("checked",true);
+                    }
+                    form.render();
+                }
+            }
+        })
+
+        form.on('submit(userEdit)', function(data) {
+            //这里可以写ajax方法提交表单
+
+            var channels = [];
+            var isCheckWx = $('#wxCheckboxInput').prop('checked')  ;
+            var isCheckAlipay = $('#alipayCheckboxInput').prop('checked')  ;
+
+            if(!isCheckWx && !isCheckAlipay){
+                return layer.alert('请选择至少一项支付渠道！');
+            }
+
+            if(isCheckWx){
+                var wxCheckProduct = $('#wxSelect').val();
+                if(!wxCheckProduct){
+                    return layer.alert('请选择微信渠道支付产品！');
+                }
+                channels.push({"channelId":"wxpay_jsapi","productId":wxCheckProduct});
+            }
+
+            if(isCheckAlipay){
+                var alipayCheckProduct = $('#alipaySelect').val();
+                if(!alipayCheckProduct){
+                    return layer.alert('请选择支付宝渠道支付产品！');
+                }
+                channels.push({"channelId":"alipay_wap","productId":alipayCheckProduct});
+            }
+
+            admin.req({
+                type: "POST",
+                url: layui.setter.baseUrl + '/mch_qrcode/update',
+                data: {
+                    id:mchId,
+                    channels: JSON.stringify(channels),
+                    codeName: data.field.codeName,
+                    minAmount: data.field.minAmount,
+                    maxAmount: data.field.maxAmount,
+                    status: data.field.status
+                },
+                success: function(res){
+                    if(res.code == 0) {
+                        layer.alert(res.msg, {title: "保存成功"}, function(index){
+                            layer.close(index);
+                            location.hash = '/merchant/qrcode/';
+                        });
+                    }else {
+                        layer.alert(res.msg, {
+                            title: '保存失败'
+                        });
+                    }
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+           
+        });
+
+
+
+         // 事件处理
+        // var events = {
+        //     backF: function(othis, type){
+        //         location.hash =  "merchant/qrcode/index.html?" + mchId;
+        //     }
+        // };
+
+        // $('.backCBtn').click(function(){
+        //     console.log(1111)
+        //     var othis = $(this)
+        //             ,thisEvent = othis.data('events')
+        //             ,type = othis.data('type');
+        //     events[thisEvent] && events[thisEvent].call(this, othis, type);
+        // });
+
+
+
+
+        form.render();
+    })
+</script>

@@ -1,0 +1,86 @@
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a><cite>商户管理</cite></a>
+    </span>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">代付通道</li>
+            </ul>
+            <div class="layui-tab-content">
+                <style>
+                    .center {
+                        width: 80%;
+                    }
+                </style>
+                <table class="layui-hide center" id="cList"></table>
+            </div>
+        </div>
+    </div>
+</div>
+    <script>
+        layui.use(['table','util'], function(){
+            var $ = layui.$
+            ,admin = layui.admin
+            ,table = layui.table
+            ,element = layui.element
+            ,form = layui.form;
+
+            element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+            var router = layui.router();
+
+             //标题内容模板
+            var tplTitle = function(d){
+                return '<a class="layui-btn layui-btn-sm" lay-href="agpay_config/mch_agpay_config/config/agentpayPassageId='+ d.ps.passageId +'">配置</a>'
+            };
+
+            var tplStatus = function(d){
+                if(d.status == 0) {
+                    return "关闭";
+                }else if(d.status == 1) {
+                    return "<span style='color: green'>开启</span>";
+                }else{
+                    return "未设置";
+                }
+            };
+
+            var tplMaxEveryAmount = function(d){
+                if(d.feeRiskConfig == null || d.feeRiskConfig.maxEveryAmount == null ) {
+                    return "-";
+                }
+                return "<span style='color: blue'>"+ d.feeRiskConfig.maxEveryAmount/100 + "元<span>";
+            };
+
+            var tplIsDefault = function(d){
+
+                if(d.isDefault == null) return "-";
+
+                if(d.isDefault == 1) {
+                    return '<span class="layui-badge">是</span>';
+                }else if(d.isDefault == 0) {
+                    return '<span class="layui-badge layui-bg-gray">否</span>';
+                }
+            };
+
+            table.render({
+                elem: '#cList'
+                ,url: layui.setter.baseUrl + '/config/mch_agpay_config/list'
+                ,cols: [[
+                     {title: '通道ID', templet: "<span>{{d.ps.passageId}}</span>"}
+                    ,{title: '通道名称', templet: "<span>{{d.ps.passageName}}</span>"}
+                    ,{title: '代付通道费用', templet: "<span>{{d.ps.feeEvery / 100 }}元/笔</span>"}
+                    ,{title: '单笔限额',templet: tplMaxEveryAmount}
+                    ,{title: '默认',templet: tplIsDefault }
+                    ,{title: '状态',templet: tplStatus }
+                    ,{field:'edit', width: 80, title: '操作', templet: tplTitle }
+                ]]
+                ,page: false
+                ,skin: 'line'
+            });
+        });
+      
+    </script>

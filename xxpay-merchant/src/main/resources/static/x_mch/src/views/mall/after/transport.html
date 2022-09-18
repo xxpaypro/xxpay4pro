@@ -1,0 +1,155 @@
+<style>
+    .xxpayPopupDiv .layui-form-label {
+        width:15% !important;
+        margin-left:1%;
+    }
+    .xxpayPopupDiv .layui-input-inline {
+        width: 33% !important;
+        margin-top:0;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">售后详情</li>
+            </ul>
+            <div class="layui-tab-content">
+                <form class="layui-form layui-form-pane" action="">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">售后单ID</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="afterSaleId" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">交易单号</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="tradeOrderId" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">会员ID</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="memberId" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">售后商品总金额</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="afterSaleAmount" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">商品信息</li>
+            </ul>
+            <div class="layui-tab-content">
+                <table id="order_goods_info" lay-filter="order_goods_info"></table>
+            </div>
+        </div>
+
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">寄回买家</li>
+            </ul>
+            <div class="layui-tab-content">
+                <form class="layui-form layui-form-pane" action="">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">状态</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="status" value="5" title="售后处理完成，寄回买家" checked="checked">
+                            <input type="radio" name="status" value="7" title="商品无需售后，原物返回">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">填写快递单号</label>
+                        <div class="layui-input-inline" style="width: 70% !important;">
+                            <input type="text" name="transportNo" class="layui-input">
+                        </div>
+                    </div>
+                    <button type="button" class="layui-hide xxpayYesBtn" lay-submit="" lay-filter="transportNoFilter">确认签约</button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    layui.use(['admin','form', 'table', 'view'],function(){
+        var form = layui.form
+            ,$ = layui.$
+            ,admin = layui.admin
+            ,view = layui.view
+            ,table = layui.table
+            ,element = layui.element
+            ,layer = layui.layer ;
+        // 导航
+        element.render('breadcrumb', 'breadcrumb');
+        var afterSaleId = view.getOpenParams("afterSaleId");
+
+        form.on('submit(transportNoFilter)', function(data) {
+            data.field.afterSaleId = afterSaleId;
+            //这里可以写ajax方法提交表单
+            admin.req({
+                type: "POST",
+                url: layui.setter.baseUrl + '/after_sale/transport',
+                data: data.field,
+                success: function(res){
+                    if(res.code == 0) {
+                        layer.closeAll(); //关闭所有弹层
+                        layer.msg("发货成功");
+                        layui.table.reload('tableReloadSale', {page: {curr: 1}}); //调用业务弹层外表格重新加载
+                    }
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/after_sale/get',
+            data: {
+                afterSaleId : afterSaleId
+            },
+            error: function(err){
+                layer.alert(JSON.stringify(err.field), {
+                    title: '错误提示'
+                })
+            },
+            success: function(res){
+                if(res.code == 0){
+                    $('#afterSaleId').val(res.data.afterSaleId);
+                    $('#tradeOrderId').val(res.data.tradeOrderId);
+                    $('#memberId').val(res.data.memberId);
+                    $('#afterSaleAmount').val(res.data.afterSaleAmount/100);
+
+                    form.render();
+                }
+            }
+        });
+
+        //商品信息
+        table.render({
+            elem: '#order_goods_info'
+            ,url: layui.setter.baseUrl + '/after_sale/getGoods' //列表接口
+            ,where: {
+                afterSaleId: afterSaleId
+            }
+            ,id: 'tableReload'
+            ,page: false
+            ,cols: [[
+                {field: 'goodsName', title: '商品名称'}
+                ,{field: 'cellingPrice', title: '商品价格', templet: '<div>{{ d.cellingPrice/100 }}</div>'}
+                ,{field: 'goodsNum', title: '商品数量'}
+                ,{field: 'goodsPropsValue', title: '属性',}
+                ,{field: 'price', title: '小计', templet: '<div>{{ (d.cellingPrice * d.goodsNum)/100 }}</div>'}
+            ]]
+            ,skin: 'line'
+        });
+
+        form.render();
+    })
+</script>

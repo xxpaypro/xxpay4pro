@@ -1,0 +1,78 @@
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a lay-href="">服务商管理</a>
+        <a><cite>服务商接口配置</cite></a>
+    </span>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">服务商接口配置</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-row">
+                    <div class="layuiAdmin-btns" style="margin-bottom: 10px;">
+                    </div>
+                </div>
+                <table class="layui-hide center" id="cList" lay-filter="cList"></table>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/html" id="xxpayBar">
+    <a class="layui-btn layui-btn-sm" lay-event="config">配置</a>
+</script>
+<script>
+    layui.use(['table','util', 'form','view'], function(){
+        var table = layui.table
+            ,$ = layui.$
+            ,form = layui.form
+            ,element = layui.element
+            ,view = layui.view
+            ,admin = layui.admin;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+        var router = layui.router();
+        var isvId = router.search.isvId;
+
+        var tplStatus = function(d){
+            if(d.ps && d.ps.isvStatus == 1){
+                return "<span style='color: green'>启用</span>";
+            }else if(d.ps && d.ps.isvStatus == 0){
+                return "<span style='color: red'>停用</span>";
+            }else{
+                return "<span style='color: blue'>未开通</span>";
+            }
+        };
+
+        table.render({
+            elem: '#cList'
+            ,url: layui.setter.baseUrl + '/isv_passage_config/list'
+            ,where: {isvId: isvId}
+            ,id: 'tableReload'
+            ,cols: [[
+                {field:'ifTypeCode', title: '接口类型代码'}
+                ,{field:'ifTypeName',  title: '接口类型名称'}
+                ,{field:'status', title: '状态',templet: tplStatus }
+                ,{field:'edite', width: 200, title: '操作', templet: '#xxpayBar' }
+            ]]
+            ,page: true
+            ,skin: 'line'
+        });
+
+        //监听工具条
+        table.on('tool(cList)', function(obj){
+            var data = obj.data;
+            console.log(data);
+            if(obj.event === 'config'){
+                view.xxpayPopup("配置", "isv/list/isv_passage_config", {ifTypeCode: data.ifTypeCode, isvId: isvId});
+            }
+        });
+        // 渲染表单
+        form.render();
+
+    });
+
+</script>

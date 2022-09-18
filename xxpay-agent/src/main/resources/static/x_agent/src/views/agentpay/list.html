@@ -1,0 +1,159 @@
+<style>
+    .layui-input-inline{margin-top:10px;}
+</style>
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a><cite>代付列表</cite></a>
+    </span>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">代付列表信息</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-row">
+                  <form action="" id="exportForm" method="post">
+                    <input name="Authorization" id='exportHiddenInput' type="hidden"/>
+                    <div class="layui-form" style="float:right; margin-bottom: 10px;">
+                        <div id="timeDiv" class="layui-form-item" style="margin:0;">
+                            <div class="layui-input-inline">
+                                <input type="text" name="accountName" id="accountName" placeholder="账户名" autocomplete="off" class="layui-input">
+                            </div>
+                            <div class="layui-input-inline">
+                                <input type="text" name="agentpayOrderId" id="agentpayOrderId" placeholder="代付单号" autocomplete="off" class="layui-input">
+                            </div>
+                            <div class="layui-input-inline">
+                                <select name="status" id="status" lay-search="">
+                                    <option value="">状态</option>
+                                    <option value="0">待处理</option>
+                                    <option value="1">处理中</option>
+                                    <option value="2">成功</option>
+                                    <option value="3">失败</option>
+                                </select>
+                            </div>
+                            <div class="layui-input-inline">
+                                <button id="search" class="layui-btn" data-type="reload">搜索</button>
+                                <button type="submit" class="layui-btn">导出</button>
+                            </div>
+                        </div>
+                    </div>
+                  </form>
+                </div>
+                <table id="jsList"></table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+     //标题内容模板
+     var tplTitle = function(d){
+         return '<a class="layui-btn layui-btn-xs layui-btn-primary" lay-href="sett/agentpay/detail/agentpayOrderId='+ d.agentpayOrderId +'">详情</a>';
+     };
+
+     var tplStatus = function(d){
+         if(d.status == 0) {
+             return '<span class="layui-badge layui-bg-blue">待处理</span>';
+         }else if(d.status == 1) {
+             return '<span class="layui-badge layui-bg-orange">处理中</span>';
+         }else if(d.status == 2) {
+             return '<span class="layui-badge layui-bg-green">成功</span>';
+         }else if(d.status == 3) {
+             return '<span class="layui-badge">失败</span>('+ d.transMsg+')';
+         }
+     };
+
+     var tplAgentpayChannel = function(d){
+         if(d.agentpayChannel == 1) {
+             return '代理商后台';
+         }else if(d.agentpayChannel == 2) {
+             return 'API接口';
+         }
+     };
+
+	 layui.config({
+	    base: '/x_agent/src/lib/extend/',
+	 });
+     layui.use(['table','util','admin', 'laydate', 'timePick'], function(){
+        var table = layui.table
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,laydate = layui.laydate
+        ,timePick = layui.timePick
+        ,element = layui.element
+        ,form = layui.form;
+
+		timePick.init();  //第一个参数表示开始时间   第二个表示结束时间   0,0今天   -1,-1昨天   -7,0近一周   以此类推
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+         //导出参数初始化
+         var tokenParamsName = layui.setter.request.tokenName;
+         $('#exportHiddenInput').attr('name', tokenParamsName).val(layui.data(layui.setter.tableName)[tokenParamsName]);
+         $('#exportForm').attr('action' , layui.setter.baseUrl+'/agentpay/exportExcel');
+
+        var createTimeStart = $('#createTimeStart').val();
+        var createTimeEnd = $('#createTimeEnd').val();
+        table.render({
+            elem: '#jsList'
+            ,id: "tableReload"
+            ,url: layui.setter.baseUrl + '/agentpay/list'
+            ,where: {
+                
+                createTimeStart : createTimeStart,
+                createTimeEnd : createTimeEnd
+            }
+            ,cols: [[
+                {field: 'transOrderId', width: 220, title: '转账单号'}
+                ,{field: 'accountName',title: '账户名'}
+                ,{field: 'accountNo',title: '账号'}
+                ,{field: 'amount', title: '代付金额(元)',templet: '<div>{{d.amount/100}}</div>' }
+                ,{field: 'fee', title: '手续费(元)',templet: '<div>{{d.fee/100}}</div>' }
+                ,{field: 'fee', title: '扣减账户金额(元)',templet: '<div>{{d.subAmount/100}}</div>' }
+                ,{field: 'status',title: '状态',templet: tplStatus}
+                ,{field: 'agentpayChannel',title: '代付渠道',templet: tplAgentpayChannel}
+                ,{field: 'createTime',  title: '时间', width: 180, templet: '<div>{{ layui.util.toDateString(d.createTime) }}</div>' }
+            ]]
+            ,page: true
+            ,skin: 'line'
+        });
+
+         // 搜索
+         var $ = layui.$, active = {
+             reload: function(){
+                 var createTimeStart = $('#createTimeStart').val();
+                 var createTimeEnd = $('#createTimeEnd').val();
+                 var agentpayOrderId = $('#agentpayOrderId').val();
+                 var accountName = $('#accountName').val().trim();
+                 var mchId = $('#mchId').val();
+                 var status = $("#status").val();
+                 var agentpayChannel = $("#agentpayChannel").val();
+                 //执行重载
+                 table.reload('tableReload', {
+                     page: {
+                         curr: 1 //重新从第 1 页开始
+                     }
+                     ,where: {
+                         accountName: accountName,
+                         agentpayOrderId: agentpayOrderId,
+                         mchId: mchId,
+                         createTimeStart : createTimeStart,
+                         createTimeEnd : createTimeEnd,
+                         status : status,
+                         agentpayChannel : agentpayChannel
+                     }
+                 });
+             }
+         };
+         $('#search').on('click', function() {
+             var type = $(this).data('type');
+             active[type] ? active[type].call(this) : '';
+             return false;
+         });
+
+         // 渲染表单
+         form.render();
+        
+     })
+</script>

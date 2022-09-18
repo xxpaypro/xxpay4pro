@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.xxpay.service.dao.mapper.MemberPointsHistoryMapper">
+
+    <!-- 会员赠送积分 -->
+    <select id="sumGivePoints" resultType="java.lang.Long" >
+        select ifnull(sum(ChangePoints), 0) from t_member_points_history
+        where BizType in (2,3,5,6)
+        <if test="startTime != null"> and CreateTime &gt;= #{startTime} </if>   <!-- 订单开始时间 -->
+
+        <if test="endTime != null"> and CreateTime &lt;= #{endTime} </if>   <!-- 订单结束时间 -->
+
+        <if test="mchId != null"> and MchId = #{mchId} </if>   <!-- 商户ID -->
+    </select>
+
+    <!-- 会员消费积分 -->
+    <select id="sumConsumePoints" resultType="java.lang.Long" >
+        select ifnull(sum(ChangePoints), 0) from t_member_points_history
+        where BizType in (1,4)
+        <if test="startTime != null"> and CreateTime &gt;= #{startTime} </if>   <!-- 订单开始时间 -->
+
+        <if test="endTime != null"> and CreateTime &lt;= #{endTime} </if>   <!-- 订单结束时间 -->
+
+        <if test="mchId != null"> and MchId = #{mchId} </if>   <!-- 商户ID -->
+    </select>
+
+</mapper>

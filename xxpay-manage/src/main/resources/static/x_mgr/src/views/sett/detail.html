@@ -1,0 +1,146 @@
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a><cite>结算详情</cite></a>
+    </span>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">结算详情</li>
+            </ul>
+            <div class="layui-tab-content">
+                <table class="layui-table" id="jspList"></table>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    table{
+        text-align: center;
+    }
+    .leftT {
+        text-align: left;
+    }
+</style>
+
+<script>
+    layui.use(['admin', 'table','util','element',], function(){
+        var table = layui.table
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,element = layui.element;
+        
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        var router = layui.router();
+
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/sett/get',
+            data: {
+                id: router.search.id,
+            },
+            error: function(err){
+                layer.alert(err);
+            },
+            success: function(res){
+                if(res.code == 0 && res.data != null){
+                    var html = '';
+                    
+                    html += `
+                        <table>
+                            <colgroup>
+                                <col width="25%">
+                                <col>
+                                <col width="25%">
+                                <col>
+                            </colgroup>
+                            <tbody>
+                                <tr>
+                                    <td>结算订单号</td>
+                                    <td class="leftT">${res.data.settOrderId == null ? "" : res.data.settOrderId}</td>
+                                    <td>结算日期</td>
+                                    <td class="leftT">${ layui.util.toDateString(res.data.settDate, "yyyy-MM-dd") }</td>
+                                </tr>
+                                <tr>
+                                    <td>结算商类型</td>
+                                    <td class="leftT">${res.data.infoType==1?"商户":res.data.infoType==2?"代理商":""}</td>
+                                    <td>结算商ID</td>
+                                    <td class="leftT">${res.data.infoId}</td>
+                                </tr>
+                                <tr>
+                                    <td>结算类型</td>
+                                    <td class="leftT">${res.data.settType==1?"手工结算":res.data.settType==2?"自动结算":""}</td>
+                                     <td>结算金额</td>
+                                    <td class="leftT">${res.data.settAmount/100 }</td>
+                                </tr>
+                                <tr>
+                                    <td>打款金额</td>
+                                    <td class="leftT">${res.data.remitAmount/100}</td>
+                                    <td>手续费</td>
+                                    <td class="leftT">${res.data.settFee/100}</td>
+                                </tr>
+                                <tr>
+                                    <td>账户属性</td>
+                                    <td class="leftT">${res.data.accountAttr==0?"对私":res.data.accountAttr==1?"对公":""}</td>
+                                    <td>账户类型</td>
+                                    <td class="leftT">${res.data.accountType==1?"银行账户":res.data.accountType==2?"微信账户":res.data.accountType==3?"支付账户":""}</td>
+                                </tr>
+                                <tr>
+                                    <td>开户行名称</td>
+                                    <td class="leftT">${res.data.bankName}</td>
+                                    <td>开户网点名称</td>
+                                    <td class="leftT">${res.data.bankNetName}</td>
+                                </tr>
+                                <tr>
+                                    <td>账户名</td>
+                                    <td class="leftT">${res.data.accountName}</td>
+                                    <td>账户号</td>
+                                    <td class="leftT">${res.data.accountNo}</td>
+                                </tr>
+                                <tr>
+                                    <td>开户行所在省</td>
+                                    <td class="leftT">${res.data.province}</td>
+                                    <td>开户行所在市</td>
+                                    <td class="leftT">${res.data.city}</td>
+                                </tr>
+                                <tr>
+                                    <td>结算状态</td>
+                                    <td class="leftT">${res.data.settStatus == 1?"等待审核":res.data.settStatus == 2?"已审核":res.data.settStatus == 3?"审核不通过":res.data.settStatus == 4?"打款中":res.data.settStatus == 5?"打款成功":res.data.settStatus == 6?"打款失败":"非法结算状态"}</td>
+                                    <td>操作人ID</td>
+                                    <td class="leftT">${res.data.operatorId == null ? "" : res.data.operatorId}</td>
+                                </tr>
+                                <tr>
+                                    <td>转账订单ID</td>
+                                    <td class="leftT">${res.data.transOrderId == null ? "" : res.data.transOrderId}</td>
+                                    <td>转账信息</td>
+                                    <td class="leftT">${res.data.transMsg == null ? "" : res.data.transMsg}</td>
+                                </tr>
+                                <tr>
+                                    <td>备注</td>
+                                    <td class="leftT">${res.data.remark}</td>
+                                    <td>打款备注</td>
+                                    <td class="leftT">${res.data.remitRemark}</td>
+                                </tr>
+                                <tr>
+                                    <td>创建时间</td>
+                                    <td class="leftT">${ layui.util.toDateString(res.data.createTime) }</td>
+                                    <td>修改时间</td>
+                                    <td class="leftT">${ layui.util.toDateString(res.data.updateTime) }</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <a lay-href="sett/list/"  class="layui-btn" style="margin-top:20px;">返回</a>
+                    `
+                    $('#jspList').html(html);
+                }else {
+                    layer.alert('请求数据为空，失败');
+                }
+            }
+
+        })
+      
+    });
+</script>

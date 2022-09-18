@@ -1,0 +1,140 @@
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a><cite>版本管理</cite></a>
+    </span>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">客户端版本管理</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-tab-item layui-show">
+                    <div class="layui-row">
+                        <div class="layui-form" style="float:right; margin-bottom: 10px;">
+                            <div class="layui-form-item" style="margin:0;">
+                                <div class="layui-input-inline">
+                                    <select id="searchClientType" lay-filter="searchClientTypeFilter">
+                                        <option value="MCH_APP" selected>商户APP</option>
+                                        <option value="FACE_CLIENT">刷脸设备</option>
+                                        <option value="PC_PLUGIN">商家PC收银插件</option>
+                                        <option value="APP_COLLECT">进件APP</option>
+                                    </select>
+                                </div>
+                                <div class="layui-input-inline">
+                                    <input type="text" id="searchVersionSN" placeholder="版本序列号" autocomplete="off" class="layui-input">
+                                </div>
+                                <button id="search" class="layui-btn" data-type="reload">搜索</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-row">
+                        <div class="layuiAdmin-btns" style="margin-bottom: 10px;">
+                            <a class="layui-btn versionAddBtn" data-events="create">发布新版本</a>
+                        </div>
+                    </div>
+                    <table id="cList" lay-filter="cList"></table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/html" id="xxpayBar">
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
+<script>
+
+    layui.use(['table','util','admin', 'form'], function(){
+        var table = layui.table
+        ,$ = layui.$
+        ,form = layui.form
+        ,admin = layui.admin
+        ,view = layui.view
+        ,element = layui.element;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        table.render({
+            elem: '#cList'
+            ,url: layui.setter.baseUrl + '/sys/clientVersion/list'
+            ,where: {clientType: 'MCH_APP'} //默认查询商户app
+            ,id: 'tableReload'
+            ,cols: [[
+                {field: 'vid',title: 'VID'}
+                ,{field: 'versionName',title: '版本名称'}
+                ,{field: 'versionSN',title: '版本序列号'}
+                ,{title: '是否强制更新', templet: '<span>{{ d.forceUpdate == 1?"是":"否" }}</span>'}
+                ,{field:'createTime',  title: '创建时间', templet: '<div>{{ layui.util.toDateString(d.createTime) }}</div>' }
+                ,{field: 'edit', width:260, title: '操作', toolbar: '#xxpayBar' }
+            ]]
+            ,page: true
+            ,skin: 'line'
+        });
+
+        //监听工具条
+        table.on('tool(cList)', function(obj){
+            var data = obj.data;
+            if(obj.event === 'detail'){
+                view.xxpayPopup("详情", "sys/clientVersion/view", {vid: data.vid}, {btn:false, area: ["80%", "80%"]});
+            } else if(obj.event === 'del'){
+                layer.confirm('确认删除该版本信息?', function(index){
+                    admin.req({
+                        type: 'get',
+                        url: layui.setter.baseUrl + '/sys/clientVersion/delete',
+                        data: {vid: data.vid},
+                        success: function(res){
+                            if(res.code == 0) {
+                                layer.msg('删除成功', {icon: 1});
+                                table.reload("tableReload");
+                            }
+                        }
+                    });
+                });
+            }
+        });
+
+         // 搜索
+        var $ = layui.$, active = {
+            reload: function(){
+                var searchVersionSN = $('#searchVersionSN').val();
+                var searchClientType = $('#searchClientType').val();
+                //执行重载
+                table.reload('tableReload', {
+                    page: {
+                        curr: 1 //重新从第 1 页开始
+                    }
+                    ,where: {
+                        versionSN: searchVersionSN,
+                        clientType: searchClientType
+                    }
+                });
+            }
+        };
+        $('#search').on('click', function() {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+
+
+        //当切换[客户端类型时] 调起查询接口
+        form.on("select(searchClientTypeFilter)", function(data){
+            active.reload();
+        });
+
+        //新增版本信息
+        $('.layuiAdmin-btns .layui-btn.versionAddBtn').on('click', function(){
+
+            var clientTypeVal = $("#searchClientType").val();
+            view.xxpayPopup("发布新版本", "sys/clientVersion/add", {clientType: clientTypeVal}, {area: ["80%", "80%"]});
+        });
+
+        // 渲染表单
+        form.render();
+    })
+</script>

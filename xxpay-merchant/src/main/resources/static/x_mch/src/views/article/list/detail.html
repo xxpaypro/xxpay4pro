@@ -1,0 +1,73 @@
+<style>
+    .xxpayPopupDiv .layui-form-label {
+        width:15% !important;
+        margin-left:1%;
+    }
+    .xxpayPopupDiv .layui-input-inline {
+        width: 33% !important;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <div class="layui-tab-content">
+                <form class="layui-form layui-form-pane" >
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">文章名称</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="title" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">文章栏目</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="articleType" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">创建时间</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="createTime" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">更新时间</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="updateTime" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item ">
+                        <label class="layui-form-label ">消息内容</label>
+                        <div class="layui-input-inline" style="width: 85%">
+                            <div id="content" style="padding: 10px"></div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['form','table', 'admin', 'util'], function(){
+        var form = layui.form
+        ,table = layui.table
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,element = layui.element;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        var id = layui.view.getOpenParams('id');
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/sys/article/get',
+            data: {id: id},
+            success: function(res){
+                if(res.code == 0){
+                   $('#id').val(res.data.id);
+                   $('#title').val(res.data.title);
+                    $('#articleType').val(res.data.articleType == 1?"服务政策&隐私协议":res.data.articleType == 2?"支付安全":"");
+                   $('#createTime').val( layui.util.toDateString(res.data.createTime));
+                   $('#updateTime').val( layui.util.toDateString(res.data.updateTime));
+                   $('#content').html(res.data.content);
+                }
+            }
+        })
+    })
+</script>

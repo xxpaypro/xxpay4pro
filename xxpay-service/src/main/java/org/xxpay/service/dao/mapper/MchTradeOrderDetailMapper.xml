@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.xxpay.service.dao.mapper.MchTradeOrderDetailMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="org.xxpay.core.entity.MchTradeOrderDetail">
+        <id column="OrderId" property="OrderId" />
+        <result column="TradeOrderId" property="tradeOrderId" />
+        <result column="MemberId" property="memberId" />
+        <result column="GoodsId" property="goodsId" />
+        <result column="GoodsName" property="goodsName" />
+        <result column="GoodsDesc" property="goodsDesc" />
+        <result column="CellingPrice" property="cellingPrice" />
+        <result column="BuyingPrice" property="buyingPrice" />
+        <result column="MemberPrice" property="memberPrice" />
+        <result column="GoodsNum" property="goodsNum" />
+        <result column="GoodsProps" property="goodsProps" />
+        <result column="GoodsPropsName" property="goodsPropsName" />
+        <result column="GoodsPropsValue" property="goodsPropsValue" />
+        <result column="MchId" property="mchId" />
+        <result column="IsvId" property="isvId" />
+        <result column="CreateTime" property="createTime" />
+        <result column="UpdateTime" property="updateTime" />
+        <result column="ImgPathMain" property="imgPathMain" />
+    </resultMap>
+
+
+</mapper>

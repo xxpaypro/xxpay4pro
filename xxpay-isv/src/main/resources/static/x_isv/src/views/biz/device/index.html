@@ -1,0 +1,166 @@
+
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>商户管理</cite></a>
+        <a><cite>进件列表</cite></a>
+    </div>
+</div>
+
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">商户列表</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-tab-item layui-show">
+                    <div class="layui-row">
+                        <div class="layui-form" style="float:right;">
+                            <div class="layui-form-item" style="margin:0;">
+                                <div class="layui-input-inline">
+                                    <input type="text" name="searchMchId" id="searchMchId" placeholder="商户ID" autocomplete="off" class="layui-input">
+                                </div>
+                                <button id="search" class="layui-btn" data-type="reload">搜索</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-row">
+                        <div class="layuiAdmin-btns" style="margin-bottom: 10px;">
+                        </div>
+                    </div>
+                    <table id="XxPay_Mgr_Merchant_dataAll" lay-filter="XxPay_Mgr_Merchant_dataAll"></table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    layui.use(['admin', 'table', 'util','view'], function(){
+        var $ = layui.$
+            ,admin = layui.admin
+            ,table = layui.table
+            ,element = layui.element
+            ,view = layui.view
+            ,form = layui.form;
+
+        element.render('breadcrumb', 'breadcrumb');
+
+        var tplStatus = function(d){
+            if(d.status == -1) {
+                return "<span style='color: orange'>等待审核</span>";
+            }else if(d.status == -2) {
+                return "<span style='color: red'>审核不通过</span>";
+            }else if(d.status == 0) {
+                return "<span style='color: rebeccapurple'>停止</span>";
+            }else if(d.status == 1) {
+                return "<span style='color: darkgreen'>启用</span>";
+            }
+        };
+
+        var tplSignStatus = function(d){
+            if(d.signStatus == 0) {
+                return "<span style='color: orange'>待补充资料</span>";
+            }else if(d.signStatus == 1) {
+                return "<span style='color: red'>待签约</span>";
+            }else if(d.signStatus == 2) {
+                return "<span style='color: darkgreen'>已签约</span>";
+            }
+            return "未知";
+        };
+
+        var tplEdit = function(d){
+
+            var thisHtml = "<a class='layui-btn layui-btn-primary layui-btn-xs' lay-event='merchantDetail'>查看商户</a>";
+            thisHtml += "<a class='layui-btn layui-btn-xs' lay-event='edit'>编辑</a>";
+
+            if(d.status == -1){ //待审核
+
+                thisHtml += "<a class='layui-btn layui-btn-xs' lay-event='audit'>审核</a>";
+
+            }else if(d.status == 1){ //正常状态
+                thisHtml += "<a class='layui-btn layui-btn-primary layui-btn-xs' lay-event='payPassageConfig'>支付通道</a>";
+                thisHtml += "<a class='layui-btn layui-btn-primary layui-btn-xs' lay-event='productConfig'>产品设置</a>";
+
+            }else if(d.status == 0){ //暂停状态
+            }
+            return thisHtml;
+        };
+
+        //商户列表
+        table.render({
+            elem: '#XxPay_Mgr_Merchant_dataAll'
+            ,url: layui.setter.baseUrl + '/mch_info/list' //列表接口
+            ,where: {status: "-1"}
+            ,id: 'tableReload'
+            ,page: true
+            ,cols: [[
+                {type: 'checkbox', fixed: 'left'}
+                ,{field: 'mchId', title: '商户ID'}
+                ,{field: 'mchName', title: '商户名称'}
+                ,{title: '状态', templet: tplStatus}
+                ,{title: '签约状态', templet: tplSignStatus}
+                ,{field: 'agentId', title: '代理商ID'}
+                ,{field: 'createTime', title: '创建时间', width: 200, templet: '<div>{{ layui.util.toDateString(d.createTime, "yyyy-MM-dd HH:mm:ss") }}</div>'}
+                ,{field: 'edit', title: '操作', width: 380, templet: tplEdit }
+            ]]
+            ,skin: 'line'
+        });
+
+        //监听工具条
+        table.on('tool(XxPay_Mgr_Merchant_dataAll)', function(obj){
+            var data = obj.data;
+            if(obj.event === 'merchantDetail'){
+                view.xxpayPopup("商户详情", "biz/merchant/mch_view", {mchId: data.mchId}, {btn: false});
+            } else if(obj.event === 'payPassageConfig'){
+                location.href = layui.setter.baseLocal + "biz/pay_passage//mchId=" + data.mchId;
+            }else if(obj.event === 'productConfig'){
+                location.href = layui.setter.baseLocal + "biz/merchant/mch_product/mchId=" + data.mchId;
+            }else if(obj.event === 'edit'){
+                view.xxpayPopup("修改商户信息", "biz/merchant/mch_edit", {mchId: data.mchId});
+            }else if(obj.event === 'audit'){
+                view.xxpayPopup("审核商户", "biz/merchant/mch_audit", {mchId: data.mchId}, {area:["50%", "60%"]});
+            }
+
+        });
+
+        // 事件处理
+        var events = {
+            create: function() {
+                view.xxpayPopup("新增商户", "biz/merchant/mch_add");
+            }
+        };
+
+        $('.layuiAdmin-btns .layui-btn').on('click', function(){
+            var othis = $(this)
+                ,thisEvent = othis.data('events')
+                ,type = othis.data('type');
+            events[thisEvent] && events[thisEvent].call(this, othis, type);
+        });
+
+        // 搜索
+        var $ = layui.$, active = {
+            reload: function(){
+                var mchId = $('#searchMchId').val();
+                //执行重载
+                table.reload('tableReload', {
+                    page: {
+                        curr: 1 //重新从第 1 页开始
+                    }
+                    ,where: {
+                        mchId: mchId
+                    }
+                });
+            }
+        };
+        $('#search').on('click', function() {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+
+        // 渲染表单
+        form.render();
+    });
+</script>

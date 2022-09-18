@@ -1,0 +1,115 @@
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a><cite>支付配置</cite></a>
+    </span>
+</div>
+
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">支付通道</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-row">
+                    <div class="layuiAdmin-btns" style="margin-bottom: 10px;">
+                        <a lay-href="config/pay_passage/create" class="layui-btn" data-type="all" data-events="create">新增支付通道</a>
+                    </div>
+                </div>
+                <table id="cList" lay-filter="cList"></table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['table','util', 'form'], function(){
+        var table = layui.table
+        ,$ = layui.$
+        ,form = layui.form
+        ,element = layui.element
+        ,admin = layui.admin;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        var tplEdit = function(d){
+            return "<a class='layui-btn layui-btn-primary layui-btn-xs' lay-event='account'>子账户</a>" +
+                    "<a class='layui-btn layui-btn-primary layui-btn-xs' lay-event='rate'>费率</a>" +
+                    "<a class='layui-btn layui-btn-primary layui-btn-xs' lay-event='risk'>风控</a>" +
+                    "<a class='layui-btn layui-btn-xs' lay-event='edit'>编辑</a>";
+        };
+
+        var tplStatus = function(d){
+
+            var checkedHtml = " recordId='"+d.id+"' ";
+            if(d.status == 1) {
+                checkedHtml += " checked";
+            }
+            return '<input type="checkbox" lay-filter="statusSwitch" lay-skin="switch" '+checkedHtml+' lay-text="启用|停用">';
+        };
+
+        var tplRate = function(d){
+            return "<span style='color: blue'>"+ d.passageRate+"%</span>";
+        };
+
+        table.render({
+            elem: '#cList'
+            ,url: layui.setter.baseUrl + '/config/pay_passage/list'
+            
+            ,id: 'tableReload'
+            ,cols: [[
+                {field:'id', width: 100, title: '通道ID'}
+                ,{field:'passageName', width: 200,title: '通道名称'}
+                ,{field:'ifCode', width: 180, title: '接口代码'}
+                ,{field:'ifName', width: 180, title: '接口名称'}
+                ,{field:'ifTypeCode', width: 180, title: '接口类型代码'}
+                ,{field:'ifTypeName', width: 180, title: '接口类型名称'}
+                ,{field:'payTypeName', width: 180,  title: '支付类型'}
+                ,{field:'passageRate', width: 100,  title: '通道费率', templet: tplRate}
+                ,{field:'status', width: 120, title: '通道状态',templet: tplStatus }
+                ,{field:'edite', width: 260, title: '操作', templet: tplEdit }
+            ]]
+            ,page: true
+            ,skin: 'line'
+        });
+
+        //监听工具条
+        table.on('tool(cList)', function(obj){
+            var data = obj.data;
+            if(obj.event === 'account'){
+                location.href = layui.setter.baseLocal + "config/pay_passage_account//payPassageId=" + data.id;
+            } else if(obj.event === 'rate'){
+                location.href = layui.setter.baseLocal + "config/pay_passage/rate_set/id=" + data.id;
+            } else if(obj.event === 'risk'){
+                location.href = layui.setter.baseLocal + "config/pay_passage/risk_set/id=" + data.id;
+            }  else if(obj.event === 'edit'){
+                location.href = layui.setter.baseLocal + "config/pay_passage/update/id=" + data.id;
+            }
+        });
+
+        form.on('switch(statusSwitch)', function(data){
+
+            var updateRecordId = $(data.elem).attr('recordId');
+            var updateState = data.elem.checked ? "1" : "0";
+            var loadingIndex = layer.load();
+            admin.req({
+                type: "POST",
+                url: layui.setter.baseUrl + '/config/pay_passage/update',
+                data: {id: updateRecordId, status: updateState},
+                success: function(res){
+                    if(res.code == 0) {
+                        table.reload('tableReload');
+                    }
+                },
+                complete:function(){
+                    layer.close(loadingIndex);
+                }
+            });
+        });
+
+        // 渲染表单
+        form.render();
+
+    });
+    
+</script>

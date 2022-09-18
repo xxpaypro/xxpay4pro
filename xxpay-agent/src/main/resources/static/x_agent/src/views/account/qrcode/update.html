@@ -1,0 +1,160 @@
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a href="">首页</a>
+        <a><cite>修改统一扫码</cite></a>
+    </span>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">修改统一扫码</li>
+            </ul>
+            <div class="layui-tab-content">
+                <style>
+                    .center {
+                        width: 80%;
+                    }
+                </style>
+        
+                <form class="layui-form center">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">二维码名称</label>
+                        <div class="layui-input-block">
+                            <input type="text" required name="codeName"  lay-verify="required" placeholder="请输入二维码名称" autocomplete="off" class="layui-input ewmname">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">最小金额</label>
+                        <div class="layui-input-block">
+                            <input type="text" required name="minAmount"  lay-verify="required | number" placeholder="请输入最小金额(分)" autocomplete="off" class="layui-input minM">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">最大金额</label>
+                        <div class="layui-input-block">
+                            <input type="text" required name="maxAmount"  lay-verify="required | number" placeholder="请输入最大金额(分)" autocomplete="off" class="layui-input maxM">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">扫码渠道</label>
+                        <div class="layui-input-block">
+                            <input type="checkbox"  class="wxChV"  title="微信" value="wxpay_jsapi">
+                            <input type="checkbox"  class="aliChV" title="支付宝"  value="alipay_wap">
+                        </div>
+                    </div>
+                    <div class="layui-form-item ">
+                        <div class="layui-input-block">
+                            <button type="button" lay-submit lay-filter="btnMd" class="layui-btn">保存</button>
+                            <a lay-href= "account/app/list" class="layui-btn">返回</a>
+                        </div>
+                    </div>
+                </form>    
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    layui.use(['form','admin'],function(){
+        var form = layui.form
+        , admin = layui.admin
+        , $ = layui.$
+        , layer = layui.layer 
+        ,element = layui.element;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+
+        var cruId = layui.router().search.id;
+        var cruApId = layui.router().search.appId;
+
+
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/mch_qrcode/get',
+            data: {
+                id: cruId,
+            },
+            error: function(err){
+                layer.alert(err,{title:'请求失败'},function(index){
+                    layer.close(index);
+                })
+            },
+            success: function(res){
+                if(res.code == 0){
+                    $('.ewmname').val(res.data.codeName);
+                    $('.minM').val(res.data.minAmount);
+                    $('.maxM').val(res.data.maxAmount);
+
+                    var curArray = JSON.parse(res.data.channels);
+                    
+                    for(var i = 0; i<curArray.length; i++){
+                        if(curArray[i] == 'wxpay_jsapi'){
+                            $('.wxChV').prop('checked',true);
+                        }else if(curArray[i] == 'alipay_wap'){
+                            $('.aliChV').prop('checked',true);
+                        }
+                        form.render('checkbox');
+                    }
+                    
+                }else {
+                    layer.alert(res.msg,{title: '获取数据失败'});
+                }
+            }
+        })
+
+
+         //监听提交
+         form.on('submit(btnMd)', function(data){
+            if($('.aliChV').prop('checked') || $('.wxChV').prop('checked')){
+                var  wxCurV ;
+                if($('.wxChV').prop('checked')){
+                    wxCurV = $('.wxChV').val();
+                }else {
+                    wxCurV = '';
+                }
+                var aliCurV;
+                if($('.aliChV').prop('checked')){
+                    aliCurV = $('.aliChV').val();
+                }else {
+                    aliCurV = '';
+                }
+            // 获取复选框的值，组成json数组格式提交数据
+            
+            var channels = "[\"" + wxCurV + "\",\"" + aliCurV + "\"]";
+
+                admin.req({
+                    type: 'post',
+                    url: layui.setter.baseUrl + '/mch_qrcode/update', //模拟接口,
+                    // data: "params=" + JSON.stringify(data.field),
+                    data: {
+                        id:cruId,
+                        appId: cruApId ,
+                        channels: channels,
+                        codeName: data.field.codeName,
+                        minAmount: data.field.minAmount,
+                        maxAmount: data.field.maxAmount
+                    },
+                    error: function(err){layer.alert(err.msg,{title:"请求失败"})},
+                    success: function(res){
+                        console.log(res);
+                        if(res.code == 0){
+                            layer.alert(res.msg, {title: '保存成功'},function(index){
+                                layer.close(index);
+                                location.hash = '/account/app/list';
+                            });
+                        }else {
+                            layer.alert(res.msg,{title: '保存失败'})
+                        }
+                    }
+                })
+                return false;
+            }else{
+                layer.alert(' 扫码渠道不能为空 或者 至少选中一个扫码渠道');
+            }
+        });
+
+        form.render();
+    })
+</script>

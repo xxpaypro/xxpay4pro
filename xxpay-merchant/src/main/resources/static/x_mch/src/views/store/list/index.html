@@ -1,0 +1,184 @@
+<style>
+    .margin-top{margin-top:10px;}
+</style>
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>商户门店</cite></a>
+    </span>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">商户门店列表</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-row">
+                   <form action="" id="exportForm" method="post">
+                    <div class="layui-form" style="float:right; margin-bottom: 10px;">
+                        <div id="timeDiv" class="layui-form-item" style="margin:0;">
+                            <div class="layui-input-inline margin-top">
+                                <input type="text" name="searchStoreId" id="searchStoreId" lay-verify="number" placeholder="门店ID" autocomplete="off" class="layui-input">
+                            </div>
+                            <div class="layui-input-inline margin-top">
+                                <input type="text" name="searchStoreNo" id="searchStoreNo" placeholder="门店编号" autocomplete="off" class="layui-input">
+                            </div>
+                            <div class="layui-input-inline margin-top">
+                                <input type="text" name="searchStoreName" id="searchStoreName" placeholder="门店名称" autocomplete="off" class="layui-input">
+                            </div>
+                            <div class="layui-input-inline margin-top">
+                                <select name="searchStatus" id="searchStatus" lay-search="">
+                                    <option value="">状态</option>
+                                    <option value="0">暂停营业</option>
+                                    <option value="1">正常营业</option>
+                                </select>
+                            </div>
+                            <div class="layui-input-inline margin-top">
+                                <button id="search" class="layui-btn" data-type="reload">搜索</button>
+                            </div>
+                        </div>
+                    </div>
+                   </form>
+                </div>
+                <div class="layui-row">
+                    <div class="layuiAdmin-btns" style="margin-bottom: 10px;">
+                        <a class="layui-btn" data-type="all" data-events="create">新建门店</a>
+                    </div>
+                </div>
+                <table id="storeList" lay-filter="storeList"></table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+     //标题内容模板
+     var tplTitle = function(d){
+         return '<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a> ' +
+                '<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="refundPassword">退款密码</a> ' +
+                '<a class="layui-btn layui-btn-xs" lay-event="edit" >修改</a> ' +
+                '<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="speaker" >云喇叭</a> ' +
+                '<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="printer" >打印机</a> ' +
+                '<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>'
+     };
+
+     var tplStatus = function(d){
+         if(d.status == 0) {
+             return '<span class="layui-badge layui-bg-red">暂停营业</span>';
+         }else if(d.status == 1) {
+             return '<span class="layui-badge layui-bg-green">正常营业</span>';
+         }
+     };
+
+	 layui.config({
+	    base: '/x_mch/src/lib/extend/',
+	 });
+     layui.use(['table','util','admin'], function(){
+        var table = layui.table
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,element = layui.element
+        ,view = layui.view
+        ,form = layui.form;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        table.render({
+            elem: '#storeList'
+            ,id: "tableReload"
+            ,url: layui.setter.baseUrl + '/store/list'
+            ,cols: [[
+                {field: 'storeId', title: '门店ID'}
+                ,{field: 'storeNo', title: '门店编号'}
+                ,{field: 'storeName',title: '门店名称'}
+                ,{field: 'status',title: '状态',templet: tplStatus}
+                ,{field: 'createTime',  title: '时间', width: 180, templet: '<div>{{ layui.util.toDateString(d.createTime) }}</div>' }
+                ,{field: 'edit', title: '操作', width: 400, templet: tplTitle }
+            ]]
+            ,page: true
+            ,skin: 'line'
+        });
+
+         // 搜索
+         var $ = layui.$, active = {
+             reload: function(){
+                 var storeId = $('#searchStoreId').val();
+                 var storeName = $('#searchStoreName').val().trim();
+                 var storeNo = $('#searchStoreNo').val();
+                 var status = $("#searchStatus").val();
+                 //执行重载
+                 table.reload('tableReload', {
+                     page: {
+                         curr: 1 //重新从第 1 页开始
+                     }
+                     ,where: {
+                         storeId: storeId,
+                         storeNo: storeNo,
+                         status : status,
+                         storeName : storeName
+                     }
+                 });
+             }
+         };
+         $('#search').on('click', function() {
+             var type = $(this).data('type');
+             active[type] ? active[type].call(this) : '';
+             return false;
+         });
+
+         //监听工具条
+         table.on('tool(storeList)', function(obj){
+             var data = obj.data;
+             var layEvent = obj.event;
+
+             if(layEvent === 'edit'){ //编辑
+                 view.xxpayPopup("编辑商户门店", "store/list/update", {storeId: data.storeId});
+             } else if(obj.event === 'detail'){
+                 view.xxpayPopup("门店详情", "store/list/detail", {storeId: data.storeId}, {btn:false});
+             } else if(obj.event === 'del'){
+                 layer.confirm('确认删除么', function(index){
+                     admin.req({
+                         type: 'get',
+                         url: layui.setter.baseUrl + '/store/delete',
+                         data: {
+                             storeId: data.storeId,
+                         },
+                         success: function(res){
+                             if(res.code == 0) {
+                                 layer.msg('删除成功', {
+                                     icon: 1
+                                 });
+                                 table.reload("tableReload");
+                             }
+                         }
+                     });
+                 });
+             }else if (layEvent === 'speaker'){
+                 view.xxpayPopup("云喇叭", "store/list/speaker", {storeId: data.storeId}, {area: ['60%', '60%']});
+             }else if (layEvent === 'printer'){
+                 view.xxpayPopup("打印机", "store/list/printer", {storeId: data.storeId}, {area: ['60%', '60%']});
+             }else if (layEvent === 'refundPassword'){
+                 view.xxpayPopup("退款密码", "store/list/refund_password", {storeId: data.storeId}, {area: ["35%", "55%"]});
+             }
+         });
+
+         // 事件处理
+         var events = {
+             create: function(othis, type){
+                 view.xxpayPopup("新建门店", "store/list/create");
+             }
+         };
+
+         $('.layuiAdmin-btns .layui-btn').on('click', function(){
+             var othis = $(this)
+                 ,thisEvent = othis.data('events')
+                 ,type = othis.data('type');
+             events[thisEvent] && events[thisEvent].call(this, othis, type);
+         });
+
+
+         // 渲染表单
+         form.render();
+        
+     })
+</script>

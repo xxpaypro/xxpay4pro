@@ -1,0 +1,101 @@
+<style>
+    .xxpayPopupDiv .layui-form-label {
+        width:12% !important;
+    }
+    .xxpayPopupDiv .layui-input-inline {
+        width: 35% !important;
+        min-height: 1px;  /** 避免没有内容时无法占位的问题 **/
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-tab layui-tab-brief">
+        <div class="layui-tab-content">
+            <form class="layui-form center">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">企业名称</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="name" lay-verify="required" placeholder="请输入企业名称" autocomplete="off" class="layui-input">
+                    </div>
+                    <div class="layui-form-mid layui-word-aux">企业名称需与工商部门登记信息一致</div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">企业代码类型</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="code_type" value="1" title="统一社会信用代码(18位)" checked="checked">
+                        <input type="radio" name="code_type" value="2" title="组织机构代码(9位 xxxxxxxx-x)">
+                        <input type="radio" name="code_type" value="3" title="营业执照注册号(15位)">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">企业代码</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="code" lay-verify="required" placeholder="请输入企业代码" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">法人微信号</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="legal_persona_wechat" lay-verify="required" placeholder="请输入法人微信号" autocomplete="off" class="layui-input">
+                    </div>
+                    <div class="layui-form-mid layui-word-aux">打开微信-我的-微信号</div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">法人姓名</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="legal_persona_name" lay-verify="required" placeholder="请输入法人姓名" autocomplete="off" class="layui-input">
+                    </div>
+                    <div class="layui-form-mid layui-word-aux">法人姓名与绑定微信银行卡的姓名一致</div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">第三方联系电话</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="component_phone" placeholder="请输入第三方联系电话" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item layui-hide">
+                    <div class="layui-input-block">
+                        <button type="button" class="layui-hide xxpayYesBtn" lay-submit="" lay-filter="miniRegister">确认</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    layui.use(['form', 'admin', 'view'],function(){
+        var form = layui.form
+            ,$ = layui.$
+            ,admin = layui.admin
+            ,element = layui.element
+            ,view = layui.view
+            ,layer = layui.layer ;
+
+        element.render('breadcrumb', 'breadcrumb');
+
+        var mchId = view.getOpenParams('mchId');  //商户ID
+        var authFrom = view.getOpenParams('authFrom');  //商户ID
+        var authType = view.getOpenParams('authType');  //商户ID
+
+        form.on('submit(miniRegister)', function(data) {
+            data.field.mchId = mchId;
+            data.field.authFrom = authFrom;
+            data.field.authType = authType;
+            //这里可以写ajax方法提交表单
+            admin.req({
+                type: "POST",
+                url: layui.setter.baseUrl + '/wx_mini/fast_register_weapp',
+                data: data.field,
+                success: function(res){
+                    if(res.code == 0) {
+                        layer.closeAll(); //关闭所有弹层
+                        layer.msg("成功发起创建，请等待微信消息并前往验证");
+                        window.parent.$(".getAuth").click();
+                    }
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+        form.render();
+    })
+</script>

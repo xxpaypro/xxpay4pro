@@ -1,0 +1,42 @@
+
+<script>
+layui.use(['admin', 'form', 'user'], function(){
+  var $ = layui.$
+  ,setter = layui.setter
+  ,admin = layui.admin
+  ,router = layui.router()
+  ,search = router.search;
+
+
+  var agentId = layui.router().search.agentId;
+  var token = layui.router().search.token;
+
+  //请求登入接口
+  admin.req({
+    url: layui.setter.baseUrl + '/mgr_auth' //实际使用请改成服务端真实接口
+    ,data: {
+      agentId: agentId,
+      token: token
+    },done: function(res){
+
+      //请求成功后，写入 access_token
+      layui.data(setter.tableName, {
+        key: setter.request.tokenName
+        ,value: res.data.access_token
+      });
+
+      //登入成功的提示与跳转
+      layer.msg('登入成功', {
+        offset: '15px'
+        ,icon: 1
+        ,time: 1000
+      }, function(){
+        location.hash = search.redirect ? decodeURIComponent(search.redirect) : '/';
+      });
+    }
+  });
+
+});
+
+
+</script>

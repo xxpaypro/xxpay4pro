@@ -1,0 +1,206 @@
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-tab layui-tab-brief">
+      <div class="layui-tab-content">
+          <form class="layui-form center">
+            <div class="layui-form-item">
+              <div class="layui-inline">
+                  <label class="layui-form-label">资源ID</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="resourceId" name="resourceId" readonly="readonly" class="layui-input">
+                  </div>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-inline">
+                  <label class="layui-form-label">父资源ID</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="parentId" name="parentId" readonly="readonly" class="layui-input">
+                  </div>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-inline">
+                  <label class="layui-form-label">资源名称</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="name" name="name" lay-verify="required" placeholder="输入资源名称" autocomplete="off" class="layui-input">
+                  </div>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-inline">
+                  <label class="layui-form-label">资源标题</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="title" name="title" lay-verify="required" placeholder="输入资源名称" autocomplete="off" class="layui-input">
+                  </div>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-inline">
+                  <label class="layui-form-label">跳转URL</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="jump" name="jump" placeholder="输入跳转URL" autocomplete="off" class="layui-input">
+                  </div>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-inline">
+                  <label class="layui-form-label">授权名</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="permName" name="permName" placeholder="输入授权名" autocomplete="off" class="layui-input">
+                  </div>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-inline">
+                  <label class="layui-form-label">授权URL</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="permUrl" name="permUrl" placeholder="输入授权URL" autocomplete="off" class="layui-input">
+                  </div>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-inline">
+                  <label class="layui-form-label">资源类型</label>
+                  <div class="layui-input-block">
+                      <input type="radio" name="type" value="1" title="菜单">
+                      <input type="radio" name="type" value="2" title="按钮">
+                  </div>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-inline">
+                  <label class="layui-form-label">所属系统</label>
+                  <div class="layui-input-block">
+                      <input type="radio" name="system" value="3" title="运营平台">
+                      <input type="radio" name="system" value="4" title="服务商系统">
+                      <input type="radio" name="system" value="2" title="代理商系统">
+                      <input type="radio" name="system" value="1" title="商户系统">
+                  </div>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-inline">
+                  <label class="layui-form-label">菜单图标</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="icon" name="icon" placeholder="输入icon图标" autocomplete="off" class="layui-input">
+                  </div>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-inline">
+                  <label class="layui-form-label">排序值</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="orderNum" name="orderNum" placeholder="输入排序值" autocomplete="off" class="layui-input">
+                  </div>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-inline">
+                  <label class="layui-form-label">属性</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="property" name="property" placeholder="输入属性,不清楚可留空" autocomplete="off" class="layui-input">
+                  </div>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-inline">
+                  <label class="layui-form-label">状态</label>
+                  <div class="layui-input-block">
+                      <input type="radio" name="status" value="1" title="启用" checked="checked">
+                      <input type="radio" name="status" value="0" title="停止">
+                  </div>
+              </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button type="button" class="layui-hide xxpayYesBtn" lay-submit="" lay-filter="resourceEdit">保存</button>
+                </div>
+            </div>
+          </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    layui.use(['form','admin','view'],function(){
+        var form = layui.form
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,element = layui.element
+        ,view = layui.view
+        ,layer = layui.layer ;
+        // 导航
+        element.render('breadcrumb', 'breadcrumb');
+        var resourceId = view.getOpenParams('resourceId');
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/sys/resource/get',
+            data: {
+                resourceId : resourceId
+            },
+            error: function(err){
+                layer.alert(JSON.stringify(err.field), {
+                    title: '错误提示'
+                })
+            },
+            success: function(res){
+                if(res.code == 0){
+                    $('#resourceId').val(res.data.resourceId);
+                    $('#parentId').val(res.data.parentId);
+                    $('#name').val(res.data.name);
+                    $('#title').val(res.data.title);
+                    $('#jump').val(res.data.jump);
+                    $('#permName').val(res.data.permName);
+                    $('#permUrl').val(res.data.permUrl);
+                    if(res.data.type == 1) {
+                        $("input[name='type'][value='1']").attr("checked",true);
+                    }else if((res.data.type == 2)) {
+                        $("input[name='type'][value='2']").attr("checked",true);
+                    }
+                    if(res.data.system == 1) {
+                        $("input[name='system'][value='1']").attr("checked",true);
+                    }else if((res.data.system == 2)) {
+                        $("input[name='system'][value='2']").attr("checked",true);
+                    }else if((res.data.system == 3)) {
+                        $("input[name='system'][value='3']").attr("checked",true);
+                    }else if((res.data.system == 4)) {
+                        $("input[name='system'][value='4']").attr("checked",true);
+                    }
+                    $('#icon').val(res.data.icon);
+                    $('#orderNum').val(res.data.orderNum);
+                    $('#property').val(res.data.property);
+                    if(res.data.status == 1) {
+                        $("input[name='status'][value='1']").attr("checked",true);
+                    }else {
+                        $("input[name='status'][value='0']").attr("checked",true);
+                    }
+                    form.render();
+                }
+            }
+        })
+
+        form.on('submit(resourceEdit)', function(data) {
+            //这里可以写ajax方法提交表单
+            admin.req({
+                type: "POST",
+                url: layui.setter.baseUrl + '/sys/resource/update',
+                data: "params=" + JSON.stringify(data.field),
+                success: function(res){
+                    if(res.code == 0) {
+                        layer.closeAll(); //关闭所有弹层
+                        layer.msg("保存成功");
+                        layui.table.reload('tableReload', {page: {curr: 1}}); //调用业务弹层外表格重新加载
+                    }else {
+                        layer.alert(res.msg, {
+                            title: '保存失败'
+                        }); 
+                    }
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+    })
+</script>

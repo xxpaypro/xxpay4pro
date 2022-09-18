@@ -1,0 +1,171 @@
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a>支付配置</a>
+        <a><cite>新增通道账户</cite></a>
+    </span>
+</div>
+
+<style>
+    .layui-form-label {
+        width: 160px;
+    }
+    .layui-input , .layui-textarea{
+        width: 80%;
+    }
+    #cDInfo td {
+        border: none;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">账户信息</li>
+            </ul>
+            <div class="layui-tab-content">
+                <fieldset class="layui-elem-field">
+                    <legend><button class='layui-btn layui-btn-xs layui-btn-danger'>基本信息</button></legend>
+                    <form class="layui-form" >
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">账户名称</label>
+                            <div class="layui-input-inline" style="width:30%">
+                                <input type="text" name="accountName" id="accountName" placeholder="请输入账户名称" class="layui-input" >
+                            </div>
+                            <label class="layui-form-label">账户状态</label>
+                            <div class="layui-input-inline" style="width:30%">
+                                <input type="radio" name="status" value="1" title="开启" checked="checked">
+                                <input type="radio" name="status" value="0" title="关闭" >
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">渠道商户ID</label>
+                            <div class="layui-input-inline" style="width:30%">
+                                <input type="text" name="passageMchId" id="passageMchId" placeholder="请输入支付渠道商户ID" class="layui-input" >
+                            </div>
+                            <label class="layui-form-label">轮询权重</label>
+                            <div class="layui-input-inline" style="width:30%">
+                                <input type="text" name="pollWeight" id="pollWeight" lay-verify="required|number" placeholder="请输入轮询权重,1-9之间数字" class="layui-input" >
+                            </div>
+
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">备注</label>
+                            <div class="layui-input-inline" style="width:30%">
+                                <input type="text" name="remark" id="remark" placeholder="请输入备注信息" class="layui-input" >
+                            </div>
+                        </div>
+                    </form>
+                </fieldset>
+
+                <fieldset class="layui-elem-field">
+                    <legend><button class='layui-btn layui-btn-xs layui-btn-danger'><span id="ifTypeNameSpan"></span>账户配置</button></legend>
+                    <form class="layui-form" >
+                        <div id="paramInfo"></div>
+                        <div class="layui-form-item">
+                            <div class="layui-input-block">
+                                <button type="button" lay-submit  lay-filter="btnParam" class="layui-btn">保存</button>
+                                <button type="button" id="btnBack_Param" class="layui-btn">返回</button>
+                            </div>
+                        </div>
+                    </form>
+                </fieldset>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['form','table','util','admin',],function(){
+        var form = layui.form
+        , $ = layui.$
+        , admin = layui.admin
+        , layer = layui.layer 
+        , element = layui.element
+        , table = layui.table;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        var agentpayPassageId = layui.router().search.agentpayPassageId;
+
+        admin.req({
+            type: 'post',
+            url: layui.setter.baseUrl + '/config/agentpay_passage/pay_config_get',
+            data: {
+                agentpayPassageId: agentpayPassageId
+            },
+            error: function(err){
+                layer.alert(err);
+            },
+            success: function(res){
+                if(res.code == 0){
+                    $("#ifTypeNameSpan").html(res.data.ifTypeName);
+                    var jsonObj = JSON.parse(res.data.param);
+                    // 根据paramVal填充表单值
+                    var htm = '';
+                    $.each(jsonObj, function(i, obj){
+                        htm += `
+                                        <div class="layui-form-item">
+                                            <label class="layui-form-label"> ` + obj.desc + ` [` + obj.name + `]` +`</label>
+                                            <div class="layui-input-block"> `;
+                        if(obj.type == 'text') {
+                            htm += ` <input type="text" name="` + obj.name + `" lay-verify="` + obj.verify + `" placeholder="请输入` + obj.desc + `" autocomplete="off" class="layui-input">`;
+                        }else if(obj.type == 'textarea') {
+                            htm += ` <textarea required name="` + obj.name + `" lay-verify="` + obj.verify + `" placeholder="请输入` + obj.desc + `" class="layui-textarea"></textarea>`;
+                        }
+                        htm += ` </div>
+                                        </div>
+                                    </form>`;
+                    });
+                    htm += ``;
+                    $('#paramInfo').html(htm);
+                }else{
+                    layer.alert(res.msg,{title:"请求失败"})
+                }
+            }
+        })
+
+        form.render();
+
+        $('#btnBack_Param').on('click', function() {
+            location.hash = '/agentpay/agentpay_passage_account//agentpayPassageId=' + agentpayPassageId;
+        });
+
+        form.on('submit(btnParam)', function(data){
+            var passageMchId = $.trim($('#passageMchId').val());
+            var accountName = $.trim($('#accountName').val());
+            if(accountName == '') {
+                layer.alert("请输入账户名称",{title: '提示'});
+                return false;
+            }
+            if(passageMchId == '') {
+                layer.alert("请输入渠道商户ID",{title: '提示'});
+                return false;
+            }
+            var remark = $.trim($('#rmark').val());
+            var status = $.trim($('input[name="status"]:checked').val());
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/config/agentpay_passage_account/add',
+                data: {
+                    agentpayPassageId: agentpayPassageId,
+                    accountName: accountName,
+                    passageMchId: passageMchId,
+                    param: JSON.stringify(data.field),
+                    status: status,
+                    remark: remark
+                },
+                error: function(err){layer.alert(err.msg,{title:"请求失败"})},
+                success: function(res){
+                    if(res.code == 0){
+                        layer.alert(res.msg, {title: '保存成功'},function(index){
+                            layer.close(index);
+                            location.hash = '/agentpay/agentpay_passage_account//agentpayPassageId=' + agentpayPassageId;
+                        });
+                    }
+                }
+            })
+            return false;
+        });
+
+    })
+</script>

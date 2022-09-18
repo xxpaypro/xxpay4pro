@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.xxpay.service.dao.mapper.SettBankAccountMapper" >
+  <resultMap id="BaseResultMap" type="org.xxpay.core.entity.SettBankAccount" >
+    <id column="Id" property="id" jdbcType="BIGINT" />
+    <result column="InfoId" property="infoId" jdbcType="BIGINT" />
+    <result column="InfoType" property="infoType" jdbcType="TINYINT" />
+    <result column="Name" property="name" jdbcType="VARCHAR" />
+    <result column="AccountType" property="accountType" jdbcType="TINYINT" />
+    <result column="BankName" property="bankName" jdbcType="VARCHAR" />
+    <result column="BankNetName" property="bankNetName" jdbcType="VARCHAR" />
+    <result column="Province" property="province" jdbcType="VARCHAR" />
+    <result column="City" property="city" jdbcType="VARCHAR" />
+    <result column="AccountName" property="accountName" jdbcType="VARCHAR" />
+    <result column="AccountNo" property="accountNo" jdbcType="VARCHAR" />
+    <result column="AccountAttr" property="accountAttr" jdbcType="TINYINT" />
+    <result column="IsDefault" property="isDefault" jdbcType="TINYINT" />
+    <result column="Remark" property="remark" jdbcType="VARCHAR" />
+    <result column="CreateTime" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="UpdateTime" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    Id, InfoId, InfoType, Name, AccountType, BankName, BankNetName, Province, City, AccountName, 
+    AccountNo, AccountAttr, IsDefault, Remark, CreateTime, UpdateTime
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="org.xxpay.core.entity.SettBankAccountExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from t_sett_bank_account
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+    <if test="limit != null" >
+      <if test="offset != null" >
+        limit ${offset}, ${limit}
+      </if>
+      <if test="offset == null" >
+        limit ${limit}
+      </if>
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_sett_bank_account
+    where Id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from t_sett_bank_account
+    where Id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="org.xxpay.core.entity.SettBankAccountExample" >
+    delete from t_sett_bank_account
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="org.xxpay.core.entity.SettBankAccount" >
+    insert into t_sett_bank_account (Id, InfoId, InfoType, 
+      Name, AccountType, BankName, 
+      BankNetName, Province, City, 
+      AccountName, AccountNo, AccountAttr, 
+      IsDefault, Remark, CreateTime, 
+      UpdateTime)
+    values (#{id,jdbcType=BIGINT}, #{infoId,jdbcType=BIGINT}, #{infoType,jdbcType=TINYINT}, 
+      #{name,jdbcType=VARCHAR}, #{accountType,jdbcType=TINYINT}, #{bankName,jdbcType=VARCHAR}, 
+      #{bankNetName,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, 
+      #{accountName,jdbcType=VARCHAR}, #{accountNo,jdbcType=VARCHAR}, #{accountAttr,jdbcType=TINYINT}, 
+      #{isDefault,jdbcType=TINYINT}, #{remark,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="org.xxpay.core.entity.SettBankAccount" >
+    insert into t_sett_bank_account
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        Id,
+      </if>
+      <if test="infoId != null" >
+        InfoId,
+      </if>
+      <if test="infoType != null" >
+        InfoType,
+      </if>
+      <if test="name != null" >
+        Name,
+      </if>
+      <if test="accountType != null" >
+        AccountType,
+      </if>
+      <if test="bankName != null" >
+        BankName,
+      </if>
+      <if test="bankNetName != null" >
+        BankNetName,
+      </if>
+      <if test="province != null" >
+        Province,
+      </if>
+      <if test="city != null" >
+        City,
+      </if>
+      <if test="accountName != null" >
+        AccountName,
+      </if>
+      <if test="accountNo != null" >
+        AccountNo,
+      </if>
+      <if test="accountAttr != null" >
+        AccountAttr,
+      </if>
+      <if test="isDefault != null" >
+        IsDefault,
+      </if>
+      <if test="remark != null" >
+        Remark,
+      </if>
+      <if test="createTime != null" >
+        CreateTime,
+      </if>
+      <if test="updateTime != null" >
+        UpdateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="infoId != null" >
+        #{infoId,jdbcType=BIGINT},
+      </if>
+      <if test="infoType != null" >
+        #{infoType,jdbcType=TINYINT},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="accountType != null" >
+        #{accountType,jdbcType=TINYINT},
+      </if>
+      <if test="bankName != null" >
+        #{bankName,jdbcType=VARCHAR},
+      </if>
+      <if test="bankNetName != null" >
+        #{bankNetName,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null" >
+        #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null" >
+        #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="accountName != null" >
+        #{accountName,jdbcType=VARCHAR},
+      </if>
+      <if test="accountNo != null" >
+        #{accountNo,jdbcType=VARCHAR},
+      </if>
+      <if test="accountAttr != null" >
+        #{accountAttr,jdbcType=TINYINT},
+      </if>
+      <if test="isDefault != null" >
+        #{isDefault,jdbcType=TINYINT},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="org.xxpay.core.entity.SettBankAccountExample" resultType="java.lang.Integer" >
+    select count(*) from t_sett_bank_account
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update t_sett_bank_account
+    <set >
+      <if test="record.id != null" >
+        Id = #{record.id,jdbcType=BIGINT},
+      </if>
+      <if test="record.infoId != null" >
+        InfoId = #{record.infoId,jdbcType=BIGINT},
+      </if>
+      <if test="record.infoType != null" >
+        InfoType = #{record.infoType,jdbcType=TINYINT},
+      </if>
+      <if test="record.name != null" >
+        Name = #{record.name,jdbcType=VARCHAR},
+      </if>
+      <if test="record.accountType != null" >
+        AccountType = #{record.accountType,jdbcType=TINYINT},
+      </if>
+      <if test="record.bankName != null" >
+        BankName = #{record.bankName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.bankNetName != null" >
+        BankNetName = #{record.bankNetName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.province != null" >
+        Province = #{record.province,jdbcType=VARCHAR},
+      </if>
+      <if test="record.city != null" >
+        City = #{record.city,jdbcType=VARCHAR},
+      </if>
+      <if test="record.accountName != null" >
+        AccountName = #{record.accountName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.accountNo != null" >
+        AccountNo = #{record.accountNo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.accountAttr != null" >
+        AccountAttr = #{record.accountAttr,jdbcType=TINYINT},
+      </if>
+      <if test="record.isDefault != null" >
+        IsDefault = #{record.isDefault,jdbcType=TINYINT},
+      </if>
+      <if test="record.remark != null" >
+        Remark = #{record.remark,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createTime != null" >
+        CreateTime = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateTime != null" >
+        UpdateTime = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update t_sett_bank_account
+    set Id = #{record.id,jdbcType=BIGINT},
+      InfoId = #{record.infoId,jdbcType=BIGINT},
+      InfoType = #{record.infoType,jdbcType=TINYINT},
+      Name = #{record.name,jdbcType=VARCHAR},
+      AccountType = #{record.accountType,jdbcType=TINYINT},
+      BankName = #{record.bankName,jdbcType=VARCHAR},
+      BankNetName = #{record.bankNetName,jdbcType=VARCHAR},
+      Province = #{record.province,jdbcType=VARCHAR},
+      City = #{record.city,jdbcType=VARCHAR},
+      AccountName = #{record.accountName,jdbcType=VARCHAR},
+      AccountNo = #{record.accountNo,jdbcType=VARCHAR},
+      AccountAttr = #{record.accountAttr,jdbcType=TINYINT},
+      IsDefault = #{record.isDefault,jdbcType=TINYINT},
+      Remark = #{record.remark,jdbcType=VARCHAR},
+      CreateTime = #{record.createTime,jdbcType=TIMESTAMP},
+      UpdateTime = #{record.updateTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="org.xxpay.core.entity.SettBankAccount" >
+    update t_sett_bank_account
+    <set >
+      <if test="infoId != null" >
+        InfoId = #{infoId,jdbcType=BIGINT},
+      </if>
+      <if test="infoType != null" >
+        InfoType = #{infoType,jdbcType=TINYINT},
+      </if>
+      <if test="name != null" >
+        Name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="accountType != null" >
+        AccountType = #{accountType,jdbcType=TINYINT},
+      </if>
+      <if test="bankName != null" >
+        BankName = #{bankName,jdbcType=VARCHAR},
+      </if>
+      <if test="bankNetName != null" >
+        BankNetName = #{bankNetName,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null" >
+        Province = #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null" >
+        City = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="accountName != null" >
+        AccountName = #{accountName,jdbcType=VARCHAR},
+      </if>
+      <if test="accountNo != null" >
+        AccountNo = #{accountNo,jdbcType=VARCHAR},
+      </if>
+      <if test="accountAttr != null" >
+        AccountAttr = #{accountAttr,jdbcType=TINYINT},
+      </if>
+      <if test="isDefault != null" >
+        IsDefault = #{isDefault,jdbcType=TINYINT},
+      </if>
+      <if test="remark != null" >
+        Remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        CreateTime = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        UpdateTime = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where Id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.xxpay.core.entity.SettBankAccount" >
+    update t_sett_bank_account
+    set InfoId = #{infoId,jdbcType=BIGINT},
+      InfoType = #{infoType,jdbcType=TINYINT},
+      Name = #{name,jdbcType=VARCHAR},
+      AccountType = #{accountType,jdbcType=TINYINT},
+      BankName = #{bankName,jdbcType=VARCHAR},
+      BankNetName = #{bankNetName,jdbcType=VARCHAR},
+      Province = #{province,jdbcType=VARCHAR},
+      City = #{city,jdbcType=VARCHAR},
+      AccountName = #{accountName,jdbcType=VARCHAR},
+      AccountNo = #{accountNo,jdbcType=VARCHAR},
+      AccountAttr = #{accountAttr,jdbcType=TINYINT},
+      IsDefault = #{isDefault,jdbcType=TINYINT},
+      Remark = #{remark,jdbcType=VARCHAR},
+      CreateTime = #{createTime,jdbcType=TIMESTAMP},
+      UpdateTime = #{updateTime,jdbcType=TIMESTAMP}
+    where Id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

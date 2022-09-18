@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.xxpay.service.dao.mapper.UserAccountMapper" >
+  <resultMap id="BaseResultMap" type="org.xxpay.core.entity.UserAccount" >
+    <id column="UserId" property="userId" jdbcType="VARCHAR" />
+    <id column="MchId" property="mchId" jdbcType="BIGINT" />
+    <result column="Balance" property="balance" jdbcType="BIGINT" />
+    <result column="CheckSum" property="checkSum" jdbcType="VARCHAR" />
+    <result column="UpdateTimeJava" property="updateTimeJava" jdbcType="BIGINT" />
+    <result column="TotalRollIn" property="totalRollIn" jdbcType="BIGINT" />
+    <result column="TotalRollOut" property="totalRollOut" jdbcType="BIGINT" />
+    <result column="UseableBalance" property="useableBalance" jdbcType="BIGINT" />
+    <result column="UseableCheckSum" property="useableCheckSum" jdbcType="VARCHAR" />
+    <result column="UseableUpdateTimeJava" property="useableUpdateTimeJava" jdbcType="BIGINT" />
+    <result column="UseableRollIn" property="useableRollIn" jdbcType="BIGINT" />
+    <result column="UseableRollOut" property="useableRollOut" jdbcType="BIGINT" />
+    <result column="State" property="state" jdbcType="SMALLINT" />
+    <result column="CreateTime" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="UpdateTime" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    UserId, MchId, Balance, CheckSum, UpdateTimeJava, TotalRollIn, TotalRollOut, UseableBalance,
+    UseableCheckSum, UseableUpdateTimeJava, UseableRollIn, UseableRollOut, State, CreateTime,
+    UpdateTime
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="org.xxpay.core.entity.UserAccountExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from t_user_account
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+    <if test="limit != null" >
+      <if test="offset != null" >
+        limit ${offset}, ${limit}
+      </if>
+      <if test="offset == null" >
+        limit ${limit}
+      </if>
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="map" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_user_account
+    where UserId = #{userId,jdbcType=VARCHAR}
+      and MchId = #{mchId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="map" >
+    delete from t_user_account
+    where UserId = #{userId,jdbcType=VARCHAR}
+      and MchId = #{mchId,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="org.xxpay.core.entity.UserAccountExample" >
+    delete from t_user_account
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="org.xxpay.core.entity.UserAccount" >
+    insert into t_user_account (UserId, MchId, Balance, 
+      CheckSum, UpdateTimeJava, TotalRollIn,
+      TotalRollOut, UseableBalance, UseableCheckSum,
+      UseableUpdateTimeJava, UseableRollIn, UseableRollOut,
+      State, CreateTime, UpdateTime
+      )
+    values (#{userId,jdbcType=VARCHAR}, #{mchId,jdbcType=BIGINT}, #{balance,jdbcType=BIGINT}, 
+      #{checkSum,jdbcType=VARCHAR}, #{updateTimeJava,jdbcType=BIGINT}, #{totalRollIn,jdbcType=BIGINT},
+      #{totalRollOut,jdbcType=BIGINT}, #{useableBalance,jdbcType=BIGINT}, #{useableCheckSum,jdbcType=VARCHAR},
+      #{useableUpdateTimeJava,jdbcType=BIGINT}, #{useableRollIn,jdbcType=BIGINT}, #{useableRollOut,jdbcType=BIGINT},
+      #{state,jdbcType=SMALLINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="org.xxpay.core.entity.UserAccount" >
+    insert into t_user_account
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
+        UserId,
+      </if>
+      <if test="mchId != null" >
+        MchId,
+      </if>
+      <if test="balance != null" >
+        Balance,
+      </if>
+      <if test="checkSum != null" >
+        CheckSum,
+      </if>
+      <if test="updateTimeJava != null" >
+        UpdateTimeJava,
+      </if>
+      <if test="totalRollIn != null" >
+        TotalRollIn,
+      </if>
+      <if test="totalRollOut != null" >
+        TotalRollOut,
+      </if>
+      <if test="useableBalance != null" >
+        UseableBalance,
+      </if>
+      <if test="useableCheckSum != null" >
+        UseableCheckSum,
+      </if>
+      <if test="useableUpdateTimeJava != null" >
+        UseableUpdateTimeJava,
+      </if>
+      <if test="useableRollIn != null" >
+        UseableRollIn,
+      </if>
+      <if test="useableRollOut != null" >
+        UseableRollOut,
+      </if>
+      <if test="state != null" >
+        State,
+      </if>
+      <if test="createTime != null" >
+        CreateTime,
+      </if>
+      <if test="updateTime != null" >
+        UpdateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="mchId != null" >
+        #{mchId,jdbcType=BIGINT},
+      </if>
+      <if test="balance != null" >
+        #{balance,jdbcType=BIGINT},
+      </if>
+      <if test="checkSum != null" >
+        #{checkSum,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTimeJava != null" >
+        #{updateTimeJava,jdbcType=BIGINT},
+      </if>
+      <if test="totalRollIn != null" >
+        #{totalRollIn,jdbcType=BIGINT},
+      </if>
+      <if test="totalRollOut != null" >
+        #{totalRollOut,jdbcType=BIGINT},
+      </if>
+      <if test="useableBalance != null" >
+        #{useableBalance,jdbcType=BIGINT},
+      </if>
+      <if test="useableCheckSum != null" >
+        #{useableCheckSum,jdbcType=VARCHAR},
+      </if>
+      <if test="useableUpdateTimeJava != null" >
+        #{useableUpdateTimeJava,jdbcType=BIGINT},
+      </if>
+      <if test="useableRollIn != null" >
+        #{useableRollIn,jdbcType=BIGINT},
+      </if>
+      <if test="useableRollOut != null" >
+        #{useableRollOut,jdbcType=BIGINT},
+      </if>
+      <if test="state != null" >
+        #{state,jdbcType=SMALLINT},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="org.xxpay.core.entity.UserAccountExample" resultType="java.lang.Integer" >
+    select count(*) from t_user_account
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update t_user_account
+    <set >
+      <if test="record.userId != null" >
+        UserId = #{record.userId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mchId != null" >
+        MchId = #{record.mchId,jdbcType=BIGINT},
+      </if>
+      <if test="record.balance != null" >
+        Balance = #{record.balance,jdbcType=BIGINT},
+      </if>
+      <if test="record.checkSum != null" >
+        CheckSum = #{record.checkSum,jdbcType=VARCHAR},
+      </if>
+      <if test="record.updateTimeJava != null" >
+        UpdateTimeJava = #{record.updateTimeJava,jdbcType=BIGINT},
+      </if>
+      <if test="record.totalRollIn != null" >
+        TotalRollIn = #{record.totalRollIn,jdbcType=BIGINT},
+      </if>
+      <if test="record.totalRollOut != null" >
+        TotalRollOut = #{record.totalRollOut,jdbcType=BIGINT},
+      </if>
+      <if test="record.useableBalance != null" >
+        UseableBalance = #{record.useableBalance,jdbcType=BIGINT},
+      </if>
+      <if test="record.useableCheckSum != null" >
+        UseableCheckSum = #{record.useableCheckSum,jdbcType=VARCHAR},
+      </if>
+      <if test="record.useableUpdateTimeJava != null" >
+        UseableUpdateTimeJava = #{record.useableUpdateTimeJava,jdbcType=BIGINT},
+      </if>
+      <if test="record.useableRollIn != null" >
+        UseableRollIn = #{record.useableRollIn,jdbcType=BIGINT},
+      </if>
+      <if test="record.useableRollOut != null" >
+        UseableRollOut = #{record.useableRollOut,jdbcType=BIGINT},
+      </if>
+      <if test="record.state != null" >
+        State = #{record.state,jdbcType=SMALLINT},
+      </if>
+      <if test="record.createTime != null" >
+        CreateTime = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateTime != null" >
+        UpdateTime = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update t_user_account
+    set UserId = #{record.userId,jdbcType=VARCHAR},
+      MchId = #{record.mchId,jdbcType=BIGINT},
+      Balance = #{record.balance,jdbcType=BIGINT},
+      CheckSum = #{record.checkSum,jdbcType=VARCHAR},
+      UpdateTimeJava = #{record.updateTimeJava,jdbcType=BIGINT},
+      TotalRollIn = #{record.totalRollIn,jdbcType=BIGINT},
+      TotalRollOut = #{record.totalRollOut,jdbcType=BIGINT},
+      UseableBalance = #{record.useableBalance,jdbcType=BIGINT},
+      UseableCheckSum = #{record.useableCheckSum,jdbcType=VARCHAR},
+      UseableUpdateTimeJava = #{record.useableUpdateTimeJava,jdbcType=BIGINT},
+      UseableRollIn = #{record.useableRollIn,jdbcType=BIGINT},
+      UseableRollOut = #{record.useableRollOut,jdbcType=BIGINT},
+      State = #{record.state,jdbcType=SMALLINT},
+      CreateTime = #{record.createTime,jdbcType=TIMESTAMP},
+      UpdateTime = #{record.updateTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="org.xxpay.core.entity.UserAccount" >
+    update t_user_account
+    <set >
+      <if test="balance != null" >
+        Balance = #{balance,jdbcType=BIGINT},
+      </if>
+      <if test="checkSum != null" >
+        CheckSum = #{checkSum,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTimeJava != null" >
+        UpdateTimeJava = #{updateTimeJava,jdbcType=BIGINT},
+      </if>
+      <if test="totalRollIn != null" >
+        TotalRollIn = #{totalRollIn,jdbcType=BIGINT},
+      </if>
+      <if test="totalRollOut != null" >
+        TotalRollOut = #{totalRollOut,jdbcType=BIGINT},
+      </if>
+      <if test="useableBalance != null" >
+        UseableBalance = #{useableBalance,jdbcType=BIGINT},
+      </if>
+      <if test="useableCheckSum != null" >
+        UseableCheckSum = #{useableCheckSum,jdbcType=VARCHAR},
+      </if>
+      <if test="useableUpdateTimeJava != null" >
+        UseableUpdateTimeJava = #{useableUpdateTimeJava,jdbcType=BIGINT},
+      </if>
+      <if test="useableRollIn != null" >
+        UseableRollIn = #{useableRollIn,jdbcType=BIGINT},
+      </if>
+      <if test="useableRollOut != null" >
+        UseableRollOut = #{useableRollOut,jdbcType=BIGINT},
+      </if>
+      <if test="state != null" >
+        State = #{state,jdbcType=SMALLINT},
+      </if>
+      <if test="createTime != null" >
+        CreateTime = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        UpdateTime = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where UserId = #{userId,jdbcType=VARCHAR}
+      and MchId = #{mchId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.xxpay.core.entity.UserAccount" >
+    update t_user_account
+    set Balance = #{balance,jdbcType=BIGINT},
+      CheckSum = #{checkSum,jdbcType=VARCHAR},
+      UpdateTimeJava = #{updateTimeJava,jdbcType=BIGINT},
+      TotalRollIn = #{totalRollIn,jdbcType=BIGINT},
+      TotalRollOut = #{totalRollOut,jdbcType=BIGINT},
+      UseableBalance = #{useableBalance,jdbcType=BIGINT},
+      UseableCheckSum = #{useableCheckSum,jdbcType=VARCHAR},
+      UseableUpdateTimeJava = #{useableUpdateTimeJava,jdbcType=BIGINT},
+      UseableRollIn = #{useableRollIn,jdbcType=BIGINT},
+      UseableRollOut = #{useableRollOut,jdbcType=BIGINT},
+      State = #{state,jdbcType=SMALLINT},
+      CreateTime = #{createTime,jdbcType=TIMESTAMP},
+      UpdateTime = #{updateTime,jdbcType=TIMESTAMP}
+    where UserId = #{userId,jdbcType=VARCHAR}
+      and MchId = #{mchId,jdbcType=BIGINT}
+  </update>
+
+  <select id="checkUserAccountExistLock" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" />
+    from t_user_account
+    where UserId = #{userId,jdbcType=VARCHAR}
+    and MchId = #{mchId,jdbcType=BIGINT}
+    for update
+  </select>
+</mapper>

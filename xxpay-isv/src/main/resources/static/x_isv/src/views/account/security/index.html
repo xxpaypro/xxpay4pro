@@ -1,0 +1,464 @@
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a><cite>基本信息</cite></a>
+    </span>
+</div>
+<style>
+ .center {width: 80%;}
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title"><li class="layui-this">安全中心</li></ul>
+            <input id='currentSecurityAuthType' type='hidden'/>
+            <input id='currentLoginType' type='hidden'/>
+            <input id='currentPayType' type='hidden'/>
+            <input id='currentMobile' type='hidden'/>
+            <div class="layui-tab-content">
+                <div class="layui-card">
+                    <div class="layui-card-header"><span class="layui-badge layui-bg-gray">安全认证方式</span></div>
+                    <div class="layui-card-body">
+                        <div id="noSet">
+                            <div class="layui-row">
+                                <div class="layui-col-xs12 layui-col-md8">
+                                    <span id="authSetTip0" class='layui-hide' >未设置: 您未设置任何安全认证方式！
+                                    	<p style="color: orangered;">提示：为了您的资金安全，请尽快设置安全认证方式，并更换登录认证方式和支付认证方式！</p>
+                                    </span>
+                                    <span id="authSetTip1" class='layui-hide' >已设置: 谷歌验证码
+                                    	<div>手机客户端下载地址: <a href="http://shouji.baidu.com/software/item?docid=3832652&from=as" target="_blank">Android</a>
+                                    	  / <a href="https://itunes.apple.com/cn/app/google-authenticator/id388497605?mt=8" target="_blank">IOS</a>
+                                    	</div>
+                                    </span>
+                                    <span id="authSetTip2" class='layui-hide' >已设置: 手机验证码</span>
+                                </div>
+                                <div class="layui-col-xs6 layui-col-md4">
+                                    <button type="button" id="authSetBtn" class="layui-btn layui-btn-sm">设置</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-card">
+                    <div class="layui-card-header"><span class="layui-badge layui-bg-gray">登录设置</span></div>
+                    <div class="layui-card-body">
+                        <div class="layui-row">
+                            <div class="layui-col-xs12 layui-col-md8">
+                                <span id="loginSetTip1" class='layui-hide'>已设置: 仅登录密码验证
+                                	<p style='color: orangered'>提示：建议设置安全认证方式，若没有设置安全认证方式，出现资金问题，本平台恕不负责！</p>
+                                </span>
+                                <span id="loginSetTip2" class='layui-hide'>已设置: [登录密码 + 安全认证]组合验证</span>
+                            </div>
+                            <div class="layui-col-xs6 layui-col-md4">
+                                <button type="button" id="loginSetBtn" class="layui-btn layui-btn-sm">更换</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-card">
+                    <div class="layui-card-header"><span class="layui-badge layui-bg-gray">支付设置</span></div>
+                    <div class="layui-card-body">
+                        <div class="layui-row">
+                            <div class="layui-col-xs12 layui-col-md8">
+                                <span id="paySetTip0" class='layui-hide'>已设置: 无需验证 
+                                	<p style='color: orangered'>提示：建议设置安全认证方式，若没有设置安全认证方式，出现资金问题，本平台恕不负责！</p>
+                                </span>
+                                <span id="paySetTip1" class='layui-hide'>已设置: 仅支付密码验证
+									<p style='color: orangered'>提示：建议设置安全认证方式，若没有设置安全认证方式，出现资金问题，本平台恕不负责！</p>
+                                </span>
+                                <span id="paySetTip2" class='layui-hide'>已设置: 仅安全认证方式验证</span>
+                                <span id="paySetTip3" class='layui-hide'>已设置: [支付密码 + 安全认证]组合验证</span>
+                            </div>
+                            <div class="layui-col-xs6 layui-col-md4">
+                                <button type="button" id="paySetBtn" class="layui-btn layui-btn-sm">更换</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- 设置安全认证方式  -->
+<div class="layui-tab-content" id="authSetDiv" style="display: none">
+    <form class="layui-form center" lay-filter="authSetDivForm">
+    	<input id='googleKey' name='googleKey' type='hidden' />
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">认证方式</label>
+            <div class="layui-input-block">
+                <input type="radio" name="securityAuthType" lay-filter='securityAuthType' value="1" title="谷歌验证码"><br/>
+                <input type="radio" name="securityAuthType" lay-filter='securityAuthType' value="2" title="手机验证码">
+            </div>
+        </div>
+        <div id ='googleCodeBindDiv' class='layui-hide'>
+	        <div class="layui-form-item layui-form-text">
+		         <div class="layui-input-block">
+		         	<p>请使用Google身份验证器(手机客户端下载地址: <a href="http://shouji.baidu.com/software/item?docid=3832652&from=as" target="_blank">Android</a>
+                                    	  / <a href="https://itunes.apple.com/cn/app/google-authenticator/id388497605?mt=8" target="_blank">IOS</a>
+                                    	)扫描下方二维码，进行绑定：</p>
+		            <img id="googleQrCode" src="">
+		            <p><a class="layui-bg-red" href='javascript:layer.alert("请在谷歌验证器中输入秘钥：<br/>" + layui.$("#googleKey").val());'>图片无法正常显示或扫码提示“无法解析QR码”？</a></p>
+		         </div>
+			</div>
+			<div class="layui-form-item layui-form-text">
+	        	 <label class="layui-form-label">谷歌验证码</label>
+		         <div class="layui-input-block">
+		            <input type="text" name='googleCode' placeholder="请输入谷歌验证码" autocomplete="off" class="layui-input">
+		         </div>
+			</div>
+		</div>
+
+        <div id='currentAuthDivForAuth'></div>
+
+        <div id ='updateMobileDiv' class='layui-hide'>
+
+            <div class="layui-form-item layui-form-text">
+
+                <label class="layui-form-label">绑定手机号</label>
+                <div class="layui-input-block">
+                    <input type="text" class="layui-input" name="updateMobile" id="updateMobile" placeholder="请输入手机号" autocomplete="off" >
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">手机验证码</label>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input" name="codeByUpdateMobile" placeholder="请输入手机验证码" autocomplete="off" >
+                </div>
+                <button class="layui-btn layui-btn-primary sendMsgCodeBtn" msgBizType="36">发送手机验证码</button>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button type="button" lay-filter="btnAuthSet" lay-submit class="layui-btn layui-btn-sm">确定</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+
+<!-- 切换登录验证类型 -->
+<div class="layui-tab-content" id="loginSetDiv" style="display: none">
+    <form class="layui-form center" lay-filter="loginSetDivForm">
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">验证方式</label>
+            <div class="layui-input-block">
+                <input type="radio" lay-filter='loginType' name="loginType" value="1" title="仅登录密码验证"><br/>
+                <input type="radio" lay-filter='loginType' name="loginType" value="2" title="[登录密码+安全认证] 组合验证">
+            </div>
+        </div>
+        <div id='currentAuthDivForLogin'></div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button type="button" lay-filter="btnLoginSet" lay-submit class="layui-btn layui-btn-sm">确定</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- 切换支付验证类型 -->
+<div class="layui-tab-content" id="paySetDiv" style="display: none">
+    <form class="layui-form center" lay-filter="paySetDivForm">
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">验证方式</label>
+            <div class="layui-input-block">
+                <input type="radio" name="payType" value="0" title="无需验证"><br/>
+                <input type="radio" name="payType" value="1" title="仅支付密码验证"><br/>
+                <input type="radio" name="payType" value="2" title="仅安全认证方式验证">
+                <input type="radio" name="payType" value="3" title="[支付密码+安全认证] 组合验证"><br/>
+            </div>
+        </div>
+        <div id='currentAuthDivForPay'></div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button type="button" lay-filter="btnPaySet" lay-submit class="layui-btn layui-btn-sm">确定</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+   layui.use(['table', 'admin',], function(){
+        var form = layui.form
+            ,table = layui.table
+            ,$ = layui.$
+            ,admin = layui.admin
+            ,element = layui.element;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        admin.req({
+            type: 'post',
+            url:  layui.setter.baseUrl + '/isv/get',
+            success: function(res){
+                if(res.code == 0){
+                	
+                	$("#currentSecurityAuthType").val(res.data.securityAuthType);
+                	$("#currentLoginType").val(res.data.loginType);
+                	$("#currentPayType").val(res.data.payType);
+                    $("#currentMobile").val(res.data.mobile);
+
+                    if(!res.data.securityAuthType){
+                        $('#authSetBtn').text('绑定');
+                    }
+                	
+                    //安全认证方式
+                    var securityAuthType = res.data.securityAuthType;
+                    $("#authSetTip"+securityAuthType).removeClass('layui-hide');
+                    $("input[name='securityAuthType'][value='"+ securityAuthType +"']").attr("checked", true);
+                    $("#currentAuthDivForAuth").html(genCurrentAuthHtml(getShowType('auth', 0, securityAuthType), 32));
+                    
+                    // 登录设置
+                    var loginType = res.data.loginType;
+                    $("input[name='loginType'][value='"+ loginType +"']").attr("checked", true);
+                    $("#loginSetTip"+loginType).removeClass('layui-hide');
+                    $("#currentAuthDivForLogin").html(genCurrentAuthHtml(getShowType('login', loginType, securityAuthType), 33));
+
+                 	// 支付方式
+                    var payType = res.data.payType;
+                    $("input[name='payType'][value='"+ payType +"']").attr("checked",true);
+                    $("#paySetTip"+payType).removeClass('layui-hide');
+                    $("#currentAuthDivForPay").html(genCurrentAuthHtml(getShowType('pay', payType, securityAuthType), 34));
+                    form.render();
+                }
+            }
+        });
+        
+        
+        // 点击安全认证方式【设置】
+        var openAuthSetId;
+        $('#authSetBtn').click(function() {
+        	openAuthSetId = layer.open({title: '安全认证设置', type: 1, shade: 0, area: '580px', content: $('#authSetDiv')});
+        });
+ 		//登录验证方式 确认提交事件
+        form.on('submit(btnAuthSet)', function(data){
+        	
+        	
+        	var securityAuthType = data.field.securityAuthType;
+        	if(securityAuthType == $('#currentSecurityAuthType').val()){
+        		return layer.alert('认证方式未发生变化！');
+        	}
+    	  	if(!securityAuthType){
+    	  		return layer.alert('请选择认证方式！');
+    	  	}
+    	  	if(securityAuthType == '1'){ //二维码方式
+    	  		if(!data.field.googleCode){
+        	  		return layer.alert('请输入谷歌验证！');
+        	  	}
+    	  	}
+    	  	if(!data.field.pwdOrCode){
+    	  		return layer.alert('请输入当前验证信息！');
+    	  	}
+    	  	
+    	  	admin.req({
+                url: layui.setter.baseUrl + '/security/set_security_auth_type',
+                type: 'post',
+                data: data.field,
+                success: function(res){
+                	if(res.code == 0){admin.events.refresh();} //刷新当前页面
+                }
+            });
+        	
+            return false;
+        });
+
+       // 点击登录设置【更换】
+       $('#loginSetBtn').click(function() {
+           layer.open({title: '登录设置', type: 1, shade: 0, area: '580px', content: $('#loginSetDiv')});
+       });
+		//登录验证方式 确认提交事件
+       form.on('submit(btnLoginSet)', function(data){
+    	   
+    	   if(data.field.loginType == 2  && $('#currentSecurityAuthType').val() == 0){
+    		   return layer.alert('请先设置安全认证方式！');
+    	   }
+    	   if(data.field.loginType == $('#currentLoginType').val()){
+    		   return layer.alert('验证方式未发生变化！');
+    	   }
+    	   if(!data.field.pwdOrCode){
+   	  		return layer.alert('请输入当前验证信息！');
+   	  	   }
+    	   admin.req({
+               url: layui.setter.baseUrl + '/security/login_set',
+               type: 'post',
+               data: data.field,
+               success: function(res){
+               	if(res.code == 0){ admin.events.refresh(); }  //刷新当前页面
+               }
+           });
+           return false;
+       });
+
+       // 点击支付设置【更换】
+       $('#paySetBtn').click(function() {
+           layer.open({title: '支付设置', type: 1, shade: 0, area: '580px', content: $('#paySetDiv')});
+       });
+       
+       //支付验证方式  确认提交事件
+       form.on('submit(btnPaySet)', function(data){
+    	   
+    	   if( (data.field.payType == 2 || data.field.payType == 3)  && $('#currentSecurityAuthType').val() == 0){
+    		   return layer.alert('请先设置安全认证方式！');
+    	   }
+    	   if(data.field.payType == $('#currentPayType').val()){
+    		   return layer.alert('验证方式未发生变化！');
+    	   }
+    	   if(!data.field.pwdOrCode){
+   	  		return layer.alert('请输入当前验证信息！');
+   	  	   }
+    	   admin.req({
+               url: layui.setter.baseUrl + '/security/pay_set',
+               type: 'post',
+               data: data.field,
+               success: function(res){
+               	if(res.code == 0){ admin.events.refresh(); }  //刷新当前页面
+               }
+           });
+           return false;
+       });
+       
+       form.on('radio(securityAuthType)', function(data){
+
+           $('#updateMobileDiv').addClass('layui-hide');
+
+    	   if(data.value == '1' && $('#currentSecurityAuthType').val() != '1'){ //选择谷歌验证，并且当前认证方式不是谷歌验证
+    		   admin.req({
+                   url: layui.setter.baseUrl + '/security/google_qrcode',
+                   success: function(res){
+                	   	$('#googleKey').val(res.data.googleKey);
+                        $('#googleQrCode').attr("src", res.data.qrcodeUrl);
+                        $('#googleCodeBindDiv').removeClass('layui-hide');
+                   }
+               });
+    		   
+    	   }else if(data.value == '2'){  //手机验证码方式
+    		   $('#googleCodeBindDiv').addClass('layui-hide');
+
+    		   //当前未设置手机号时
+    		   if(!$('#currentMobile').val()){
+                   $('#updateMobileDiv').removeClass('layui-hide');
+               }
+    	   }
+    	 });
+       
+       $('body').off('click', '.sendMsgCodeBtn').on('click', ".sendMsgCodeBtn", function(){
+    	   	  var _thisBtn = $(this);
+    	   	  var bizType = _thisBtn.attr('msgBizType');
+    	   	  var sendData = {bizType: bizType};
+    	   	  if(bizType == '36'){
+                  sendData.updateMobile = $('#updateMobile').val();
+              }
+
+    	      admin.req({
+    	        url: layui.setter.baseUrl + '/agent/sms_send'
+    	        ,data : sendData
+                ,type : 'post'
+    	        ,success: function(res){
+    	        	if(!res.code == 0 ){
+    	        		return false;
+    	        	}
+    	       	    var seconds = 60 ,timer, countDown = function(loop){
+	    	            seconds--;
+	    	            if(seconds < 0){
+	    	            	 _thisBtn.removeClass("layui-disabled").removeAttr('disabled').html('发送手机验证码');
+	    	               seconds = 60;
+	    	               clearInterval(timer);
+	    	            } else {
+	    	            	 _thisBtn.addClass("layui-disabled").attr('disabled', 'disabled').html(seconds + '秒后重获');
+	    	            }
+	 	   	            if(!loop){
+	    	               timer = setInterval(function(){countDown(true);}, 1000);
+	    	            }
+    	            };
+    	           layer.msg('验证码已发送至你的手机，请注意查收', {icon: 1, shade: 0});
+    	           countDown();
+    	        }
+    	      });
+    	      return false; //阻止表单提交
+       });
+
+    });
+   
+   //ctrl- auth or login or pay   type = 支付/登录类型       securityAuthType-安全认证设置值
+   function getShowType(ctrl, type, securityAuthType){
+	   
+	   if(ctrl == 'auth'){
+		   if(securityAuthType == '0'){///未设置 
+			   return 'loginPwd';
+		   }else if(securityAuthType == '1'){ //谷歌验证码
+			   return "googleCode";
+		   }else if(securityAuthType == '2'){ //手机短信验证码
+			   return "msgCode";
+		   }
+	   }
+	   if(ctrl == 'login'){
+		   if(type == '1'){///仅密码登录
+			   return 'loginPwd';
+		   }else if(type == '2'){ //密码 + 安全
+			   if(securityAuthType == '1'){
+				   return 'googleCode';
+			   }else if(securityAuthType == '2'){
+				   return "msgCode";
+			   }
+		   }
+	   }
+	   if(ctrl == 'pay'){
+		   if(type == '0' || type == '1'){ ///无需认证  || 仅支付密码
+			   return 'payPwd';
+		   }else if(type == '2' || type == '3'){ //安全认证  || 支付密码 + 安全
+			   if(securityAuthType == '1'){
+				   return 'googleCode';
+			   }else if(securityAuthType == '2'){
+				   return "msgCode";
+			   }
+		   }
+	   }
+   }
+   
+   //生成当前认证方式DIV数据  showType:显示的提交表单验证选项  loginPwd-登录密码  ，googleCode-谷歌验证码，  msgCode-短信验证码 
+   function genCurrentAuthHtml(showType, msgBizType){
+	   
+	   if(showType == 'loginPwd'){ //登录密码
+		   
+			return `
+			   <div class="layui-form-item layui-form-text">
+		       	 <label class="layui-form-label">登录密码</label>
+		       	 <div class="layui-input-block">
+		            <input type="password" name="pwdOrCode" required placeholder="请输入登录密码" autocomplete="off" class="layui-input">
+		       	 </div>
+		   	   </div>`;
+		}else if(showType == 'payPwd'){ //支付密码
+			   
+			return `
+			   <div class="layui-form-item layui-form-text">
+		       	 <label class="layui-form-label">支付密码</label>
+		       	 <div class="layui-input-block">
+		            <input type="password" name="pwdOrCode" required placeholder="请输入支付密码" autocomplete="off" class="layui-input">
+		       	 </div>
+		   	   </div>`;
+		}else if(showType == 'googleCode'){ //谷歌验证码
+		   
+			return `
+			   <div class="layui-form-item layui-form-text">
+		         <label class="layui-form-label">谷歌验证码</label>
+		         <div class="layui-input-block">
+		            <input type="text" name="pwdOrCode" required lay-verify="required|number" placeholder="请输入谷歌验证码" autocomplete="off" class="layui-input">
+		         </div>
+		   	   </div>`;
+	   }else if(showType == 'msgCode'){ //手机验证码
+		   
+		 	return `
+			   <div class="layui-form-item layui-form-text">
+		         <label class="layui-form-label">手机验证码</label>
+		         <div class="layui-input-inline">
+		            <input type="text" class="layui-input" name="pwdOrCode" required lay-verify="required|number" placeholder="请输入手机验证码" autocomplete="off" >
+		         </div>
+		         <button class="layui-btn layui-btn-primary sendMsgCodeBtn" msgBizType="`+msgBizType+`">发送手机验证码</button>
+		   	   </div>`;
+	   }
+   }
+
+</script>

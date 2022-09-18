@@ -1,0 +1,96 @@
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a><cite>支付配置</cite></a>
+    </span>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">导入卡bin</li>
+            </ul>
+            <div class="layui-tab-content">
+                <form class="layui-form center">
+                    <div class="layui-form-item">
+                        <blockquote class="layui-elem-quote">上传excel文件,可以批量导入卡bin信息</blockquote>
+                    </div>
+
+                    <div class="layui-form-item ">
+                        <label class="layui-form-label">上传文件</label>
+                        <div class="layui-input-block">
+                            <button type="button" class="layui-btn layui-btn-normal" id="selectBtn">选择文件</button>
+                        </div>
+                    </div>
+                    <div class="layui-form-item ">
+                        <div class="layui-input-block">
+                            <button type="button" lay-submit lay-filter="btnJSJ" class="layui-btn" id="uploadBtn">批量导入</button>
+                            <a lay-href = "config/card_bin/"  class="layui-btn ">返回</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+<style>
+    table{
+        text-align: center;
+    }
+    .leftT {
+        text-align: left;
+    }
+</style>
+
+<script>
+    layui.use(['table','util','admin','upload'], function(){
+        var form = layui.form
+        ,table = layui.table
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,upload = layui.upload
+        ,element = layui.element;
+        
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        var uploadInst = upload.render({
+            elem: '#selectBtn' //绑定元素
+            ,url: layui.setter.baseUrl + '/config/card_bin/import' //上传接口
+            ,accept : 'file'
+            ,exts : "csv|xls|xlsx"
+            ,auto : false
+            ,bindAction: '#uploadBtn'
+            ,field : "upFile"
+            ,data : {
+            }
+            ,done: function(res){
+                //上传完毕回调
+                if(res.code == 0) {
+                    var data = res.data;
+                    layer.alert(
+                            "导入完成[共计:" + data.batchInertCount + ", 耗时:" + data.costTime/1000+ "秒]"
+                            ,{title: "保存成功"}
+                            ,function(index){
+                        layer.close(index);
+                        location.hash = '/config/card_bin/';
+                    })
+                }else {
+                    layer.alert("上传失败[" + res.msg + "]");
+                }
+            }
+            ,error: function(){
+                //请求异常回调
+                layer.alert("上传失败,系统异常");
+            }
+        });
+
+        form.on('submit(btnJSJ)', function(data){
+            return false;//阻止跳转
+        });
+        form.render();
+
+
+    });
+</script>

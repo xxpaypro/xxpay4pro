@@ -1,0 +1,99 @@
+
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-tab layui-tab-brief">
+      <div class="layui-tab-content">
+          <form class="layui-form layui-form-pane" action="">
+              <div class="layui-form-item">
+                  <label class="layui-form-label">用户ID</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="userId" disabled="disabled" class="layui-input">
+                  </div>
+              </div>
+              <div class="layui-form-item">
+                  <label class="layui-form-label">登录用户名</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="loginUserName" disabled="disabled" class="layui-input">
+                  </div>
+              </div>
+              <div class="layui-form-item">
+                  <label class="layui-form-label">用户昵称</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="nickName" disabled="disabled" class="layui-input">
+                  </div>
+              </div>
+              <div class="layui-form-item">
+                  <label class="layui-form-label">邮箱</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="email" disabled="disabled" class="layui-input">
+                  </div>
+              </div>
+              <div class="layui-form-item">
+                  <label class="layui-form-label">手机号</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="mobile" disabled="disabled" class="layui-input">
+                  </div>
+              </div>
+              <div class="layui-form-item">
+                  <label class="layui-form-label">状态</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="isSuperAdmin" disabled="disabled" class="layui-input">
+                  </div>
+              </div>
+              <div class="layui-form-item">
+                  <label class="layui-form-label">状态</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="status" disabled="disabled" class="layui-input">
+                  </div>
+              </div>
+          </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    layui.use(['form','admin','view'],function(){
+        var form = layui.form
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,element = layui.element
+        ,view = layui.view
+        ,layer = layui.layer ;
+        // 导航
+        element.render('breadcrumb', 'breadcrumb');
+        var userId = view.getOpenParams('userId');
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/subuser/get',
+            data: {
+                userId : userId
+            },
+            error: function(err){
+                layer.alert(JSON.stringify(err.field), {
+                    title: '错误提示'
+                })
+            },
+            success: function(res){
+                if(res.code == 0){
+                    $('#userId').val(res.data.userId);
+                    $('#loginUserName').val(res.data.loginUserName);
+                    $('#nickName').val(res.data.nickName);
+                    $('#email').val(res.data.email);
+                    $('#mobile').val(res.data.mobile);
+                    if(res.data.status == 1) {
+                        $('#status').val("启用");
+                    }else {
+                        $('#status').val("停止");
+                    }
+                    if(res.data.isSuperAdmin == 1) {
+                        $('#isSuperAdmin').val("是");
+                    }else {
+                        $('#isSuperAdmin').val("否");
+                    }
+                    form.render();
+                }
+            }
+        })
+    })
+</script>

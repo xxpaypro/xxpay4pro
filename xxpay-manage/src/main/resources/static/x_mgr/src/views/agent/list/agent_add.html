@@ -1,0 +1,147 @@
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>代理商管理</cite></a>
+        <a><cite>新建代理商</cite></a>
+    </div>
+</div>
+
+<style>
+    .layui-form-label {
+        width:15% !important;
+        margin-left:1%;
+    }
+    .layui-input-inline {
+        width: 33% !important;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <form class="layui-form layui-form-pane">
+            <div class="layui-tab layui-tab-brief">
+                <ul class="layui-tab-title">
+                    <li class="layui-this">基本信息</li>
+                </ul>
+                <div class="layui-tab-content">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">代理商名称</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="agentName" name="agentName" lay-verify="required" placeholder="输入代理商名称" autocomplete="off" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">用户登录名</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="userName" name="userName" lay-verify="required" placeholder="输入用户登录名" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">真实姓名</label>
+                        <div class="layui-input-inline">
+                            <input type="tel" id="realName" name="realName" lay-verify="required" placeholder="输入真实姓名" autocomplete="off" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">身份证号</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="idCard" name="idCard" lay-verify="required" placeholder="输入身份证号" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">手机号</label>
+                        <div class="layui-input-inline">
+                            <input type="tel" id="mobile" maxlength='11' name="mobile" lay-verify="phone" placeholder="输入手机号" autocomplete="off" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">邮箱</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="email" name="email" lay-verify="email" placeholder="输入邮箱" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">座机号码</label>
+                        <div class="layui-input-inline">
+                            <input type="tel" id="tel" name="tel" placeholder="输入座机号" autocomplete="off" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">QQ号</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="qq" name="qq" lay-verify="number" placeholder="输入QQ号" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">通讯地址</label>
+                        <div class="layui-input-inline">
+                            <input type="tel" id="address" name="address" placeholder="输入通讯地址" autocomplete="off" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">线下充值费率(%)</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="offRechargeRate" name="ps[offRechargeFee]" lay-verify="number" placeholder="输入线下充值费率" autocomplete="off" class="layui-input" value="0">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">状态</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="status" value="1" title="启用" checked="checked">
+                            <input type="radio" name="status" value="0" title="停止">
+                        </div>
+                        
+                       	<label class="layui-form-label">设置</label>
+                        <input type="checkbox" lay-filter='allowAddMchCheckbox' title="发展商户" checked/>
+						<input type="checkbox" lay-filter='allowAddSubAgentCheckbox' title="发展子代理商" />
+                        <input type='hidden' id='allowAddMch' name='allowAddMch' value='1'/>
+                        <input type='hidden' id='allowAddSubAgent' name='allowAddSubAgent' value='0'/>
+                    </div>
+                    
+                    	
+                    
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block" style="padding-bottom: 20px;">
+                        <button type="button" class="layui-btn" lay-submit="" lay-filter="agentAdd">保存</button>
+                        <a class="layui-btn" lay-href="agent/list/">返回</a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    layui.use(['admin', 'form'],function(){
+        var form = layui.form
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,element = layui.element
+        ,layer = layui.layer ;
+
+        element.render('breadcrumb', 'breadcrumb');
+        
+        form.on('submit(agentAdd)', function(data) {
+            //这里可以写ajax方法提交表单
+            admin.req({
+                type: "POST",
+                url: layui.setter.baseUrl + '/agent_info/add',
+                data: data.field,
+                success: function(res){
+                    if(res.code == 0) {
+                        layer.alert(res.msg, {title: "提示"}, function(index){
+                          layer.close(index);
+                          location.href = layui.setter.baseLocal + 'agent/list/';
+                        });
+                    }
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+        
+        
+        form.on('checkbox(allowAddSubAgentCheckbox)', function(data){
+        	  var value = data.elem.checked ? 1 : 0;
+        	  $("#allowAddSubAgent").val(value);
+        });
+        
+        form.on('checkbox(allowAddMchCheckbox)', function(data){
+      	  var value = data.elem.checked ? 1 : 0;
+      	  $("#allowAddMch").val(value);
+      	});
+        
+        
+        
+        form.render();
+    })
+</script>

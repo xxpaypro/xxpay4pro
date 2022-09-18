@@ -1,0 +1,168 @@
+
+<div class="layui-card layadmin-header">
+  <div class="layui-breadcrumb" lay-filter="breadcrumb">
+    <a lay-href="">主页</a>
+    <a><cite>数据分析</cite></a>
+  </div>
+</div>
+<style>.layui-form-label {
+	width: 15% !important;
+	margin-left: 1%;
+}
+
+.layui-input-inline {
+	width: 33% !important;
+}
+.createTimeStart {
+	height: 36px;
+	line-height: 1.3;
+	border: 1px solid #e6e6e6;
+}
+
+.createTimeEnd {
+	height: 36px;
+	line-height: 1.3;
+	border: 1px solid #e6e6e6;
+}
+</style>
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-tab layui-tab-brief">
+      <ul class="layui-tab-title">
+        <li class="layui-this">平台统计</li>
+      </ul>
+      <div class="layui-tab-content">
+      	<div class="layui-tab-item layui-show">
+            <div class="layui-row">
+              <div class="layui-form" style="float:right;">
+                <div class="layui-input-inline">
+	                <input type="text" name="createTimeStart" id="createTimeStart" placeholder="起始时间" class="createTimeStart layui-input">
+	              </div>
+	              <div class="layui-input-inline">
+	                <input type="text" name="createTimeEnd" id="createTimeEnd" placeholder="结束时间" class="createTimeEnd layui-input">
+	              </div>
+	              <button id="searchbtn" class="layui-btn">搜索</button>
+              </div>
+            </div>
+        </div>
+	      <form class="layui-form layui-form-pane">  
+	        <div class="layui-form-item">
+	          <label class="layui-form-label">今日总利润</label>
+	          <div class="layui-input-inline">
+	              <input type="text" id="todayIncome" disabled="disabled" class="layui-input">
+	            </div>
+	        </div>
+	        <div class="layui-form-item">
+	          <label class="layui-form-label">昨日总利润</label>
+	          <div class="layui-input-inline">
+	              <input type="text" id="yestdayIncome" disabled="disabled" class="layui-input">
+	            </div>
+	        </div>
+	        <div class="layui-form-item">
+	          <label class="layui-form-label">总利润</label>
+	          <div class="layui-input-inline">
+	              <input type="text" id="totalIncome" disabled="disabled" class="layui-input">
+	            </div>
+	        </div>
+	        <div class="layui-form-item">
+	          <label class="layui-form-label">时间范围利润</label>
+	          <div class="layui-input-inline">
+	              <input type="text" id="Income" disabled="disabled" class="layui-input">
+	          </div>
+	        </div>
+	      </form>
+	    </div>
+    </div>
+  </div>
+</div>
+
+<script>layui.config({
+	base: '/x_mgr/src/lib/extend/',
+});
+layui.use(['admin', 'table', 'util', 'laydate'], function() {
+	var $ = layui.$,
+		admin = layui.admin,
+		element = layui.element,
+		laydate = layui.laydate,
+		form = layui.form;
+
+	element.render('breadcrumb', 'breadcrumb');
+	admin.req({
+		type: "post",
+		url: layui.setter.baseUrl + '/data/platStatistics',
+		success: function(res) {
+			if(res.data.todayIncome == null) {
+				$("#todayIncome").val(0);
+			} else {
+				$("#todayIncome").val(res.data.todayIncome.totalPlatProfit/100);
+			}
+			if(res.data.yestdayIncome == null) {
+				$("#yestdayIncome").val(0);
+			} else {
+				$("#yestdayIncome").val(res.data.yestdayIncome.totalPlatProfit/100);
+			}
+			if(res.data.Income == null) {
+				$("#Income").val(0);
+			} else {
+				$("#Income").val(res.data.Income.totalPlatProfit/100);
+			}
+			if(res.data.totalIncome == null) {
+				$("#totalIncome").val(0);
+			} else {
+				$("#totalIncome").val(res.data.totalIncome.totalPlatProfit/100);
+			}
+		}
+	})
+
+	// 搜索
+	$('#searchbtn').on('click', function() {
+		var createTimeStart = $('#createTimeStart').val();
+		var createTimeEnd = $('#createTimeEnd').val();
+		admin.req({
+			type: "post",
+			url: layui.setter.baseUrl + '/data/platStatistics',
+			data: {
+				createTimeStart: createTimeStart,
+				createTimeEnd: createTimeEnd
+			},
+			success: function(res) {
+				if(res.data.todayIncome == null) {
+					$("#todayIncome").val(0);
+				} else {
+					$("#todayIncome").val(res.data.todayIncome.totalPlatProfit/100);
+				}
+				if(res.data.yestdayIncome == null) {
+					$("#yestdayIncome").val(0);
+				} else {
+					$("#yestdayIncome").val(res.data.yestdayIncome.totalPlatProfit/100);
+				}
+				if(res.data.Income == null) {
+					$("#Income").val(0);
+				} else {
+					$("#Income").val(res.data.Income.totalPlatProfit/100);
+				}
+				if(res.data.totalIncome == null) {
+					$("#totalIncome").val(0);
+				} else {
+					$("#totalIncome").val(res.data.totalIncome.totalPlatProfit/100);
+				}
+			}
+		})
+		return false;
+	});
+
+	laydate.render({
+		elem: '#createTimeStart',
+		type: 'date',
+		format: 'yyyy-MM-dd'
+	});
+
+	laydate.render({
+		elem: '#createTimeEnd',
+		type: 'date',
+		format: 'yyyy-MM-dd'
+	});
+
+	// 渲染表单
+	form.render();
+});</script>

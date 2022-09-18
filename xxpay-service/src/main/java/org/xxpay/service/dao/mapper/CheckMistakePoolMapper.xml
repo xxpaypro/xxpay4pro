@@ -1,0 +1,504 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.xxpay.service.dao.mapper.CheckMistakePoolMapper" >
+  <resultMap id="BaseResultMap" type="org.xxpay.core.entity.CheckMistakePool" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="productame" property="productame" jdbcType="VARCHAR" />
+    <result column="mchOrderNo" property="mchOrderNo" jdbcType="VARCHAR" />
+    <result column="orderId" property="orderId" jdbcType="VARCHAR" />
+    <result column="bankOrderNo" property="bankOrderNo" jdbcType="VARCHAR" />
+    <result column="orderAmount" property="orderAmount" jdbcType="BIGINT" />
+    <result column="platIncome" property="platIncome" jdbcType="BIGINT" />
+    <result column="feeate" property="feeate" jdbcType="DECIMAL" />
+    <result column="platCost" property="platCost" jdbcType="BIGINT" />
+    <result column="platProfit" property="platProfit" jdbcType="BIGINT" />
+    <result column="status" property="status" jdbcType="TINYINT" />
+    <result column="channelId" property="channelId" jdbcType="VARCHAR" />
+    <result column="channelType" property="channelType" jdbcType="VARCHAR" />
+    <result column="paySuccessTime" property="paySuccessTime" jdbcType="TIMESTAMP" />
+    <result column="completeTime" property="completeTime" jdbcType="TIMESTAMP" />
+    <result column="isRefund" property="isRefund" jdbcType="TINYINT" />
+    <result column="refundTimes" property="refundTimes" jdbcType="INTEGER" />
+    <result column="successRefundAmount" property="successRefundAmount" jdbcType="BIGINT" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="batchNo" property="batchNo" jdbcType="VARCHAR" />
+    <result column="billDate" property="billDate" jdbcType="DATE" />
+    <result column="createTime" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="updateTime" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, productame, mchOrderNo, orderId, bankOrderNo, orderAmount, platIncome, feeate, 
+    platCost, platProfit, status, channelId, channelType, paySuccessTime, completeTime, 
+    isRefund, refundTimes, successRefundAmount, remark, batchNo, billDate, createTime, 
+    updateTime
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="org.xxpay.core.entity.CheckMistakePoolExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from t_check_mistake_pool
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+    <if test="limit != null" >
+      <if test="offset != null" >
+        limit ${offset}, ${limit}
+      </if>
+      <if test="offset == null" >
+        limit ${limit}
+      </if>
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_check_mistake_pool
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from t_check_mistake_pool
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="org.xxpay.core.entity.CheckMistakePoolExample" >
+    delete from t_check_mistake_pool
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="org.xxpay.core.entity.CheckMistakePool" >
+    insert into t_check_mistake_pool (id, productame, mchOrderNo, 
+      orderId, bankOrderNo, orderAmount, 
+      platIncome, feeate, platCost, 
+      platProfit, status, channelId, 
+      channelType, paySuccessTime, completeTime, 
+      isRefund, refundTimes, successRefundAmount, 
+      remark, batchNo, billDate, 
+      createTime, updateTime)
+    values (#{id,jdbcType=BIGINT}, #{productame,jdbcType=VARCHAR}, #{mchOrderNo,jdbcType=VARCHAR}, 
+      #{orderId,jdbcType=VARCHAR}, #{bankOrderNo,jdbcType=VARCHAR}, #{orderAmount,jdbcType=BIGINT}, 
+      #{platIncome,jdbcType=BIGINT}, #{feeate,jdbcType=DECIMAL}, #{platCost,jdbcType=BIGINT}, 
+      #{platProfit,jdbcType=BIGINT}, #{status,jdbcType=TINYINT}, #{channelId,jdbcType=VARCHAR}, 
+      #{channelType,jdbcType=VARCHAR}, #{paySuccessTime,jdbcType=TIMESTAMP}, #{completeTime,jdbcType=TIMESTAMP}, 
+      #{isRefund,jdbcType=TINYINT}, #{refundTimes,jdbcType=INTEGER}, #{successRefundAmount,jdbcType=BIGINT}, 
+      #{remark,jdbcType=VARCHAR}, #{batchNo,jdbcType=VARCHAR}, #{billDate,jdbcType=DATE}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="org.xxpay.core.entity.CheckMistakePool" >
+    insert into t_check_mistake_pool
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="productame != null" >
+        productame,
+      </if>
+      <if test="mchOrderNo != null" >
+        mchOrderNo,
+      </if>
+      <if test="orderId != null" >
+        orderId,
+      </if>
+      <if test="bankOrderNo != null" >
+        bankOrderNo,
+      </if>
+      <if test="orderAmount != null" >
+        orderAmount,
+      </if>
+      <if test="platIncome != null" >
+        platIncome,
+      </if>
+      <if test="feeate != null" >
+        feeate,
+      </if>
+      <if test="platCost != null" >
+        platCost,
+      </if>
+      <if test="platProfit != null" >
+        platProfit,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="channelId != null" >
+        channelId,
+      </if>
+      <if test="channelType != null" >
+        channelType,
+      </if>
+      <if test="paySuccessTime != null" >
+        paySuccessTime,
+      </if>
+      <if test="completeTime != null" >
+        completeTime,
+      </if>
+      <if test="isRefund != null" >
+        isRefund,
+      </if>
+      <if test="refundTimes != null" >
+        refundTimes,
+      </if>
+      <if test="successRefundAmount != null" >
+        successRefundAmount,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+      <if test="batchNo != null" >
+        batchNo,
+      </if>
+      <if test="billDate != null" >
+        billDate,
+      </if>
+      <if test="createTime != null" >
+        createTime,
+      </if>
+      <if test="updateTime != null" >
+        updateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="productame != null" >
+        #{productame,jdbcType=VARCHAR},
+      </if>
+      <if test="mchOrderNo != null" >
+        #{mchOrderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="orderId != null" >
+        #{orderId,jdbcType=VARCHAR},
+      </if>
+      <if test="bankOrderNo != null" >
+        #{bankOrderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="orderAmount != null" >
+        #{orderAmount,jdbcType=BIGINT},
+      </if>
+      <if test="platIncome != null" >
+        #{platIncome,jdbcType=BIGINT},
+      </if>
+      <if test="feeate != null" >
+        #{feeate,jdbcType=DECIMAL},
+      </if>
+      <if test="platCost != null" >
+        #{platCost,jdbcType=BIGINT},
+      </if>
+      <if test="platProfit != null" >
+        #{platProfit,jdbcType=BIGINT},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="channelId != null" >
+        #{channelId,jdbcType=VARCHAR},
+      </if>
+      <if test="channelType != null" >
+        #{channelType,jdbcType=VARCHAR},
+      </if>
+      <if test="paySuccessTime != null" >
+        #{paySuccessTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="completeTime != null" >
+        #{completeTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isRefund != null" >
+        #{isRefund,jdbcType=TINYINT},
+      </if>
+      <if test="refundTimes != null" >
+        #{refundTimes,jdbcType=INTEGER},
+      </if>
+      <if test="successRefundAmount != null" >
+        #{successRefundAmount,jdbcType=BIGINT},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="batchNo != null" >
+        #{batchNo,jdbcType=VARCHAR},
+      </if>
+      <if test="billDate != null" >
+        #{billDate,jdbcType=DATE},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="org.xxpay.core.entity.CheckMistakePoolExample" resultType="java.lang.Integer" >
+    select count(*) from t_check_mistake_pool
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update t_check_mistake_pool
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=BIGINT},
+      </if>
+      <if test="record.productame != null" >
+        productame = #{record.productame,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mchOrderNo != null" >
+        mchOrderNo = #{record.mchOrderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.orderId != null" >
+        orderId = #{record.orderId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.bankOrderNo != null" >
+        bankOrderNo = #{record.bankOrderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.orderAmount != null" >
+        orderAmount = #{record.orderAmount,jdbcType=BIGINT},
+      </if>
+      <if test="record.platIncome != null" >
+        platIncome = #{record.platIncome,jdbcType=BIGINT},
+      </if>
+      <if test="record.feeate != null" >
+        feeate = #{record.feeate,jdbcType=DECIMAL},
+      </if>
+      <if test="record.platCost != null" >
+        platCost = #{record.platCost,jdbcType=BIGINT},
+      </if>
+      <if test="record.platProfit != null" >
+        platProfit = #{record.platProfit,jdbcType=BIGINT},
+      </if>
+      <if test="record.status != null" >
+        status = #{record.status,jdbcType=TINYINT},
+      </if>
+      <if test="record.channelId != null" >
+        channelId = #{record.channelId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.channelType != null" >
+        channelType = #{record.channelType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.paySuccessTime != null" >
+        paySuccessTime = #{record.paySuccessTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.completeTime != null" >
+        completeTime = #{record.completeTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.isRefund != null" >
+        isRefund = #{record.isRefund,jdbcType=TINYINT},
+      </if>
+      <if test="record.refundTimes != null" >
+        refundTimes = #{record.refundTimes,jdbcType=INTEGER},
+      </if>
+      <if test="record.successRefundAmount != null" >
+        successRefundAmount = #{record.successRefundAmount,jdbcType=BIGINT},
+      </if>
+      <if test="record.remark != null" >
+        remark = #{record.remark,jdbcType=VARCHAR},
+      </if>
+      <if test="record.batchNo != null" >
+        batchNo = #{record.batchNo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.billDate != null" >
+        billDate = #{record.billDate,jdbcType=DATE},
+      </if>
+      <if test="record.createTime != null" >
+        createTime = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateTime != null" >
+        updateTime = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update t_check_mistake_pool
+    set id = #{record.id,jdbcType=BIGINT},
+      productame = #{record.productame,jdbcType=VARCHAR},
+      mchOrderNo = #{record.mchOrderNo,jdbcType=VARCHAR},
+      orderId = #{record.orderId,jdbcType=VARCHAR},
+      bankOrderNo = #{record.bankOrderNo,jdbcType=VARCHAR},
+      orderAmount = #{record.orderAmount,jdbcType=BIGINT},
+      platIncome = #{record.platIncome,jdbcType=BIGINT},
+      feeate = #{record.feeate,jdbcType=DECIMAL},
+      platCost = #{record.platCost,jdbcType=BIGINT},
+      platProfit = #{record.platProfit,jdbcType=BIGINT},
+      status = #{record.status,jdbcType=TINYINT},
+      channelId = #{record.channelId,jdbcType=VARCHAR},
+      channelType = #{record.channelType,jdbcType=VARCHAR},
+      paySuccessTime = #{record.paySuccessTime,jdbcType=TIMESTAMP},
+      completeTime = #{record.completeTime,jdbcType=TIMESTAMP},
+      isRefund = #{record.isRefund,jdbcType=TINYINT},
+      refundTimes = #{record.refundTimes,jdbcType=INTEGER},
+      successRefundAmount = #{record.successRefundAmount,jdbcType=BIGINT},
+      remark = #{record.remark,jdbcType=VARCHAR},
+      batchNo = #{record.batchNo,jdbcType=VARCHAR},
+      billDate = #{record.billDate,jdbcType=DATE},
+      createTime = #{record.createTime,jdbcType=TIMESTAMP},
+      updateTime = #{record.updateTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="org.xxpay.core.entity.CheckMistakePool" >
+    update t_check_mistake_pool
+    <set >
+      <if test="productame != null" >
+        productame = #{productame,jdbcType=VARCHAR},
+      </if>
+      <if test="mchOrderNo != null" >
+        mchOrderNo = #{mchOrderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="orderId != null" >
+        orderId = #{orderId,jdbcType=VARCHAR},
+      </if>
+      <if test="bankOrderNo != null" >
+        bankOrderNo = #{bankOrderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="orderAmount != null" >
+        orderAmount = #{orderAmount,jdbcType=BIGINT},
+      </if>
+      <if test="platIncome != null" >
+        platIncome = #{platIncome,jdbcType=BIGINT},
+      </if>
+      <if test="feeate != null" >
+        feeate = #{feeate,jdbcType=DECIMAL},
+      </if>
+      <if test="platCost != null" >
+        platCost = #{platCost,jdbcType=BIGINT},
+      </if>
+      <if test="platProfit != null" >
+        platProfit = #{platProfit,jdbcType=BIGINT},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="channelId != null" >
+        channelId = #{channelId,jdbcType=VARCHAR},
+      </if>
+      <if test="channelType != null" >
+        channelType = #{channelType,jdbcType=VARCHAR},
+      </if>
+      <if test="paySuccessTime != null" >
+        paySuccessTime = #{paySuccessTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="completeTime != null" >
+        completeTime = #{completeTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isRefund != null" >
+        isRefund = #{isRefund,jdbcType=TINYINT},
+      </if>
+      <if test="refundTimes != null" >
+        refundTimes = #{refundTimes,jdbcType=INTEGER},
+      </if>
+      <if test="successRefundAmount != null" >
+        successRefundAmount = #{successRefundAmount,jdbcType=BIGINT},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="batchNo != null" >
+        batchNo = #{batchNo,jdbcType=VARCHAR},
+      </if>
+      <if test="billDate != null" >
+        billDate = #{billDate,jdbcType=DATE},
+      </if>
+      <if test="createTime != null" >
+        createTime = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        updateTime = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.xxpay.core.entity.CheckMistakePool" >
+    update t_check_mistake_pool
+    set productame = #{productame,jdbcType=VARCHAR},
+      mchOrderNo = #{mchOrderNo,jdbcType=VARCHAR},
+      orderId = #{orderId,jdbcType=VARCHAR},
+      bankOrderNo = #{bankOrderNo,jdbcType=VARCHAR},
+      orderAmount = #{orderAmount,jdbcType=BIGINT},
+      platIncome = #{platIncome,jdbcType=BIGINT},
+      feeate = #{feeate,jdbcType=DECIMAL},
+      platCost = #{platCost,jdbcType=BIGINT},
+      platProfit = #{platProfit,jdbcType=BIGINT},
+      status = #{status,jdbcType=TINYINT},
+      channelId = #{channelId,jdbcType=VARCHAR},
+      channelType = #{channelType,jdbcType=VARCHAR},
+      paySuccessTime = #{paySuccessTime,jdbcType=TIMESTAMP},
+      completeTime = #{completeTime,jdbcType=TIMESTAMP},
+      isRefund = #{isRefund,jdbcType=TINYINT},
+      refundTimes = #{refundTimes,jdbcType=INTEGER},
+      successRefundAmount = #{successRefundAmount,jdbcType=BIGINT},
+      remark = #{remark,jdbcType=VARCHAR},
+      batchNo = #{batchNo,jdbcType=VARCHAR},
+      billDate = #{billDate,jdbcType=DATE},
+      createTime = #{createTime,jdbcType=TIMESTAMP},
+      updateTime = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

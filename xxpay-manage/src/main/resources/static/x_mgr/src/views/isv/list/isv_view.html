@@ -1,0 +1,151 @@
+<style>
+    .xxpayPopupDiv .layui-form-label {
+        width:15% !important;
+        margin-left:1%;
+    }
+    .xxpayPopupDiv .layui-input-inline {
+        width: 33% !important;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <form class="layui-form layui-form-pane">
+            <div class="layui-tab layui-tab-brief">
+                <ul class="layui-tab-title">
+                    <li class="layui-this">基本信息</li>
+                </ul>
+                <div class="layui-tab-content">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">服务商ID</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="isvId" name="isvId" lay-verify="required" autocomplete="off" class="layui-input" disabled="disabled">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">服务商名称</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="isvName" name="isvName" lay-verify="required" placeholder="输入服务商名称" autocomplete="off" class="layui-input" disabled="disabled">
+                        </div>
+                        <label class="layui-form-label">用户登录名</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="loginUserName" name="loginUserName" lay-verify="required" placeholder="输入用户登录名" autocomplete="off" class="layui-input" disabled="disabled">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">登录手机号/联系人手机号</label>
+                        <div class="layui-input-inline">
+                            <input type="tel" id="mobile" name="mobile" lay-verify="phone" placeholder="输入手机号" autocomplete="off" class="layui-input" disabled="disabled">
+                        </div>
+                        <label class="layui-form-label">登录邮箱/联系人邮箱</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="email" name="email" lay-verify="email" placeholder="输入邮箱" autocomplete="off" class="layui-input" disabled="disabled">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">真实姓名</label>
+                        <div class="layui-input-inline">
+                            <input type="tel" id="realName" name="realName" lay-verify="required" placeholder="输入真实姓名" autocomplete="off" class="layui-input" disabled="disabled">
+                        </div>
+                        <label class="layui-form-label">身份证号</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="idCard" name="idCard" lay-verify="required" placeholder="输入身份证号" autocomplete="off" class="layui-input" disabled="disabled">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">QQ号</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="qq" name="qq" lay-verify="number" placeholder="输入QQ号" autocomplete="off" class="layui-input" disabled="disabled">
+                        </div>
+                        <label class="layui-form-label">通讯地址</label>
+                        <div class="layui-input-inline">
+                            <input type="tel" id="address" name="address" placeholder="输入通讯地址" autocomplete="off" class="layui-input" disabled="disabled">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">域名</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="domain" name="domain" placeholder="输入域名" autocomplete="off" class="layui-input"  disabled="disabled">
+                        </div>
+                        <label class="layui-form-label">系统名称</label>
+                        <div class="layui-input-inline">
+                            <input type="tel" id="systemTitle" name="systemTitle" placeholder="输入系统名称" autocomplete="off" class="layui-input"  disabled="disabled">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">技术支持姓名</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="supportName" name="supportName" placeholder="输入技术支持姓名" autocomplete="off" class="layui-input"  disabled="disabled">
+                        </div>
+                        <label class="layui-form-label">技术支持电话</label>
+                        <div class="layui-input-inline">
+                            <input type="tel" id="supportTel" name="supportTel" placeholder="输入技术支持电话" autocomplete="off" class="layui-input"  disabled="disabled">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+
+                        <label class="layui-form-label">创建时间</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="createTime" name="createTime" class="layui-input" disabled="disabled">
+                        </div>
+                        <label class="layui-form-label">状态</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="status" value="1" title="启用" checked="checked" disabled="disabled">
+                            <input type="radio" name="status" value="0" title="停止" disabled="disabled">
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    layui.use(['admin', 'form','view'],function(){
+        var form = layui.form
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,element = layui.element
+        ,view = layui.view
+        ,layer = layui.layer ;
+        // 导航
+        element.render('breadcrumb', 'breadcrumb');
+        var isvId = view.getOpenParams('isvId');
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/isv_info/get',
+            data: { isvId : isvId },
+            error: function(err){
+                layer.alert(JSON.stringify(err.field), { title: '错误提示'})
+            },
+            success: function(res){
+                if(res.code == 0){
+                    $('#isvId').val(res.data.isvId);
+                    $('#isvName').val(res.data.isvName);
+                    $('#loginUserName').val(res.data.loginUserName);
+                    $('#email').val(res.data.email);
+                    $('#mobile').val(res.data.mobile);
+                    if(res.data.status == 1) {
+                        $("input[name='status'][value='1']").attr("checked",true);
+                    }else {
+                        $("input[name='status'][value='0']").attr("checked",true);
+                    }
+                    $('#tel').val(res.data.tel);
+                    $('#realName').val(res.data.realName);
+                    $('#idCard').val(res.data.idCard);
+                    $('#qq').val(res.data.qq);
+                    $('#address').val(res.data.address);
+                    if(res.data.createTime != "" && res.data.createTime != null) {
+                        $('#createTime').val(layui.util.toDateString(res.data.createTime));
+                    }
+                    $('#domain').val(res.data.domain);
+                    $('#systemTitle').val(res.data.systemTitle);
+                    $('#supportName').val(res.data.supportName);
+                    $('#supportTel').val(res.data.supportTel);
+                    form.render();
+                }
+            }
+        });
+    })
+</script>

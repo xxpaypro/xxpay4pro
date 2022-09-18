@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.xxpay.service.dao.mapper.MemberPointsMapper">
+
+
+    <!-- 更新会员积分信息， 保证积分信息数据准确 -->
+    <update id="updatePointByMemberId" parameterType="org.xxpay.core.entity.MemberPoints">
+
+        update t_member_points
+        <set>
+            <if test="points != null" >
+                Points = Points + #{points},
+            </if>
+            <if test="totalAddPoints != null" >
+                TotalAddPoints = TotalAddPoints + #{totalAddPoints},
+            </if>
+            <if test="totalGivePoints != null" >
+                TotalGivePoints = TotalGivePoints + #{totalGivePoints},
+            </if>
+            <if test="totalConsumePoints != null" >
+                TotalConsumePoints = TotalConsumePoints + #{totalConsumePoints},
+            </if>
+            <if test="totalRefundPoints != null" >
+                TotalRefundPoints = TotalRefundPoints + #{totalRefundPoints},
+            </if>
+        </set>
+        where MemberId = #{memberId}
+        <if test="points != null" >
+            and (Points + #{points} ) >= 0
+        </if>
+        <if test="totalAddPoints != null" >
+            and (TotalAddPoints + #{totalAddPoints} ) >= 0
+        </if>
+        <if test="totalGivePoints != null" >
+            and (TotalGivePoints + #{totalGivePoints} ) >= 0
+        </if>
+        <if test="totalConsumePoints != null" >
+            and (TotalConsumePoints + #{totalConsumePoints} ) >= 0
+        </if>
+        <if test="totalRefundPoints != null" >
+            and (TotalRefundPoints + #{totalRefundPoints} ) >= 0
+        </if>
+    </update>
+
+</mapper>

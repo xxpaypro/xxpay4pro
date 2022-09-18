@@ -1,0 +1,65 @@
+<style>
+    .layui-input-inline{margin-top:10px;}
+</style>
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a><cite>通道配置</cite></a>
+    </span>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">通道配置</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-row"></div>
+                <table id="cList" lay-filter="cList"></table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+     //标题内容模板
+     var tplEdit = function(d){
+         return "<a class='layui-btn layui-btn-primary layui-btn-xs' lay-event='config'>配置</a>";
+     };
+
+     layui.use(['table','util','admin', 'laydate'], function(){
+        var table = layui.table
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,laydate = layui.laydate
+        ,element = layui.element
+        ,form = layui.form;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+
+         table.render({
+             elem: '#cList'
+             ,url: layui.setter.baseUrl + '/pay_passage/list'
+             ,id: 'tableReload'
+             ,cols: [[
+                 {field:'ifTypeCode', title: '接口类型代码'}
+                 ,{field:'passageName',  title: '接口类型名称'}
+                 ,{width: 200, title: '操作', templet: tplEdit }
+             ]]
+             ,page: true
+             ,skin: 'line'
+         });
+
+        //监听工具条
+         table.on('tool(cList)', function(obj){
+             var data = obj.data;
+             if(obj.event === 'config'){
+                 location.href = layui.setter.baseLocal + "account/pay_passage/passage_config/id=" + data.id;
+             }
+         });
+
+         // 渲染表单
+         form.render();
+        
+     })
+</script>

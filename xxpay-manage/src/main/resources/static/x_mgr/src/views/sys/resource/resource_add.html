@@ -1,0 +1,145 @@
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-tab layui-tab-brief">
+      <div class="layui-tab-content">
+          <form class="layui-form center">
+            <input type="hidden" id="parentId" name="parentId" value="0" />
+            <div class="layui-form-item">
+              <div class="layui-inline">
+                <label class="layui-form-label">资源名称</label>
+                <div class="layui-input-inline">
+                  <input type="text" id="name" name="name" lay-verify="required" placeholder="输入资源名称" autocomplete="off" class="layui-input">
+                </div>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-inline">
+                <label class="layui-form-label">资源标题</label>
+                <div class="layui-input-inline">
+                  <input type="text" id="title" name="title" lay-verify="required" placeholder="输入资源名称" autocomplete="off" class="layui-input">
+                </div>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-inline">
+                <label class="layui-form-label">跳转URL</label>
+                <div class="layui-input-inline">
+                  <input type="text" id="jump" name="jump" placeholder="输入跳转URL" autocomplete="off" class="layui-input">
+                </div>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-inline">
+                  <label class="layui-form-label">授权名</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="permName" name="permName" placeholder="输入授权名" autocomplete="off" class="layui-input">
+                  </div>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-inline">
+                  <label class="layui-form-label">授权URL</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="permUrl" name="permUrl" placeholder="输入授权URL" autocomplete="off" class="layui-input">
+                  </div>
+              </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">资源类型</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="type" value="1" title="菜单" checked="checked">
+                        <input type="radio" name="type" value="2" title="按钮">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-inline">
+                  <label class="layui-form-label">所属系统</label>
+                  <div class="layui-input-block">
+                      <input type="radio" name="system" value="3" title="运营平台" checked="checked">
+                      <input type="radio" name="system" value="4" title="服务商系统">
+                      <input type="radio" name="system" value="2" title="代理商系统">
+                      <input type="radio" name="system" value="1" title="商户系统">
+                  </div>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-inline">
+                  <label class="layui-form-label">菜单图标</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="icon" name="icon" placeholder="输入icon图标" autocomplete="off" class="layui-input">
+                  </div>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-inline">
+                  <label class="layui-form-label">排序值</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="orderNum" name="orderNum" placeholder="输入排序值" autocomplete="off" class="layui-input">
+                  </div>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-inline">
+                  <label class="layui-form-label">属性</label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="property" name="property" placeholder="输入属性,不清楚可留空" autocomplete="off" class="layui-input">
+                  </div>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-inline">
+                  <label class="layui-form-label">状态</label>
+                  <div class="layui-input-block">
+                      <input type="radio" name="status" value="1" title="启用" checked="checked">
+                      <input type="radio" name="status" value="0" title="停止">
+                  </div>
+              </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button type="button" class="layui-hide xxpayYesBtn" lay-submit="" lay-filter="resourceAdd">保存</button>
+                </div>
+            </div>
+          </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    layui.use(['admin', 'form'],function(){
+        var form = layui.form
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,element = layui.element
+        ,layer = layui.layer ;
+
+        element.render('breadcrumb', 'breadcrumb');
+        var router = layui.router();
+        var parentId = router.search.resourceId;
+        $('#parentId').val(parentId);
+        form.on('submit(resourceAdd)', function(data) {
+            //这里可以写ajax方法提交表单
+            admin.req({
+                type: "GET",
+                url: layui.setter.baseUrl + '/sys/resource/add',
+                data: data.field,
+                success: function(res){
+                    if(res.code == 0) {
+                        layer.closeAll(); //关闭所有弹层
+                        layer.msg("保存成功");
+                        layui.table.reload('tableReload', {page: {curr: 1}}); //调用业务弹层外表格重新加载
+                    }else {
+                        layer.alert(res.msg, {
+                            title: '保存失败'
+                        }); 
+                    }
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+        form.render();
+    })
+</script>

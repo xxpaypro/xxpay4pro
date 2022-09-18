@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.xxpay.service.dao.mapper.MchTradeOrderBatchHourMapper">
+
+    <!--  查询结果集-->
+    <resultMap id="BaseResultMap" type="org.xxpay.core.entity.MchTradeOrderBatchHour">
+        <id column="BatchId" jdbcType="VARCHAR" property="batchId" />
+        <result column="BatchDate" jdbcType="VARCHAR" property="batchDate" />
+        <result column="Hour" jdbcType="VARCHAR" property="hour" />
+        <result column="MchId" jdbcType="BIGINT" property="mchId" />
+        <result column="WxSumRealAmount" jdbcType="BIGINT" property="wxSumRealAmount" />
+        <result column="WxSumRefundAmount" jdbcType="BIGINT" property="wxSumRefundAmount" />
+        <result column="WxCuntTrade" jdbcType="BIGINT" property="wxCuntTrade" />
+        <result column="WxRefundCunt" jdbcType="BIGINT" property="wxRefundCunt" />
+        <result column="AliPaySumRealAmount" jdbcType="BIGINT" property="aliPaySumRealAmount" />
+        <result column="AliPaySumRefundAmount" jdbcType="BIGINT" property="aliPaySumRefundAmount" />
+        <result column="AliPayCuntTrade" jdbcType="BIGINT" property="aliPayCuntTrade" />
+        <result column="AliPayRefundCount" jdbcType="BIGINT" property="aliPayRefundCount" />
+        <result column="BatchTaskStatus" jdbcType="TINYINT" property="batchTaskStatus" />
+        <result column="HospitalId" jdbcType="BIGINT" property="hospitalId" />
+        <result column="ProvinceCode" jdbcType="INTEGER" property="provinceCode" />
+        <result column="CityCode" jdbcType="INTEGER" property="cityCode" />
+        <result column="AreaCode" jdbcType="INTEGER" property="areaCode" />
+        <result column="Remark" jdbcType="VARCHAR" property="remark" />
+        <result column="CreateTime" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="UpdateTime" jdbcType="TIMESTAMP" property="updateTime" />
+    </resultMap>
+
+    <!-- 日交易分析支付趋势 -->
+    <select id="selectPayTrend" parameterType="java.util.Map" resultMap="BaseResultMap">
+        SELECT h.Hour AS  hour
+        ,SUM(IFNULL(h.WxSumRealAmount, 0)) AS wxSumRealAmount,         SUM(IFNULL(h.WxSumRefundAmount, 0)) AS wxSumRefundAmount
+        ,SUM(IFNULL(h.WxCuntTrade, 0)) AS wxCuntTrade,                 SUM(IFNULL(h.WxRefundCunt, 0)) AS wxRefundCunt
+        ,SUM(IFNULL(h.AliPaySumRealAmount, 0)) AS aliPaySumRealAmount, SUM(IFNULL(h.AliPaySumRefundAmount, 0)) AS aliPaySumRefundAmount
+        ,SUM(IFNULL(h.AliPayCuntTrade, 0)) AS aliPayCuntTrade,         SUM(IFNULL(h.AliPayRefundCount, 0)) AS aliPayRefundCount
+        FROM t_mch_trade_order_batch_hour h
+        WHERE h.BatchDate = #{batchDate}
+        <if test="areaCode != null">
+            and h.AreaCode = #{areaCode}
+        </if>
+        <if test="hospitalId != null">
+            and h.HospitalId = #{hospitalId}
+        </if>
+        GROUP BY h.Hour
+    </select>
+
+</mapper>

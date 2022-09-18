@@ -1,0 +1,102 @@
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <div class="layui-tab-content">
+                <form class="layui-form" style="width:100%">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">文章栏目</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="articleType" readonly class="layui-input layui-disabled">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">文章标题</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="title" name="title" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item layui-form-text">
+                        <label class="layui-form-label ">文章内容</label>
+                        <div class="layui-input-block">
+                            <textarea id="content" name="content" placeholder="请输入内容" class="layui-textarea"></textarea>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button class="layui-hide xxpayYesBtn" lay-submit lay-filter="upBtn">保存</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['form','table', 'admin', 'util', 'layedit', 'setter'], function(){
+        var form = layui.form
+        ,table = layui.table
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,view = layui.view
+        ,setter = layui.setter
+        ,layedit = layui.layedit
+        ,element = layui.element;
+
+        //富文本上传图片
+        var headers = {};
+        headers[setter.request.tokenName] = layui.data(setter.tableName)[setter.request.tokenName];
+        layedit.set({
+            uploadImage: {
+                url: layui.setter.baseUrl + '/upload/article'
+                ,headers: headers
+                ,size: 1024  //仅支持1M图片上传
+            }
+        });
+        //建立富文本编辑器
+        var layeditIndex;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+        var id = view.getOpenParams('id');
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/sys/article/get',
+            data: {id: id},
+            success: function(res){
+                if(res.code == 0){
+                    $('#title').val(res.data.title);
+                    $('#articleType').val(res.data.articleType == 1?"服务政策&隐私协议":res.data.articleType == 2?"支付安全":"");
+                    $('#content').val(res.data.content);
+                    layeditIndex = layedit.build('content'); //建立编辑器
+                    form.render();
+                }
+            }
+        });
+
+        form.on('submit(upBtn)', function(data){
+            admin.req({
+                type: 'POST',
+                url: layui.setter.baseUrl + '/sys/article/update',
+                data: {
+                    id: id,
+                    title: data.field.title,
+                    content: layedit.getContent(layeditIndex),
+                },
+                success: function(res){
+                    if(res.code == 0){
+                        layer.alert(res.msg,{title: '更新成功'},function(index){
+                            layer.closeAll(); //关闭所有弹层
+                            layui.table.reload('tableReload'); //调用业务弹层外表格重新加载
+                        })
+                    }else {
+                        layer.alert(res.msg,{
+                            title: '更新失败'
+                        })
+                    }
+                }
+            });
+            return false;
+        });
+
+        form.render();
+    })
+</script>
