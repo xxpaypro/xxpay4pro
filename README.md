@@ -59,15 +59,55 @@ xxpay-task定时任务，包括对账服务、结算服务，部署时需单节�
 
 xxpay-z-api-base 支付接口的基础包
 
-项目	端口	描述
-xxpay-core		公共方法,实体Bean,API接口定义
-xxpay-z-api-base		支付接口的基础包
-xxpay-manage	56701	运营平台接口
-xxpay-agent	56702	代理商系统接口
-xxpay-merchant	56703	商户系统接口
-xxpay-pay	56700	支付核心系统
-xxpay-service		业务接口
-xxpay-task	56705	定时任务,包括对账和结算服务
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>端口</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>xxpay-core</td>
+<td></td>
+<td>公共方法,实体Bean,API接口定义</td>
+</tr>
+<tr>
+<td>xxpay-z-api-base</td>
+<td></td>
+<td>支付接口的基础包</td>
+</tr>
+<tr>
+<td>xxpay-manage</td>
+<td>56701</td>
+<td>运营平台接口</td>
+</tr>
+<tr>
+<td>xxpay-agent</td>
+<td>56702</td>
+<td>代理商系统接口</td>
+</tr>
+<tr>
+<td>xxpay-merchant</td>
+<td>56703</td>
+<td>商户系统接口</td>
+</tr>
+<tr>
+<td>xxpay-pay</td>
+<td>56700</td>
+<td>支付核心系统</td>
+</tr>
+<tr>
+<td>xxpay-service</td>
+<td></td>
+<td>业务接口</td>
+</tr>
+<tr>
+<td>xxpay-task</td>
+<td>56705</td>
+<td>定时任务,包括对账和结算服务</td>
+</tr>
+</tbody></table>
 
 
 # xxpay4pro
