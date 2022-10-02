@@ -31,7 +31,7 @@ XxPayPro是一套开箱即用、适合拿来直接运营的聚合支付系统。
 
 
 
-如需要最新完整商业版本   飞机 Telegram：@xxpaypro
+# 如需要最新完整商业版本   飞机 Telegram：@xxpaypro
 
 # 系统描述
 xxpay4pro为xxpay pro版，使用spring boot + dubbo架构开发。包括运营平台、代理商系统、商户系统、支付系统，结算系统、对账系统等。
