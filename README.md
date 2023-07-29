@@ -20,7 +20,7 @@ https://www.xxpaypro.com
 
 #XXPayPlus版本演示地址：
 
-运营端：http://mgr.xxpayplus.com 帐号：jeepay 登录密码：jeepay123
+运营端：https://mgr.xxpayplus.com 帐号：jeepay 登录密码：jeepay123
 
 代理端：https://agent.xxpayplus.com 帐号：agenttest 登录密码：agent123123
 
