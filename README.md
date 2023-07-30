@@ -9,22 +9,24 @@
 
 运营端：[https://mgr.xxpaypro.com](https://mgr.xxpaypro.com?_blank) 账号:xxpaymgr 登录密码：111111abc 
 
-代理端：[https://agent.xxpaypro.com](https://agent.xxpaypro.com){:target="_blank"} 账号：test001 登录密码：a123123123 支付密码：a123123123
+<a href="https://mgr.xxpaypro.com" target="_blank">https://mgr.xxpaypro.com</a>
 
-商户端：[https://mch.xxpaypro.com](https://mch.xxpaypro.com){:target="_blank"} 账号：test 登录密码：a123123123 支付密码：a123123123
+代理端：[https://agent.xxpaypro.com](https://agent.xxpaypro.com) 账号：test001 登录密码：a123123123 支付密码：a123123123
+
+商户端：[https://mch.xxpaypro.com](https://mch.xxpaypro.com) 账号：test 登录密码：a123123123 支付密码：a123123123
 
 测试账号密码会定期更改，如不对请联系客服发新的账号密码
 
 ### 开发文档
-[https://www.xxpaypro.com](https://www.xxpaypro.com){:target="_blank"} 
+[https://www.xxpaypro.com](https://www.xxpaypro.com) 
 
 ### XXPayPlus版本演示地址：
 
-运营端：[https://mgr.xxpayplus.com](https://mgr.xxpayplus.com){:target="_blank"} 帐号：jeepay 登录密码：jeepay123
+运营端：[https://mgr.xxpayplus.com](https://mgr.xxpayplus.com) 帐号：jeepay 登录密码：jeepay123
 
-代理端：[https://agent.xxpayplus.com](https://agent.xxpayplus.com){:target="_blank"} 帐号：agenttest 登录密码：agent123123
+代理端：[https://agent.xxpayplus.com](https://agent.xxpayplus.com) 帐号：agenttest 登录密码：agent123123
 
-商户端：[https://mch.xxpayplus.com](https://mch.xxpayplus.com){:target="_blank"} 帐号：mchtest 登录密码：mch123123
+商户端：[https://mch.xxpayplus.com](https://mch.xxpayplus.com) 帐号：mchtest 登录密码：mch123123
 
 
 开源版本免费使用，系统采用JAVA语言开发，会java的技术人员可以自行二次开发
