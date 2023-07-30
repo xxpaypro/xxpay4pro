@@ -7,9 +7,7 @@
 
 ### XXPayPro版本演示地址：
 
-运营端：[https://mgr.xxpaypro.com](https://mgr.xxpaypro.com?_blank) 账号:xxpaymgr 登录密码：111111abc 
-
-<a href="https://mgr.xxpaypro.com" target="_blank">https://mgr.xxpaypro.com</a>
+运营端：[https://mgr.xxpaypro.com](https://mgr.xxpaypro.com) 账号:xxpaymgr 登录密码：111111abc 
 
 代理端：[https://agent.xxpaypro.com](https://agent.xxpaypro.com) 账号：test001 登录密码：a123123123 支付密码：a123123123
 
