@@ -45,6 +45,19 @@ XxPayPro是一套开箱即用、适合拿来直接运营的聚合支付系统。
 注：不提供软件开发环境搭建、不提供java基础辅导、仅限该系统业务技术交流。
 
 
+###跑分支付系统
+
+##PHP版本演示地址
+
+后台管理： https://www.paofenpay.com/ht.php 帐号：admin 密码：123456
+
+前端：https://www.paofenpay.com 帐号：13122222222 密码：13122222222
+
+前台测试地址: https://www.paofenpay.com/?c=Pay&a=test&v=v5.0.21
+
+测试账号密码会定期更改，如不对请联系客服发新的账号密码
+
+
 
 ### 如需要最新完整商业版本   飞机 Telegram：@xxpaypro
 
