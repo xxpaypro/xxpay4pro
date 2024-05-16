@@ -13,6 +13,8 @@
 
 商户端：[https://mch.xxpaypro.com](https://mch.xxpaypro.com) 账号：test 登录密码：a123123123 支付密码：a123123123
 
+核销端：[https://writeoff.xxpaypro.com](https://writeoff.xxpaypro.com) 账号：hexiao111 登录密码：a123123123 支付密码：a123123123
+
 测试账号密码会定期更改，如不对请联系客服发新的账号密码
 
 ### 开发文档
