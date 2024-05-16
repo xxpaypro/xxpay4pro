@@ -121,6 +121,11 @@ xxpay-z-api-base 支付接口的基础包
 <td>56705</td>
 <td>定时任务,包括对账和结算服务</td>
 </tr>
+<tr>
+<td>xxpay-writeoff</td>
+<td>56706</td>
+<td>核销商系统接口</td>
+</tr>
 </tbody></table>
 
 
