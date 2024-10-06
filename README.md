@@ -22,11 +22,11 @@
 
 ### XXPayPlus版本演示地址：
 
-运营端：[https://mgr.xxpayplus.com](https://mgr.xxpayplus.com) 帐号：jeepay 登录密码：jeepay123
+运营端：[http://mgr.xxpayplus.com](http://mgr.xxpayplus.com) 帐号：jeepay 登录密码：jeepay123
 
-代理端：[https://agent.xxpayplus.com](https://agent.xxpayplus.com) 帐号：agenttest 登录密码：agent123123
+代理端：[http://agent.xxpayplus.com](http://agent.xxpayplus.com) 帐号：agenttest 登录密码：agent123123
 
-商户端：[https://mch.xxpayplus.com](https://mch.xxpayplus.com) 帐号：mchtest 登录密码：mch123123
+商户端：[http://mch.xxpayplus.com](http://mch.xxpayplus.com) 帐号：mchtest 登录密码：mch123123
 
 
 系统采用JAVA语言开发，会java的技术人员可以自行二次开发
