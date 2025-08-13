@@ -7,13 +7,13 @@
 
 ### XXPayPro版本演示地址：
 
-运营端：[http://mgr.xxpaypro.com](http://mgr.xxpaypro.com) 账号:xxpaymgr 登录密码：111111abc 
+运营端：[https://mgr.xxpaypro.com](https://mgr.xxpaypro.com) 账号:xxpaymgr 登录密码：111111abc 
 
-代理端：[http://agent.xxpaypro.com](http://agent.xxpaypro.com) 账号：test001 登录密码：a123123123 支付密码：a123123123
+代理端：[https://agent.xxpaypro.com](https://agent.xxpaypro.com) 账号：test001 登录密码：a123123123 支付密码：a123123123
 
-商户端：[http://mch.xxpaypro.com](http://mch.xxpaypro.com) 账号：test 登录密码：a123123123 支付密码：a123123123
+商户端：[https://mch.xxpaypro.com](https://mch.xxpaypro.com) 账号：test 登录密码：a123123123 支付密码：a123123123
 
-核销端：[http://writeoff.xxpaypro.com](http://writeoff.xxpaypro.com) 账号：hexiao111 登录密码：a123123123 支付密码：a123123123
+核销端：[https://writeoff.xxpaypro.com](https://writeoff.xxpaypro.com) 账号：hexiao111 登录密码：a123123123 支付密码：a123123123
 
 测试账号密码会定期更改，如不对请联系客服发新的账号密码
 
