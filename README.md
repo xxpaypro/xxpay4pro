@@ -62,7 +62,7 @@ XxPayPro是一套开箱即用、适合拿来直接运营的聚合支付系统。
 
 
 
-### 如需要最新完整商业版本请联系 飞机(Telegram)：[@xxpay4j](https://t.me/xxpay4j)
+### 如需要最新完整商业版本请联系 飞机(Telegram)：[@xxpaypro](https://t.me/xxpaypro)
 
 
 
