@@ -4,6 +4,17 @@
 
 # 在线体验
 
+### 前后端分离版本演示地址：
+
+演示站：[https://admin.xxpay4j.com](https://admin.xxpay4j.com)
+
+演示帐号：
+
+运营账号：用户名：admin 登录密码：admin111111
+
+代理帐号：用户名：agent 登录密码：A123456@
+
+商户帐号：用户名：testmch 登录密码：A123456@
 
 ### XXPayPro版本演示地址：
 
