@@ -2,32 +2,6 @@
 # 声明
 源码只供学习使用，如用于商业活动与本人无关，请勿将系统用于非法业务
 
-# 在线体验
-
-
-
-### XXPayPro版本演示地址：
-
-运营端：[https://mgr.xxpaypro.com](https://mgr.xxpaypro.com) 账号:xxpaymgr 登录密码：111111abc 
-
-代理端：[https://agent.xxpaypro.com](https://agent.xxpaypro.com) 账号：test001 登录密码：a123123123 支付密码：a123123123
-
-商户端：[https://mch.xxpaypro.com](https://mch.xxpaypro.com) 账号：test 登录密码：a123123123 支付密码：a123123123
-
-核销端：[https://writeoff.xxpaypro.com](https://writeoff.xxpaypro.com) 账号：hexiao111 登录密码：a123123123 支付密码：a123123123
-
-测试账号密码会定期更改，如不对请联系客服发新的账号密码
-
-### 开发文档
-[https://www.xxpaypro.com](https://www.xxpaypro.com) 
-
-### XXPayPlus版本演示地址：
-
-运营端：[http://mgr.xxpayplus.com](http://mgr.xxpayplus.com) 帐号：jeepay 登录密码：jeepay123
-
-代理端：[http://agent.xxpayplus.com](http://agent.xxpayplus.com) 帐号：agenttest 登录密码：agent123123
-
-商户端：[http://mch.xxpayplus.com](http://mch.xxpayplus.com) 帐号：mchtest 登录密码：mch123123
 
 
 系统均采用JAVA语言开发，会java的技术人员可以自行二次开发
