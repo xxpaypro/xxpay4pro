@@ -29,19 +29,6 @@
 
 商户端：[http://mch.xxpayplus.com](http://mch.xxpayplus.com) 帐号：mchtest 登录密码：mch123123
 
-### 多货币版本
-
-运营端：[http://mgr.boarpay.com](http://mgr.boarpay.com)
-管理帐号： admin
-密码：111111
-
-代理端：[http://mgr.boarpay.com](http://mgr.boarpay.com)
-代理商帐号： dls
-密码：111111
-
-商户端：[http://mgr.boarpay.com](http://mgr.boarpay.com)
-商户帐号：rayy
-密码：111111
 
 系统均采用JAVA语言开发，会java的技术人员可以自行二次开发
 
@@ -59,11 +46,6 @@ XxPayPro是一套开箱即用、适合拿来直接运营的聚合支付系统。
 技术支持内容包括：系统部署指导、二次开发指导、反馈Bug的修复、需求的收集等。
 
 注：不提供软件开发环境搭建、不提供java基础辅导、仅限该系统业务技术交流。
-
-
-
-
-### 如需要最新完整商业版本请联系 飞机(Telegram)：[@xxpaypro](https://t.me/xxpaypro)
 
 
 
