@@ -22,6 +22,8 @@ GO语言版本 GoPay版本演示地址：
 
 商户端： 账号：mch1 登录密码：a123123123
 
+如需商业版本请联系TG: xxpay4j
+
 
 # 系统描述
 xxpay4pro为xxpay pro版，使用spring boot + dubbo架构开发。包括运营平台、代理商系统、商户系统、支付系统，结算系统、对账系统等。
