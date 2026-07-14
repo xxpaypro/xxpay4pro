@@ -28,7 +28,7 @@ JAVA版本 演示地址：[https://admin.xxpay4j.com/](https://admin.xxpay4j.com
 
 GO语言版本 GoPay版本演示地址：
 
-运营端：[https://demo4.pay4j.com](https://demo4.pay4j.com) 账号:admin 登录密码：admin123 
+运营端：[https://demo4.xxpay4j.com](https://demo4.xxpay4j.com) 账号:admin 登录密码：admin123 
 
 代理端： 账号：agent1 登录密码：a123123123
 
